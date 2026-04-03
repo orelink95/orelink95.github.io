@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>The Eraldom Archive - Chronicles from the Athenaeum</title>
+
+  <script src="scripts/general-scripts.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Newsreader:ital,wght@0,400;0,600;1,400&amp;family=Manrope:wght@500;600&amp;display=swap"
+    rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet" />
+
+  <link href="styles/main-style.css" rel="stylesheet" />
+  <link href="styles/output.css" rel="stylesheet" />
+</head>
+
+<body
+  class="bg-background text-on-surface font-body selection:bg-secondary/30 selection:text-secondary-fixed overflow-x-hidden">
+
+  <div id="header-placeholder"></div>
+
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+
+      <!-- Animated Background Gradient -->
+      <div class="absolute inset-0 z-0 bg-gradient-to-b from-primary-container/30 via-surface to-surface"></div>
+
+      <!-- Floating Particles Effect -->
+      <div class="absolute inset-0 z-10 pointer-events-none opacity-40">
+        <div class="particle w-1 h-1 top-[20%] left-[30%] animate-drift" style="animation-delay: 0s"></div>
+        <div class="particle w-2 h-2 top-[40%] left-[70%] animate-drift" style="animation-delay: 2s"></div>
+        <div class="particle w-1.5 h-1.5 top-[60%] left-[10%] animate-drift" style="animation-delay: 4s"></div>
+        <div class="particle w-1 h-1 top-[80%] left-[80%] animate-drift" style="animation-delay: 1s"></div>
+        <div class="particle w-2 h-2 top-[10%] left-[50%] animate-drift" style="animation-delay: 5s"></div>
+      </div>
+
+      <!-- Hero Image Layer -->
+      <div class="absolute inset-0 z-0">
+        <img class="w-full h-full object-cover opacity-50 transition-opacity duration-[3000ms] animate-pulse-slow"
+          data-alt="moody landscape of floating ancient library towers among swirling emerald mists and ethereal magical sparks at twilight"
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4-QRZOX1G_MY-sBQq6y1M4OUrU_3s80sHJ8sJLXk7WyZc8Q3Apm3ITJIR6l24DjmRiH5nmMWtJ23at053_Yy1aFa1fuDkWpuuBoGxPp1l-CAbUmpHcPjvkruBN4rsHtlbmbk7d1ovL6z4pARLaMIJDluAZUwBpsuZqWFOWJrqyjS4MH_7XeGGskJQNJtpSltpleAb91kO9EmITpCj-1LQqb9TWsJ7O5hXjfUNUyLnyDo2FwkkqXtkW7AdiIt2zqB1MBuh5HofNUI" />
+        <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+      </div>
+      <div class="relative z-20 text-center px-4 max-w-5xl mx-auto animate-float">
+        <h1
+          class="font-headline text-5xl md:text-7xl lg:text-8xl font-bold text-on-surface mb-6 leading-tight tracking-tight drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+          The Eraldom Archive: <br />
+          <span class="text-secondary italic font-normal animate-glow">Chronicles of the Athenaeum's Vaults</span>
+        </h1>
+        <p
+          class="font-body text-xl md:text-2xl text-on-surface-variant max-w-2xl mx-auto mb-10 leading-relaxed italic opacity-80">
+          "Step within the sanctum of forgotten ages, where every whisper of wind turns a page in the tapestry of
+          existence."
+        </p>
+        <div class=" ml-6 flex flex-col md:flex-row items-center justify-center">
+          <a href="world.html"
+            class="px-10 py-4 bg-primary-container border border-secondary/40 text-primary font-headline tracking-widest uppercase text-sm rounded-sm hover:bg-secondary-container hover:text-on-secondary-container transition-all duration-500 shadow-xl shadow-black/40 group relative overflow-hidden">
+            <span class="relative m-auto z-10">Explore the Grand Atlas</span>
+            <div
+              class="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse">
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Scroll Indicator -->
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+        <span
+          class="material-symbols-outlined text-secondary opacity-50 text-4xl hover:opacity-100 transition-opacity cursor-pointer"
+          data-icon="keyboard_double_arrow_down">keyboard_double_arrow_down</span>
+      </div>
+    </section>
+
+    <!-- Navigation Portal -->
+    <section class="py-32 px-6 md:px-12 bg-surface max-w-7xl mx-auto">
+      <div class="mb-20 text-center">
+        <h2 class="font-headline text-4xl text-secondary mb-4 animate-glow">Gateways to the Beyond</h2>
+        <div class="w-24 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent mx-auto"></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+
+        <!-- Large Card 1 : Atlas -->
+        <div
+          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)]">
+          <div class="aspect-[16/9] w-full relative">
+            <img
+              class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-1000 scale-105 group-hover:scale-100"
+              data-alt="extremely detailed hand-drawn vintage fantasy map with golden ink on dark aged vellum parchment showing continents and sea monsters"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYhkA_bdxNTOvVuTS2Ktc_A7nSqHIhXZINLZdG8qohf-rIYvyjGXtytJIJPDmA1VbiMLKmpAuJiF-AD___UeWTBfKOBdcHcA7uusOjkaBn0iMMUNWP98kH9npLwqe8lj_LFw4mB_NFc7SyCNiZqIxCKWQDB9ewKRPiWBSXLYOkxyaE7G75_4WzPZb_XJinGN2oFWsfOJ3d3H1AMp5Zl16kSeascmbZHNV52wVAUhxl1PKmqNMldwLpBdEa7tu5HK3IZFLNfZ5igRo" />
+            <div
+              class="absolute inset-0 bg-[#121412]/20 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-overlay">
+            </div>
+          </div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent p-10 flex flex-col justify-end">
+            <span
+              class="material-symbols-outlined text-secondary text-5xl mb-4 group-hover:scale-110 transition-transform group-hover:animate-pulse"
+              data-icon="public">public</span>
+            <h3 class="font-headline text-3xl text-on-surface mb-3">The Grand Atlas</h3>
+            <p class="font-body text-lg text-on-surface-variant/80 max-w-md">Navigate the shifting borders and mystical
+              ley lines of Eraldom. Every peak and valley tells a tale of war and wonder.</p>
+            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
+              href="world.html">Map the World <span class="material-symbols-outlined text-sm"
+                data-icon="arrow_forward">arrow_forward</span></a>
+          </div>
+        </div>
+        <!-- Small Card 2 : Library -->
+        <div
+          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)]">
+          <div class="aspect-square w-full">
+            <img
+              class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105"
+              data-alt="stack of ancient leather-bound books glowing with faint blue magical energy in a dark scholarly study"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ7L4LV6mgw2CH710uCyGVLhimRq6ydms4SSVcfQLyN9_H3qC7amLWc51Rqc3dgAcPuWko-6tvVGvkFRDHbZtZwubpoGv0RqGE-A5UyAHc_caT5s8V69pY_PISOn0o4RHQoFlGoqe1OqkZcglPFQYAegr8SFlrnN8NrX0Ie0DFNY7mv2aoFZfZpw7085SM8JyX5isesk9XkiFz_qnUK839EyeexVLURHi9FkLaFS2EPl_dBYHWCsPyGH5rSLOEMu53aR2PjJxu3f0" />
+          </div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent p-10 flex flex-col justify-end">
+            <span
+              class="material-symbols-outlined text-secondary text-4xl mb-4 group-hover:scale-110 transition-transform"
+              data-icon="library_books">library_books</span>
+            <h3 class="font-headline text-2xl text-on-surface mb-2">Library of Ages</h3>
+            <p class="font-body text-base text-on-surface-variant/80">The comprehensive archives of historical
+              manuscripts, forbidden lore, and cosmic cycles.</p>
+            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
+              href="#">Explore the shelves <span class="material-symbols-outlined text-sm"
+                data-icon="arrow_forward">arrow_forward</span></a>
+          </div>
+        </div>
+        <!-- Small Card 3 : Sciptorium -->
+        <div
+          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)]">
+          <div class="aspect-square w-full">
+            <img
+              class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105"
+              data-alt="close up of a silver fountain pen writing glowing magical runes onto a scroll of aged parchment"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuADdulN0YWYB_Weyk44yH_26kHXtynfq83CmNk36BEbA4sAayOv3cDWOZZOYVVB1Adfhanf5iIzY8amkm1Byosc8fnzT68BEIVZilXa4MJOqACUd8DuAmW7Mooar2lYKQkQxWyPWT9IhfaeELT8AWKofbbRrWAEKHjTrYDfd023wOJcXQdt9qBnIEYA0DqKLpsyNfJbRniMcBczAWmoFdDX1wpXb0KQTRsau1-dfD4PNnqyDgUd0rGur186pMWch2QKLvu-4yZVbRk" />
+          </div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent p-10 flex flex-col justify-end">
+            <span
+              class="material-symbols-outlined text-secondary text-4xl mb-4 group-hover:scale-110 transition-transform"
+              data-icon="history_edu">history_edu</span>
+            <h3 class="font-headline text-2xl text-on-surface mb-2">The Scriptorium</h3>
+            <p class="font-body text-base text-on-surface-variant/80">Where the modern scribes transcribe current events
+              into the everlasting record.</p>
+            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
+              href="#">See the latest entries <span class="material-symbols-outlined text-sm"
+                data-icon="arrow_forward">arrow_forward</span></a>
+          </div>
+        </div>
+        <!-- Large Card 4 : The peeps -->
+        <div
+          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)]">
+          <div class="aspect-[16/9] w-full">
+            <img
+              class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-1000 group-hover:scale-105"
+              data-alt="majestic silhouettes of fantasy heroes standing on a cliff edge looking at a distant gothic castle under a giant moon"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDemIoo-bQl8xQGTmvESG7sv03kIx2HpO__r8s3f_IxS1B6aRPuzwHWrtnHX5ENHQaAHDkBKtCbBOIFbJ74uJn_Dd6s3bYDSLR0dWjS7elBUZt9bvW1ae4PiJPT1xmuJZxgKEHo2IXh8_fZwKXGo66VIR8cF2pLG6udnISgstWvNEIg2dgTLXxgcQ1QCAObSaPKlq4IMPy_0YMxpsh40TjSvUeH0qMk5IUVdDeFstRZqeHWtCbdrqEHzBjOROpa_y5n3HflXgOw2Mg" />
+          </div>
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent p-10 flex flex-col justify-end">
+            <span
+              class="material-symbols-outlined text-secondary text-5xl mb-4 group-hover:scale-110 transition-transform"
+              data-icon="groups">groups</span>
+            <h3 class="font-headline text-3xl text-on-surface mb-3">Dramatis Personae</h3>
+            <p class="font-body text-lg text-on-surface-variant/80 max-w-md">The souls who shape history. Meet the
+              kings, the heretics, and the harbingers of the new age.</p>
+            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
+              href="#">Meet your heroes <span class="material-symbols-outlined text-sm"
+                data-icon="arrow_forward">arrow_forward</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Discoveries -->
+    <section class="bg-surface-container-low py-24 relative overflow-hidden">
+      <!-- Glow Pulse Background -->
+      <div
+        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/5 rounded-full blur-[120px] animate-pulse-slow">
+      </div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="flex items-end justify-between mb-12 border-b border-outline-variant/20 pb-6">
+          <div>
+            <span class="font-label text-xs uppercase tracking-[0.3em] text-primary animate-pulse">New
+              Revelations</span>
+            <h2 class="font-headline text-3xl text-on-surface mt-2">Latest Updates</h2>
+          </div>
+          <a class="text-secondary font-label text-xs uppercase tracking-widest hover:text-secondary-fixed transition-all hover:scale-105"
+            href="#">View All Scrolls</a>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+          <!-- Update Item 1 -->
+          <div class="group cursor-pointer">
+            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+              <img
+                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
+                data-alt="misty jagged mountains reflecting in a still dark lake at dawn with teal and deep green tones"
+                src="images/brightend_docks.png" />
+              <div
+                class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
+              </div>
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              </div>
+            </div>
+            <h4
+              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              The Brightend Docks</h4>
+            <p class="font-body italic text-sm text-on-surface-variant/60">Added 1 cycle ago</p>
+          </div>
+
+          <!-- Update Item 2 -->
+          <div class="group cursor-pointer">
+            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+              <img
+                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:-rotate-1"
+                data-alt="mystical dark forest with a single white stag glowing with ethereal light in the shadows"
+                src="images/maera_voss.png" />
+              <div
+                class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
+              </div>
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              </div>
+            </div>
+            <h4
+              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              Maera Voss</h4>
+            <p class="font-body italic text-sm text-on-surface-variant/60">Added 4 cycles ago</p>
+          </div>
+
+          <!-- Update Item 3 -->
+          <div class="group cursor-pointer">
+            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+              <img
+                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
+                data-alt="ornate rusted key lying on a pile of ancient gold coins and gems in a dark cavern"
+                src="images/tome_twice_missing.png" />
+              <div class=" absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all
+                duration-700">
+              </div>
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              </div>
+            </div>
+            <h4
+              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              A Tome Twice Missing</h4>
+            <p class="font-body italic text-sm text-on-surface-variant/60">Added 6 cycles ago</p>
+          </div>
+
+          <!-- Update Item 4 -->
+          <div class="group cursor-pointer">
+            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+              <img
+                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:-rotate-1"
+                data-alt="a crystal ball reflecting a swirling nebula of stars and purple magical energy on a wooden pedestal"
+                src="images/echoes_from_void.jpg" />
+              <div
+                class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
+              </div>
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              </div>
+            </div>
+            <h4
+              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              Echoes from the Void</h4>
+            <p class="font-body italic text-sm text-on-surface-variant/60">Added an eon ago</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Aesthetic Lore Snippet -->
+    <section class="py-40 bg-surface text-center relative overflow-hidden">
+      <div class="max-w-3xl mx-auto px-6 relative group">
+        <!-- Magical Glow behind quote -->
+        <div
+          class="absolute inset-0 bg-secondary/10 blur-[80px] rounded-full scale-50 group-hover:scale-100 transition-transform duration-1000">
+        </div>
+        <span
+          class="material-symbols-outlined text-secondary/10 text-[12rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none animate-pulse-slow"
+          data-icon="format_quote" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+        <p
+          class="font-headline text-3xl md:text-4xl italic text-on-surface leading-relaxed relative z-10 transition-all duration-500 group-hover:text-secondary-fixed">
+          "History is not a line, but a circle drawn by a shaking hand. In the Athenaeum, we catch the ink before it
+          dries."
+        </p>
+        <cite
+          class="block mt-12 font-label text-sm uppercase tracking-[0.5em] text-primary/60 hover:text-primary transition-colors cursor-default">—
+          Master Sage Elara</cite>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+
+
+
+
+</body>
+
+</html>

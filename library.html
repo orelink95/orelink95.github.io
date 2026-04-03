@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Library of Ages | The Eraldom Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Newsreader:ital,wght@0,400;0,600;1,400&amp;family=Manrope:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-primary": "#1f3525",
+              "surface-container-low": "#1a1c1a",
+              "on-surface": "#e2e3df",
+              "on-error-container": "#ffdad6",
+              "error": "#ffb4ab",
+              "on-tertiary-fixed-variant": "#574333",
+              "outline-variant": "#434842",
+              "on-tertiary-container": "#a88e7b",
+              "inverse-surface": "#e2e3df",
+              "on-primary-fixed-variant": "#354c3a",
+              "on-surface-variant": "#c3c8c0",
+              "secondary": "#e9c176",
+              "on-secondary-fixed-variant": "#5d4201",
+              "surface-tint": "#b3cdb6",
+              "surface-dim": "#121412",
+              "surface-container": "#1e201e",
+              "primary-container": "#1a3020",
+              "surface-container-lowest": "#0d0f0d",
+              "inverse-primary": "#4c6451",
+              "secondary-fixed-dim": "#e9c176",
+              "secondary-fixed": "#ffdea5",
+              "on-secondary": "#412d00",
+              "inverse-on-surface": "#2f312e",
+              "outline": "#8d928b",
+              "surface-container-high": "#292a28",
+              "surface": "#121412",
+              "primary-fixed-dim": "#b3cdb6",
+              "tertiary-container": "#39281a",
+              "error-container": "#93000a",
+              "primary-fixed": "#cfe9d1",
+              "on-secondary-container": "#dab36a",
+              "on-error": "#690005",
+              "tertiary-fixed": "#fbddc7",
+              "surface-bright": "#383a37",
+              "on-primary-fixed": "#0a2011",
+              "tertiary": "#dec1ac",
+              "on-tertiary": "#3f2d1e",
+              "surface-variant": "#333533",
+              "on-tertiary-fixed": "#28180b",
+              "background": "#121412",
+              "tertiary-fixed-dim": "#dec1ac",
+              "primary": "#b3cdb6",
+              "on-secondary-fixed": "#261900",
+              "surface-container-highest": "#333533",
+              "on-background": "#e2e3df",
+              "secondary-container": "#604403",
+              "on-primary-container": "#809983"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Newsreader"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }
+.book-spine-gradient {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(0, 0, 0, 0.4) 100%)
+    }
+.parchment-texture {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuBV15OvVSrlFxQkJvhSFKgnZcJaoNLU3chf1abjqc14VO48LnTNcy3l20qZ01I1nHQHkMmh9vEGHA7znkpopi3bFkAEqGa8Q_vvB8j6qpBJcWDnOFp_7qXpuk-Qn0GJPksW4eobQIHsLMtoZlERtfZdkxwbUbgDIk1gQ7i4N74c0QF9KdeZGIRxosrX1s-iuYQYsbbq_J0qbg9jSM-jrxgCr44eKPWDlF6ZEt1tHUto3xfQlFutmFSWiZtnn04e2GlYKXCbsc1mxao)
+    }</style>
+</head>
+<body class="bg-surface-dim text-on-surface font-body selection:bg-secondary/30">
+<!-- TopNavBar -->
+<nav class="bg-[#121412]/85 backdrop-blur-md text-[#b3cdb6] docked full-width top-0 z-50 border-b border-[#e9c176]/10 shadow-[0_4px_24px_rgba(26,48,32,0.4)] transition-all ease-in-out duration-500 fixed w-full">
+<div class="flex justify-between items-center w-full px-8 py-4 max-w-screen-2xl mx-auto">
+<div class="text-2xl font-bold text-[#dab36a] italic font-['Noto_Serif']">The Eraldom Archive</div>
+<div class="hidden md:flex gap-8 items-center font-['Noto_Serif'] tracking-wide uppercase text-sm font-semibold">
+<a class="text-[#e2e3df]/70 hover:text-[#e2e3df] transition-colors duration-300" href="#">World Hub</a>
+<a class="text-[#e2e3df]/70 hover:text-[#e2e3df] transition-colors duration-300" href="#">Grand Atlas</a>
+<a class="text-[#dab36a] border-b-2 border-[#e9c176] pb-1" href="#">Library of Ages</a>
+<a class="text-[#e2e3df]/70 hover:text-[#e2e3df] transition-colors duration-300" href="#">Scriptorium</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-[#1a3020]/30 hover:text-[#ffdea5] transition-all rounded-full">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+</button>
+<button class="p-2 hover:bg-[#1a3020]/30 hover:text-[#ffdea5] transition-all rounded-full">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- SideNavBar (Scholar's Access) -->
+<aside class="hidden lg:flex flex-col h-screen w-72 fixed left-0 top-0 z-40 bg-[#1e201e] shadow-[10px_0_30px_rgba(0,0,0,0.5)] bg-gradient-to-r from-[#1e201e] to-[#121412] py-10 transition-all duration-500 animate-fade-in">
+<div class="px-8 mb-12">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-12 h-12 rounded-full border border-secondary/30 flex items-center justify-center bg-surface-container-highest overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Intricate golden wax seal depicting an ancient stylized oak tree on dark green parchment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpF4KBqIqqlZUcjtWdlmsGYYfig3jweMyM6OSZYeKLOswGAxeFcUOCqLN87rjJwamD8IGu2kHBRgrgVnpPz3bQMeygKvCCb8yjxwt1yIhxTNoN1ElQljdQJtj-aQZNjvgYmbb9LKnjC-PDeb6Goj2jR0X8ylURcRF7TNlDadeFvD19mUvcHMOQN55iJ9_S_hYbGNWT8uqCq6D3sWLeTN36Ep8rZj9lFv3qOqeYX5qDlWIOu3JUCYkgZ2Z2yNvAM2T0gdOr77tHVvA"/>
+</div>
+<div>
+<h2 class="font-['Noto_Serif'] text-xl text-[#e9c176]">The Eraldom Archive</h2>
+<p class="font-['Newsreader'] text-sm text-on-surface-variant italic">Scholar's Access</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 text-[#e2e3df]/60 hover:bg-[#333533]/50 hover:translate-x-2 transition-transform duration-400 ease-out font-['Newsreader'] text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="fort">fort</span>
+<span>World Hub</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#e2e3df]/60 hover:bg-[#333533]/50 hover:translate-x-2 transition-transform duration-400 ease-out font-['Newsreader'] text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+<span>Grand Atlas</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 bg-[#1a3020] text-[#ffdea5] border-l-4 border-[#e9c176] shadow-[inset_0_0_10px_rgba(233,193,118,0.2)] font-['Newsreader'] text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="library_books" style="font-variation-settings: 'FILL' 1;">library_books</span>
+<span>Library of Ages</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-[#e2e3df]/60 hover:bg-[#333533]/50 hover:translate-x-2 transition-transform duration-400 ease-out font-['Newsreader'] text-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span>Scriptorium</span>
+</a>
+</nav>
+<div class="px-4 mt-auto pt-8 border-t border-outline-variant/10">
+<a class="flex items-center gap-4 px-4 py-2 text-[#e2e3df]/40 hover:text-secondary transition-colors font-label text-xs uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined text-base" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-2 text-[#e2e3df]/40 hover:text-secondary transition-colors font-label text-xs uppercase tracking-widest" href="#">
+<span class="material-symbols-outlined text-base" data-icon="help_center">help_center</span>
+<span>Grimoire Help</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="lg:ml-72 pt-24 min-h-screen bg-surface-dim relative overflow-hidden">
+<!-- Background Hero -->
+<div class="absolute inset-0 z-0 opacity-40">
+<img class="w-full h-full object-cover" data-alt="Interior of a dark gothic library with towering mahogany bookshelves, floating dust motes illuminated by dim golden candlelight, and a sense of ancient mystery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYofWTDC_Wfrlhzx8_XbLVTF0yxNssB3bdBpwI1k0H6nJIbc5rZUA4oSl5dA5eRh5cXaX6KGD46EHiTiHg444K-lh9KdeqbJI5zwVvor9p7Q6ywwTWjEKbL741Gmh9_05VU2sl6AVI31gxVQs06C1FQ4EV2ZU5OwtxKovGFC-GbZD6rabxiCj9NhgT-lqBgvU480jNvK9VuAm97uvS2BL_-Q3Kzm2uwXuOBUPhkyvi9dgKL86E5EoJJf48flyG_nkcauX8VXU8-Do"/>
+<div class="absolute inset-0 bg-gradient-to-b from-surface-dim via-transparent to-surface-dim"></div>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 px-6 md:px-12 py-12 max-w-7xl">
+<!-- Header Section -->
+<header class="mb-16 ml-4 lg:ml-12 max-w-2xl">
+<h1 class="font-headline text-5xl md:text-7xl text-on-surface mb-6 tracking-tight">The Library of Ages</h1>
+<p class="font-body text-xl text-on-surface-variant italic leading-relaxed">
+                    Centuries of forgotten whispers, bound in leather and ink. Tread softly, Scholar, for the dust here remembers more than the living.
+                </p>
+<div class="h-1 w-24 bg-secondary mt-8"></div>
+</header>
+<!-- Library Bookshelf Grid (Asymmetric) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-16 gap-x-8 items-end">
+<!-- Book 1 -->
+<article class="group relative cursor-pointer transform hover:-translate-y-4 transition-all duration-500 ease-out">
+<div class="relative aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-[#2a1a1a]">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Close-up of a thick weathered leather book cover with gold-embossed dragon iconography and dragon-scale texture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMelFCNGl2GgGHz5S9oqIWXlSqKnuxHJv6NhpV5RONlVj1RxttuAFeiSYUGilAFNfrPXLLtUtXcnNH_nDIsJOKNpvwcZAg9F8V6mEvAuTr0-cPIDKTceLkCNyzGRL8DgsG7OHeYYCKrjn_dKUxeB1Y2QxeL6g3MlKVen6ty5tSIWPDh_ja2T-0G24dSIkyy_i-REbaZmwphSEzLWPm7FB2Vm_Smlg1NuN8gLiLO7GibgiLhzniL_cLfc9nBxnDX6ffS0X35kV0mhI"/>
+<div class="absolute inset-0 book-spine-gradient"></div>
+<div class="absolute inset-0 p-6 flex flex-col justify-end">
+<h3 class="font-headline text-2xl text-secondary-fixed mb-2 drop-shadow-md">The Age of Dragons</h3>
+<span class="font-label text-[10px] tracking-widest text-on-surface/60 uppercase">Tome I • First Era</span>
+</div>
+</div>
+<!-- Hover Glow -->
+<div class="absolute -inset-2 bg-primary/5 blur-xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</article>
+<!-- Book 2 (Asymmetric Shift) -->
+<article class="group relative cursor-pointer transform md:translate-y-12 transition-all duration-500 ease-out">
+<div class="relative aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-[#1a1c2a]">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Ancient indigo leather book cover with silver celestial patterns and a central glowing purple void symbol" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaKNwrZr2Yfpe2Pi8klLJbYzJ6SLAQwJF8UzO0SiZv_8BmeDIZbgnpuuAqrI1BM9DWFZfRdUzbywCJxZevrD8o-5ObKMiaUCtgVVXgjmnlsvKHZVmebAAxFK2P4EhUTnHHtLySzimONcHfuZGDmZxkKdc3oJ59c06HbLiTVS8mH66l14KAhbr4cMOVzSWfmxbc5wQJD7OmKW4EZDnKwjO7TAyeqvdae9-R_lkcshkNCcIIfAwhUbx9IKKXXAB321Sye091OAvD-ns"/>
+<div class="absolute inset-0 book-spine-gradient"></div>
+<div class="absolute inset-0 p-6 flex flex-col justify-end">
+<h3 class="font-headline text-2xl text-[#b3cdb6] mb-2 drop-shadow-md">Whispers of the Void</h3>
+<span class="font-label text-[10px] tracking-widest text-on-surface/60 uppercase">Scroll IV • Forbidden</span>
+</div>
+</div>
+</article>
+<!-- Book 3 -->
+<article class="group relative cursor-pointer transform hover:-translate-y-4 transition-all duration-500 ease-out">
+<div class="relative aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-[#2a251a]">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Faded emerald green cloth book cover with pressed floral patterns and heavy bronze corner protectors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb9qIPVrqHL_olEKUki30rht_pqmc1cQAtWNZjig8e2NfiqhZsw32n0mHvM5h85YiIP0-a_Qn-MzJhXpTCZhUuf90AlWa9IVpHxA7WkuaSflY2Lw7cUbNhqsuxfrYWtt1XVNUci08X-91TnbW3Ds7CDOnc-049dGumKklvu35y2CNbsSHGLhfcMya9EwLSzHebTepYWCW2ywC8vVeX9i6IK92PsJIk1nVZ7eciA64RvXiwfIofNN2s_VLkE6BM7KMc-3ygohpoax4"/>
+<div class="absolute inset-0 book-spine-gradient"></div>
+<div class="absolute inset-0 p-6 flex flex-col justify-end">
+<h3 class="font-headline text-2xl text-secondary mb-2 drop-shadow-md">The Verdant Treaty</h3>
+<span class="font-label text-[10px] tracking-widest text-on-surface/60 uppercase">Volume IX • Records</span>
+</div>
+</div>
+</article>
+<!-- Book 4 (Asymmetric Shift) -->
+<article class="group relative cursor-pointer transform md:translate-y-8 transition-all duration-500 ease-out">
+<div class="relative aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-[#2a1a2a]">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Rich crimson velvet bound book with a silver dagger icon and aged parchment edges visible" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAT_xlCGhtKH7p6s1YCkh2bAuVCWzurRsUeu9yDP3pGObqmhrw01ig4571bKZgLqxWvueGtQ_gUrvVJJmGzXAUfPrhHVHKqFcLjUWpfU5Iv4g9NiiCNEupc7GcPtkTf36PbD2FwesA3KCMVg4Rc-ye2GV4YoJjMRoArOVEf0uUFGVzD5fA5paj8Vy9TUh2xQlXg0YE_5b8T6EonY_-JYUKOxqwoYfa8o4rmMeZfJCzsN4i77NXta2AmdoNQYDI5rVSEQoO8nLts48o"/>
+<div class="absolute inset-0 book-spine-gradient"></div>
+<div class="absolute inset-0 p-6 flex flex-col justify-end">
+<h3 class="font-headline text-2xl text-tertiary mb-2 drop-shadow-md">Crimson Lineage</h3>
+<span class="font-label text-[10px] tracking-widest text-on-surface/60 uppercase">Codex II • Bloodlines</span>
+</div>
+</div>
+</article>
+<!-- Book 5 -->
+<article class="group relative cursor-pointer transform hover:-translate-y-4 transition-all duration-500 ease-out md:translate-y-4 lg:translate-y-0">
+<div class="relative aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-[#1a2a24]">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Weathered oak wood book covers with heavy iron chains and rusted padlock" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDExmQXDszuuX8mfklF1mNjEgslwONm4KwZEhVefe3iBU0eW6jL3H__JVHFeedNf_0ZK1vlgUFrxnCX5uCC70LZQc5Pi9r2mUfie0RHq85Eli5fb3NbglTOR5Nhgl7SLkekAdBgx76dnIwYWhfjdLSWKZg0t7SSySuyeTQf8zp0NbXQ1uPmm7APTqtzSFz3Y6JTsYnzKa2a7PNGLTUPm7pOE19Ud-LbtrzV_b0VtNZt4td4d9Yt58J0goleCboGjeYtvNcah4EcIg4"/>
+<div class="absolute inset-0 book-spine-gradient"></div>
+<div class="absolute inset-0 p-6 flex flex-col justify-end">
+<h3 class="font-headline text-2xl text-on-primary-container mb-2 drop-shadow-md">Echoes of the Deep</h3>
+<span class="font-label text-[10px] tracking-widest text-on-surface/60 uppercase">Lost Journal • Unknown</span>
+</div>
+</div>
+</article>
+<!-- Book 6 -->
+<article class="group relative cursor-pointer transform hover:-translate-y-4 transition-all duration-500 ease-out lg:translate-y-16">
+<div class="relative aspect-[3/4] rounded-sm overflow-hidden shadow-2xl bg-[#2a2a1a]">
+<img class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" data-alt="Brilliant gold silk bound book with a large central sapphire and fine white thread embroidery" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8ZOPPiB-K78I8jE_rwdF5vMgEQ8vs3lNxK-Fj_MpGJgtWW4aaWGLLT1bxG_Mytazy047Qfief-wPJINUYjjZ6fS6djnsOMzP7ljjB8J3r03uo2Gza4dUI8d8Lvbio47TVuFifM7gICFMCOBY9rBwMdzFvGC_h076nvyEM26KHxAbz8IcXuXgkJ63g4VYJfaaCuV-8N8uPxS0_kVG2HxhGr2TMKxCpdjLjqxEEGaK-nV2cQ_JVHTPvlTCBvwRDv_YholG4FIuJQX8"/>
+<div class="absolute inset-0 book-spine-gradient"></div>
+<div class="absolute inset-0 p-6 flex flex-col justify-end">
+<h3 class="font-headline text-2xl text-secondary-fixed mb-2 drop-shadow-md">Stellar Cartography</h3>
+<span class="font-label text-[10px] tracking-widest text-on-surface/60 uppercase">Atlas XII • Celestial</span>
+</div>
+</div>
+</article>
+</div>
+<!-- Reading Overlay (Conceptual Inset) -->
+<section class="mt-32 ml-4 lg:ml-12 border-t border-outline-variant/10 pt-20">
+<div class="flex flex-col lg:flex-row gap-12 items-start">
+<div class="flex-1 space-y-8">
+<h2 class="font-headline text-4xl text-on-surface">Currently Examining: <span class="text-secondary italic">Chronicles of the High Peak</span></h2>
+<div class="bg-surface-container p-8 md:p-12 relative shadow-2xl parchment-texture border-l-8 border-tertiary-container">
+<!-- Subtle filigree corners -->
+<div class="absolute top-4 left-4 w-8 h-8 border-t border-l border-secondary/20"></div>
+<div class="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-secondary/20"></div>
+<p class="font-body text-xl text-on-surface/90 leading-relaxed mb-6 first-letter:text-6xl first-letter:font-headline first-letter:mr-3 first-letter:float-left first-letter:text-secondary">
+                                Before the stars turned cold, the giants walked the high spine of the world. They carried the weight of the heavens in their lungs, and their voices were the thunder that cracked the northern glaciers. It is written that the first Archivist met with the Sky-King atop Mount Eral...
+                             </p>
+<p class="font-body text-xl text-on-surface/90 leading-relaxed italic">
+                                "In the breath of the mountain, we found the ink. In the blood of the earth, we found the story."
+                             </p>
+<div class="mt-12 flex items-center justify-between border-t border-outline-variant/10 pt-6">
+<span class="font-label text-xs tracking-widest text-on-surface/40 uppercase">Page 142 of 890</span>
+<div class="flex gap-4">
+<button class="font-label text-xs uppercase tracking-widest text-secondary hover:underline underline-offset-8">Previous Canto</button>
+<button class="font-label text-xs uppercase tracking-widest text-secondary hover:underline underline-offset-8">Next Canto</button>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-80 space-y-6">
+<div class="bg-surface-container-high p-6">
+<h4 class="font-headline text-lg text-secondary mb-4">Scholarly Annotations</h4>
+<div class="space-y-4">
+<div class="pb-4 border-b border-outline-variant/10">
+<p class="text-xs font-label text-on-surface/40 uppercase tracking-tighter mb-1">Scholar Valerius • 4th Era</p>
+<p class="font-body text-sm text-on-surface-variant italic">"Cross-reference this with the Frost-Witch's diary found in the Scriptorium basement."</p>
+</div>
+<div>
+<p class="text-xs font-label text-on-surface/40 uppercase tracking-tighter mb-1">Archivist Elara • 10th Era</p>
+<p class="font-body text-sm text-on-surface-variant italic">"The translation seems slightly flawed here. 'Ink' might actually mean 'Sacrifice' in the old tongue."</p>
+</div>
+</div>
+</div>
+<button class="w-full py-4 bg-primary-container text-primary border border-secondary/20 hover:bg-secondary-container hover:text-on-secondary-container transition-all duration-300 font-label text-xs uppercase tracking-widest">
+                            Bookmark Entry
+                        </button>
+</div>
+</div>
+</section>
+</div>
+<!-- Decorative Floating Candle -->
+<div class="hidden xl:block absolute top-1/4 right-20 w-32 h-32 bg-secondary/5 blur-[100px] rounded-full animate-pulse"></div>
+<div class="hidden xl:block absolute bottom-1/4 left-10 w-48 h-48 bg-primary/5 blur-[120px] rounded-full"></div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 border-t border-[#333533] bg-[#121412] transition-opacity duration-300">
+<div class="flex flex-col items-center gap-4 w-full px-8">
+<div class="flex gap-8 mb-4">
+<a class="font-['Manrope'] text-[10px] uppercase tracking-[0.2em] text-[#e2e3df]/40 hover:text-[#dab36a] underline-offset-4 decoration-dotted" href="#">Privacy Scroll</a>
+<a class="font-['Manrope'] text-[10px] uppercase tracking-[0.2em] text-[#e2e3df]/40 hover:text-[#dab36a] underline-offset-4 decoration-dotted" href="#">Terms of Scribing</a>
+<a class="font-['Manrope'] text-[10px] uppercase tracking-[0.2em] text-[#e2e3df]/40 hover:text-[#dab36a] underline-offset-4 decoration-dotted" href="#">Contact the Archivist</a>
+</div>
+<p class="font-['Manrope'] text-[10px] uppercase tracking-[0.2em] text-[#e2e3df]/40">
+                © 1024 Post-Conjunction, The Eraldom Archive
+            </p>
+</div>
+</footer>
+</body></html>

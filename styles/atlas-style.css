@@ -1,0 +1,43 @@
+/* =========================================
+   LEAFLET POPUP THEME OVERRIDES - WORLD
+   ========================================= */
+
+/* The main popup bubble */
+.fantasy-popup .leaflet-popup-content-wrapper {
+    background-color: #1a1c1a;
+    /* bg-surface-container-low */
+    color: #e2e3df;
+    /* text-on-surface */
+    border: 1px solid rgba(233, 193, 118, 0.2);
+    /* border-secondary/20 */
+    border-radius: 0.25rem;
+    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8);
+}
+
+/* The little triangle pointer at the bottom of the popup */
+.fantasy-popup .leaflet-popup-tip {
+    background-color: #1a1c1a;
+    /* matches the bubble */
+    border-bottom: 1px solid rgba(233, 193, 118, 0.2);
+    border-right: 1px solid rgba(233, 193, 118, 0.2);
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* The popup close 'X' button */
+.fantasy-popup .leaflet-popup-close-button {
+    color: #b3cdb6 !important;
+    /* text-primary */
+    font-weight: bold;
+    padding: 4px 8px 0 0 !important;
+}
+
+.fantasy-popup .leaflet-popup-close-button:hover {
+    color: #e9c176 !important;
+    /* text-secondary on hover */
+    background: transparent !important;
+}
+
+/* Adjusting the inner padding */
+.fantasy-popup .leaflet-popup-content {
+    margin: 20px 24px;
+}

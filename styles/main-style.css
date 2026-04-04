@@ -1,0 +1,122 @@
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.mask-ink {
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+}
+
+.glass-panel {
+    background: rgba(18, 20, 18, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+.particle {
+    position: absolute;
+    background: radial-gradient(circle, rgba(233, 193, 118, 0.4) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+
+/* For World Atlas */
+.parchment-mask {
+    mask-image: radial-gradient(circle, black 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle, black 70%, transparent 100%);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #121412;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #333533;
+}
+
+/* Sidebar Toggle Logic */
+#sidebar-toggle-input:checked~aside {
+    width: 80px;
+}
+
+#sidebar-toggle-input:checked~aside .nav-label {
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+}
+
+#sidebar-toggle-input:checked~aside .header-text {
+    display: none;
+}
+
+#sidebar-toggle-input:checked~main {
+    margin-left: 80px;
+}
+
+#sidebar-toggle-input:checked~aside #toggle-icon {
+    transform: rotate(180deg);
+}
+
+/* Navigation Hover Animation */
+.nav-item .nav-label {
+    max-width: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.nav-item:hover .nav-label {
+    max-width: 200px;
+    opacity: 1;
+    margin-left: 0.5rem;
+}
+
+/* Modal logic */
+#not-see-modal.hidden {
+    display: none;
+}
+
+#not-see-modal:not(.hidden) {
+    display: flex;
+}
+
+
+/* tooltip container*/
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Tooltip text */
+.tooltiptext {
+    visibility: hidden;
+    /* Hidden by default */
+    width: 130px;
+    background-color: black;
+    color: #ffffff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 4;
+}
+
+/* Show the tooltip text on hover */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+/*For the NPCs page*/
+
+.archival-bg {
+    background-color: #121412;
+    /* Matches bg-surface-dim */
+    background-image: radial-gradient(rgba(233, 193, 118, 0.15) 1px, transparent 1px);
+    background-size: 32px 32px;
+}

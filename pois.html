@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Points of Interest - The Athenaeum Vault</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/atlas-style.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="scripts/settlement-registry.js"></script>
+    <script src="scripts/pois-scripts.js"></script>
+</head>
+
+<body class="bg-surface text-on-surface font-body overflow-x-hidden">
+    <div id="header-placeholder"></div>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="md:ml-20 pt-24 px-4 md:px-8 pb-12 min-h-screen flex flex-col bg-surface-dim">
+        <div class="max-w-[1600px] w-full mx-auto">
+            <header class="mb-12 flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6">
+                <div>
+                    <p class="font-label text-secondary text-sm uppercase tracking-[0.3em] mb-2">Cartographer's Record
+                    </p>
+                    <h2 class="text-4xl md:text-5xl font-headline font-bold text-on-surface leading-tight">Enchanted
+                        Landmarks</h2>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <select id="filter-continent"
+                        class="bg-surface-container-high border border-outline-variant/20 text-on-surface font-label text-[10px] uppercase tracking-widest px-4 py-2.5 rounded outline-none cursor-pointer hover:bg-surface-container-highest transition-colors">
+                        <option value="all">All Continents</option>
+                    </select>
+                    <select id="filter-country"
+                        class="bg-surface-container-high border border-outline-variant/20 text-on-surface font-label text-[10px] uppercase tracking-widest px-4 py-2.5 rounded outline-none cursor-pointer hover:bg-surface-container-highest transition-colors">
+                        <option value="all">All Regions</option>
+                    </select>
+                    <select id="filter-settlement"
+                        class="bg-surface-container-high border border-outline-variant/20 text-on-surface font-label text-[10px] uppercase tracking-widest px-4 py-2.5 rounded outline-none cursor-pointer hover:bg-surface-container-highest transition-colors">
+                        <option value="all">All Settlements</option>
+                    </select>
+                </div>
+            </header>
+
+            <div id="poi-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+            </div>
+        </div>
+    </main>
+
+    <div id="poi-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#121412]/95 backdrop-blur-xl p-4 md:p-8">
+        <div
+            class="max-w-5xl w-full bg-surface-container rounded-lg overflow-hidden border border-secondary/30 shadow-[0_0_100px_rgba(26,48,32,0.8)] flex flex-col md:flex-row max-h-[90vh]">
+
+            <div class="md:w-1/2 relative h-64 md:h-auto flex-shrink-0">
+                <img id="modal-img" class="w-full h-full object-cover" src="" />
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-container hidden md:block">
+                </div>
+                <div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent md:hidden"></div>
+            </div>
+
+            <div class="md:w-1/2 p-8 md:p-12 relative text-left flex flex-col overflow-y-auto custom-scrollbar">
+                <button onclick="closePOIModal()"
+                    class="absolute top-6 right-6 text-on-surface-variant hover:text-secondary z-10">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <p id="modal-uid" class="font-label text-secondary text-xs uppercase tracking-[0.4em] mb-4"></p>
+                <h2 id="modal-title" class="text-4xl font-headline font-bold text-on-surface mb-6"></h2>
+                <div id="modal-body" class="space-y-6 text-on-surface-variant font-body text-sm leading-relaxed mb-8">
+                </div>
+
+                <div id="modal-npc-section" class="mb-8 hidden">
+                    <h3
+                        class="font-label text-[10px] uppercase text-outline tracking-widest mb-4 border-b border-white/5 pb-2">
+                        Known Residents & Associated Contacts</h3>
+                    <div id="modal-npcs" class="grid grid-cols-1 gap-3">
+                    </div>
+                </div>
+
+                <div class="mt-auto flex flex-wrap gap-8 border-t border-white/5 pt-8">
+                    <div>
+                        <p class="font-label text-[10px] uppercase text-outline tracking-widest mb-1">Location</p>
+                        <p id="modal-location" class="font-headline text-on-surface text-lg"></p>
+                    </div>
+                    <div>
+                        <p class="font-label text-[10px] uppercase text-outline tracking-widest mb-1">Archive ID</p>
+                        <p id="modal-threat" class="font-headline text-secondary text-lg">POI Record</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footer-placeholder"></div>
+</body>
+
+</html>

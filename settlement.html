@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Settlement View - The Athenaeum Vault</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="styles/output.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <link href="styles/atlas-style.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="scripts/settlement-registry.js"></script>
+    <script src="scripts/settlement-scripts.js"></script>
+</head>
+
+<body
+    class="bg-surface text-on-surface font-body selection:bg-secondary/30 selection:text-secondary-fixed overflow-x-hidden">
+
+    <div id="header-placeholder"></div>
+    <div id="sidebar-placeholder"></div>
+
+    <main
+        class="md:ml-20 pt-24 px-4 md:px-8 pb-12 min-h-screen flex flex-col transition-all duration-500 ease-in-out relative">
+
+        <div id="dynamic-bg-blur"
+            class="absolute inset-0 opacity-[0.05] mix-blend-overlay pointer-events-none bg-cover bg-center -z-10">
+        </div>
+
+        <header class="mb-8 z-10">
+            <nav
+                class="flex items-center gap-2 font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60 mb-2">
+                <a href="world.html" class="hover:text-secondary cursor-pointer transition-colors">Archive</a>
+                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                <a id="dynamic-continent-link"
+                    class="hover:text-secondary cursor-pointer transition-colors">Continent</a>
+                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                <a id="dynamic-country-link" class="hover:text-secondary cursor-pointer transition-colors">Region</a>
+                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                <span id="dynamic-settlement-name" class="text-secondary font-bold">Settlement</span>
+            </nav>
+            <h1 id="dynamic-title" class="text-4xl font-headline font-bold text-on-surface tracking-tight">Loading...
+            </h1>
+            <p id="dynamic-description"
+                class="font-newsreader text-sm leading-relaxed text-on-surface-variant/70 mt-2 max-w-2xl">Fetching
+                archival data...</p>
+        </header>
+
+        <div class="grid grid-cols-12 gap-6 flex-1 z-10">
+
+            <div
+                class="col-span-12 lg:col-span-3 relative h-[650px] rounded-xl bg-surface-container-low border border-outline-variant/20 p-8 shadow-2xl overflow-hidden group lore-card">
+                <div class="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"
+                    style="background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(233,193,118, 0.08), transparent 40%);">
+                </div>
+                <span
+                    class="material-symbols-outlined absolute -bottom-10 -right-10 text-[12rem] text-secondary/5 rotate-12 select-none pointer-events-none z-0"
+                    style="font-variation-settings: 'FILL' 1;">menu_book</span>
+
+                <div class="relative z-10 h-full flex flex-col custom-scrollbar overflow-y-auto pr-4 -mr-4">
+                    <div class="mb-6">
+                        <span id="lore-entry-id"
+                            class="font-label text-[10px] uppercase tracking-[0.2em] text-primary block animate-pulse-slow mb-2">Town
+                            Charter</span>
+                        <h2 id="lore-title" class="font-headline text-2xl text-secondary font-bold tracking-tight mb-4">
+                            Loading...</h2>
+                        <div class="w-16 h-px bg-gradient-to-r from-secondary via-secondary/50 to-transparent"></div>
+                    </div>
+                    <div id="lore-body" class="font-body text-sm text-on-surface-variant leading-relaxed space-y-4">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-span-12 lg:col-span-6 relative flex flex-col group">
+
+                <div class="mb-4 flex flex-col items-start z-20 relative">
+
+                    <button id="district-toggle-btn"
+                        class="hidden items-center gap-2 text-[10px] font-label uppercase tracking-widest text-secondary bg-surface-container-low border border-secondary/20 px-4 py-2 rounded-md hover:bg-surface-container-high transition-all shadow-md group">
+                        <span class="material-symbols-outlined text-[14px]">map</span>
+                        Select District
+                        <span id="district-chevron"
+                            class="material-symbols-outlined text-[14px] transition-transform duration-300">expand_more</span>
+                    </button>
+
+                    <div id="district-nav-wrapper"
+                        class="max-h-0 opacity-0 overflow-hidden transition-all duration-500 ease-in-out w-full origin-top">
+                        <div id="district-nav"
+                            class="flex flex-wrap bg-surface-container-low p-1 rounded-md border border-outline-variant/10 shadow-md w-fit mt-2">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div
+                    class="w-full flex-grow bg-surface-container-low rounded-xl overflow-hidden shadow-2xl border border-outline-variant/10 flex p-4 relative min-h-[600px]">
+                    <div class="relative w-full h-full z-10">
+                        <div
+                            class="absolute -top-2 -left-2 w-6 h-6 border-t-2 border-l-2 border-secondary/50 z-20 pointer-events-none">
+                        </div>
+                        <div
+                            class="absolute -top-2 -right-2 w-6 h-6 border-t-2 border-r-2 border-secondary/50 z-20 pointer-events-none">
+                        </div>
+                        <div
+                            class="absolute -bottom-2 -left-2 w-6 h-6 border-b-2 border-l-2 border-secondary/50 z-20 pointer-events-none">
+                        </div>
+                        <div
+                            class="absolute -bottom-2 -right-2 w-6 h-6 border-b-2 border-r-2 border-secondary/50 z-20 pointer-events-none">
+                        </div>
+
+                        <div id="settlement-map"
+                            class="absolute inset-0 !bg-[#050505] border border-secondary/10 rounded-sm z-10 shadow-inner">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="col-span-12 lg:col-span-3 bg-surface-container-low border border-outline-variant/20 rounded-xl flex flex-col z-20 shrink-0 shadow-2xl h-[650px] overflow-hidden">
+                <div class="p-5 border-b border-outline-variant/10 bg-surface-container-lowest">
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-noto-serif text-lg text-primary-fixed-dim">Local Residents</h3>
+                        <span id="dynamic-npc-count"
+                            class="font-label text-[9px] text-on-surface/40 uppercase tracking-tighter">0 Known</span>
+                    </div>
+                    <p class="font-newsreader italic text-on-surface/60 text-xs">Notable figures within the walls.</p>
+                </div>
+
+                <div id="dynamic-npc-list" class="flex-grow overflow-y-auto custom-scrollbar p-5 space-y-6">
+                </div>
+            </div>
+
+        </div>
+
+
+    </main>
+    <div id="footer-placeholder"></div>
+</body>
+
+</html>

@@ -123,10 +123,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // UTILITY: COORDINATE FINDER
     // -----------------------------------------------------------------
     // Click anywhere on the continent map to get the X/Y for thr Admin Tool
-    map.on('click', function (e) {
-        console.log(`Continent Coords: Y: ${Math.round(e.latlng.lat)}, X: ${Math.round(e.latlng.lng)}`);
-        alert(`Y: ${Math.round(e.latlng.lat)}, X: ${Math.round(e.latlng.lng)}`);
-    });
+    //map.on('click', function (e) {
+    //    console.log(`Continent Coords: Y: ${Math.round(e.latlng.lat)}, X: ${Math.round(e.latlng.lng)}`);
+   //     alert(`Y: ${Math.round(e.latlng.lat)}, X: ${Math.round(e.latlng.lng)}`);
+ //   });
 
 
 });

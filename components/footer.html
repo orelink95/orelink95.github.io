@@ -1,0 +1,51 @@
+<!-- Footer -->
+<footer class="bg-[#0d0f0d] py-8 border-t border-[#e9c176]/10 relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#e9c176]/40 to-transparent">
+    </div>
+    <div class="flex flex-col items-center gap-8 w-full text-center px-4 max-w-7xl mx-auto relative z-10">
+        <div
+            class="font-['Noto_Serif'] text-2xl font-bold text-[#dab36a] drop-shadow-[0_0_10px_rgba(218,179,106,0.3)] hover:scale-105 transition-transform cursor-pointer">
+            Eraldom Archive</div>
+        <div class="flex flex-wrap justify-center gap-12">
+            <button
+                class="font-['Newsreader'] text-base italic text-[#e2e3df]/60 hover:text-[#ffdea5] transition-all hover:-translate-y-1 underline decoration-[#e9c176]/20"
+                onclick="toggleModal()">Privacy Scroll</button>
+            <button
+                class="font-['Newsreader'] text-base italic text-[#e2e3df]/60 hover:text-[#ffdea5] transition-all hover:-translate-y-1"
+                onclick="toggleModal()">Terms of Service</button>
+            <button
+                class="font-['Newsreader'] text-base italic text-[#e2e3df]/60 hover:text-[#ffdea5] transition-all hover:-translate-y-1"
+                onclick="toggleModal()">The Scribe's Guild</button>
+        </div>
+        <div
+            class="mt-2 font-['Newsreader'] text-sm italic text-[#449b5b] opacity-80 hover:opacity-100 transition-opacity">
+            © 2026 Orelink - Chronicles of Eraldom <br />
+            <span class="text-[10px] tracking-widest uppercase mt-2 block">Archive Edition v.a4</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Nothing to see Modal -->
+<div class="hidden fixed inset-0 z-[100] items-center justify-center p-4" id="not-see-modal">
+    <div class="absolute inset-0 bg-background/90 backdrop-blur-xl" onclick="toggleModal()"></div>
+    <div
+        class="relative w-full max-w-lg bg-surface-container-low border border-secondary/30 p-12 text-center rounded-lg shadow-[0_0_100px_rgba(233,193,118,0.15)] overflow-hidden group">
+
+        <!-- Decorative corner ornaments -->
+        <div class="absolute top-0 left-0 w-12 h-12 border-t-2 border-l-2 border-secondary/20"></div>
+        <div class="absolute top-0 right-0 w-12 h-12 border-t-2 border-r-2 border-secondary/20"></div>
+        <div class="absolute bottom-0 left-0 w-12 h-12 border-b-2 border-l-2 border-secondary/20"></div>
+        <div class="absolute bottom-0 right-0 w-12 h-12 border-b-2 border-r-2 border-secondary/20"></div>
+        <div class="absolute -top-24 -left-24 w-48 h-48 bg-secondary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl animate-pulse"
+            style="animation-delay: 1.5s"></div>
+        <span class="material-symbols-outlined text-secondary/30 text-6xl mb-6 block animate-float"
+            data-icon="auto_stories">auto_stories</span>
+        <h2 class="font-headline text-4xl text-on-surface mb-4 tracking-tighter italic">"Nothing to see here"</h2>
+        <p class="font-body text-on-surface-variant/60 italic mb-8">The archive remains silent on these matters... for
+            now.</p>
+        <button
+            class="px-8 py-2 border border-secondary/30 text-secondary font-label text-xs uppercase tracking-widest hover:bg-secondary hover:text-on-secondary transition-all"
+            onclick="toggleModal()">Dismiss Scroll</button>
+    </div>
+</div>

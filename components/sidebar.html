@@ -1,0 +1,62 @@
+<button onclick="toggleMobileSidebar()"
+    class="md:hidden fixed bottom-6 left-6 z-50 w-14 h-14 bg-surface-container-high border border-secondary/30 rounded-full flex items-center justify-center text-secondary shadow-[0_0_20px_rgba(233,193,118,0.2)] hover:scale-105 transition-transform">
+    <span class="material-symbols-outlined text-2xl">explore</span>
+</button>
+
+<div id="sidebar-backdrop"
+    class="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 hidden transition-opacity duration-300 opacity-0 md:hidden"
+    onclick="toggleMobileSidebar()"></div>
+
+<aside id="atlas-sidebar"
+    class="group flex flex-col h-screen fixed left-0 top-0 pt-28 pb-8 bg-surface-container-lowest/95 backdrop-blur-xl border-r border-outline-variant/10 z-40 transition-all duration-400 ease-in-out w-72 -translate-x-full md:translate-x-0 md:w-20 hover:w-72 overflow-hidden shadow-2xl">
+
+    <div class="px-5 mb-8 flex items-center gap-4 whitespace-nowrap overflow-hidden">
+        <div
+            class="w-10 h-10 shrink-0 rounded-full bg-primary-container flex items-center justify-center border border-secondary/30 shadow-[0_0_10px_rgba(179,205,182,0.2)]">
+            <span class="material-symbols-outlined text-secondary"
+                style="font-variation-settings: 'FILL' 1;">shield</span>
+        </div>
+        <div class="transition-opacity duration-300 md:opacity-0 group-hover:opacity-100">
+            <div class="text-lg font-semibold text-secondary font-headline">Atlas Navigation</div>
+            <div class="font-label text-[10px] uppercase tracking-widest text-on-surface-variant/60">Eraldom Archive
+            </div>
+        </div>
+    </div>
+
+    <nav class="flex-1 space-y-2 overflow-y-auto overflow-x-hidden px-3 custom-scrollbar">
+        <a href="world.html"
+            class="nav-item flex items-center gap-4 text-on-surface hover:text-secondary hover:bg-surface-container-high rounded-md p-3 transition-colors whitespace-nowrap">
+            <span class="material-symbols-outlined shrink-0 ml-1">public</span>
+            <span class="font-body text-lg transition-opacity duration-300 md:opacity-0 group-hover:opacity-100">World
+                Atlas</span>
+        </a>
+
+        <a href="continent.html"
+            class="nav-item flex items-center gap-4 text-on-surface hover:text-secondary hover:bg-surface-container-high rounded-md p-3 transition-colors whitespace-nowrap">
+            <span class="material-symbols-outlined shrink-0 ml-1">map</span>
+            <span
+                class="font-body text-lg transition-opacity duration-300 md:opacity-0 group-hover:opacity-100">Continents</span>
+        </a>
+
+        <a href="country.html"
+            class="nav-item flex items-center gap-4 text-on-surface hover:text-secondary hover:bg-surface-container-high rounded-md p-3 transition-colors whitespace-nowrap">
+            <span class="material-symbols-outlined shrink-0 ml-1">fort</span>
+            <span
+                class="font-body text-lg transition-opacity duration-300 md:opacity-0 group-hover:opacity-100">Kingdoms</span>
+        </a>
+
+        <a href="settlement.html"
+            class="nav-item flex items-center gap-4 text-on-surface hover:text-secondary hover:bg-surface-container-high rounded-md p-3 transition-colors whitespace-nowrap">
+            <span class="material-symbols-outlined shrink-0 ml-1">home_work</span>
+            <span
+                class="font-body text-lg transition-opacity duration-300 md:opacity-0 group-hover:opacity-100">Settlements</span>
+        </a>
+
+        <a href="pois.html"
+            class="nav-item flex items-center gap-4 text-on-surface hover:text-secondary hover:bg-surface-container-high rounded-md p-3 transition-colors whitespace-nowrap">
+            <span class="material-symbols-outlined shrink-0 ml-1">location_on</span>
+            <span class="font-body text-lg transition-opacity duration-300 md:opacity-0 group-hover:opacity-100">Points
+                of Interest</span>
+        </a>
+    </nav>
+</aside>

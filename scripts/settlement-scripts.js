@@ -1,4 +1,19 @@
+// --- URL PARAMETER LISTENER ---
+const urlParams = new URLSearchParams(window.location.search);
+const targetId = urlParams.get('id');
+
+if (targetId) {
+    setTimeout(() => {
+        if (typeof window.loadSettlement === 'function') {
+            window.loadSettlement(targetId);
+        }
+    }, 150);
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+
+
+
 
     // --- 1. MAGIC GLOW SPOTLIGHT ---
     const loreCards = document.querySelectorAll('.lore-card');
@@ -231,5 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(`Settlement Coords - Y: ${y}, X: ${x}`);
     });
 
+
     loadDistrict(0);
+
+
 });

@@ -120,3 +120,78 @@
     background-image: radial-gradient(rgba(233, 193, 118, 0.15) 1px, transparent 1px);
     background-size: 32px 32px;
 }
+
+
+/* Categorized Keyword Colors */
+
+
+/* Green */
+.kw-person {
+    color: #66c488;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(138, 223, 142, 0.65)
+}
+
+/* Blue */
+.kw-place {
+    color: #559df7;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(96, 165, 250, 0.3);
+}
+
+/* Red */
+.kw-monster {
+    color: #bd6363;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(248, 113, 113, 0.5);
+    position: relative;
+}
+
+/* Orange */
+.kw-faction {
+    color: #fb923c;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(251, 146, 60, 0.5);
+    position: relative;
+}
+
+/* gold */
+.kw-lore {
+    color: #e9c176;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(233, 193, 118, 0.5);
+    position: relative;
+}
+
+/* Gold */
+.kw-object {
+    color: #7b49d8;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(192, 132, 252, 0.5);
+    position: relative;
+}
+
+/* Purple */
+
+/* Tooltip Styling */
+#keyword-tooltip {
+    position: fixed;
+    z-index: 200;
+    width: 280px;
+    background: #1a1c1a;
+    border: 1px solid #e9c176;
+    /* Default border, will be changed by JS */
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+    display: none;
+    pointer-events: auto;
+}

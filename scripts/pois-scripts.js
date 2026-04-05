@@ -177,4 +177,18 @@ document.addEventListener("DOMContentLoaded", () => {
     window.closePOIModal = () => document.getElementById('poi-modal').classList.replace('flex', 'hidden');
 
     renderGrid(allPOIs);
+
+
+    // --- URL PARAMETER LISTENER ---
+    // Checks if we arrived here from a Scriptorium link
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetId = urlParams.get('id');
+
+    if (targetId) {
+        setTimeout(() => {
+            if (typeof window.openPOIModal === 'function') {
+                window.openPOIModal(targetId);
+            }
+        }, 150); // Slight delay ensures the grid and data are fully loaded first
+    }
 });

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Scriptorium - The Athenaeum Vault</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="scripts/settlement-registry.js"></script>
+    <script src="scripts/country-registry.js"></script>
+    <script src="scripts/almanach.js"></script>
+    <script src="scripts/scriptorium-data.js"></script>
+    <script src="scripts/scriptorium-scripts.js"></script>
+    <script src="scripts/keywords.js"></script>
+</head>
+
+<body class="bg-[#0a0b0a] text-[#e2e3df] font-body overflow-x-hidden archival-bg">
+    <div id="header-placeholder"></div>
+
+    <main class="pt-24 px-4 md:px-8 pb-20 min-h-screen flex flex-col items-center">
+
+        <section
+            class="w-full max-w-6xl mb-12 relative bg-[#121412] rounded-xl border border-[#e9c176]/20 p-8 md:p-12 overflow-hidden group shadow-2xl">
+            <div
+                class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(233,193,118,0.1)_0%,_transparent_70%)] pointer-events-none">
+            </div>
+
+            <div class="relative z-10 max-w-3xl">
+                <p class="font-label text-[#e9c176] text-[10px] uppercase tracking-[0.3em] mb-3">The Grand Narrative</p>
+                <h1 class="text-4xl md:text-5xl font-headline font-bold text-white mb-6">The Story So Far</h1>
+                <p id="story-so-far-preview" class="font-body text-[#a0a0a0] text-lg leading-relaxed mb-8 line-clamp-3">
+                </p>
+                <button id="open-story-btn"
+                    class="flex items-center gap-3 text-[10px] font-label uppercase tracking-widest text-[#b3cdb6] hover:text-white transition-colors group/btn">
+                    <span
+                        class="material-symbols-outlined text-[16px] group-hover/btn:rotate-12 transition-transform">auto_stories</span>
+                    Read Full Chronicle
+                </button>
+            </div>
+        </section>
+
+        <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+            <div class="lg:col-span-8">
+
+                <div
+                    class="flex flex-col md:flex-row gap-4 mb-12 items-center justify-between border-b border-white/5 pb-6">
+                    <div class="relative w-full md:w-72">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/20 text-sm">search</span>
+                        <input type="text" id="scriptorium-search" placeholder="Search keywords, NPCs..."
+                            class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-xs font-label uppercase tracking-widest outline-none focus:border-[#e9c176]/40 transition-all">
+                    </div>
+
+                    <select id="filter-arc"
+                        class="bg-transparent border-none text-[#e9c176] font-label text-[10px] uppercase tracking-[0.2em] outline-none cursor-pointer">
+                        <option value="all">All Campaign Arcs</option>
+                    </select>
+                </div>
+
+                <div id="chronicle-timeline" class="relative pl-4 md:pl-8">
+                    <div class="absolute top-0 bottom-0 left-[23px] md:left-[31px] w-px bg-white/5"></div>
+
+                </div>
+            </div>
+
+            <aside class="lg:col-span-4 space-y-8">
+
+                <div class="bg-[#121412] rounded-lg border border-white/5 p-6 shadow-xl sticky top-28">
+                    <h3
+                        class="font-label text-[10px] uppercase text-[#e9c176] tracking-[0.3em] mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sm">stylus_note</span> Active Leads
+                    </h3>
+
+                    <div id="quest-list" class="space-y-6">
+                    </div>
+
+                    <div class="mt-10 pt-8 border-t border-white/5">
+                        <h3 class="font-label text-[10px] uppercase text-white/40 tracking-[0.3em] mb-4">Notable
+                            Acquisitions</h3>
+                        <div id="notable-loot-list" class="flex flex-wrap gap-2">
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div id="story-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#0a0b0a]/95 backdrop-blur-md p-4 sm:p-8">
+    </div>
+
+    <div id="session-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#0a0b0a]/98 backdrop-blur-xl p-4 md:p-12">
+        <div
+            class="max-w-5xl w-full h-full bg-[#121412] rounded-xl border border-white/10 shadow-2xl flex flex-col overflow-hidden">
+            <div id="session-modal-content" class="flex-grow overflow-y-auto custom-scrollbar p-8 md:p-20">
+            </div>
+            <div class="p-6 border-t border-white/5 flex justify-center">
+                <button onclick="closeSessionModal()"
+                    class="text-[10px] font-label uppercase tracking-widest text-[#a0a0a0] hover:text-white transition-colors">Close
+                    Archive</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+
+    <div id="keyword-tooltip" class="font-body">
+        <div class="flex justify-between items-start mb-3 border-b border-white/5 pb-2">
+            <span id="tooltip-title"
+                class="font-label text-[10px] uppercase tracking-widest text-[#e9c176]">Definition</span>
+            <button onclick="closeTooltip()" class="text-white/20 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+        </div>
+        <p id="tooltip-body" class="text-xs text-[#a0a0a0] leading-relaxed"></p>
+        <p class="mt-4 text-[8px] uppercase tracking-widest text-white/20 italic">Click keyword to search Scriptorium
+        </p>
+    </div>
+</body>
+
+</html>

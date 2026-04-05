@@ -31,6 +31,8 @@ function loadComponent(placeholderId, componentPath) {
         .catch(error => console.error(error));
 }
 
+
+
 // Function to find and highlight the active page in the header nav
 function highlightActiveLink() {
     // 1. Get the current file name (e.g., 'world.html' or 'index.html')
@@ -62,7 +64,7 @@ function highlightActiveLink() {
     });
 }
 
-// NEW: Function to find and highlight the active page in the sidebar nav
+//Function to find and highlight the active page in the sidebar nav
 function highlightActiveSidebarItem() {
     let currentPath = window.location.pathname.split("/").pop();
     if (currentPath === "") currentPath = "index.html";
@@ -113,3 +115,108 @@ document.addEventListener("DOMContentLoaded", () => {
     loadComponent("footer-placeholder", "components/footer.html");
     loadComponent("sidebar-placeholder", "components/sidebar.html");
 });
+
+
+
+// --- RADIAL ORB MOBILE MENU ---
+function createMobileOrbMenu() {
+    const orbContainer = document.createElement('div');
+    orbContainer.id = 'mobile-orb-menu';
+    orbContainer.className = 'fixed bottom-6 left-6 z-20 md:hidden font-body';
+
+    const links = [
+        { name: 'NPCs', url: 'npc.html', icon: 'group', color: 'text-blue-400', border: 'border-blue-400/50', shadow: 'shadow-[0_0_15px_rgba(96,165,250,0.4)]' },
+        { name: 'Story', url: 'scriptorium.html', icon: 'book', color: 'text-secondary', border: 'border-secondary/50', shadow: 'shadow-[0_0_15px_rgba(233,193,118,0.4)]' },
+        { name: 'Atlas', url: 'world.html', icon: 'public', color: 'text-primary', border: 'border-primary/50', shadow: 'shadow-[0_0_15px_rgba(179,205,182,0.4)]' }
+    ];
+
+    // --- MATH: CIRCLE PERIMETER CALCULATION ---
+    const radius = 110; // Distance of the circle's perimeter from the center
+    const startAngle = 90; // 90 degrees is straight up
+    const endAngle = 0; // 0 degrees is straight right
+
+    // The main button is 56px (w-14) and mini-orbs are 40px (w-10).
+    // To center their origins perfectly on each other, we offset by half their difference (8px).
+    const centerOffset = 8;
+
+    let itemsHtml = links.map((link, idx) => {
+        // Calcul de l'espacement
+        const angle = links.length > 1
+            ? startAngle - (idx * ((startAngle - endAngle) / (links.length - 1)))
+            : 45;
+
+        const rad = angle * (Math.PI / 180);
+
+        // Coordonnées X et Y
+        const x = Math.round(Math.cos(rad) * radius) + centerOffset;
+        const y = Math.round(-Math.sin(rad) * radius) - centerOffset;
+
+        return `
+        <a href="${link.url}" class="orb-item absolute bottom-0 left-0 transition-all duration-500 opacity-0 pointer-events-none w-10 h-10" style="transform: translate(0px, 0px) scale(0.5);" data-x="${x}" data-y="${y}">
+            
+            <div class="w-full h-full rounded-full bg-[#121412] border ${link.border} flex items-center justify-center ${link.shadow}">
+                <span class="material-symbols-outlined ${link.color} text-[18px]">${link.icon}</span>
+            </div>
+            
+            <span class="absolute text-[11px] font-label uppercase tracking-widest ${link.color} drop-shadow-md whitespace-nowrap bg-black/80 border border-white/10 px-3 py-1 rounded-full shadow-lg backdrop-blur-sm transition-transform"
+                  style="top: -10px; left: 35px; transform-origin: bottom left; transform: rotate(-15deg);">
+                ${link.name}
+            </span>
+            
+        </a>
+        `;
+    }).join('');
+
+    orbContainer.innerHTML = `
+        <div id="orb-items-container" class="absolute bottom-0 left-0 w-0 h-0">
+            ${itemsHtml}
+        </div>
+        <button id="main-orb-btn" class="relative w-14 h-14 rounded-full bg-[#0a0b0a] border border-secondary shadow-[0_0_20px_rgba(233,193,118,0.3)] flex items-center justify-center z-10 transition-transform duration-300 hover:scale-105 active:scale-95">
+            <span id="main-orb-icon" class="material-symbols-outlined text-secondary text-3xl transition-transform duration-500">explore</span>
+        </button>
+    `;
+
+    document.body.appendChild(orbContainer);
+
+    // Interaction Logic
+    const orbBtn = document.getElementById('main-orb-btn');
+    const orbIcon = document.getElementById('main-orb-icon');
+    const orbItems = document.querySelectorAll('.orb-item');
+    let isOrbOpen = false;
+
+    orbBtn.addEventListener('click', () => {
+        isOrbOpen = !isOrbOpen;
+
+        if (isOrbOpen) {
+            orbIcon.style.transform = 'rotate(135deg)';
+            orbBtn.classList.add('shadow-[0_0_30px_rgba(233,193,118,0.6)]');
+
+            orbItems.forEach((item, index) => {
+                item.style.pointerEvents = 'auto';
+                item.style.opacity = '1';
+
+                const targetX = item.getAttribute('data-x');
+                const targetY = item.getAttribute('data-y');
+
+                setTimeout(() => {
+                    item.style.transform = `translate(${targetX}px, ${targetY}px) scale(1)`;
+                }, index * 50);
+            });
+        } else {
+            orbIcon.style.transform = 'rotate(0deg)';
+            orbBtn.classList.remove('shadow-[0_0_30px_rgba(233,193,118,0.6)]');
+
+            orbItems.forEach(item => {
+                item.style.pointerEvents = 'none';
+                item.style.opacity = '0';
+                item.style.transform = 'translate(0px, 0px) scale(0.5)';
+            });
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', createMobileOrbMenu);
+} else {
+    createMobileOrbMenu();
+}

@@ -5,7 +5,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const settlementFilter = document.getElementById('filter-settlement');
 
     let allPOIs = [];
-    let allNPCs = []; // NEW: Array to hold all registry NPCs
+
+    // NEW: Instantly grab all NPCs from the Almanach!
+    let allNPCs = Object.keys(npcAlmanach).map(id => ({
+        id: id,
+        ...npcAlmanach[id]
+    }));
 
     // 1. EXTRACT DATA FROM REGISTRY
     for (const [settId, settlement] of Object.entries(settlementRegistry)) {
@@ -35,21 +40,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 });
             }
-
-            // NEW: Extract NPCs
-            if (district.npcs) {
-                district.npcs.forEach(npc => {
-                    allNPCs.push({
-                        id: npc.id,
-                        name: npc.name,
-                        role: npc.role,
-                        quote: npc.quote,
-                        image: npc.image,
-                        homePinTitle: npc.homePinTitle,
-                        settlement: settlement.settlementName
-                    });
-                });
-            }
         });
     }
 
@@ -73,8 +63,12 @@ document.addEventListener("DOMContentLoaded", () => {
         grid.innerHTML = pois.map(poi => {
             let matIcon = 'location_on';
             if (poi.icon === 'capital' || poi.icon === 'castle') matIcon = 'fort';
-            if (poi.icon === 'skull') matIcon = 'skull';
+            if (poi.icon === 'fort') matIcon = 'local_police';
+            if (poi.icon === 'danger') matIcon = 'skull';
             if (poi.icon === 'pay-money') matIcon = 'payments';
+            if (poi.icon === 'beer') matIcon = 'sports_bar'; // Adds a mug icon for taverns
+            if (poi.icon === 'bookshelf') matIcon = 'book_2'; // Adds a book icon for libraries
+            if (poi.icon === 'spinning-blades') matIcon = 'swords'; // Adds crossed swords for mercenaries
 
             let pillHTML = '';
             if (poi.isDanger) {

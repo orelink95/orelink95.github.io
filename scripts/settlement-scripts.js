@@ -154,9 +154,15 @@ document.addEventListener("DOMContentLoaded", () => {
             pinLookup[pin.title] = marker;
         });
 
-        // REFRESH NPCS for the new district
-        renderNPCs(dist.npcs || [], pinLookup);
+        // REFRESH NPCS for the new district (Maps IDs to Almanach Data)
+        const npcObjects = (dist.npcs || []).map(id => {
+            if (typeof npcAlmanach !== 'undefined' && npcAlmanach[id]) {
+                return { id: id, ...npcAlmanach[id] };
+            }
+            return null;
+        }).filter(n => n !== null);
 
+        renderNPCs(npcObjects, pinLookup);
         updateLorePanel(dist.lore.title, dist.lore.entry, dist.lore.body);
 
         document.querySelectorAll('.district-btn').forEach((btn, i) => {
@@ -210,41 +216,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         toggleBtn.addEventListener('click', toggleDistrictMenu);
     }
-
-    // --- UPDATED COORDINATE FINDER POPUP ---
-    map.on('click', function (e) {
-        // Keep the existing lore reset logic
-        const currentDist = data.districts[currentDistrictIdx];
-        updateLorePanel(currentDist.lore.title, currentDist.lore.entry, currentDist.lore.body);
-
-        // Calculate the coordinates
-        const y = Math.round(e.latlng.lat);
-        const x = Math.round(e.latlng.lng);
-
-        // Display a themed popup with the coordinates
-        L.popup({ className: 'fantasy-popup' })
-            .setLatLng(e.latlng)
-            .setContent(`
-                <div class="text-center p-1">
-                    <span class="font-label text-[10px] uppercase tracking-[0.2em] text-primary/60 block mb-1">Archive Coordinate</span>
-                    <div class="flex gap-4 justify-center items-center">
-                        <div class="text-center">
-                            <span class="block font-label text-[8px] text-on-surface/40">LAT (Y)</span>
-                            <span class="text-secondary font-bold text-lg">${y}</span>
-                        </div>
-                        <div class="w-px h-8 bg-outline-variant/20"></div>
-                        <div class="text-center">
-                            <span class="block font-label text-[8px] text-on-surface/40">LNG (X)</span>
-                            <span class="text-secondary font-bold text-lg">${x}</span>
-                        </div>
-                    </div>
-                </div>
-            `)
-            .openOn(map);
-
-        // Keeping the console log just in case you need to copy-paste
-        console.log(`Settlement Coords - Y: ${y}, X: ${x}`);
-    });
 
 
     loadDistrict(0);

@@ -15,16 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function findNPC(id) {
-        for (const sett of Object.values(settlementRegistry)) {
-            for (const dist of sett.districts || []) {
-                const found = (dist.npcs || []).find(n => n.id === id);
-                if (found) return { ...found, settlement: sett.settlementName };
-            }
+        if (npcAlmanach[id]) {
+            return { id: id, ...npcAlmanach[id] };
         }
         return null;
     }
-
-    // UPDATED: Now checks Settlements, Districts, Pins AND their Aliases!
+    // checks Settlements, Districts, Pins AND their Aliases
     function findLocation(title) {
         const lowerTitle = title.toLowerCase();
 
@@ -266,10 +262,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (searchInput) {
             searchInput.value = term;
             document.getElementById('session-modal').classList.replace('flex', 'hidden');
+            document.getElementById('story-modal').classList.replace('flex', 'hidden'); // <-- ADD THIS LINE
             window.closeTooltip();
             searchInput.dispatchEvent(new Event('input'));
         }
     };
+
 
     window.showTooltip = (e, term, definition, type) => {
         const tt = document.getElementById('keyword-tooltip');
@@ -299,19 +297,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- MODAL LOGIC ---
     window.openStoryFolio = () => {
         const modal = document.getElementById('story-modal');
-        if (!modal.innerHTML.trim()) {
-            modal.innerHTML = `
-                <div class="max-w-4xl w-full bg-[#121412] rounded-xl border border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
-                    <div class="p-6 md:p-8 border-b border-white/5 flex justify-between items-center shrink-0">
-                        <div><p class="font-label text-[#e9c176] text-[10px] uppercase tracking-[0.3em] mb-1">Archival Summary</p><h2 class="text-2xl font-headline font-bold text-white">The Story So Far</h2></div>
-                        <button onclick="closeStoryModal()" class="text-[#a0a0a0] hover:text-white p-2 rounded-full hover:bg-white/5"><span class="material-symbols-outlined">close</span></button>
-                    </div>
-                    <div class="p-6 md:p-12 overflow-y-auto custom-scrollbar font-body text-base text-[#b0b0b0] leading-relaxed space-y-6">${scriptoriumData.storySoFar.full}</div>
+        // We removed the 'if empty' check so it forces the autoLinkContent to run!
+        modal.innerHTML = `
+            <div class="max-w-4xl w-full bg-[#121412] rounded-xl border border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
+                <div class="p-6 md:p-8 border-b border-white/5 flex justify-between items-center shrink-0">
+                    <div><p class="font-label text-[#e9c176] text-[10px] uppercase tracking-[0.3em] mb-1">Archival Summary</p><h2 class="text-2xl font-headline font-bold text-white">The Story So Far</h2></div>
+                    <button onclick="closeStoryModal()" class="text-[#a0a0a0] hover:text-white p-2 rounded-full hover:bg-white/5"><span class="material-symbols-outlined">close</span></button>
                 </div>
-            `;
-        }
+                <div class="p-6 md:p-12 overflow-y-auto custom-scrollbar font-body text-base text-[#b0b0b0] leading-relaxed space-y-6">
+                    ${autoLinkContent(scriptoriumData.storySoFar.full)}
+                </div>
+            </div>
+        `;
         modal.classList.replace('hidden', 'flex');
     };
+
 
     window.openSessionFolio = (id) => {
         const session = scriptoriumData.sessions.find(s => s.id === id);

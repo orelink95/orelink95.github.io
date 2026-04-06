@@ -189,12 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Magic coordinate finder - comment after use.
-    map.on('click', function (e) {
-        console.log(`Clicked Coordinates: Y: ${Math.round(e.latlng.lat)}, X: ${Math.round(e.latlng.lng)}`);
-        alert(`Y: ${Math.round(e.latlng.lat)}, X: ${Math.round(e.latlng.lng)}`);
-    });
-
 
 
 

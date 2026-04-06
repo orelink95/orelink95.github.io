@@ -11,36 +11,41 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentRelation = 'all'; // State tracker for the tabs
 
     // 1. CONJURE & MERGE DATA
-    for (const [settId, settlement] of Object.entries(settlementRegistry)) {
-        if (!settlement.districts) continue;
+    Object.keys(npcAlmanach).forEach(id => {
+        const lore = npcAlmanach[id];
 
-        settlement.districts.forEach(district => {
-            if (!district.npcs) return;
+        // Quickly cross-reference the map registry to find their current District
+        let foundDistrict = 'Unknown District';
+        for (const [settId, settlement] of Object.entries(settlementRegistry)) {
+            for (const district of settlement.districts || []) {
+                if ((district.npcs || []).includes(id)) {
+                    foundDistrict = district.name;
+                    break;
+                }
+            }
+        }
 
-            district.npcs.forEach(npc => {
-                const lore = typeof npcAlmanach !== 'undefined' && npcAlmanach[npc.id] ? npcAlmanach[npc.id] : {};
+        allNPCs.push({
+            id: id,
+            name: lore.name || 'Unknown',
+            role: lore.role || 'Unknown',
+            quote: lore.quote || 'No recorded dialogue.',
+            image: lore.image || 'images/placeholder_profile.png',
+            homePinTitle: lore.homePinTitle || 'Unknown Location',
+            settlement: lore.settlement || 'Unknown',
+            district: foundDistrict,
 
-                allNPCs.push({
-                    id: npc.id,
-                    name: npc.name,
-                    role: npc.role,
-                    quote: npc.quote || 'No recorded dialogue.',
-                    image: npc.image || 'images/placeholder_profile.png',
-                    homePinTitle: npc.homePinTitle,
-                    settlement: settlement.settlementName,
-                    district: district.name,
-
-                    species: lore.species || 'Unknown',
-                    age: lore.age || 'Unknown',
-                    gender: lore.gender || 'Unknown',
-                    affiliation: lore.affiliation || 'Independent',
-                    relationToParty: lore.relationToParty || 'Unknown',
-                    biography: lore.biography || '<p class="italic text-on-surface/40">No archival biography exists for this individual.</p>',
-                    secrets: lore.secrets || ''
-                });
-            });
+            species: lore.species || 'Unknown',
+            age: lore.age || 'Unknown',
+            gender: lore.gender || 'Unknown',
+            affiliation: lore.affiliation || 'Independent',
+            relationToParty: lore.relationToParty || 'Unknown',
+            biography: lore.biography || '<p class="italic text-on-surface/40">No archival biography exists for this individual.</p>',
+            secrets: lore.secrets || ''
         });
-    }
+    });
+
+
 
     // 2. POPULATE PILL DROPDOWNS
     const populate = (el, key, label) => {

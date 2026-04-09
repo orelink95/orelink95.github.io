@@ -63,7 +63,7 @@ const npcAlmanach = {
         "name": "Merton Lensher",
         "role": "Innkeeper",
         "quote": "Drinking when we are not thirsty, eating when not hungry and fucking all year round is what differentiates us from common beasts",
-        "image": "images/mertonlensher.png",
+        "image": "images/magic_crystal_ball.png",
         "homePinTitle": "Gilded Goldfinch",
         "settlement": "Brightend",
         "species": "Human",

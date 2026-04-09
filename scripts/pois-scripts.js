@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let allPOIs = [];
 
-    // NEW: Instantly grab all NPCs from the Almanach!
+    // Instantly grab all NPCs from the Almanach
     let allNPCs = Object.keys(npcAlmanach).map(id => ({
         id: id,
         ...npcAlmanach[id]
@@ -66,9 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (poi.icon === 'fort') matIcon = 'local_police';
             if (poi.icon === 'danger') matIcon = 'skull';
             if (poi.icon === 'pay-money') matIcon = 'payments';
-            if (poi.icon === 'beer') matIcon = 'sports_bar'; // Adds a mug icon for taverns
-            if (poi.icon === 'bookshelf') matIcon = 'book_2'; // Adds a book icon for libraries
-            if (poi.icon === 'spinning-blades') matIcon = 'swords'; // Adds crossed swords for mercenaries
+            if (poi.icon === 'beer') matIcon = 'sports_bar';
+            if (poi.icon === 'bookshelf') matIcon = 'book_2';
+            if (poi.icon === 'spinning-blades') matIcon = 'swords';
 
             let pillHTML = '';
             if (poi.isDanger) {
@@ -138,8 +138,21 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('modal-body').innerHTML = poi.body || '<p class="italic text-on-surface/40">No deep lore recorded for this landmark yet.</p>';
         document.getElementById('modal-location').textContent = `${poi.settlement}, ${poi.district}`;
 
-        // Cross-reference and inject associated NPCs
-        const linkedNPCs = allNPCs.filter(npc => npc.homePinTitle === poi.title && npc.settlement === poi.settlement);
+        // Cross-reference and inject associated NPCs (with flexible matching because i can't keep track of what i write apparently)
+        const linkedNPCs = allNPCs.filter(npc => {
+            if (!npc.homePinTitle) return false;
+
+            // 1. Flexible Pin Match (e.g. "Alabaster Palace" will match "The Alabaster Palace")
+            const pinMatch = poi.title.toLowerCase().includes(npc.homePinTitle.toLowerCase()) ||
+                npc.homePinTitle.toLowerCase().includes(poi.title.toLowerCase());
+
+            // 2. Flexible Location Match (Matches either the City Name OR the District Name)
+            const locMatch = !npc.settlement ||
+                npc.settlement.toLowerCase() === poi.settlement.toLowerCase() ||
+                npc.settlement.toLowerCase() === poi.district.toLowerCase();
+
+            return pinMatch && locMatch;
+        });
         const npcSection = document.getElementById('modal-npc-section');
         const npcContainer = document.getElementById('modal-npcs');
 

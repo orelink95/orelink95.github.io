@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (currentRelation !== 'all') {
                 const relLower = p.relationToParty.toLowerCase();
                 if (currentRelation === 'ally' && !relLower.includes('ally') && !relLower.includes('friendly')) matchRel = false;
-                if (currentRelation === 'hostile' && !relLower.includes('hostile') && !relLower.includes('enemy') && !relLower.includes('threat')) matchRel = false;
+                if (currentRelation === 'hostile' && !relLower.includes('hostile') && !relLower.includes('enemy') && !relLower.includes('threat') && !relLower.includes('displeased')) matchRel = false;
                 if (currentRelation === 'neutral' && !relLower.includes('neutral') && !relLower.includes('unknown')) matchRel = false;
             }
 

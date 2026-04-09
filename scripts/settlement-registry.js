@@ -11,12 +11,8 @@ const settlementRegistry = {
                 lore: {
                     entry: 'District: Alpha', title: 'The Cloud District', body: `
 
-
-
-
-
-
 <p><span class="float-left text-5xl font-headline text-secondary leading-none pr-2 pt-1">S</span>uspended above the smog, this is where the elite reside. Palaces of white marble and hanging gardens dominate the skyline.</p>
+                
                 
                 
                 
@@ -25,9 +21,11 @@ const settlementRegistry = {
                 
                 ` },
                 npcs: [
-                    'lordwhite', 'hammer_nim', 'maeravoss', 'wardenfoll', 'mertonlensher'],
+                    'lordwhite', 'hammer_nim', 'maeravoss', 'wardenfoll', 'mertonlensher', 'erikthayne'],
                 pins: [
-                    { y: 990, x: 705, icon: 'capital', title: 'The Alabaster Palace', subtitle: 'King\'s Estate', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_palace.png', body: `
+                    {
+                        y: 990, x: 705, icon: 'capital', title: 'The Alabaster Palace', subtitle: 'King\'s Estate', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_palace.png', body: `
+
 
 
 
@@ -41,8 +39,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 342, x: 119, icon: 'pay-money', title: 'Hammer\'s Candy', subtitle: 'Yummy yummy', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/hammer-candy.png', body: `
+                    {
+                        y: 342, x: 119, icon: 'pay-money', title: 'Hammer\'s Candy', subtitle: 'Yummy yummy', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/hammer-candy.png', body: `
+
 
 
 
@@ -56,8 +57,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 916, x: 800, icon: 'fort', title: 'Warden Fort', aliases: ['Alabaster Warden Barracks'], subtitle: 'Headquarters and barracks', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_ward.png', body: `
+                    {
+                        y: 916, x: 800, icon: 'fort', title: 'Warden Fort', aliases: ['Alabaster Warden Barracks'], subtitle: 'Headquarters and barracks', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_ward.png', body: `
+
 
 
 
@@ -71,8 +75,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 718, x: 424, icon: 'bookshelf', title: 'Oddmoss Librarium', subtitle: 'Ancient tomes and dusty books', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 718, x: 424, icon: 'bookshelf', title: 'Oddmoss Librarium', subtitle: 'Ancient tomes and dusty books', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 
 
 
@@ -84,8 +91,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 533, x: 1018, icon: 'spinning-blades', title: 'Brawn & Brawn Agency', subtitle: 'Nimo and Gust\'s mercenary agency', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/bbagency.png', body: `
+                    {
+                        y: 533, x: 1018, icon: 'spinning-blades', title: 'Brawn & Brawn Agency', subtitle: 'Nimo and Gust\'s mercenary agency', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/bbagency.png', body: `
+
 
 
 
@@ -93,11 +103,19 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 730, x: 298, icon: 'beer', title: 'Gilded Goldfinch', subtitle: 'The finest drinks and eats the city has to offer', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/gilded_goldfinch.png', body: `
+                    {
+                        y: 730, x: 298, icon: 'beer', title: 'Gilded Goldfinch', subtitle: 'The finest drinks and eats the city has to offer', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/gilded_goldfinch.png', body: `
+
 
 <p>The finest inn in the city... or the country, according to owner Merton Lensher.</p>
                     
+                    
+                    ` },
+                    {
+                        y: 367, x: 600, icon: 'house', title: 'Thayne Household', subtitle: 'Where the traumatized widower lives.', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/thaynehouse.png', body: `
+<p>We all know what happened here... it's like zombies were done to the cupboard<p>
                     ` }
                 ]
             },
@@ -112,7 +130,9 @@ const settlementRegistry = {
 
 
 
+
 <p><span class="float-left text-5xl font-headline text-error leading-none pr-2 pt-1">B</span>eneath the shadow of the industrial forges lies the Ash District. Crime is rampant, and the air is thick with soot.</p>
+                
                 
                 
                 
@@ -123,7 +143,9 @@ const settlementRegistry = {
                 npcs: [
                     'silas-smug'],
                 pins: [
-                    { y: 500, x: 500, icon: 'danger', title: 'The Fighting Pits', subtitle: 'Danger Zone', isDanger: true, isFeatured: false, isSafe: false, image: 'images/pois/brightend_fightpits.png', body: `
+                    {
+                        y: 500, x: 500, icon: 'danger', title: 'The Fighting Pits', subtitle: 'Danger Zone', isDanger: true, isFeatured: false, isSafe: false, image: 'images/pois/brightend_fightpits.png', body: `
+
 
 
 
@@ -131,6 +153,7 @@ const settlementRegistry = {
 
 
 <p>Underground arenas where disputes are settled in blood and illegal wagers are the city's true currency.</p>
+                    
                     
                     
                     
@@ -151,7 +174,9 @@ const settlementRegistry = {
 
 
 
+
 <p>Fish and ships</p>
+                
                 
                 
                 
@@ -175,7 +200,9 @@ const settlementRegistry = {
 
 
 
+
 <p>The (once) heavily militarized entrance to the capital.</p>
+                
                 
                 
                 
@@ -199,7 +226,9 @@ const settlementRegistry = {
 
 
 
+
 <p>Home to the great markets.</p>
+                
                 
                 
                 
@@ -223,7 +252,9 @@ const settlementRegistry = {
 
 
 
+
 <p>Guildhouses and master crafters.</p>
+                
                 
                 
                 
@@ -255,7 +286,9 @@ const settlementRegistry = {
 
 
 
+
 <p>Cute lil town</p>
+                
                 
                 
                 
@@ -266,7 +299,9 @@ const settlementRegistry = {
                 npcs: [
                 ],
                 pins: [
-                    { y: 0, x: 0, icon: 'beer', title: 'Black Rose Inn', subtitle: 'Fresh Water, Warm Beds, Decent Wine... sometimes', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 0, x: 0, icon: 'beer', title: 'Black Rose Inn', subtitle: 'Fresh Water, Warm Beds, Decent Wine... sometimes', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 
 
 
@@ -274,6 +309,7 @@ const settlementRegistry = {
 
 
 <p>The coolest and edgiest inn in town.</p>
+                    
                     
                     
                     

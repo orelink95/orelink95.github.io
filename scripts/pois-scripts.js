@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (poi.icon === 'beer') matIcon = 'sports_bar';
             if (poi.icon === 'bookshelf') matIcon = 'book_2';
             if (poi.icon === 'spinning-blades') matIcon = 'swords';
+            if (poi.icon === 'house') matIcon = 'house';
 
             let pillHTML = '';
             if (poi.isDanger) {

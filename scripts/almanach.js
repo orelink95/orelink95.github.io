@@ -79,7 +79,7 @@ const npcAlmanach = {
         "role": "Retired",
         "quote": "One day at a time",
         "image": "images/erikthayne.png",
-        "homePinTitle": "Thayne Household ",
+        "homePinTitle": "Thayne Household",
         "settlement": "Brightend",
         "species": "Human",
         "age": "63",

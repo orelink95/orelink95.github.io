@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById('npc-grid');
 
-    // NEW: UI Elements
+    // UI Elements
     const searchInput = document.getElementById('search-input');
     const relationTabs = document.querySelectorAll('.rel-tab');
     const settlementFilter = document.getElementById('filter-settlement');

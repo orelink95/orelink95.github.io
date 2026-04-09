@@ -71,13 +71,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (relLower.includes('ally') || relLower.includes('friendly')) {
                 relColor = 'border-primary/30 text-primary';
-                dotColor = 'bg-primary shadow-[0_0_5px_rgba(179,205,182,0.8)]';
-            } else if (relLower.includes('hostile') || relLower.includes('enemy') || relLower.includes('threat')) {
+                dotColor = 'bg-primary shadow-[0_0_5px_rgba(151, 211, 158, 0.85) ]';
+            } else if (relLower.includes('hostile') || relLower.includes('enemy') || relLower.includes('threat') || relLower.includes('displeased')) {
                 relColor = 'border-error/30 text-error';
                 dotColor = 'bg-error shadow-[0_0_5px_rgba(255,82,82,0.8)]';
             } else if (relLower.includes('neutral')) {
                 relColor = 'border-blue-400/30 text-blue-400';
                 dotColor = 'bg-blue-400 shadow-[0_0_5px_rgba(96,165,250,0.8)]';
+            } else if (relLower.includes('killed')) {
+                relColor = 'border-red-950/30 text-white-500';
+                dotColor = 'bg-black-700 shadow-[0_0_5px_rgba(201, 220, 243, 0.91)]';
             }
 
             return `

@@ -220,3 +220,24 @@ if (document.readyState === 'loading') {
 } else {
     createMobileOrbMenu();
 }
+
+// Generate mystical ambient dust particles
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById('dust-container');
+    const particleCount = 20;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'dust';
+
+        // Randomize position, size, and animation delay
+        const size = Math.random() * 4 + 1;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${Math.random() * 100}vw`;
+        particle.style.animationDelay = `${Math.random() * 15}s`;
+        particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
+
+        container.appendChild(particle);
+    }
+});

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Continent Atlas - Admin Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Newsreader:ital,wght@0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #0a0b0a;
+            color: #e2e3df;
+        }
+
+        .font-headline {
+            font-family: 'Newsreader', serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #121412;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2d2a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e9c17644;
+        }
+    </style>
+</head>
+
+<body class="p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-10 flex justify-between items-end border-b border-white/5 pb-6">
+            <div>
+                <h1 class="text-4xl font-headline font-bold text-[#e9c176] tracking-tight">Continent Registry Vault</h1>
+                <p class="text-xs uppercase tracking-[0.3em] text-gray-500 mt-2">Maltona Regional Management</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="link-file-btn" onclick="linkRegistryFile()"
+                    class="px-5 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-xs uppercase tracking-widest text-[#e9c176]">
+                    Link to continent-registry.js
+                </button>
+                <button id="save-file-btn" onclick="saveToFile()" disabled
+                    class="px-5 py-2 bg-[#e9c176] text-black font-bold rounded opacity-50 cursor-not-allowed transition-all text-xs uppercase tracking-widest">
+                    Save to File
+                </button>
+                <button onclick="openImportModal()"
+                    class="px-5 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-xs uppercase tracking-widest">Import
+                    Array</button>
+
+                <div class="relative inline-block text-left mr-2">
+                    <button type="button" onclick="document.getElementById('vault-dropdown').classList.toggle('hidden')"
+                        class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-[9px] uppercase tracking-[0.2em] text-[#e9c176] group">
+                        <span
+                            class="material-symbols-outlined text-[16px] group-hover:rotate-12 transition-transform">database</span>
+                        Vault Switcher
+                        <span class="material-symbols-outlined text-[14px] opacity-50">expand_more</span>
+                    </button>
+
+                    <div id="vault-dropdown"
+                        class="hidden absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-[#121412] border border-white/10 shadow-2xl focus:outline-none overflow-hidden">
+                        <div class="flex flex-col">
+                            <a href="world-admin-tool.html"
+                                class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5">
+                                <span class="material-symbols-outlined text-[16px]">public</span> World Vault
+                            </a>
+                            <a href="continent-admin-tool.html"
+                                class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5">
+                                <span class="material-symbols-outlined text-[16px]">map</span> Continent Vault
+                            </a>
+                            <a href="country-admin-tool.html"
+                                class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5">
+                                <span class="material-symbols-outlined text-[16px]">flag</span> Country Vault
+                            </a>
+                            <a href="city-admin-tool.html"
+                                class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all">
+                                <span class="material-symbols-outlined text-[16px]">location_city</span> City Vault
+                            </a>
+                            <a href="almanach-admin-tool.html"
+                                class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-primary bg-primary/10 hover:bg-primary/20 transition-all"><span
+                                    class="material-symbols-outlined text-[16px]">menu_book</span> Almanach Vault</a>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    window.onclick = function (event) {
+                        if (!event.target.closest('.relative')) {
+                            const dropdown = document.getElementById('vault-dropdown');
+                            if (dropdown && !dropdown.classList.contains('hidden')) {
+                                dropdown.classList.add('hidden');
+                            }
+                        }
+                    }
+                </script>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-12 gap-8">
+            <div class="col-span-3 flex flex-col gap-4">
+                <h2 class="text-xs uppercase tracking-widest text-gray-500 font-bold">Current Registry</h2>
+                <div id="marker-list"
+                    class="flex-1 bg-[#121412] border border-white/5 rounded-lg overflow-y-auto max-h-[700px] p-2 space-y-2">
+                    <p class="text-gray-600 text-xs p-4 italic text-center">No markers loaded.</p>
+                </div>
+                <button onclick="addNewMarker()"
+                    class="w-full py-3 border border-dashed border-white/20 rounded-lg text-gray-500 hover:border-[#e9c176] hover:text-[#e9c176] transition-all text-xs uppercase tracking-widest">+
+                    Add New Entry</button>
+            </div>
+
+            <div class="col-span-5 bg-[#121412] border border-white/5 p-8 rounded-lg shadow-2xl relative">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xs uppercase tracking-widest text-[#e9c176] font-bold">Marker Editor</h2>
+                    <div id="pin-preview-container"
+                        class="hidden flex items-center gap-3 bg-black/40 px-4 py-2 rounded-full border border-white/5">
+                        <span class="text-[9px] uppercase tracking-widest text-gray-500">Preview:</span>
+                        <div id="visual-pin"
+                            class="w-10 h-10 rounded-full border-2 border-[#e9c176] flex items-center justify-center bg-[#1a1c1a] relative">
+                            <div id="glow-effect" class="absolute inset-0 bg-[#e9c176]/20 blur-md rounded-full"></div>
+                            <img id="svg-preview-img" src="" class="w-6 h-6 relative z-10 hidden"
+                                style="filter: brightness(0) invert(1);">
+                        </div>
+                    </div>
+                </div>
+
+                <form id="editor-form" class="space-y-5 opacity-30 pointer-events-none transition-opacity">
+                    <input type="hidden" id="edit-index">
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">Unique ID
+                                (Filename)</label>
+                            <input type="text" id="field-id"
+                                class="w-full bg-black/40 border border-white/10 p-2.5 rounded text-sm outline-none focus:border-[#e9c176]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">Upload SVG
+                                Icon</label>
+                            <div class="flex gap-2">
+                                <input type="file" id="field-svg-upload" accept=".svg" class="hidden">
+                                <label for="field-svg-upload"
+                                    class="flex-1 bg-black/60 border border-white/10 p-2 rounded text-[10px] text-center cursor-pointer hover:bg-white/5 transition-colors">Choose
+                                    SVG</label>
+                                <button type="button" id="dl-svg-btn"
+                                    class="hidden bg-[#e9c176]/10 text-[#e9c176] border border-[#e9c176]/20 px-3 rounded hover:bg-[#e9c176]/20"
+                                    title="Download for project folder">
+                                    <span class="material-symbols-outlined text-sm">download</span>
+                                </button>
+                            </div>
+                            <input type="hidden" id="field-icon">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">Y
+                                Coord</label>
+                            <input type="number" id="field-y"
+                                class="w-full bg-black/40 border border-white/10 p-2.5 rounded text-sm outline-none focus:border-[#e9c176]">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">X
+                                Coord</label>
+                            <input type="number" id="field-x"
+                                class="w-full bg-black/40 border border-white/10 p-2.5 rounded text-sm outline-none focus:border-[#e9c176]">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">Layer</label>
+                            <select id="field-layer"
+                                class="w-full bg-black/40 border border-white/10 p-2.5 rounded text-sm outline-none focus:border-[#e9c176] appearance-none">
+                                <option value="locations">Locations</option>
+                                <option value="events">Events</option>
+                                <option value="hazards">Hazards</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end pb-2 gap-2">
+                            <input type="checkbox" id="field-isDanger" class="w-5 h-5 accent-[#e9c176]">
+                            <label class="text-[10px] uppercase tracking-widest text-gray-500">Danger Zone</label>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">Title</label>
+                            <input type="text" id="field-title"
+                                class="w-full bg-black/40 border border-white/10 p-2.5 rounded text-sm outline-none focus:border-[#e9c176]">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-[10px] uppercase tracking-widest mb-1 text-gray-500">Subtitle</label>
+                            <input type="text" id="field-subtitle"
+                                class="w-full bg-black/40 border border-white/10 p-2.5 rounded text-sm outline-none focus:border-[#e9c176]">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-span-4 flex flex-col gap-4">
+                <h2 class="text-xs uppercase tracking-widest text-gray-500 font-bold">JavaScript Output</h2>
+                <div class="flex-1 bg-black border border-white/10 rounded-lg p-5 relative group overflow-hidden">
+                    <pre id="code-output"
+                        class="text-green-500/80 text-[11px] h-full overflow-auto font-mono whitespace-pre-wrap">// Registry will appear here...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="import-modal"
+        class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-10">
+        <div class="max-w-2xl w-full bg-[#121412] border border-white/10 p-8 rounded-xl">
+            <h3 class="text-2xl font-headline text-[#e9c176] mb-2">Import Continent Registry</h3>
+            <textarea id="import-area" rows="10"
+                class="w-full bg-black border border-white/10 p-4 rounded font-mono text-xs mb-6 outline-none focus:border-[#e9c176]"
+                placeholder="[ { id: 'spires', ... }, ... ]"></textarea>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeImportModal()"
+                    class="px-6 py-2 text-xs uppercase tracking-widest text-gray-500">Cancel</button>
+                <button onclick="processImport()"
+                    class="px-6 py-2 text-xs uppercase tracking-widest bg-[#e9c176] text-black font-bold rounded">Process
+                    Import</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent form submission on enter
+        document.getElementById('editor-form').onsubmit = (e) => e.preventDefault();
+
+        let markers = [];
+        let activeIndex = null;
+        let currentSvgData = null;
+        let fileHandle = null;
+
+        // Auto-Load Data using a UNIQUE key for the continent map
+        const savedData = localStorage.getItem('continent_registry_backup');
+        if (savedData) {
+            try {
+                markers = JSON.parse(savedData);
+                setTimeout(() => {
+                    renderList();
+                    if (markers.length > 0) editMarker(0);
+                }, 100);
+            } catch (e) {
+                console.error("Failed to load auto-save:", e);
+            }
+        }
+
+        const listContainer = document.getElementById('marker-list');
+        const form = document.getElementById('editor-form');
+        const output = document.getElementById('code-output');
+        const svgInput = document.getElementById('field-svg-upload');
+        const svgPreview = document.getElementById('svg-preview-img');
+        const dlBtn = document.getElementById('dl-svg-btn');
+
+        function addNewMarker() {
+            const newMarker = {
+                id: 'new-location',
+                y: 0, x: 0,
+                icon: 'castle',
+                layer: 'locations',
+                isDanger: false,
+                title: 'New Location',
+                subtitle: 'Region Name'
+            };
+            markers.push(newMarker);
+            renderList();
+            editMarker(markers.length - 1);
+        }
+
+        function renderList() {
+            listContainer.innerHTML = '';
+            markers.forEach((m, index) => {
+                const btn = document.createElement('div');
+                btn.className = `p-3 rounded cursor-pointer border transition-all ${activeIndex === index ? 'bg-[#e9c17622] border-[#e9c17655]' : 'bg-black/20 border-white/5 hover:border-white/20'}`;
+                btn.onclick = () => editMarker(index);
+                btn.innerHTML = `<div class="flex justify-between items-center"><span class="text-xs font-bold ${activeIndex === index ? 'text-[#e9c176]' : 'text-gray-400'}">${m.title}</span><span class="text-[9px] uppercase tracking-tighter text-gray-600">${m.id}</span></div>`;
+                listContainer.appendChild(btn);
+            });
+            updateOutput();
+        }
+
+        function editMarker(index) {
+            activeIndex = index;
+            const m = markers[index];
+            form.classList.remove('opacity-30', 'pointer-events-none');
+            document.getElementById('pin-preview-container').classList.remove('hidden');
+
+            document.getElementById('field-id').value = m.id;
+            document.getElementById('field-icon').value = m.icon;
+            document.getElementById('field-y').value = m.y;
+            document.getElementById('field-x').value = m.x;
+            document.getElementById('field-layer').value = m.layer;
+            document.getElementById('field-isDanger').checked = m.isDanger;
+            document.getElementById('field-title').value = m.title;
+            document.getElementById('field-subtitle').value = m.subtitle;
+
+            updateVisuals(m.isDanger, m.icon);
+            renderList();
+        }
+
+        svgInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                currentSvgData = event.target.result;
+                svgPreview.src = currentSvgData;
+                svgPreview.classList.remove('hidden');
+                dlBtn.classList.remove('hidden');
+                const iconName = document.getElementById('field-id').value || 'icon';
+                document.getElementById('field-icon').value = iconName;
+                syncState();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        dlBtn.onclick = function () {
+            if (!currentSvgData) return;
+            const link = document.createElement('a');
+            link.href = currentSvgData;
+            link.download = `${document.getElementById('field-id').value}.svg`;
+            link.click();
+        };
+
+        function updateVisuals(isDanger, iconName) {
+            const glow = document.getElementById('glow-effect');
+            const pin = document.getElementById('visual-pin');
+            if (isDanger) {
+                glow.className = "absolute inset-0 bg-red-500/30 blur-md rounded-full";
+                pin.style.borderColor = "#ffb4ab";
+            } else {
+                glow.className = "absolute inset-0 bg-[#e9c176]/20 blur-md rounded-full";
+                pin.style.borderColor = "#e9c176";
+            }
+            if (iconName && !currentSvgData) {
+                svgPreview.src = `./images/atlas_icons/${iconName}.svg`;
+                svgPreview.classList.remove('hidden');
+            }
+        }
+
+        form.addEventListener('input', syncState);
+
+        function syncState() {
+            if (activeIndex === null) return;
+            const isDanger = document.getElementById('field-isDanger').checked;
+            const icon = document.getElementById('field-icon').value;
+
+            markers[activeIndex] = {
+                id: document.getElementById('field-id').value,
+                y: parseInt(document.getElementById('field-y').value) || 0,
+                x: parseInt(document.getElementById('field-x').value) || 0,
+                icon: icon,
+                layer: document.getElementById('field-layer').value,
+                isDanger: isDanger,
+                title: document.getElementById('field-title').value,
+                subtitle: document.getElementById('field-subtitle').value
+            };
+
+            updateVisuals(isDanger, icon);
+            updateOutput();
+            // UNIQUE SAVE KEY for Continent Map
+            localStorage.setItem('continent_registry_backup', JSON.stringify(markers));
+        }
+
+        function updateOutput() {
+            if (markers.length === 0) {
+                output.textContent = "// Registry is empty...";
+                return;
+            }
+            const formatted = markers.map(m => `{
+    id: '${m.id}',
+    y: ${m.y}, x: ${m.x},
+    icon: '${m.icon}',
+    layer: '${m.layer}',
+    isDanger: ${m.isDanger},
+    title: '${m.title}',
+    subtitle: '${m.subtitle}'
+}`).join(',\n');
+            // OUTPUTS AS continentMarkersData
+            output.textContent = `const continentMarkersData = [\n${formatted}\n];`;
+        }
+
+        function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
+        function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); }
+
+        function processImport() {
+            try {
+                let rawData = document.getElementById('import-area').value.trim();
+                rawData = rawData.replace(/^\s*(const|let|var)\s+\w+\s*=\s*/, '');
+                rawData = rawData.replace(/;\s*$/, '');
+                const parsed = new Function("return " + rawData)();
+                if (Array.isArray(parsed)) {
+                    markers = parsed;
+                    renderList();
+                    closeImportModal();
+                    if (markers.length > 0) editMarker(0);
+                } else {
+                    alert("Import failed: Not a valid array format.");
+                }
+            } catch (e) {
+                alert("Import failed. Check your syntax.");
+            }
+        }
+
+        // File Save Logic
+        async function linkRegistryFile() {
+            try {
+                [fileHandle] = await window.showOpenFilePicker({
+                    types: [{ description: 'JavaScript Registry', accept: { 'text/javascript': ['.js'] } }],
+                    multiple: false
+                });
+                if (fileHandle) {
+                    document.getElementById('save-file-btn').disabled = false;
+                    document.getElementById('save-file-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                    document.getElementById('link-file-btn').textContent = "File Linked ✓";
+                    document.getElementById('link-file-btn').classList.add('text-green-500');
+
+                    const file = await fileHandle.getFile();
+                    const contents = await file.text();
+                    document.getElementById('import-area').value = contents;
+                    processImport();
+                }
+            } catch (err) { console.error("Link cancelled or failed:", err); }
+        }
+
+        async function saveToFile() {
+            if (!fileHandle) return;
+            try {
+                const writable = await fileHandle.createWritable();
+                await writable.write(output.textContent);
+                await writable.close();
+                const saveBtn = document.getElementById('save-file-btn');
+                const originalText = saveBtn.textContent;
+                saveBtn.textContent = "Saved!";
+                saveBtn.classList.add('bg-green-500');
+                setTimeout(() => {
+                    saveBtn.textContent = originalText;
+                    saveBtn.classList.remove('bg-green-500');
+                }, 2000);
+            } catch (err) {
+                alert("Permission denied. Could not save to file.");
+            }
+        }
+    </script>
+</body>
+
+</html>

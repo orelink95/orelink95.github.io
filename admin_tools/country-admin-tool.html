@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Country Atlas - Admin Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Newsreader:ital,wght@0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #0a0b0a;
+            color: #e2e3df;
+        }
+
+        .font-headline {
+            font-family: 'Newsreader', serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #121412;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2d2a;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #e9c17644;
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            width: 100%;
+            outline: none;
+        }
+
+        .input-dark:focus {
+            border-color: #e9c176;
+        }
+
+        .label-dark {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+
+<body class="p-8 h-screen flex flex-col overflow-hidden">
+
+    <header class="mb-6 flex justify-between items-end border-b border-white/5 pb-4 shrink-0">
+        <div>
+            <h1 class="text-3xl font-headline font-bold text-[#e9c176] tracking-tight">Country Registry Vault</h1>
+            <p class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mt-1">Regional Map & Lore Manager</p>
+        </div>
+        <div class="flex gap-3">
+            <button id="link-file-btn" onclick="linkRegistryFile()"
+                class="px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-[10px] uppercase tracking-widest text-[#e9c176]">
+                Link to country-registry.js
+            </button>
+            <button id="save-file-btn" onclick="saveToFile()" disabled
+                class="px-4 py-2 bg-[#e9c176] text-black font-bold rounded opacity-50 cursor-not-allowed transition-all text-[10px] uppercase tracking-widest">
+                Save to File
+            </button>
+            <button onclick="openImportModal()"
+                class="px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-[10px] uppercase tracking-widest">Import
+                Object</button>
+            <div class="relative inline-block text-left mr-2">
+                <button type="button" onclick="document.getElementById('vault-dropdown').classList.toggle('hidden')"
+                    class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-[9px] uppercase tracking-[0.2em] text-[#e9c176] group">
+                    <span
+                        class="material-symbols-outlined text-[16px] group-hover:rotate-12 transition-transform">database</span>
+                    Vault Switcher
+                    <span class="material-symbols-outlined text-[14px] opacity-50">expand_more</span>
+                </button>
+
+                <div id="vault-dropdown"
+                    class="hidden absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-[#121412] border border-white/10 shadow-2xl focus:outline-none overflow-hidden">
+                    <div class="flex flex-col">
+                        <a href="world-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5">
+                            <span class="material-symbols-outlined text-[16px]">public</span> World Vault
+                        </a>
+                        <a href="continent-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5">
+                            <span class="material-symbols-outlined text-[16px]">map</span> Continent Vault
+                        </a>
+                        <a href="country-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5">
+                            <span class="material-symbols-outlined text-[16px]">flag</span> Country Vault
+                        </a>
+                        <a href="city-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all">
+                            <span class="material-symbols-outlined text-[16px]">location_city</span> City Vault
+                        </a>
+                        <a href="almanach-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-primary bg-primary/10 hover:bg-primary/20 transition-all"><span
+                                class="material-symbols-outlined text-[16px]">menu_book</span> Almanach Vault</a>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                window.onclick = function (event) {
+                    if (!event.target.closest('.relative')) {
+                        const dropdown = document.getElementById('vault-dropdown');
+                        if (dropdown && !dropdown.classList.contains('hidden')) {
+                            dropdown.classList.add('hidden');
+                        }
+                    }
+                }
+            </script>
+        </div>
+    </header>
+
+    <div class="flex-1 grid grid-cols-12 gap-6 overflow-hidden pb-4">
+
+        <div class="col-span-2 flex flex-col gap-3 bg-[#121412] border border-white/5 rounded-lg p-4 shadow-xl">
+            <h2 class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold border-b border-white/5 pb-2">
+                Regions</h2>
+            <div id="region-list" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
+            <button onclick="addNewRegion()"
+                class="w-full py-2 border border-dashed border-white/20 rounded text-gray-500 hover:border-[#e9c176] hover:text-[#e9c176] transition-all text-[10px] uppercase tracking-widest">+
+                Add Region</button>
+        </div>
+
+        <div class="col-span-5 flex flex-col gap-4 bg-[#121412] border border-white/5 rounded-lg p-6 shadow-xl overflow-y-auto"
+            id="region-editor" style="opacity: 0.3; pointer-events: none;">
+            <h2 class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold border-b border-white/5 pb-2">
+                Region Settings</h2>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="label-dark">URL ID (e.g. eperina)</label><input type="text" id="reg-id"
+                        class="input-dark"></div>
+                <div><label class="label-dark">Continent Name</label><input type="text" id="reg-continent"
+                        class="input-dark"></div>
+
+                <div><label class="label-dark">Continent URL (e.g. continent.html)</label><input type="text"
+                        id="reg-continent-id" class="input-dark"></div>
+
+                <div><label class="label-dark">Region Name</label><input type="text" id="reg-name" class="input-dark">
+                </div>
+                <div class="col-span-2"><label class="label-dark">Description</label><input type="text" id="reg-desc"
+                        class="input-dark">
+                </div>
+                <div class="col-span-2"><label class="label-dark">Map Image Path</label><input type="text" id="reg-img"
+                        class="input-dark"></div>
+                <div><label class="label-dark">Map Width (px)</label><input type="number" id="reg-w" class="input-dark">
+                </div>
+                <div><label class="label-dark">Map Height (px)</label><input type="number" id="reg-h"
+                        class="input-dark"></div>
+            </div>
+
+            <h2
+                class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold border-b border-white/5 pb-2 mt-4">
+                Default Region Lore</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="label-dark">Codex Entry</label><input type="text" id="reg-lore-entry"
+                        class="input-dark"></div>
+                <div><label class="label-dark">Lore Title</label><input type="text" id="reg-lore-title"
+                        class="input-dark"></div>
+                <div class="col-span-2">
+                    <label class="label-dark">Lore Body (HTML allowed)</label>
+                    <textarea id="reg-lore-body" rows="6" class="input-dark font-mono text-xs"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-5 flex flex-col gap-4 bg-[#121412] border border-white/5 rounded-lg p-6 shadow-xl overflow-y-auto"
+            id="pin-editor-container" style="opacity: 0.3; pointer-events: none;">
+
+            <div class="flex justify-between items-center border-b border-white/5 pb-2">
+                <h2 class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold">Region Pins</h2>
+                <button onclick="addNewPin()"
+                    class="text-[#e9c176] hover:text-white text-[10px] uppercase tracking-widest bg-[#e9c176]/10 px-2 py-1 rounded">+
+                    Add Pin</button>
+            </div>
+
+            <div id="pin-list" class="flex flex-wrap gap-2 mb-2"></div>
+
+            <div id="pin-form" class="hidden space-y-4 border-t border-white/5 pt-4 mt-2">
+                <div class="grid grid-cols-3 gap-4">
+                    <div><label class="label-dark">Y Coord</label><input type="number" id="pin-y" class="input-dark">
+                    </div>
+                    <div><label class="label-dark">X Coord</label><input type="number" id="pin-x" class="input-dark">
+                    </div>
+                    <div><label class="label-dark">Icon SVG</label><input type="text" id="pin-icon" class="input-dark">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="label-dark">Map Title</label><input type="text" id="pin-title"
+                            class="input-dark"></div>
+                    <div><label class="label-dark">Map Subtitle</label><input type="text" id="pin-subtitle"
+                            class="input-dark"></div>
+
+                    <div class="col-span-2">
+                        <label class="label-dark">Settlement Link ID (e.g. oakhaven) <span
+                                class="lowercase normal-case text-gray-500">- Leave blank if no settlement page
+                                exists</span></label>
+                        <input type="text" id="pin-link" class="input-dark border-secondary/50">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 mb-2">
+                    <input type="checkbox" id="pin-danger" class="w-4 h-4 accent-red-500">
+                    <label class="label-dark mb-0 text-red-400">Mark as Danger Zone</label>
+                </div>
+                <div class="grid grid-cols-1 gap-4 border-t border-white/5 pt-4">
+                    <h3 class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold">Pin Lore</h3>
+                    <div><label class="label-dark">Codex Entry</label><input type="text" id="pin-lore-entry"
+                            class="input-dark"></div>
+                    <div><label class="label-dark">Lore Body (HTML allowed)</label><textarea id="pin-lore-body" rows="5"
+                            class="input-dark font-mono text-xs"></textarea></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="h-40 shrink-0 bg-black border border-white/10 rounded-lg p-4 relative group overflow-hidden mt-2">
+        <h2
+            class="absolute top-2 left-4 text-[10px] uppercase tracking-widest text-gray-500 font-bold bg-black px-2 z-10">
+            Output / Auto-Save</h2>
+        <pre id="code-output"
+            class="text-green-500/80 text-[10px] h-full overflow-auto font-mono whitespace-pre-wrap pt-4"></pre>
+    </div>
+
+    <div id="import-modal"
+        class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-10">
+        <div class="max-w-3xl w-full bg-[#121412] border border-white/10 p-8 rounded-xl">
+            <h3 class="text-2xl font-headline text-[#e9c176] mb-2">Import Registry Object</h3>
+            <textarea id="import-area" rows="12"
+                class="w-full bg-black border border-white/10 p-4 rounded font-mono text-[10px] mb-6 outline-none focus:border-[#e9c176]"
+                placeholder="const countryRegistry = { ... };"></textarea>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeImportModal()"
+                    class="px-6 py-2 text-xs uppercase tracking-widest text-gray-500">Cancel</button>
+                <button onclick="processImport()"
+                    class="px-6 py-2 text-xs uppercase tracking-widest bg-[#e9c176] text-black font-bold rounded">Process
+                    Import</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // We store the registry internally as an array of objects to make UI sorting/editing easier
+        let regions = [];
+        let activeRegionIdx = null;
+        let activePinIdx = null;
+        let fileHandle = null;
+
+        const regListEl = document.getElementById('region-list');
+        const pinListEl = document.getElementById('pin-list');
+        const outEl = document.getElementById('code-output');
+
+        // Auto-Load
+        const savedData = localStorage.getItem('country_vault_backup');
+        if (savedData) {
+            try {
+                regions = JSON.parse(savedData);
+                setTimeout(() => { renderRegions(); if (regions.length > 0) editRegion(0); }, 100);
+            } catch (e) { console.error("Auto-load failed", e); }
+        }
+
+        function escapeS(str) { return (str || '').replace(/'/g, "\\'"); }
+        function escapeB(str) { return (str || '').replace(/`/g, "\\`"); }
+
+        function addNewRegion() {
+            regions.push({
+                id: `new_region_${regions.length + 1}`,
+                continentName: 'Continent',
+                continentId: 'continent.html',
+                regionName: 'New Region',
+                description: 'Region description...',
+                mapImage: './images/placeholder.png',
+                mapWidth: 1920, mapHeight: 1080,
+                defaultLore: { entry: 'Codex 01', title: 'Region Lore', body: '<p>Text...</p>' },
+                pins: []
+            });
+            renderRegions();
+            editRegion(regions.length - 1);
+        }
+
+        function addNewPin() {
+            if (activeRegionIdx === null) return;
+            regions[activeRegionIdx].pins.push({
+                y: 0, x: 0, icon: 'castle', title: 'New Pin', subtitle: 'Subtitle', isDanger: false,
+                linkId: '', // NEW
+                entry: 'Codex Entry', body: '<p>Pin lore here.</p>'
+            });
+            renderPins();
+            editPin(regions[activeRegionIdx].pins.length - 1);
+        }
+
+        function renderRegions() {
+            regListEl.innerHTML = '';
+            regions.forEach((r, idx) => {
+                const btn = document.createElement('div');
+                btn.className = `p-3 rounded cursor-pointer border transition-all ${activeRegionIdx === idx ? 'bg-[#e9c17622] border-[#e9c17655]' : 'bg-black/20 border-white/5 hover:border-white/20'}`;
+                btn.onclick = () => editRegion(idx);
+                btn.innerHTML = `<div class="text-xs font-bold ${activeRegionIdx === idx ? 'text-[#e9c176]' : 'text-gray-400'}">${r.regionName}</div><div class="text-[9px] uppercase tracking-tighter text-gray-600">${r.id}</div>`;
+                regListEl.appendChild(btn);
+            });
+            generateCode();
+        }
+
+        function renderPins() {
+            pinListEl.innerHTML = '';
+            if (activeRegionIdx === null) return;
+            const pins = regions[activeRegionIdx].pins;
+            pins.forEach((p, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-1.5 rounded text-[10px] uppercase tracking-widest border transition-all ${activePinIdx === idx ? 'bg-secondary/20 border-secondary text-secondary' : 'bg-black/40 border-white/10 text-gray-400 hover:border-white/30'}`;
+                btn.onclick = () => editPin(idx);
+                btn.textContent = p.title || `Pin ${idx + 1}`;
+                pinListEl.appendChild(btn);
+            });
+            generateCode();
+        }
+
+        function editRegion(idx) {
+            activeRegionIdx = idx;
+            activePinIdx = null; // reset pin view
+            const r = regions[idx];
+
+            document.getElementById('region-editor').style.opacity = '1';
+            document.getElementById('region-editor').style.pointerEvents = 'auto';
+            document.getElementById('pin-editor-container').style.opacity = '1';
+            document.getElementById('pin-editor-container').style.pointerEvents = 'auto';
+            document.getElementById('pin-form').classList.add('hidden');
+
+            document.getElementById('reg-id').value = r.id;
+            document.getElementById('reg-continent').value = r.continentName;
+            document.getElementById('reg-continent-id').value = r.continentId || 'continent.html';
+            document.getElementById('reg-name').value = r.regionName;
+            document.getElementById('reg-desc').value = r.description;
+            document.getElementById('reg-img').value = r.mapImage;
+            document.getElementById('reg-w').value = r.mapWidth;
+            document.getElementById('reg-h').value = r.mapHeight;
+
+            document.getElementById('reg-lore-entry').value = r.defaultLore.entry;
+            document.getElementById('reg-lore-title').value = r.defaultLore.title;
+            document.getElementById('reg-lore-body').value = r.defaultLore.body;
+
+            renderRegions();
+            renderPins();
+        }
+
+        function editPin(idx) {
+            activePinIdx = idx;
+            const p = regions[activeRegionIdx].pins[idx];
+
+            document.getElementById('pin-form').classList.remove('hidden');
+            document.getElementById('pin-y').value = p.y;
+            document.getElementById('pin-x').value = p.x;
+            document.getElementById('pin-icon').value = p.icon;
+            document.getElementById('pin-title').value = p.title;
+            document.getElementById('pin-subtitle').value = p.subtitle;
+            document.getElementById('pin-link').value = p.linkId || ''; // NEW
+            document.getElementById('pin-danger').checked = p.isDanger;
+            document.getElementById('pin-lore-entry').value = p.entry;
+            document.getElementById('pin-lore-body').value = p.body;
+
+            renderPins();
+        }
+
+        // Event Listeners for Syncing
+        document.getElementById('region-editor').addEventListener('input', syncRegion);
+        document.getElementById('pin-form').addEventListener('input', syncPin);
+
+        function syncRegion() {
+            if (activeRegionIdx === null) return;
+            const r = regions[activeRegionIdx];
+            r.id = document.getElementById('reg-id').value;
+            r.continentName = document.getElementById('reg-continent').value;
+            r.continentId = document.getElementById('reg-continent-id').value;
+            r.regionName = document.getElementById('reg-name').value;
+            r.description = document.getElementById('reg-desc').value;
+            r.mapImage = document.getElementById('reg-img').value;
+            r.mapWidth = parseInt(document.getElementById('reg-w').value) || 0;
+            r.mapHeight = parseInt(document.getElementById('reg-h').value) || 0;
+
+            r.defaultLore.entry = document.getElementById('reg-lore-entry').value;
+            r.defaultLore.title = document.getElementById('reg-lore-title').value;
+            r.defaultLore.body = document.getElementById('reg-lore-body').value;
+
+            renderRegions(); // Update sidebar names
+            saveLocal();
+        }
+
+        function syncPin() {
+            if (activeRegionIdx === null || activePinIdx === null) return;
+            const p = regions[activeRegionIdx].pins[activePinIdx];
+            p.y = parseInt(document.getElementById('pin-y').value) || 0;
+            p.x = parseInt(document.getElementById('pin-x').value) || 0;
+            p.icon = document.getElementById('pin-icon').value;
+            p.title = document.getElementById('pin-title').value;
+            p.subtitle = document.getElementById('pin-subtitle').value;
+            p.linkId = document.getElementById('pin-link').value; // NEW
+            p.isDanger = document.getElementById('pin-danger').checked;
+            p.entry = document.getElementById('pin-lore-entry').value;
+            p.body = document.getElementById('pin-lore-body').value;
+
+            renderPins(); // Update pin buttons
+            saveLocal();
+        }
+
+        function saveLocal() {
+            localStorage.setItem('country_vault_backup', JSON.stringify(regions));
+            generateCode();
+        }
+
+        function generateCode() {
+            if (regions.length === 0) { outEl.textContent = "// Registry empty..."; return; }
+
+            let out = "const countryRegistry = {\n";
+            regions.forEach((r, i) => {
+                out += `    '${r.id}': {\n`;
+                out += `        continentName: '${escapeS(r.continentName)}',\n`;
+                out += `        continentId: '${escapeS(r.continentId)}',\n`;
+                out += `        regionName: '${escapeS(r.regionName)}',\n`;
+                out += `        description: '${escapeS(r.description)}',\n`;
+                out += `        mapImage: '${r.mapImage}',\n`;
+                out += `        mapWidth: ${r.mapWidth},\n`;
+                out += `        mapHeight: ${r.mapHeight},\n\n`;
+
+                out += `        defaultLore: {\n`;
+                out += `            entry: '${escapeS(r.defaultLore.entry)}',\n`;
+                out += `            title: '${escapeS(r.defaultLore.title)}',\n`;
+                out += `            body: \`\n${escapeB(r.defaultLore.body)}\n            \`\n`;
+                out += `        },\n\n`;
+
+                out += `        pins: [\n`;
+                r.pins.forEach((p, j) => {
+                    out += `            {\n`;
+                    out += `                y: ${p.y}, x: ${p.x}, icon: '${p.icon}', isDanger: ${p.isDanger},\n`;
+                    out += `                linkId: '${escapeS(p.linkId)}',\n`; // NEW
+                    out += `                title: '${escapeS(p.title)}', subtitle: '${escapeS(p.subtitle)}',\n`;
+                    out += `                entry: '${escapeS(p.entry)}',\n`;
+                    out += `                body: \`\n${escapeB(p.body)}\n                \`\n`;
+                    out += `            }${j < r.pins.length - 1 ? ',' : ''}\n`;
+                });
+                out += `        ]\n`;
+                out += `    }${i < regions.length - 1 ? ',' : ''}\n`;
+            });
+            out += "};";
+            outEl.textContent = out;
+        }
+
+        // File Sync Logic
+        async function linkRegistryFile() {
+            try {
+                [fileHandle] = await window.showOpenFilePicker({ types: [{ accept: { 'text/javascript': ['.js'] } }], multiple: false });
+                if (fileHandle) {
+                    document.getElementById('save-file-btn').disabled = false;
+                    document.getElementById('save-file-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+                    document.getElementById('link-file-btn').textContent = "File Linked ✓";
+                    document.getElementById('link-file-btn').classList.add('text-green-500');
+                    const file = await fileHandle.getFile();
+                    document.getElementById('import-area').value = await file.text();
+                    processImport();
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function saveToFile() {
+            if (!fileHandle) return;
+            try {
+                const writable = await fileHandle.createWritable();
+                await writable.write(outEl.textContent);
+                await writable.close();
+                const btn = document.getElementById('save-file-btn');
+                btn.textContent = "Saved to Registry!";
+                btn.classList.add('bg-green-500');
+                setTimeout(() => { btn.textContent = "Save to File"; btn.classList.remove('bg-green-500'); }, 2000);
+            } catch (err) { alert("Save failed."); }
+        }
+
+        function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
+        function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); }
+
+        function processImport() {
+            try {
+                let raw = document.getElementById('import-area').value.trim();
+                raw = raw.replace(/^\s*(const|let|var)\s+\w+\s*=\s*/, '').replace(/;\s*$/, '');
+                const obj = new Function("return " + raw)();
+
+                // Convert dictionary object back into our internal array format
+                regions = Object.keys(obj).map(key => {
+                    const data = obj[key];
+                    return { id: key, ...data };
+                });
+
+                closeImportModal();
+                renderRegions();
+                if (regions.length > 0) editRegion(0);
+            } catch (e) { alert("Import failed. Check syntax."); console.error(e); }
+        }
+    </script>
+</body>
+
+</html>

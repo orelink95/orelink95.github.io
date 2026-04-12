@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Library of Ages — The Athenaeum Vault</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+    <script src="scripts/general-scripts.js"></script>
+</head>
+
+<body
+    class="mystical-bg text-on-surface font-body selection:bg-secondary/30 selection:text-secondary flex flex-col min-h-screen relative">
+
+    <div id="dust-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <div id="header-placeholder"></div>
+
+    <main class="flex-grow relative z-10 flex flex-col justify-center pt-24 pb-16">
+        <div class="max-w-7xl w-full mx-auto px-6 flex flex-col items-center text-center">
+
+            <header class="mb-20 md:mb-28 space-y-6 relative">
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-secondary/10 blur-[100px] rounded-full animate-pulse-slow pointer-events-none">
+                </div>
+
+                <p class="font-newsreader italic text-secondary/50 text-xl md:text-2xl tracking-wide">Enter the sanctum
+                    of</p>
+                <h1
+                    class="font-headline font-bold text-6xl md:text-8xl text-white tracking-tighter drop-shadow-2xl relative z-10">
+                    The Library of Ages
+                </h1>
+                <div class="flex items-center justify-center gap-4 mt-8 opacity-60">
+                    <div class="h-px w-16 bg-gradient-to-r from-transparent to-secondary"></div>
+                    <span class="material-symbols-outlined text-secondary text-sm">auto_awesome</span>
+                    <div class="h-px w-16 bg-gradient-to-l from-transparent to-secondary"></div>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16 w-full">
+
+                <a href="bestiary.html"
+                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float">
+                    <span
+                        class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-8">temp_preferences_custom</span>
+                    <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white mb-4 text-center">
+                        Bestiary of the Void</h3>
+                    <p
+                        class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center flex-grow leading-relaxed max-w-[250px] mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        Entities and cosmic horrors, bound within the Major Arcana.
+                    </p>
+                    <span
+                        class="mt-auto text-[10px] uppercase tracking-[0.4em] font-label text-secondary/0 group-hover:text-secondary transition-colors flex items-center gap-2">Draw
+                        a Card <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                </a>
+
+                <a href="#" style="animation-delay: -3s;"
+                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float">
+                    <span
+                        class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-8">history_edu</span>
+                    <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white mb-4 text-center">
+                        Archival Handouts</h3>
+                    <p
+                        class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center flex-grow leading-relaxed max-w-[250px] mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        Physical evidence, decrypted letters, and field maps.
+                    </p>
+                    <span
+                        class="mt-auto text-[10px] uppercase tracking-[0.4em] font-label text-secondary/0 group-hover:text-secondary transition-colors flex items-center gap-2">Examine
+                        Evidence <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                </a>
+                <a href="#"
+                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float">
+                    <span
+                        class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-8">menu_book</span>
+                    <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white mb-4 text-center">
+                        Tomes of Reference</h3>
+                    <p
+                        class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center flex-grow leading-relaxed max-w-[250px] mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                        The grand bibliography of historical events and forbidden art.
+                    </p>
+                    <span
+                        class="mt-auto text-[10px] uppercase tracking-[0.4em] font-label text-secondary/0 group-hover:text-secondary transition-colors flex items-center gap-2">Study
+                        the Source <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                </a>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+
+    </script>
+</body>
+
+</html>

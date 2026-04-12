@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Settlement Admin - The Athenaeum Vault</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Newsreader:ital,wght@0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #0a0b0a;
+            color: #e2e3df;
+        }
+
+        .font-headline {
+            font-family: 'Newsreader', serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #121412;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2d2a;
+            border-radius: 10px;
+        }
+
+        .input-dark {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            width: 100%;
+            outline: none;
+            color: #e2e3df;
+        }
+
+        .input-dark:focus {
+            border-color: #e9c176;
+        }
+
+        .label-dark {
+            display: block;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .section-header {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #e9c176;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body class="p-6 h-screen flex flex-col overflow-hidden">
+
+    <header class="mb-4 flex justify-between items-end border-b border-white/5 pb-4 shrink-0">
+        <div>
+            <h1 class="text-2xl font-headline font-bold text-[#e9c176] tracking-tight">Settlement Registry Vault</h1>
+            <p class="text-[9px] uppercase tracking-[0.3em] text-gray-500 mt-1">Multi-District City Manager</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="linkRegistryFile()" id="link-btn"
+                class="px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-[9px] uppercase tracking-widest text-[#e9c176]">Link
+                settlement-registry.js</button>
+            <button onclick="saveToFile()" id="save-btn" disabled
+                class="px-4 py-2 bg-[#e9c176] text-black font-bold rounded opacity-50 cursor-not-allowed text-[9px] uppercase tracking-widest">Save
+                to File</button>
+            <button onclick="openImportModal()"
+                class="px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 text-[9px] uppercase tracking-widest">Import</button>
+
+            <div class="relative inline-block text-left mr-2">
+                <button type="button" onclick="document.getElementById('vault-dropdown').classList.toggle('hidden')"
+                    class="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded hover:bg-white/10 transition-all text-[9px] uppercase tracking-[0.2em] text-[#e9c176] group">
+                    <span
+                        class="material-symbols-outlined text-[16px] group-hover:rotate-12 transition-transform">database</span>
+                    Vault Switcher <span class="material-symbols-outlined text-[14px] opacity-50">expand_more</span>
+                </button>
+                <div id="vault-dropdown"
+                    class="hidden absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-[#121412] border border-white/10 shadow-2xl focus:outline-none overflow-hidden">
+                    <div class="flex flex-col">
+                        <a href="world-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5"><span
+                                class="material-symbols-outlined text-[16px]">public</span> World Vault</a>
+                        <a href="continent-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5"><span
+                                class="material-symbols-outlined text-[16px]">map</span> Continent Vault</a>
+                        <a href="country-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all border-b border-white/5"><span
+                                class="material-symbols-outlined text-[16px]">flag</span> Country Vault</a>
+                        <a href="city-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-gray-400 hover:bg-white/5 hover:text-[#e9c176] transition-all"><span
+                                class="material-symbols-outlined text-[16px]">location_city</span> City Vault</a>
+                        <a href="almanach-admin-tool.html"
+                            class="flex items-center gap-3 px-4 py-3 text-[9px] uppercase tracking-widest text-primary bg-primary/10 hover:bg-primary/20 transition-all"><span
+                                class="material-symbols-outlined text-[16px]">menu_book</span> Almanach Vault</a>
+                    </div>
+                </div>
+            </div>
+            <script>
+                window.onclick = function (event) {
+                    if (!event.target.closest('.relative')) {
+                        const dropdown = document.getElementById('vault-dropdown');
+                        if (dropdown && !dropdown.classList.contains('hidden')) { dropdown.classList.add('hidden'); }
+                    }
+                }
+            </script>
+        </div>
+    </header>
+
+    <div class="flex-1 grid grid-cols-12 gap-4 overflow-hidden pb-2">
+        <div
+            class="col-span-2 flex flex-col gap-3 bg-[#121412] border border-white/5 rounded-lg p-4 overflow-hidden shadow-xl">
+            <h2 class="section-header">Settlements</h2>
+            <div id="settlement-list" class="flex-1 overflow-y-auto space-y-2 pr-2"></div>
+            <button onclick="addNewSettlement()"
+                class="w-full py-2 border border-dashed border-white/10 rounded text-gray-500 hover:border-[#e9c176] hover:text-[#e9c176] text-[9px] uppercase tracking-widest">+
+                New Settlement</button>
+        </div>
+
+        <div class="col-span-3 flex flex-col gap-4 bg-[#121412] border border-white/5 rounded-lg p-5 overflow-y-auto shadow-xl opacity-30 pointer-events-none"
+            id="settlement-editor">
+            <h2 class="section-header">Global Settings</h2>
+            <div class="space-y-3">
+                <div><label class="label-dark">URL ID (e.g. brightend)</label><input type="text" id="set-id"
+                        class="input-dark" oninput="syncSettlement()"></div>
+                <div><label class="label-dark">Settlement Name</label><input type="text" id="set-name"
+                        class="input-dark" oninput="syncSettlement()"></div>
+                <div><label class="label-dark">Aliases (Comma separated)</label><input type="text" id="set-aliases"
+                        placeholder="E.g. The Capital, Brightend" class="input-dark" oninput="syncSettlement()"></div>
+                <div><label class="label-dark">Continent (Name & Link)</label>
+                    <div class="flex gap-2"><input type="text" id="set-cont-name" placeholder="Name" class="input-dark"
+                            oninput="syncSettlement()"><input type="text" id="set-cont-id" placeholder="Link"
+                            class="input-dark" oninput="syncSettlement()"></div>
+                </div>
+                <div><label class="label-dark">Country (Name & Link)</label>
+                    <div class="flex gap-2"><input type="text" id="set-coun-name" placeholder="Name" class="input-dark"
+                            oninput="syncSettlement()"><input type="text" id="set-coun-id" placeholder="Link"
+                            class="input-dark" oninput="syncSettlement()"></div>
+                </div>
+                <div><label class="label-dark">Short Descriptor</label><textarea id="set-desc" rows="3"
+                        class="input-dark" oninput="syncSettlement()"></textarea></div>
+            </div>
+
+            <h2 class="section-header mt-4">District Manager</h2>
+            <div id="district-list" class="space-y-2 mb-2"></div>
+            <button onclick="addNewDistrict()"
+                class="w-full py-1.5 border border-dashed border-white/10 rounded text-gray-500 hover:text-white text-[9px] uppercase tracking-widest">+
+                Add District</button>
+        </div>
+
+        <div class="col-span-7 grid grid-cols-2 gap-4 opacity-30 pointer-events-none overflow-hidden"
+            id="district-editor">
+            <div class="bg-[#121412] border border-white/5 rounded-lg p-5 overflow-y-auto shadow-xl flex flex-col">
+                <h2 class="section-header">Map & Lore</h2>
+                <div class="space-y-3 mb-6">
+                    <div><label class="label-dark">District Name</label><input type="text" id="dist-name"
+                            class="input-dark" oninput="syncDistrict()"></div>
+                    <div><label class="label-dark">Aliases (Comma separated)</label><input type="text" id="dist-aliases"
+                            placeholder="E.g. The Cloud, Cloud" class="input-dark" oninput="syncDistrict()"></div>
+                    <div><label class="label-dark">Map Path</label><input type="text" id="dist-img" class="input-dark"
+                            oninput="syncDistrict()"></div>
+                    <div class="flex gap-2">
+                        <div><label class="label-dark">Width</label><input type="number" id="dist-w" class="input-dark"
+                                oninput="syncDistrict()"></div>
+                        <div><label class="label-dark">Height</label><input type="number" id="dist-h" class="input-dark"
+                                oninput="syncDistrict()"></div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex gap-2">
+                        <div><label class="label-dark">Codex Entry</label><input type="text" id="dist-lore-entry"
+                                class="input-dark" oninput="syncDistrict()"></div>
+                        <div class="flex-grow"><label class="label-dark">Lore Title</label><input type="text"
+                                id="dist-lore-title" class="input-dark" oninput="syncDistrict()"></div>
+                    </div>
+                    <div><label class="label-dark">Lore Body (HTML)</label><textarea id="dist-lore-body" rows="10"
+                            class="input-dark font-mono text-[10px]" oninput="syncDistrict()"></textarea></div>
+                </div>
+            </div>
+
+            <div class="bg-[#121412] border border-white/5 rounded-lg p-5 overflow-y-auto shadow-xl">
+                <div class="flex justify-between items-center section-header">
+                    <span>NPCs & Residents (Almanach IDs)</span>
+                    <button onclick="addNewNPC()" class="text-[#e9c176] hover:underline text-[9px]">+ Add
+                        Resident</button>
+                </div>
+                <p class="text-[9px] text-gray-500 italic mb-3 leading-tight">Link an NPC by typing their exact Unique
+                    ID from the Almanach (e.g. lordwhite).</p>
+                <div id="npc-container" class="space-y-2 mb-8"></div>
+
+                <div class="flex justify-between items-center section-header mt-8"><span>District Pins (POIs)</span>
+                    <button onclick="addNewPin()" class="text-[#e9c176] hover:underline text-[9px]">+ Add Pin</button>
+                </div>
+                <div id="pin-container" class="space-y-6"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="h-32 shrink-0 bg-black border border-white/10 rounded-lg p-3 relative group overflow-hidden mt-2">
+        <h2
+            class="absolute top-1 left-3 text-[8px] uppercase tracking-widest text-gray-600 font-bold bg-black px-2 z-10">
+            Live Registry Output</h2>
+        <pre id="code-output"
+            class="text-green-500/60 text-[9px] h-full overflow-auto font-mono whitespace-pre-wrap pt-4"></pre>
+    </div>
+
+    <script>
+        let settlements = [];
+        let sIdx = null, dIdx = null, fileHandle = null;
+
+        // --- 1. AUTO-LOAD ON START ---
+        const savedData = localStorage.getItem('settlement_vault_backup');
+        if (savedData) {
+            try {
+                settlements = JSON.parse(savedData);
+                setTimeout(() => {
+                    renderSettlements();
+                    if (settlements.length > 0) selectSettlement(0);
+                }, 100);
+            } catch (e) { console.error("Auto-load failed", e); }
+        }
+
+        function saveLocal() {
+            localStorage.setItem('settlement_vault_backup', JSON.stringify(settlements));
+            generateCode();
+        }
+
+        function syncSettlement() {
+            if (sIdx === null) return;
+            let s = settlements[sIdx];
+            s.id = document.getElementById('set-id').value;
+            s.settlementName = document.getElementById('set-name').value;
+            s.aliases = document.getElementById('set-aliases').value.split(',').map(a => a.trim()).filter(Boolean);
+            s.continentName = document.getElementById('set-cont-name').value;
+            s.continentId = document.getElementById('set-cont-id').value;
+            s.countryName = document.getElementById('set-coun-name').value;
+            s.countryId = document.getElementById('set-coun-id').value;
+            s.descriptor = document.getElementById('set-desc').value;
+            renderSettlements();
+            saveLocal();
+        }
+
+        function syncDistrict() {
+            if (sIdx === null || dIdx === null) return;
+            let d = settlements[sIdx].districts[dIdx];
+            d.name = document.getElementById('dist-name').value;
+            d.aliases = document.getElementById('dist-aliases').value.split(',').map(a => a.trim()).filter(Boolean);
+            d.mapImage = document.getElementById('dist-img').value;
+            d.mapWidth = parseInt(document.getElementById('dist-w').value) || 0;
+            d.mapHeight = parseInt(document.getElementById('dist-h').value) || 0;
+            d.lore.entry = document.getElementById('dist-lore-entry').value;
+            d.lore.title = document.getElementById('dist-lore-title').value;
+            d.lore.body = document.getElementById('dist-lore-body').value;
+            renderDistricts();
+            saveLocal();
+        }
+
+        function renderSettlements() {
+            const list = document.getElementById('settlement-list');
+            list.innerHTML = '';
+            settlements.forEach((s, idx) => {
+                const b = document.createElement('div');
+                b.className = `p-3 rounded cursor-pointer border transition-all ${sIdx === idx ? 'bg-[#e9c17622] border-[#e9c17655]' : 'bg-black/20 border-white/5'}`;
+                b.onclick = () => selectSettlement(idx);
+                b.innerHTML = `<div class="text-[10px] font-bold ${sIdx === idx ? 'text-[#e9c176]' : 'text-gray-400'}">${s.settlementName}</div><div class="text-[8px] uppercase text-gray-600">${s.id}</div>`;
+                list.appendChild(b);
+            });
+        }
+
+        function selectSettlement(idx) {
+            sIdx = idx; dIdx = null;
+            const s = settlements[idx];
+            document.getElementById('settlement-editor').style.opacity = '1';
+            document.getElementById('settlement-editor').style.pointerEvents = 'auto';
+            document.getElementById('district-editor').style.opacity = '0.3';
+            document.getElementById('district-editor').style.pointerEvents = 'none';
+
+            document.getElementById('set-id').value = s.id || '';
+            document.getElementById('set-name').value = s.settlementName || '';
+            document.getElementById('set-aliases').value = (s.aliases || []).join(', ');
+            document.getElementById('set-cont-name').value = s.continentName || '';
+            document.getElementById('set-cont-id').value = s.continentId || '';
+            document.getElementById('set-coun-name').value = s.countryName || '';
+            document.getElementById('set-coun-id').value = s.countryId || '';
+            document.getElementById('set-desc').value = s.descriptor || '';
+
+            renderSettlements(); renderDistricts();
+        }
+
+        function renderDistricts() {
+            const list = document.getElementById('district-list');
+            list.innerHTML = '';
+            if (sIdx === null) return;
+            settlements[sIdx].districts.forEach((d, idx) => {
+                const b = document.createElement('button');
+                b.className = `w-full text-left p-2 rounded text-[10px] border transition-all ${dIdx === idx ? 'bg-secondary/10 border-secondary text-secondary' : 'bg-black/40 border-white/5 text-gray-500'}`;
+                b.onclick = () => selectDistrict(idx);
+                b.textContent = d.name;
+                list.appendChild(b);
+            });
+        }
+
+        function selectDistrict(idx) {
+            dIdx = idx;
+            const d = settlements[sIdx].districts[idx];
+            document.getElementById('district-editor').style.opacity = '1';
+            document.getElementById('district-editor').style.pointerEvents = 'auto';
+
+            document.getElementById('dist-name').value = d.name || '';
+            document.getElementById('dist-aliases').value = (d.aliases || []).join(', ');
+            document.getElementById('dist-img').value = d.mapImage || '';
+            document.getElementById('dist-w').value = d.mapWidth || 0;
+            document.getElementById('dist-h').value = d.mapHeight || 0;
+            document.getElementById('dist-lore-entry').value = d.lore.entry || '';
+            document.getElementById('dist-lore-title').value = d.lore.title || '';
+            document.getElementById('dist-lore-body').value = d.lore.body || '';
+
+            renderDistricts(); renderNPCs(); renderPins();
+        }
+
+        // --- UPDATED NPC RENDERER (Single String List) ---
+        function renderNPCs() {
+            const cont = document.getElementById('npc-container');
+            cont.innerHTML = '';
+            const npcs = settlements[sIdx].districts[dIdx].npcs || [];
+            npcs.forEach((n, idx) => {
+                const d = document.createElement('div');
+                d.className = "flex items-center gap-2 p-2 bg-black/40 border border-white/5 rounded relative";
+                d.innerHTML = `
+                    <span class="material-symbols-outlined text-primary/40 text-[14px]">person</span>
+                    <input type="text" placeholder="ID (e.g. lordwhite)" class="input-dark flex-1 !py-1 !px-2 font-mono text-[10px]" value="${n}" oninput="updateNPC(${idx}, this.value)">
+                    <button onclick="removeNPC(${idx})" class="text-red-900 hover:text-red-500 material-symbols-outlined text-sm transition-colors">delete</button>
+                `;
+                cont.appendChild(d);
+            });
+        }
+
+        function renderPins() {
+            const cont = document.getElementById('pin-container');
+            cont.innerHTML = '';
+            const pins = settlements[sIdx].districts[dIdx].pins || [];
+            pins.forEach((p, idx) => {
+                const d = document.createElement('div');
+                d.className = "p-3 bg-black/40 border-l-2 border-secondary/30 rounded space-y-2 relative";
+                d.innerHTML = `
+                    <button onclick="removePin(${idx})" class="absolute top-1 right-1 text-red-900 hover:text-red-500 material-symbols-outlined text-sm">delete</button>
+                    <div class="grid grid-cols-3 gap-2">
+                        <input type="number" placeholder="Y" class="input-dark" value="${p.y}" oninput="updatePin(${idx}, 'y', this.value)">
+                        <input type="number" placeholder="X" class="input-dark" value="${p.x}" oninput="updatePin(${idx}, 'x', this.value)">
+                        <input type="text" placeholder="Icon" class="input-dark" value="${p.icon}" oninput="updatePin(${idx}, 'icon', this.value)">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" placeholder="Title" class="input-dark" value="${p.title}" oninput="updatePin(${idx}, 'title', this.value)">
+                        <input type="text" placeholder="Subtitle" class="input-dark" value="${p.subtitle}" oninput="updatePin(${idx}, 'subtitle', this.value)">
+                    </div>
+                    <div class="mt-2">
+                        <label class="label-dark">Aliases (Comma separated)</label>
+                        <input type="text" placeholder="E.g. Palace, Capital" class="input-dark" value="${(p.aliases || []).join(', ')}" oninput="updatePin(${idx}, 'aliases', this.value.split(',').map(a => a.trim()).filter(Boolean))">
+                    </div>
+                    <div class="mt-2">
+                        <label class="label-dark">POI Image URL</label>
+                        <input type="text" placeholder="./images/pois/image.png" class="input-dark" value="${p.image || ''}" oninput="updatePin(${idx}, 'image', this.value)">
+                    </div>
+                    <textarea placeholder="Body Lore" class="input-dark font-mono text-[10px]" oninput="updatePin(${idx}, 'body', this.value)">${p.body}</textarea>
+                    
+                    <div class="flex flex-wrap gap-4 items-center mt-1">
+                        <label class="flex items-center gap-2 text-[9px] text-gray-400 cursor-pointer">
+                            <input type="checkbox" ${p.isDanger ? 'checked' : ''} onchange="updatePin(${idx}, 'isDanger', this.checked)" class="accent-red-600"> Danger Zone
+                        </label>
+                        <label class="flex items-center gap-2 text-[9px] text-gray-400 cursor-pointer">
+                            <input type="checkbox" ${p.isFeatured ? 'checked' : ''} onchange="updatePin(${idx}, 'isFeatured', this.checked)" class="accent-primary"> Featured Landmark
+                        </label>
+                        <label class="flex items-center gap-2 text-[9px] text-gray-400 cursor-pointer">
+                            <input type="checkbox" ${p.isSafe ? 'checked' : ''} onchange="updatePin(${idx}, 'isSafe', this.checked)" class="accent-secondary"> Safe Zone
+                        </label>
+                    </div>
+                `;
+                cont.appendChild(d);
+            });
+        }
+
+        // --- 3. LOGIC HELPERS ---
+        function addNewSettlement() { settlements.push({ id: 'new', settlementName: 'New City', aliases: [], continentName: '', continentId: '', countryName: '', countryId: '', descriptor: '', districts: [] }); renderSettlements(); selectSettlement(settlements.length - 1); saveLocal(); }
+        function addNewDistrict() { settlements[sIdx].districts.push({ id: 'd', name: 'New District', aliases: [], mapImage: '', mapWidth: 1000, mapHeight: 1000, lore: { entry: '', title: '', body: '' }, npcs: [], pins: [] }); renderDistricts(); selectDistrict(settlements[sIdx].districts.length - 1); saveLocal(); }
+
+        // UPDATED: Now just pushes a blank string
+        function addNewNPC() { settlements[sIdx].districts[dIdx].npcs.push(''); renderNPCs(); saveLocal(); }
+        function updateNPC(i, v) { settlements[sIdx].districts[dIdx].npcs[i] = v; saveLocal(); }
+        function removeNPC(i) { settlements[sIdx].districts[dIdx].npcs.splice(i, 1); renderNPCs(); saveLocal(); }
+
+        function addNewPin() {
+            settlements[sIdx].districts[dIdx].pins.push({
+                y: 0, x: 0, icon: 'castle', title: 'New POI', subtitle: '', aliases: [],
+                isDanger: false, isFeatured: false, isSafe: false, body: '', image: ''
+            });
+            renderPins();
+            saveLocal();
+        }
+        function updatePin(i, k, v) { settlements[sIdx].districts[dIdx].pins[i][k] = (k === 'y' || k === 'x') ? parseInt(v) : v; saveLocal(); }
+        function removePin(i) { settlements[sIdx].districts[dIdx].pins.splice(i, 1); renderPins(); saveLocal(); }
+
+        function escapeS(s) { return (s || '').replace(/'/g, "\\'"); }
+        function escapeB(s) { return (s || '').replace(/`/g, "\\`").replace(/\$\{/g, "\\${"); }
+
+        // --- 4. GENERATE CLEAN CODE ---
+        function generateCode() {
+            let out = "const settlementRegistry = {\n";
+            settlements.forEach((s, i) => {
+                out += `    '${s.id}': {\n`;
+                out += `        continentName: '${escapeS(s.continentName)}', continentId: '${s.continentId}',\n`;
+                out += `        countryName: '${escapeS(s.countryName)}', countryId: '${s.countryId}',\n`;
+
+                let sAliases = s.aliases && s.aliases.length ? ` aliases: [${s.aliases.map(a => `'${escapeS(a)}'`).join(', ')}],` : '';
+                out += `        settlementName: '${escapeS(s.settlementName)}',${sAliases} descriptor: '${escapeS(s.descriptor)}',\n\n`;
+                out += `        districts: [\n`;
+
+                s.districts.forEach((d, j) => {
+                    out += `            {\n`;
+                    let dAliases = d.aliases && d.aliases.length ? ` aliases: [${d.aliases.map(a => `'${escapeS(a)}'`).join(', ')}],` : '';
+                    out += `                id: '${d.id}', name: '${escapeS(d.name)}',${dAliases}\n`;
+                    out += `                mapImage: '${d.mapImage}', mapWidth: ${d.mapWidth}, mapHeight: ${d.mapHeight},\n`;
+                    out += `                lore: {\n                    entry: '${escapeS(d.lore.entry)}', title: '${escapeS(d.lore.title)}', body: \`\n${escapeB(d.lore.body)}\n                \` },\n`;
+
+                    // UPDATED: Generates clean String Array for NPCs
+                    if (d.npcs && d.npcs.length > 0) {
+                        out += `                npcs: [\n                    ${d.npcs.map(n => `'${escapeS(n)}'`).join(', ')}],\n`;
+                    } else {
+                        out += `                npcs: [\n                ],\n`;
+                    }
+
+                    out += `                pins: [\n`;
+                    d.pins.forEach((p, k) => {
+                        let pAliases = p.aliases && p.aliases.length ? ` aliases: [${p.aliases.map(a => `'${escapeS(a)}'`).join(', ')}],` : '';
+                        out += `                    { y: ${p.y}, x: ${p.x}, icon: '${p.icon}', title: '${escapeS(p.title)}',${pAliases} subtitle: '${escapeS(p.subtitle)}', isDanger: ${p.isDanger}, isFeatured: ${p.isFeatured || false}, isSafe: ${p.isSafe || false}, image: '${p.image || ''}', body: \`\n${escapeB(p.body)}\n                    \` }${k < d.pins.length - 1 ? ',' : ''}\n`;
+                    });
+                    out += `                ]\n`;
+                    out += `            }${j < s.districts.length - 1 ? ',' : ''}\n`;
+                });
+                out += `        ]\n    }${i < settlements.length - 1 ? ',' : ''}\n`;
+            });
+            out += "};";
+            document.getElementById('code-output').textContent = out;
+        }
+
+        // --- 5. FILE SYSTEM / IMPORTING ---
+        async function linkRegistryFile() {
+            try { [fileHandle] = await window.showOpenFilePicker({ types: [{ accept: { 'text/javascript': ['.js'] } }], multiple: false }); if (fileHandle) { document.getElementById('save-btn').disabled = false; document.getElementById('save-btn').classList.remove('opacity-50', 'cursor-not-allowed'); document.getElementById('link-btn').textContent = "Linked ✓"; const file = await fileHandle.getFile(); importData(await file.text()); } } catch (e) { }
+        }
+
+        async function saveToFile() {
+            if (!fileHandle) return; const writable = await fileHandle.createWritable(); await writable.write(document.getElementById('code-output').textContent); await writable.close(); const btn = document.getElementById('save-btn'); btn.textContent = "Saved!"; setTimeout(() => btn.textContent = "Save to File", 2000);
+        }
+
+        function openImportModal() { document.getElementById('import-modal').classList.remove('hidden'); }
+        function closeImportModal() { document.getElementById('import-modal').classList.add('hidden'); }
+        function processImport() { importData(document.getElementById('import-area').value); closeImportModal(); }
+
+        function importData(raw) {
+            try {
+                let clean = raw.replace(/^\s*(const|let|var)\s+\w+\s*=\s*/, '').replace(/;\s*$/, '');
+                const obj = new Function("return " + clean)();
+
+                settlements = Object.keys(obj).map(key => {
+                    const s = { id: key, ...obj[key] };
+
+                    // LEGACY MIGRATION: Converts old object NPCs into the new String array format!
+                    if (s.districts) {
+                        s.districts.forEach(d => {
+                            if (d.npcs) {
+                                d.npcs = d.npcs.map(n => typeof n === 'object' ? n.id : n).filter(Boolean);
+                            }
+                        });
+                    }
+                    return s;
+                });
+
+                renderSettlements(); if (settlements.length > 0) selectSettlement(0);
+                saveLocal();
+            } catch (e) { alert("Import error. Ensure the file is valid JS."); }
+        }
+    </script>
+</body>
+
+</html>

@@ -56,7 +56,10 @@ module.exports = {
         "error": "#ffb4ab",
         "on-secondary-container": "#dab36a",
         "on-surface-variant": "#c3c8c0",
-        "on-primary-fixed-variant": "#354c3a"
+        "on-primary-fixed-variant": "#354c3a",
+        // New Mystical Ambient Colors
+        "void": "#1a0b2e",
+        "ethereal": "#0f172a"
       },
       fontFamily: {
         "headline": ["Noto Serif"],
@@ -90,6 +93,7 @@ module.exports = {
       },
       animation: {
         float: 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 6s ease-in-out 3s infinite',
         drift: 'drift 8s linear infinite',
         glow: 'glow 4s ease-in-out infinite',
         'pulse-slow': 'pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -101,4 +105,3 @@ module.exports = {
     require('@tailwindcss/container-queries'),
   ],
 }
-

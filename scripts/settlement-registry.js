@@ -11,7 +11,11 @@ const settlementRegistry = {
                 lore: {
                     entry: 'District: Alpha', title: 'The Cloud District', body: `
 
+
+
 <p><span class="float-left text-5xl font-headline text-secondary leading-none pr-2 pt-1">S</span>uspended above the smog, this is where the elite reside. Palaces of white marble and hanging gardens dominate the skyline.</p>
+                
+                
                 
                 
                 
@@ -32,7 +36,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>The seat of power in Brightend. From here, the King oversees the distribution of resources across the vale.</p>
+                    
+                    
                     
                     
                     
@@ -50,7 +58,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>Hammer's famousest candy ! Now 100% crack-free.</p>
+                    
+                    
                     
                     
                     
@@ -68,7 +80,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>The epicenter of law enforcement and military power in Brightend. The elite military corp is respected through the whole country.</p>
+                    
+                    
                     
                     
                     
@@ -85,7 +101,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>One of the finest bookshops in the region, known by scholars for their dedication to procuring old and rare volumes.</p>
+                    
+                    
                     
                     
                     
@@ -99,7 +119,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>A small office tucked neatly between two impressive homes in the Cloud District houses the yound mercenary agency. Already hired by the Crown, the agency sees itself becoming a staple of the city. </p>
+                    
+                    
                     
                     
                     
@@ -109,13 +133,21 @@ const settlementRegistry = {
                         y: 730, x: 298, icon: 'beer', title: 'Gilded Goldfinch', subtitle: 'The finest drinks and eats the city has to offer', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/gilded_goldfinch.png', body: `
 
 
+
+
 <p>The finest inn in the city... or the country, according to owner Merton Lensher.</p>
+                    
+                    
                     
                     
                     ` },
                     {
                         y: 367, x: 600, icon: 'house', title: 'Thayne Household', subtitle: 'Where the traumatized widower lives.', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/thaynehouse.png', body: `
+
+
 <p>We all know what happened here... it's like zombies were done to the cupboard<p>
+                    
+                    
                     ` }
                 ]
             },
@@ -131,7 +163,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p><span class="float-left text-5xl font-headline text-error leading-none pr-2 pt-1">B</span>eneath the shadow of the industrial forges lies the Ash District. Crime is rampant, and the air is thick with soot.</p>
+                
+                
                 
                 
                 
@@ -152,7 +188,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>Underground arenas where disputes are settled in blood and illegal wagers are the city's true currency.</p>
+                    
+                    
                     
                     
                     
@@ -165,28 +205,18 @@ const settlementRegistry = {
             },
             {
                 id: 'the_docks', name: 'Docks',
-                mapImage: './images/placeholder_text.png', mapWidth: 1000, mapHeight: 1000,
+                mapImage: './images/brightend_docks_map.png', mapWidth: 926, mapHeight: 1080,
                 lore: {
                     entry: 'District: Delta', title: 'The Docks', body: `
-
-
-
-
-
-
-
-<p>Fish and ships</p>
-                
-                
-                
-                
-                
-                
-                
+<p>Fish and ships</p>        
                 ` },
                 npcs: [
                 ],
                 pins: [
+                    {
+                        y: 514, x: 262, icon: 'castle', title: 'Harbour Master', subtitle: '', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+Where the master habours... or something
+                    ` }
                 ]
             },
             {
@@ -201,9 +231,9 @@ const settlementRegistry = {
 
 
 
+
+
 <p>The (once) heavily militarized entrance to the capital.</p>
-                
-                
                 
                 
                 
@@ -227,7 +257,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>Home to the great markets.</p>
+                
+                
                 
                 
                 
@@ -242,29 +276,23 @@ const settlementRegistry = {
                 ]
             },
             {
-                id: 'unnamed_2', name: 'Artisan Row',
-                mapImage: './images/placeholder.png', mapWidth: 1000, mapHeight: 1000,
+                id: 'brightend_artisan', name: 'Artisan Row',
+                mapImage: './images/brightend_artisan.png', mapWidth: 862, mapHeight: 1080,
                 lore: {
                     entry: 'District: Zeta', title: 'The Artisan Row', body: `
 
-
-
-
-
-
-
-<p>Guildhouses and master crafters.</p>
-                
-                
-                
-                
-                
-                
+<p>Guildhouses and master crafters.</p>  
                 
                 ` },
                 npcs: [
                 ],
                 pins: [
+                    {
+                        y: 777, x: 277, icon: 'pay-money', title: 'Oxana\'s Gems', subtitle: 'Jewelry Emporium', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
+Oxana's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th generation shop is famous through out the city, and even further...
+                    
+                    ` }
                 ]
             }
         ]
@@ -287,7 +315,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>Cute lil town</p>
+                
+                
                 
                 
                 
@@ -308,7 +340,11 @@ const settlementRegistry = {
 
 
 
+
+
 <p>The coolest and edgiest inn in town.</p>
+                    
+                    
                     
                     
                     

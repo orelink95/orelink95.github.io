@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Eraldom Archives - Precise Cartographer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Newsreader:ital,wght@0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #0a0b0a;
+            color: #e2e3df;
+            overflow: hidden;
+        }
+
+        .font-headline {
+            font-family: 'Newsreader', serif;
+        }
+
+        #map {
+            height: calc(100vh - 180px);
+            background: #050505;
+            border: 1px solid rgba(233, 193, 118, 0.1);
+            cursor: crosshair;
+        }
+
+        .input-vault {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #e9c176;
+            outline: none;
+        }
+
+        .input-vault:focus {
+            border-color: #e9c176;
+        }
+    </style>
+</head>
+
+<body class="p-6">
+
+    <header class="max-w-7xl mx-auto mb-6 flex justify-between items-end border-b border-white/5 pb-6">
+        <div>
+            <h1 class="text-3xl font-headline font-bold text-[#e9c176] tracking-tight">Precise Cartographer</h1>
+            <p class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mt-1">Resolution-Aware Coordinate Tool</p>
+        </div>
+
+        <div class="flex gap-4">
+            <div class="flex flex-col">
+                <label class="text-[9px] uppercase text-gray-600 mb-1">Target Resolution (W x H)</label>
+                <div class="flex gap-2">
+                    <input type="number" id="res-w" placeholder="Width" class="input-vault w-24">
+                    <input type="number" id="res-h" placeholder="Height" class="input-vault w-24">
+                    <button onclick="updateMapBounds()"
+                        class="px-4 py-2 bg-[#e9c176] text-black text-[10px] font-bold uppercase rounded hover:bg-[#d4ae65] transition-colors">Update
+                        Grid</button>
+                </div>
+            </div>
+            <div class="border-l border-white/10 ml-2 pl-4 flex items-end">
+                <input type="file" id="map-upload" accept="image/*" class="hidden">
+                <label for="map-upload"
+                    class="px-5 py-2 border border-[#e9c176]/20 bg-[#e9c176]/5 rounded text-[10px] uppercase tracking-widest text-[#e9c176] cursor-pointer flex items-center gap-2 hover:bg-[#e9c176]/10 transition-all">
+                    <span class="material-symbols-outlined text-sm">upload_file</span> Load Image
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto grid grid-cols-12 gap-6">
+        <div class="col-span-9 relative">
+            <div id="map" class="rounded-lg shadow-2xl"></div>
+            <div id="drop-overlay"
+                class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-lg z-[1000] pointer-events-none">
+                <span class="material-symbols-outlined text-4xl text-[#e9c176]/20 mb-2">map</span>
+                <p class="text-[#e9c176]/40 text-xs uppercase tracking-widest">Waiting for map data...</p>
+            </div>
+        </div>
+
+        <div class="col-span-3 flex flex-col gap-4">
+            <div class="bg-[#121412] border border-white/5 p-5 rounded-lg shadow-xl">
+                <h2 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-4">Output Log</h2>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[9px] text-gray-600 uppercase mb-1">Current Point [Y, X]</label>
+                        <div id="coord-leaflet"
+                            class="bg-black/40 p-4 rounded border border-[#e9c176]/20 font-mono text-lg text-[#e9c176] text-center italic">
+                            ---</div>
+                    </div>
+                    <div class="p-3 bg-white/5 rounded text-[10px] text-gray-400 border-l-2 border-[#e9c176]">
+                        Les coordonnées sont basées sur le point <span class="text-white">[0,0]</span> en bas à gauche
+                        de votre résolution cible.
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#e9c176]/5 border border-[#e9c176]/20 p-5 rounded-lg">
+                <h2 class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold mb-2">Technical Note</h2>
+                <p class="text-[11px] text-gray-400 leading-relaxed">
+                    Si votre image fait <span class="text-white italic">2000x1000px</span> mais que votre JS attend du
+                    <span class="text-white italic">1000x500px</span>, saisissez la résolution cible manuellement pour
+                    conserver l'échelle de votre base de données.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let map, imageLayer, currentImgUrl;
+        const resW = document.getElementById('res-w');
+        const resH = document.getElementById('res-h');
+        const uploadInput = document.getElementById('map-upload');
+        const coordDisplay = document.getElementById('coord-leaflet');
+
+        // Initialisation standard CRS Simple
+        map = L.map('map', {
+            crs: L.CRS.Simple,
+            minZoom: -3,
+            maxZoom: 3,
+            attributionControl: false
+        });
+
+        uploadInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                const img = new Image();
+                img.onload = function () {
+                    // Auto-fill inputs with real file dimensions
+                    resW.value = img.width;
+                    resH.value = img.height;
+                    currentImgUrl = event.target.result;
+                    setupMap(img.width, img.height);
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function setupMap(w, h) {
+            if (!currentImgUrl) return;
+            if (imageLayer) map.removeLayer(imageLayer);
+            document.getElementById('drop-overlay').classList.add('hidden');
+
+            // Utilise les valeurs passées ou les valeurs des inputs
+            const width = parseInt(w);
+            const height = parseInt(h);
+            const bounds = [[0, 0], [height, width]];
+
+            imageLayer = L.imageOverlay(currentImgUrl, bounds).addTo(map);
+            map.fitBounds(bounds);
+            map.setMaxBounds(bounds.pad(0.1));
+        }
+
+        function updateMapBounds() {
+            if (!currentImgUrl) {
+                alert("Please load an image first.");
+                return;
+            }
+            setupMap(resW.value, resH.value);
+        }
+
+        map.on('click', function (e) {
+            if (!imageLayer) return;
+
+            const y = Math.round(e.latlng.lat);
+            const x = Math.round(e.latlng.lng);
+            const formatted = `[${y}, ${x}]`;
+
+            coordDisplay.innerText = formatted;
+            navigator.clipboard.writeText(formatted);
+
+            L.popup({ closeButton: false, className: 'vault-popup' })
+                .setLatLng(e.latlng)
+                .setContent(`<div class="text-[11px] font-bold tracking-widest">${formatted} COPIED</div>`)
+                .openOn(map);
+        });
+    </script>
+</body>
+
+</html>

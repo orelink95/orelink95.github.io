@@ -4,8 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>The Library of Ages — The Athenaeum Vault</title>
-
+    <title>The Black Archive — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
         rel="stylesheet" />
@@ -22,7 +22,8 @@
 
     <div id="dust-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
 
-    <div id="header-placeholder"></div>
+    <div id="header-placeholder" class="relative z-50"></div>
+    <div id="library-sidebar-placeholder"></div>
 
     <main class="flex-grow relative z-10 flex flex-col justify-center pt-24 pb-16">
         <div class="max-w-7xl w-full mx-auto px-6 flex flex-col items-center text-center">
@@ -36,7 +37,7 @@
                     of</p>
                 <h1
                     class="font-headline font-bold text-6xl md:text-8xl text-white tracking-tighter drop-shadow-2xl relative z-10">
-                    The Library of Ages
+                    The Black Archive
                 </h1>
                 <div class="flex items-center justify-center gap-4 mt-8 opacity-60">
                     <div class="h-px w-16 bg-gradient-to-r from-transparent to-secondary"></div>
@@ -48,57 +49,94 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16 w-full">
 
                 <a href="bestiary.html"
-                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float">
-                    <span
-                        class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-8">temp_preferences_custom</span>
-                    <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white mb-4 text-center">
-                        Bestiary of the Void</h3>
-                    <p
-                        class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center flex-grow leading-relaxed max-w-[250px] mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        Entities and cosmic horrors, bound within the Major Arcana.
-                    </p>
-                    <span
-                        class="mt-auto text-[10px] uppercase tracking-[0.4em] font-label text-secondary/0 group-hover:text-secondary transition-colors flex items-center gap-2">Draw
-                        a Card <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float relative overflow-hidden">
+
+                    <div
+                        class="flex flex-col items-center transform transition-transform duration-700 ease-out group-hover:-translate-y-16 z-10">
+                        <span
+                            class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-6">temp_preferences_custom</span>
+                        <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white text-center">
+                            Elder Tarot</h3>
+                    </div>
+
+                    <div
+                        class="absolute bottom-12 left-0 right-0 px-8 flex flex-col items-center opacity-0 transform translate-y-8 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 z-10 pointer-events-none">
+                        <p
+                            class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center leading-relaxed max-w-[250px] mx-auto mb-6">
+                            Entities and cosmic horrors, bound within the Major Arcana.
+                        </p>
+                        <span
+                            class="text-[10px] uppercase tracking-[0.4em] font-label text-secondary flex items-center gap-2">
+                            Draw a Card <span
+                                class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </span>
+                    </div>
                 </a>
 
-                <a href="#" style="animation-delay: -3s;"
-                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float">
-                    <span
-                        class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-8">history_edu</span>
-                    <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white mb-4 text-center">
-                        Archival Handouts</h3>
-                    <p
-                        class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center flex-grow leading-relaxed max-w-[250px] mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        Physical evidence, decrypted letters, and field maps.
-                    </p>
-                    <span
-                        class="mt-auto text-[10px] uppercase tracking-[0.4em] font-label text-secondary/0 group-hover:text-secondary transition-colors flex items-center gap-2">Examine
-                        Evidence <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+                <a href="handouts.html" style="animation-delay: -3s;"
+                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float relative overflow-hidden">
+
+                    <div
+                        class="flex flex-col items-center transform transition-transform duration-700 ease-out group-hover:-translate-y-16 z-10">
+                        <span
+                            class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-6">history_edu</span>
+                        <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white text-center">
+                            Archival Handouts</h3>
+                    </div>
+
+                    <div
+                        class="absolute bottom-12 left-0 right-0 px-8 flex flex-col items-center opacity-0 transform translate-y-8 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 z-10 pointer-events-none">
+                        <p
+                            class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center leading-relaxed max-w-[250px] mx-auto mb-6">
+                            Physical evidence, decrypted letters, and field maps.
+                        </p>
+                        <span
+                            class="text-[10px] uppercase tracking-[0.4em] font-label text-secondary flex items-center gap-2">
+                            Examine Evidence <span
+                                class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </span>
+                    </div>
                 </a>
-                <a href="#"
-                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float">
-                    <span
-                        class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-8">menu_book</span>
-                    <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white mb-4 text-center">
-                        Tomes of Reference</h3>
-                    <p
-                        class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center flex-grow leading-relaxed max-w-[250px] mx-auto mt-4 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
-                        The grand bibliography of historical events and forbidden art.
-                    </p>
-                    <span
-                        class="mt-auto text-[10px] uppercase tracking-[0.4em] font-label text-secondary/0 group-hover:text-secondary transition-colors flex items-center gap-2">Study
-                        the Source <span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+
+                <a href="tomes.html"
+                    class="gateway-card aspect-[2/3] rounded-xl p-8 flex flex-col items-center justify-center group animate-float relative overflow-hidden">
+
+                    <div
+                        class="flex flex-col items-center transform transition-transform duration-700 ease-out group-hover:-translate-y-16 z-10">
+                        <span
+                            class="card-icon material-symbols-outlined text-7xl text-secondary/40 group-hover:text-secondary mb-6">menu_book</span>
+                        <h3 class="font-headline text-3xl font-bold text-white/90 group-hover:text-white text-center">
+                            Tomes of Reference</h3>
+                    </div>
+
+                    <div
+                        class="absolute bottom-12 left-0 right-0 px-8 flex flex-col items-center opacity-0 transform translate-y-8 transition-all duration-700 ease-out group-hover:translate-y-0 group-hover:opacity-100 z-10 pointer-events-none">
+                        <p
+                            class="font-newsreader text-on-surface-variant text-sm lg:text-base text-center leading-relaxed max-w-[250px] mx-auto mb-6">
+                            The grand bibliography of historical events and forbidden art.
+                        </p>
+                        <span
+                            class="text-[10px] uppercase tracking-[0.4em] font-label text-secondary flex items-center gap-2">
+                            Study the Source <span
+                                class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                        </span>
+                    </div>
                 </a>
 
             </div>
+
         </div>
     </main>
 
     <div id="footer-placeholder"></div>
 
     <script>
-
+        // Override standard components for the Library aesthetic
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
     </script>
 </body>
 

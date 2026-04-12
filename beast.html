@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Codex Entry — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="scripts/bestiary-data.js"></script>
+</head>
+
+<body class="bg-[#050505] text-on-surface font-body flex flex-col min-h-screen">
+
+    <div id="header-placeholder" class="relative z-50"></div>
+    <div id="library-sidebar-placeholder"></div>
+
+    <main class="flex-grow pt-24 px-4 md:px-8 pb-24 max-w-[1400px] w-full mx-auto relative z-10">
+
+        <nav class="flex items-center gap-2 font-label text-[10px] uppercase tracking-widest text-white/40 mb-8">
+            <a href="library.html" class="hover:text-secondary transition-colors">Library</a>
+            <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+            <a href="bestiary.html" class="hover:text-secondary transition-colors">Elder Tarot</a>
+            <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+            <span id="b-crumb-name" class="text-secondary font-bold">...</span>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-12">
+
+            <div class="lg:col-span-6 flex flex-col relative p-4">
+
+                <div class="absolute top-0 left-0 w-16 h-16 border-t border-l border-secondary/40 pointer-events-none">
+                </div>
+                <div
+                    class="absolute bottom-0 right-0 w-16 h-16 border-b border-r border-secondary/40 pointer-events-none">
+                </div>
+
+                <div
+                    class="w-full aspect-[4/3] lg:aspect-square bg-[#0a0b0a] border border-white/5 overflow-hidden relative shadow-2xl group">
+                    <img id="b-image" src="" alt="Beast"
+                        class="w-full h-full object-cover opacity-80 group-hover:saturate-150 hover:contrast-100 group-hover:opacity-100 transition-all duration-700">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none">
+                    </div>
+                    <div class="absolute inset-0 ring-1 ring-inset ring-white/10 pointer-events-none"></div>
+
+                    <div id="b-tags" class="absolute bottom-5 left-5 flex flex-wrap gap-2 z-10"></div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-6 flex flex-col justify-center">
+                <p class="font-label text-[10px] uppercase tracking-[0.3em] text-white/40 mb-2">Specimen No. <span
+                        id="b-specimen" class="text-white/80"></span></p>
+                <h1 id="b-name" class="font-headline font-bold text-6xl md:text-7xl text-white mb-10 tracking-tight">
+                </h1>
+
+                <div class="bg-[#0a0b0a] border border-secondary/20 rounded-lg p-8 shadow-lg w-full max-w-2xl">
+                    <div class="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
+                        <span class="material-symbols-outlined text-secondary text-sm">analytics</span>
+                        <h3 class="font-label text-[10px] uppercase tracking-[0.3em] text-secondary">Narrative Threat
+                            Assessment</h3>
+                    </div>
+                    <div id="b-stats" class="space-y-6"></div>
+                </div>
+
+                <div class="mt-10">
+                    <p class="font-label text-[9px] uppercase tracking-[0.3em] text-white/40 mb-3">Known Habitats</p>
+                    <div id="b-habitats" class="flex flex-wrap gap-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+
+            <div class="lg:col-span-8 flex flex-col gap-8">
+                <div class="bg-surface-container-low border border-white/5 rounded-lg p-8 md:p-10 shadow-xl">
+                    <div class="flex justify-between items-start mb-6">
+                        <h2 id="b-lore-title" class="font-headline text-3xl text-secondary font-bold"></h2>
+                        <span class="material-symbols-outlined text-4xl text-white/10">history_edu</span>
+                    </div>
+                    <div id="b-lore-body"
+                        class="prose prose-invert prose-gold font-body text-base leading-relaxed text-white/70 max-w-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-surface-container-low border border-white/5 rounded-lg p-6">
+                        <h3 class="font-label text-[10px] uppercase tracking-[0.2em] text-white/50 mb-4">Observed
+                            Behaviors</h3>
+                        <ul id="b-behaviors" class="space-y-3 text-sm text-white/70 font-body"></ul>
+                    </div>
+                    <div class="bg-surface-container-low border border-white/5 rounded-lg p-6">
+                        <h3 class="font-label text-[10px] uppercase tracking-[0.2em] text-error/60 mb-4">Known
+                            Weaknesses</h3>
+                        <ul id="b-weaknesses" class="space-y-3 text-sm text-white/70 font-body"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-4 flex flex-col gap-8">
+
+                <div>
+                    <h3 class="font-headline text-2xl text-white mb-6">Loot & Curiosities</h3>
+                    <div id="b-loot" class="space-y-4"></div>
+                </div>
+
+                <div id="b-scholar-container"
+                    class="bg-[#121412] border border-white/10 rounded-lg p-6 relative mt-4 shadow-xl">
+                    <span class="font-label text-[9px] uppercase tracking-[0.3em] text-white/40 block mb-4">Scholar's
+                        Note</span>
+                    <p id="b-scholar-quote" class="font-newsreader italic text-white/80 text-sm leading-relaxed mb-4">
+                    </p>
+                    <p id="b-scholar-name"
+                        class="font-label text-[10px] text-white/40 text-right uppercase tracking-widest"></p>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetId = urlParams.get('id');
+
+            // Find the ~beast~ in data
+            const beast = typeof bestiaryData !== 'undefined' ? bestiaryData.find(b => b.id === targetId) : null;
+
+            if (!beast) {
+                document.getElementById('b-name').textContent = "Record Not Found";
+                return;
+            }
+
+            // Populate Basic Info
+            document.getElementById('b-crumb-name').textContent = beast.name;
+            document.getElementById('b-image').src = beast.image;
+            document.getElementById('b-specimen').textContent = beast.specimenNo || "UNKNOWN";
+            document.getElementById('b-name').textContent = beast.name;
+            document.getElementById('b-lore-title').textContent = beast.loreTitle || "Archival Record";
+            document.getElementById('b-lore-body').innerHTML = beast.body;
+
+            // Populate Tags (over the image)
+            if (beast.tags) {
+                document.getElementById('b-tags').innerHTML = beast.tags.map(t =>
+                    `<span class="px-3 py-1.5 bg-indigo-900/80 backdrop-blur-sm border border-white/10 text-[9px] font-label uppercase tracking-widest text-white/60 shadow-lg">${t}</span>`
+                ).join('');
+            }
+
+            // Populate Progress Bars (Stats)
+            if (beast.stats) {
+                document.getElementById('b-stats').innerHTML = Object.entries(beast.stats).map(([statName, value]) => `
+                    <div>
+                        <div class="flex justify-between text-[10px] font-label uppercase tracking-widest text-white/60 mb-2">
+                            <span>${statName}</span>
+                            <span class="text-secondary">${value} / 100</span>
+                        </div>
+                        <div class="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div class="h-full bg-secondary shadow-[0_0_10px_rgba(233,193,118,0.5)] transition-all duration-1000 ease-out" style="width: ${value}%"></div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Populate Habitats (colored pills)
+            if (beast.habitats) {
+                document.getElementById('b-habitats').innerHTML = beast.habitats.map(h =>
+                    `<span class="px-3 py-1.5 bg-secondary/10 border border-secondary/20 rounded-full text-[9px] font-label uppercase tracking-widest text-secondary/80 flex items-center gap-1.5 shadow-sm"><span class="material-symbols-outlined text-[12px] text-secondary/50">landscape</span> ${h}</span>`
+                ).join('');
+            }
+
+            // Populate Lists (Behaviors & Weaknesses)
+            const makeList = (arr) => arr ? arr.map(item => `<li class="flex gap-2"><span class="text-secondary/50 mt-0.5">•</span> <span>${item}</span></li>`).join('') : '';
+            document.getElementById('b-behaviors').innerHTML = makeList(beast.behaviors);
+            document.getElementById('b-weaknesses').innerHTML = makeList(beast.weaknesses);
+
+            // Populate Loot
+            if (beast.loot) {
+                document.getElementById('b-loot').innerHTML = beast.loot.map(l => `
+                    <div class="flex items-center gap-4 bg-[#0a0b0a] border border-white/5 p-3 rounded-lg hover:border-secondary/30 transition-colors group">
+                        <div class="w-10 h-10 shrink-0 bg-[#121412] border border-white/10 rounded flex items-center justify-center group-hover:border-secondary/50 transition-colors">
+                            <span class="material-symbols-outlined text-white/50 text-[18px] group-hover:text-secondary transition-colors">${l.icon}</span>
+                        </div>
+                        <div>
+                            <h4 class="font-headline font-bold text-white text-sm group-hover:text-secondary transition-colors">${l.name}</h4>
+                            <p class="font-newsreader italic text-white/40 text-xs">${l.type}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Populate Scholar Note
+            if (beast.scholarQuote) {
+                document.getElementById('b-scholar-quote').textContent = `"${beast.scholarQuote}"`;
+                document.getElementById('b-scholar-name').textContent = `- ${beast.scholarName}`;
+            } else {
+                document.getElementById('b-scholar-container').classList.add('hidden');
+            }
+        });
+
+        // Override standard components for the Library aesthetic
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
+    </script>
+</body>
+
+</html>

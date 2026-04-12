@@ -23,9 +23,13 @@ function loadComponent(placeholderId, componentPath) {
             if (placeholderId === "header-placeholder") {
                 highlightActiveLink();
             }
-            // NEW: If the component we just injected is the sidebar, run the sidebar highlight function
+            // If the component we just injected is the sidebar, run the sidebar highlight function
             else if (placeholderId === "sidebar-placeholder") {
                 highlightActiveSidebarItem();
+            }
+            // NEW: If the library sidebar just loaded, run its highlight function!
+            else if (placeholderId === "library-sidebar-placeholder") {
+                highlightLibrarySidebar();
             }
         })
         .catch(error => console.error(error));
@@ -55,7 +59,7 @@ function highlightActiveLink() {
             // Add the glowing gold active colors
             link.classList.add("text-[#e9c176]", "drop-shadow-[0_0_8px_rgba(233,193,118,0.4)]");
 
-            // Optional: Find the icon inside this link and make it permanently tilted and gold
+            // Find the icon inside this link and make it permanently tilted and gold
             const icon = link.querySelector(".material-symbols-outlined");
             if (icon) {
                 icon.classList.add("rotate-12", "text-[#e9c176]");
@@ -117,8 +121,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-
+// ==========================================
 // --- RADIAL ORB MOBILE MENU ---
+// ==========================================
 function createMobileOrbMenu() {
     const orbContainer = document.createElement('div');
     orbContainer.id = 'mobile-orb-menu';
@@ -221,7 +226,10 @@ if (document.readyState === 'loading') {
     createMobileOrbMenu();
 }
 
+// ==========================================
 // Generate mystical ambient dust particles
+// ==========================================
+
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById('dust-container');
     const particleCount = 20;
@@ -241,3 +249,51 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(particle);
     }
 });
+
+// ==========================================
+// LIBRARY SIDEBAR LOGIC
+// ==========================================
+
+function toggleLibrarySidebar() {
+    const sidebar = document.getElementById('library-sidebar-container');
+    const icon = document.getElementById('lib-sidebar-icon');
+
+    if (!sidebar || !icon) return;
+
+    if (sidebar.classList.contains('translate-x-full')) {
+        // Open it
+        sidebar.classList.remove('translate-x-full');
+        icon.textContent = 'close';
+        icon.classList.add('rotate-90');
+    } else {
+        // Close it
+        sidebar.classList.add('translate-x-full');
+        icon.textContent = 'menu_open';
+        icon.classList.remove('rotate-90');
+    }
+}
+
+function highlightLibrarySidebar() {
+    let currentFileName = window.location.pathname.split("/").pop();
+    if (currentFileName === "" || currentFileName.includes("beast.html")) {
+        // If on the specific beast page, highlight the bestiary
+        currentFileName = "bestiary.html";
+    }
+
+    const links = document.querySelectorAll('#lib-sidebar-nav a');
+
+    links.forEach(link => {
+        const href = link.getAttribute('href');
+
+        if (href === currentFileName) {
+            // Apply Active Gold Styles
+            link.className = "flex items-center gap-4 px-4 py-3 rounded-lg text-secondary border border-secondary/20 bg-secondary/10 shadow-[0_0_15px_rgba(233,193,118,0.1)] transition-all group";
+            const icon = link.querySelector('.material-symbols-outlined');
+            if (icon) icon.className = "material-symbols-outlined text-secondary text-lg drop-shadow-[0_0_5px_rgba(233,193,118,0.5)]";
+            const text = link.querySelector('span:not(.material-symbols-outlined)');
+            if (text) text.classList.add('font-bold');
+        }
+    });
+}
+
+// ==========================================

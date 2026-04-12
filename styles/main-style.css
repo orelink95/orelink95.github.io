@@ -241,9 +241,22 @@
     }
 }
 
-/* Gateway Card - Tarot Proportions */
+/* Gateway Card */
 .gateway-card {
-    background: linear-gradient(180deg, rgba(18, 20, 18, 0.4) 0%, rgba(10, 11, 10, 0.8) 100%);
+    background-color: rgba(10, 11, 10, 0.6);
+    background-image:
+        /* 1. Subtle golden spotlight from top */
+        radial-gradient(circle at 50% 0%, rgba(233, 193, 118, 0.15) 0%, transparent 60%),
+        /* 2. Deep void purple glow from bottom right */
+        radial-gradient(circle at 100% 100%, rgba(26, 11, 46, 0.5) 0%, transparent 60%),
+        /* 3. Micro-dot texture */
+        radial-gradient(rgba(233, 193, 118, 0.06) 1px, transparent 1px),
+        /* 4. Base glassmorph */
+        linear-gradient(180deg, rgba(18, 20, 18, 0.2) 0%, rgba(10, 11, 10, 0.8) 100%);
+
+    /*  dots repeat, but gradients stretch */
+    background-size: 100% 100%, 100% 100%, 16px 16px, 100% 100%;
+
     backdrop-filter: blur(12px);
     border: 1px solid rgba(233, 193, 118, 0.1);
     transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
@@ -251,7 +264,16 @@
     overflow: hidden;
 }
 
-/* The glowing runic border on hover */
+.gateway-card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(233, 193, 118, 0.15);
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(233, 193, 118, 0.25) 0%, transparent 70%),
+        radial-gradient(circle at 100% 100%, rgba(26, 11, 46, 0.7) 0%, transparent 60%),
+        radial-gradient(rgba(233, 193, 118, 0.1) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(18, 20, 18, 0.4) 0%, rgba(10, 11, 10, 0.9) 100%);
+}
+
 .gateway-card::before {
     content: '';
     position: absolute;
@@ -266,10 +288,6 @@
     transition: opacity 0.7s ease;
 }
 
-.gateway-card:hover {
-    transform: translateY(-15px) scale(1.02);
-    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(233, 193, 118, 0.1);
-}
 
 .gateway-card:hover::before {
     opacity: 1;
@@ -283,4 +301,23 @@
 .gateway-card:hover .card-icon {
     filter: drop-shadow(0 0 20px rgba(233, 193, 118, 0.4));
     transform: scale(1.1) translateY(-5px);
+    /*Soft pulse animation starts AFTER the initial 0.7s glide finishes */
+    animation: card-icon-pulse 3s ease-in-out infinite;
+    animation-delay: 0.7s;
+}
+
+/* Keyframes for the soft breathing effect */
+@keyframes card-icon-pulse {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 20px rgba(233, 193, 118, 0.4));
+        transform: scale(1.1) translateY(-5px);
+    }
+
+    50% {
+        /* Increases the glow and pushes it slightly higher/larger */
+        filter: drop-shadow(0 0 40px rgba(233, 193, 118, 0.9));
+        transform: scale(1.15) translateY(-8px);
+    }
 }

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Elder Tarot — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="scripts/bestiary-data.js"></script>
+    <script src="scripts/bestiary-scripts.js"></script>
+</head>
+
+<body
+    class="mystical-bg text-on-surface font-body selection:bg-secondary/30 selection:text-secondary flex flex-col min-h-screen relative">
+
+    <div id="dust-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+
+    <div id="header-placeholder" class="relative z-50"></div>
+    <div id="library-sidebar-placeholder"></div>
+
+    <main class="flex-grow pt-24 px-4 md:px-8 pb-24 max-w-[1600px] w-full mx-auto relative z-10">
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16">
+            <div class="max-w-2xl">
+                <h1
+                    class="font-headline font-bold text-5xl md:text-7xl text-secondary mb-4 drop-shadow-[0_0_15px_rgba(233,193,118,0.2)]">
+                    The Elder Tarot</h1>
+                <p class="font-newsreader italic text-on-surface-variant text-lg md:text-xl">An illuminated compilation
+                    of the strange and dangerous entities haunting the known worlds.</p>
+            </div>
+
+            <div class="w-full md:w-80 flex flex-col gap-2">
+                <label class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 pl-2">Search
+                    Records</label>
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm">search</span>
+                    <input type="text" id="bestiary-search" placeholder="Enter by name or location..."
+                        class="w-full bg-transparent border-b border-white/20 text-white font-newsreader italic text-lg pl-10 pr-4 py-2 outline-none focus:border-secondary transition-colors placeholder-white/20">
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8 mb-16 border-t border-white/5 pt-8">
+            <div class="flex flex-col md:flex-row gap-8 w-full xl:w-auto">
+
+                <div>
+                    <span class="font-label text-[9px] uppercase tracking-[0.3em] text-white/40 block mb-3">By
+                        Realm</span>
+                    <div id="filter-realm" class="flex flex-wrap gap-2">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="font-label text-[9px] uppercase tracking-[0.3em] text-white/40 block mb-3">By
+                        Phylogeny</span>
+                    <div id="filter-phylogeny" class="flex flex-wrap gap-2">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="font-label text-[9px] uppercase tracking-[0.3em] text-white/40 block mb-3">By
+                        Threat</span>
+                    <div id="filter-threat" class="flex flex-wrap gap-2">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="bestiary-grid"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-8 md:gap-10">
+        </div>
+
+    </main>
+
+    <div id="bestiary-modal"
+        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#0a0b0a]/95 backdrop-blur-xl p-4 md:p-8">
+        <div
+            class="max-w-5xl w-full bg-[#121412] rounded-xl overflow-hidden border border-secondary/30 shadow-[0_0_100px_rgba(233,193,118,0.15)] flex flex-col md:flex-row max-h-[90vh]">
+
+            <div class="md:w-5/12 bg-black relative flex items-center justify-center p-8 shrink-0">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#121412] to-transparent z-10 md:hidden"></div>
+                <img id="modal-beast-img"
+                    class="w-full h-auto max-h-full object-contain relative z-0 border border-white/10 rounded-sm shadow-2xl"
+                    src="" alt="Beast" />
+            </div>
+
+            <div class="md:w-7/12 p-8 md:p-12 relative flex flex-col overflow-y-auto custom-scrollbar">
+                <button onclick="closeBestiaryModal()"
+                    class="absolute top-6 right-6 text-white/40 hover:text-secondary z-10 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+
+                <p id="modal-beast-arcana"
+                    class="font-label text-secondary text-[10px] uppercase tracking-[0.4em] mb-2"></p>
+                <h2 id="modal-beast-name" class="text-4xl md:text-5xl font-headline font-bold text-white mb-2"></h2>
+                <p id="modal-beast-location" class="font-newsreader italic text-white/60 text-lg mb-8"></p>
+
+                <div class="flex items-center gap-4 mb-8 bg-black/40 border border-white/5 p-4 rounded-lg">
+                    <div id="modal-beast-threat-badge"
+                        class="flex items-center gap-2 border px-3 py-1.5 rounded-full bg-black/50 shadow-lg">
+                        <span id="modal-beast-threat-dot" class="w-2 h-2 rounded-full animate-pulse"></span>
+                        <span id="modal-beast-threat-text"
+                            class="text-[9px] uppercase tracking-widest font-bold"></span>
+                    </div>
+                    <div class="w-px h-8 bg-white/10"></div>
+                    <div>
+                        <p class="font-label text-[8px] uppercase tracking-widest text-white/40 mb-1">Phylogeny</p>
+                        <p id="modal-beast-phylogeny" class="text-sm font-bold text-white/90"></p>
+                    </div>
+                    <div class="w-px h-8 bg-white/10"></div>
+                    <div>
+                        <p class="font-label text-[8px] uppercase tracking-widest text-white/40 mb-1">Known Realm</p>
+                        <p id="modal-beast-realm" class="text-sm font-bold text-white/90"></p>
+                    </div>
+                </div>
+
+                <div id="modal-beast-body"
+                    class="prose prose-invert prose-gold font-body text-sm leading-relaxed text-white/70 space-y-4">
+                </div>
+                <div id="modal-beast-body"
+                    class="prose prose-invert prose-gold font-body text-sm leading-relaxed text-white/70 space-y-4">
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-white/10 flex justify-end">
+                    <a id="modal-beast-link" href="#"
+                        class="px-6 py-3 bg-secondary/10 border border-secondary/30 text-secondary font-label text-[10px] uppercase tracking-[0.2em] rounded hover:bg-secondary/20 transition-colors flex items-center gap-2">
+                        Study Full Record <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Override standard components for the Library aesthetic
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
+    </script>
+
+</body>
+
+</html>

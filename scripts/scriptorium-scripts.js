@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const isLatest = index === 0 && searchInput.value === "" && arcFilter.value === "all";
 
             html += `
-                <div class="relative pl-10 md:pl-16 mb-12 group animate-fade-in">
+                <div id="${session.id}" class="relative pl-10 md:pl-16 mb-12 group animate-fade-in">
                     <div class="absolute left-[11.5px] md:left-[19.5px] top-6 w-2.5 h-2.5 rounded-full ${isLatest ? 'bg-[#e9c176] shadow-[0_0_15px_rgba(233,193,118,0.6)]' : 'bg-white/10 group-hover:bg-white/30'} z-10 transition-all"></div>
                     
                     <div onclick="openSessionFolio('${session.id}')" class="bg-[#121412] ${isLatest ? 'border-l-2 border-[#e9c176]/40' : 'border-l-2 border-transparent'} rounded-r-lg p-6 md:p-8 hover:bg-[#161816] transition-all border-t border-r border-b border-white/5 cursor-pointer shadow-lg hover:shadow-2xl">
@@ -444,4 +444,41 @@ document.addEventListener("DOMContentLoaded", () => {
             window.closeSessionModal();
         }
     });
+
+    // --- URL PARAMETER LISTENER FOR DEEP LINKING ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const targetSessionId = urlParams.get('session');
+
+    if (targetSessionId) {
+        // Wait 300ms to ensure the JS has fully rendered the timeline cards
+        setTimeout(() => {
+            const sessionElement = document.getElementById(targetSessionId);
+
+            if (sessionElement) {
+                // 1. Scroll the window smoothly to the session card on the timeline
+                sessionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // 2. Find the inner card container and give it a temporary golden glow
+                const card = sessionElement.querySelector('.cursor-pointer');
+                if (card) {
+                    const originalShadow = card.style.boxShadow;
+                    card.style.transition = "box-shadow 0.5s ease";
+                    card.style.boxShadow = "0 0 30px rgba(233, 193, 118, 0.6)";
+
+                    setTimeout(() => {
+                        card.style.boxShadow = originalShadow;
+                    }, 2000);
+                }
+
+                // 3. Auto-open the session folio modal so they can start reading!
+                if (typeof window.openSessionFolio === 'function') {
+                    // Slight delay so they see the scroll happen before the modal covers the screen
+                    setTimeout(() => {
+                        window.openSessionFolio(targetSessionId);
+                    }, 400);
+                }
+            }
+        }, 300);
+    }
+
 });

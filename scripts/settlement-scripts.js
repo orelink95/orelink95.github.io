@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 2. URL & REGISTRY SETUP ---
     const urlParams = new URLSearchParams(window.location.search);
     let settlementId = urlParams.get('id');
+    let targetDistrict = urlParams.get('district');
 
     if (!settlementId || !settlementRegistry[settlementId]) {
         settlementId = 'brightend';
@@ -218,7 +219,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    loadDistrict(0);
+    // --- 8. SMART DISTRICT LOADER ---
+    let initialDistrictIdx = 0; // Default to the first district
+
+    if (targetDistrict) {
+        // If the URL passes a direct number 
+        if (!isNaN(targetDistrict) && targetDistrict >= 0 && targetDistrict < data.districts.length) {
+            initialDistrictIdx = parseInt(targetDistrict);
+        } else {
+            // If the URL passes a name format the string to handle underscores and capitalization gracefully
+            const searchStr = targetDistrict.toLowerCase().replace(/_/g, ' ');
+            const foundIdx = data.districts.findIndex(d =>
+                d.name.toLowerCase() === searchStr ||
+                (d.id && d.id.toLowerCase() === targetDistrict.toLowerCase())
+            );
+
+            if (foundIdx !== -1) {
+                initialDistrictIdx = foundIdx;
+            }
+        }
+    }
+
+    // Load the correct one!
+    loadDistrict(initialDistrictIdx);
 
 
 });

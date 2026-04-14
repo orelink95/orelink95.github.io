@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.getElementById('scriptorium-search');
     const arcFilter = document.getElementById('filter-arc');
     const storyPreview = document.getElementById('story-so-far-preview');
+    const campaignFilter = document.getElementById('filter-campaign');
 
     if (typeof scriptoriumData !== 'undefined') {
         storyPreview.textContent = scriptoriumData.storySoFar.preview;
@@ -12,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         populateArcFilter(scriptoriumData.sessions);
         renderTimeline(scriptoriumData.sessions);
         renderGlobalLoot(scriptoriumData.sessions);
+        populateCampaignFilter(scriptoriumData.sessions);
     }
 
     function findNPC(id) {
@@ -232,21 +234,37 @@ document.addEventListener("DOMContentLoaded", () => {
             arcs.map(arc => `<option value="${arc}">${arc}</option>`).join('');
     }
 
+function populateCampaignFilter(sessions) {
+        if (!campaignFilter) return;
+        const campaigns = [...new Set(sessions.map(s => s.campaign).filter(Boolean))].sort();
+        
+        campaignFilter.innerHTML = `<option value="all">All Campaigns</option>` +
+            campaigns.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
     // --- SEARCH / FILTER LOGIC ---
     const applyFilters = () => {
+    
         const query = searchInput.value.toLowerCase();
         const selectedArc = arcFilter.value;
+        const selectedCampaign = campaignFilter ? campaignFilter.value : "all"; // NEW
 
         const filtered = scriptoriumData.sessions.filter(s => {
             const matchesArc = selectedArc === "all" || s.arc === selectedArc;
+            const matchesCampaign = selectedCampaign === "all" || s.campaign === selectedCampaign; // NEW
             const matchesSearch = s.title.toLowerCase().includes(query) ||
                 s.summary.toLowerCase().includes(query) ||
                 (s.keywords || []).some(k => k.toLowerCase().includes(query)) ||
                 (s.npcsMet || []).some(n => n.id.toLowerCase().includes(query));
-            return matchesArc && matchesSearch;
+                
+            return matchesArc && matchesCampaign && matchesSearch; // UPDATED
         });
         renderTimeline(filtered);
     };
+
+    // Make sure it listens for changes!
+    if (campaignFilter) campaignFilter.addEventListener('change', applyFilters);
+
 
     searchInput.addEventListener('input', applyFilters);
     arcFilter.addEventListener('change', applyFilters);

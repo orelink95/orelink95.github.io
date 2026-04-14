@@ -62,10 +62,15 @@
                             class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-xs font-label uppercase tracking-widest outline-none focus:border-[#e9c176]/40 transition-all">
                     </div>
 
-                    <select id="filter-arc"
-                        class="bg-transparent border-none text-[#e9c176] font-label text-[10px] uppercase tracking-[0.2em] outline-none cursor-pointer">
+                   <div class="flex gap-4">
+                    <select id="filter-campaign" class="bg-black/40 border border-white/20 text-white/70 text-[10px] font-label uppercase tracking-widest rounded px-3 py-2 outline-none focus:border-secondary transition-colors w-full">
+                        <option value="all">All Campaigns</option>
+                    </select>
+
+                    <select id="filter-arc" class="bg-black/40 border border-white/20 text-white/70 text-[10px] font-label uppercase tracking-widest rounded px-3 py-2 outline-none focus:border-secondary transition-colors w-full">
                         <option value="all">All Campaign Arcs</option>
                     </select>
+                    </div>
                 </div>
 
                 <div id="chronicle-timeline" class="relative pl-4 md:pl-8">

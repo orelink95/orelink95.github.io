@@ -29,10 +29,11 @@ const scriptoriumData = {
     sessions: [
         {
             id: "session-3",
+            campaign: "Echoes from the Void",
             dateSpan: "Pemtasten 6 Pholawal, 1693LF",
             region: "Brightend, Maltona",
             title: "Back in Brightend",
-            arc: "Echoes from the Void",
+            arc: "Remnants of the Past",
             summary: "After rescuing Maera Voss and escaping the Vale House, the party discovered a highly coordinated thieve's guild had stolen their prize.",
 
             locationsVisited: [
@@ -100,10 +101,11 @@ const scriptoriumData = {
 
         {
             id: "session-2",
+            campaign: "Echoes from the Void",
             dateSpan: "???",
             region: "The Vale House",
             title: "Secrets of the Vale House",
-            arc: "Echoes from the Void",
+            arc: "Remnants of the Past",
             summary: "The party explored the impossible mansion, battling animated furniture and uncovering the disturbing, time-displaced experiments of its ancient masters.",
 
             locationsVisited: [
@@ -164,10 +166,11 @@ const scriptoriumData = {
         },
         {
             id: "session-1",
+            campaign: "Echoes from the Void",
             dateSpan: "Deftesten 3 Pholawal, 1693LF",
             region: "Brightend, Eperina",
             title: "A Tome Twice Missing",
-            arc: "Echoes from the Void",
+            arc: "Remnants of the Past",
             summary: "Hired by Lord White and two anxious scholars, the party tracked a missing academic through a disappearing door into an impossible pocket dimension.",
 
             locationsVisited: [

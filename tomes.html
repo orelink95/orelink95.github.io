@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tomes of Reference — The Athenaeum Vault</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+    <script src="scripts/general-scripts.js"></script>
+</head>
+
+<body class="mystical-bg text-on-surface font-body selection:bg-secondary/30 selection:text-secondary flex flex-col min-h-screen relative">
+
+    <div id="dust-container" class="fixed inset-0 pointer-events-none z-0 overflow-hidden"></div>
+    <div id="header-placeholder" class="relative z-50"></div>
+    <div id="library-sidebar-placeholder"></div>
+
+    <main class="flex-grow pt-24 px-4 md:px-8 pb-24 max-w-[1600px] w-full mx-auto relative z-10">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16">
+            <div class="max-w-2xl">
+                <nav class="flex items-center gap-2 font-label text-[10px] uppercase tracking-widest text-white/40 mb-4">
+                    <a href="library.html" class="hover:text-secondary transition-colors">Library</a>
+                    <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                    <a href="library.html" class="hover:text-secondary transition-colors">Elder Codex</a>
+                    <span class="material-symbols-outlined text-[12px]">chevron_right</span>
+                    <span class="text-secondary font-bold">Tomes of Reference</span>
+                </nav>
+                <h1 class="font-headline font-bold text-5xl md:text-7xl text-white mb-4 drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">Tomes of Reference</h1>
+                <p class="font-newsreader italic text-white/60 text-lg md:text-xl">The grand bibliography of historical events, forbidden art, and codified knowledge.</p>
+            </div>
+            
+            <div class="w-full md:w-80 flex flex-col gap-2">
+                <label class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 pl-2">Search Library</label>
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-white/30 text-sm">search</span>
+                    <input type="text" id="tome-search" placeholder="Enter title or subject..." class="w-full bg-transparent border-b border-white/20 text-white font-newsreader italic text-lg pl-10 pr-4 py-2 outline-none focus:border-secondary transition-colors placeholder-white/20">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap justify-center md:justify-start gap-4 mb-16 border-t border-white/10 pt-8" id="tome-filters">
+            </div>
+
+        <div id="tome-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 md:gap-12">
+            </div>
+
+    </main>
+
+    <div id="tome-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeTomeModal()"></div>
+        
+        <div class="relative w-full max-w-3xl bg-[#0a0b0a] border border-white/30 rounded-xl shadow-[0_0_100px_rgba(233,193,118,0.15)] flex flex-col max-h-[90vh] overflow-hidden">
+            <div class="p-6 md:p-8 border-b border-white/5 flex justify-between items-start shrink-0 bg-[#121412]">
+                <div>
+                    <p id="modal-tome-type" class="font-label text-secondary text-[10px] uppercase tracking-[0.3em] mb-2"></p>
+                    <h2 id="modal-tome-title" class="text-3xl md:text-4xl font-headline font-bold text-white mb-1"></h2>
+                    <p id="modal-tome-author" class="font-newsreader italic text-white/50 text-sm"></p>
+                </div>
+                <button onclick="closeTomeModal()" class="text-white/40 hover:text-white p-2 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="p-8 md:p-12 overflow-y-auto custom-scrollbar font-body text-base text-white/80 leading-relaxed space-y-6">
+                <div id="modal-tome-content" class="prose prose-invert prose-gold max-w-none"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="scripts/tomes-data.js"></script>
+    <script src="scripts/tomes-scripts.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
+    </script>
+</body>
+        
+</body>
+</html>

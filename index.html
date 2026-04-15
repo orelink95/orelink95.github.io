@@ -78,15 +78,16 @@
     </section>
 
     <!-- Navigation Portal -->
-    <section class="py-32 px-6 md:px-12 bg-surface max-w-7xl mx-auto">
+    <section class="pt-24 pb-10 px-6 md:px-12 bg-surface max-w-7xl mx-auto">
       <div class="mb-20 text-center">
         <h2 class="font-headline text-4xl text-secondary mb-4 animate-glow">Gateways to the Beyond</h2>
         <div class="w-24 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent mx-auto"></div>
       </div>
+
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
 
         <div
-          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)] aspect-square md:aspect-[16/9]">
+          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)] h-full min-h-[350px] md:min-h-[450px]">
           <img
             class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-1000 scale-105 group-hover:scale-100"
             data-alt="map of lemerolai and adjacent wildlands" src="images/lemerolai_map.png" />
@@ -108,7 +109,7 @@
         </div>
 
         <div
-          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)] aspect-square">
+          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)] h-full min-h-[350px] md:min-h-[450px]">
           <img
             class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105"
             data-alt="stack of ancient leather-bound books glowing with faint blue magical energy in a dark scholarly study"
@@ -128,7 +129,7 @@
         </div>
 
         <div
-          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)] aspect-square">
+          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)] h-full min-h-[350px] md:min-h-[450px]">
           <img
             class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105"
             data-alt="close up of a silver fountain pen writing glowing magical runes onto a scroll of aged parchment"
@@ -148,7 +149,7 @@
         </div>
 
         <div
-          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)] aspect-square md:aspect-[16/9]">
+          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)] h-full min-h-[350px] md:min-h-[450px]">
           <img
             class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-1000 group-hover:scale-105"
             data-alt="majestic silhouettes of fantasy heroes standing on a cliff edge looking at a distant gothic castle under a giant moon"
@@ -168,22 +169,112 @@
         </div>
       </div>
     </section>
+    
+    <section class="py-20 px-6 relative z-20 max-w-7xl mx-auto -mb-16">
+      <div class="flex flex-col items-center mb-10">
+        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-secondary animate-pulse-slow mb-2">The Loom of Fate</span>
+        <h2 class="font-headline text-3xl md:text-4xl text-on-surface flex items-center gap-4">
+          <span class="h-px w-12 bg-gradient-to-r from-transparent to-secondary/50"></span>
+          Upcoming Sessions
+          <span class="h-px w-12 bg-gradient-to-l from-transparent to-secondary/50"></span>
+        </h2>
+      </div>
 
-    <!-- Recent Discoveries -->
-    <section class="bg-surface-container-low py-24 relative overflow-hidden">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="upcoming-sessions-grid">
+        
+        <div class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-secondary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(233,193,118,0.15)] hover:-translate-y-2 cursor-default" style="--glow-color: rgba(233, 193, 118, 0.15);">
+          
+          <div class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);"></div>
+          
+          <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-secondary to-transparent opacity-50 group-hover:opacity-100 transition-opacity z-10"></div>
+
+          <div class="flex justify-between items-start mb-6 relative z-10">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-secondary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                <span class="material-symbols-outlined text-secondary text-xl opacity-80 group-hover:opacity-100 group-hover:animate-pulse" style="font-variation-settings: 'FILL' 1;">hourglass_top</span>
+              </div>
+              <div>
+                <h3 class="font-headline text-xl font-bold text-white group-hover:text-secondary transition-colors">Echoes from the Void</h3>
+                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 6</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-secondary/15 border border-secondary/30 text-secondary text-[8px] uppercase tracking-widest font-bold shadow-[0_0_10px_rgba(233,193,118,0.2)] animate-pulse">Up Next</span>
+          </div>
+
+          <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
+            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">event</span> Saturday, May 9th</p>
+            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 11:00 am</p>
+          </div>
+        </div>
+
+        <div class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(74,222,128,0.1)] hover:-translate-y-2 cursor-default" style="--glow-color: rgba(74, 222, 128, 0.15);">
+          
+          <div class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);"></div>
+
+          <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+
+          <div class="flex justify-between items-start mb-6 relative z-10">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-primary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                <span class="material-symbols-outlined text-primary text-xl opacity-80 group-hover:opacity-100" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+              </div>
+              <div>
+                <h3 class="font-headline text-xl font-bold text-white group-hover:text-primary transition-colors">The Last Sigil</h3>
+                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 9</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/60 text-[8px] uppercase tracking-widest font-bold group-hover:text-primary group-hover:border-primary/30 transition-colors">Scheduled</span>
+          </div>
+
+          <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
+            <p class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">event</span> Saturday, June 13th</p>
+            <p class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 2:00 PM </p>
+          </div>
+        </div>
+
+        <div class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-purple-400/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(192,132,252,0.1)] hover:-translate-y-2 cursor-default" style="--glow-color: rgba(192, 132, 252, 0.15);">
+          
+          <div class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);"></div>
+
+          <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+
+          <div class="flex justify-between items-start mb-6 relative z-10">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-purple-400/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                <span class="material-symbols-outlined text-purple-400 text-xl opacity-80 group-hover:opacity-100" style="font-variation-settings: 'FILL' 1;">explore</span>
+              </div>
+              <div>
+                <h3 class="font-headline text-xl font-bold text-white group-hover:text-purple-400 transition-colors">Echoes from the Void</h3>
+                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 7</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/40 text-[8px] uppercase tracking-widest font-bold">TBD</span>
+          </div>
+
+          <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
+            <p class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/20">event</span> Date Pending</p>
+            <p class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/20">schedule</span> Time Pending</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Latest Updates section -->
+    <section class=" py-20 relative overflow-hidden">
       <!-- Glow Pulse Background -->
       <div
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/5 rounded-full blur-[120px] animate-pulse-slow">
       </div>
       <div class="max-w-7xl mx-auto px-6 relative z-10">
-        <div class="flex items-end justify-between mb-12 border-b border-outline-variant/20 pb-6">
+        <div class="flex items-end justify-between mb-8 border-b border-outline-variant/20 pb-3">
           <div>
             <span class="font-label text-xs uppercase tracking-[0.3em] text-primary animate-pulse">New
               Revelations</span>
             <h2 class="font-headline text-3xl text-on-surface mt-2">Latest Updates</h2>
           </div>
           <a class="text-secondary font-label text-xs uppercase tracking-widest hover:text-secondary-fixed transition-all hover:scale-105"
-            href="#">View All Scrolls</a>
+            href="scriptorium.html">View All Scrolls</a>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 

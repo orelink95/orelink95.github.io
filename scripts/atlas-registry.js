@@ -23,6 +23,7 @@ const allMarkersData = [
         entry: 'Codex Entry',
         body: `
         <p><span class="float-left text-6xl font-headline text-secondary leading-none pr-3 pt-2">T</span>he greatest of the four continents, Maltona is the heart of the known world. Often called The Boundless Vale, it is a land of breathtaking beauty and brutal challenge. Some say the first sentient beings walked here, and even now, its soil holds ancient power. Kingdoms have risen and fallen vying for control of Maltona’s secrets, its riches, and its legacy. It remains, as ever, a land of promise, peril, and possibility.</p>
+        <p>Explore the Boundless Vale, discover its history, its scars andthe people who call it home, just with <a href="continent.html" class="text-lime-700 hover:text-lime-500">a simple click</a>.</p>
     `
     },
     {

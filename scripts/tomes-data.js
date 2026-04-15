@@ -29,6 +29,19 @@ const tomesData = [
             <p>This comprehensive volume, sanctioned by the Runebridge Oversight Committee, serves as the definitive academic survey of "extra-Ethyrian" phenomena within the Boundless Vale. While Ethyria—the interconnected threads of reality born from the fallen goddess Mystara—remains the primary medium for modern spellcraft, this Companion delves into the "liminal spaces" that exist beyond traditional arcane schools, but focuses mostly on the history and beliefs that surround these practices of what the laymen call "magick".</p>
         `
     },
+    {
+        id: "notes-arawan",
+        title: "Notes on the Everlasting",
+        author: "E. Gridgepot",
+        type: "Book",
+        category: "Religion",
+        spineText: "",
+        coverImage: "",
+        themeColor: "cyan",
+        cleanCover: false,
+        content: `<p>This book explores the various interpretations of the Everlasting across different cultures and religions, as well as its potential influence on the events leading up to and following the schism of the Church of Arawan.</p>
+        `
+    }
     //{
     //    id: "scroll-prophecy",
    //     title: "The Last Day",

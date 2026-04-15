@@ -296,4 +296,20 @@ function highlightLibrarySidebar() {
     });
 }
 
-// ==========================================
+// --- CURSOR GLOW ENGINE ---
+    document.addEventListener("DOMContentLoaded", () => {
+      const glowCards = document.querySelectorAll('.cursor-glow-card');
+
+      glowCards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          // Calculate the mouse's coordinates relative to the card's top-left corner
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          // Inject those coordinates into the CSS variables
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+    });

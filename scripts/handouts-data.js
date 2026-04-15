@@ -12,6 +12,17 @@ const handoutsData = [
         thumbnail: "images/map_of_crime.png", // A background image for the card
         fileUrl: "https://drive.google.com/file/d/1AOwrKik_tXenz1uWHUh9mHasHbh3xglL/view?usp=sharing",
     },
+    {
+        id: "str-token",
+        title: "Strange Token",
+        category: "Object",
+        campaign: "Echoes from the Void",
+        icon: "poker_chip", // Google Material Icon name
+        locationFound: "Cloud District",
+        description: "A small wooden token circled with an exotic metal, featuring three roughly made claw marks.",
+        thumbnail: "images/str_token.PNG",
+        fileUrl: "images/str_token.PNG",
+    },
     /*{
         id: "smugglers-map",
         title: "Smuggler's Route",

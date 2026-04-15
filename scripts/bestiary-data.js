@@ -48,7 +48,7 @@ const bestiaryData = [
         specimenNo: "042",
         name: "Chimera",
         location: "Wolf's Teeth Range",
-        image: "https://www.startpage.com/av/proxy-image?piurl=https%3A%2F%2Fimages6.alphacoders.com%2F105%2F1053213.jpg&sp=1775984310T02b36fa49acdd4a77043be2ebfb0424c7a6ad09304c2ba92fefcef0915c03527",
+        image: "images/chimera.jpg",
         threatLevel: "Lethal",
         realm: "Material Plane",
         phylogeny: "Monstrosity",
@@ -72,7 +72,7 @@ const bestiaryData = [
         `,
         behaviors: [
             "Nocturnal territorial patrol",
-            "Triple-sensory awareness (360° sight)",
+            "Triple-sensory awareness",
             "Fire-breathing during threat displays"
         ],
         weaknesses: [

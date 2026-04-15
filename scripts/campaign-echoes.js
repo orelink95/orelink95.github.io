@@ -1,7 +1,12 @@
-// The real data : story so far & session summaries
+// scripts/campaign-echoes.js
 
+// 1. Ensure the master registry exists
+window.campaignData = window.campaignData || {};
 
-const scriptoriumData = {
+// 2. Attach THIS campaign to the registry using its exact name!
+window.campaignData["Echoes from the Void"] = {
+    
+    // --- THE GRAND NARRATIVE ---
     storySoFar: {
         preview: "A ragged band of mercenaries, drawn together by a mysterious summons, arrived in Brightend just as the King's peace began to fracture...",
         full: `
@@ -21,15 +26,16 @@ const scriptoriumData = {
         `
     },
 
+    // --- ACTIVE LEADS / QUESTS ---
     activeQuests: [
         { title: "Exfiltration", description: "Help Maera escape Brightend and offer her self passage to the Athenaeum.", status: "Primary" },
         { title: "A String of Thefts", description: "Brightened has been plagued by a string of mysterious thefts, according to The Wardens.", status: "Secondary" }
     ],
 
+    // --- ALL SESSION RECORDS ---
     sessions: [
-                {
+        {
             id: "session-4",
-            campaign: "Echoes from the Void",
             dateSpan: "Pemtasten 6 Pholawal, 1693LF",
             region: "Brightend, Maltona",
             title: "Stretched thin",
@@ -79,7 +85,6 @@ const scriptoriumData = {
         },
         {
             id: "session-3",
-            campaign: "Echoes from the Void",
             dateSpan: "Pemtasten 6 Pholawal, 1693LF",
             region: "Brightend, Maltona",
             title: "Back in Brightend",
@@ -148,10 +153,8 @@ const scriptoriumData = {
                 <p>Lord White directed them to the Grand Warden. A review of the Warden's case-board revealed clerical errors, erased witnesses, and a chillingly precise crime wave that began right after the King's mage cadet, Verrick, disappeared. The hunt for the phantom guild had officially begun.</p>
             `
         },
-
         {
             id: "session-2",
-            campaign: "Echoes from the Void",
             dateSpan: "???",
             region: "The Vale House",
             title: "Secrets of the Vale House",
@@ -216,7 +219,6 @@ const scriptoriumData = {
         },
         {
             id: "session-1",
-            campaign: "Echoes from the Void",
             dateSpan: "Deftesten 3 Pholawal, 1693LF",
             region: "Brightend, Eperina",
             title: "A Tome Twice Missing",

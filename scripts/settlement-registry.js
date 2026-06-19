@@ -9,41 +9,17 @@ const settlementRegistry = {
                 id: 'cloud_district', name: 'Cloud District',
                 mapImage: './images/cloud_district_map.png', mapWidth: 1167, mapHeight: 1080,
                 lore: {
-                    entry: 'District: Alpha', title: 'The Cloud District', body: `
-<p><span class="float-left text-5xl font-headline text-secondary leading-none pr-2 pt-1">S</span>uspended above the smog, this is where the elite reside. Palaces of white marble and hanging gardens dominate the skyline.</p>           
-                
-                
-                
-                
-                
-                ` },
+                    entry: 'District: Alpha', title: 'The Cloud District', body: ` <p><span class="float-left text-5xl font-headline text-secondary leading-none pr-2 pt-1">S</span>uspended above the smog, this is where the elite reside. Palaces of white marble and hanging gardens dominate the skyline.</p>           
+     ` },
                 npcs: [
-                    'lordwhite', 'hammer_nim', 'maeravoss', 'wardenfoll', 'mertonlensher', 'erikthayne'],
+                    'lordwhite', 'hammer_nim', 'maeravoss', 'wardenfoll', 'mertonlensher', 'erikthayne', 'sephet'],
                 pins: [
-                    { y: 990, x: 705, icon: 'capital', title: 'The Alabaster Palace', subtitle: 'King\'s Estate', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_palace.png', body: `
+                    {
+                        y: 990, x: 705, icon: 'capital', title: 'The Alabaster Palace', subtitle: 'King\'s Estate', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_palace.png', body: ` <p>The seat of power in Brightend. From here, the King oversees the distribution of resources across the vale.</p>`
+                    },
+                    {
+                        y: 342, x: 119, icon: 'pay-money', title: 'Hammer\'s Candy', subtitle: 'Yummy yummy', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/hammer-candy.png', body: `
 
-
-
-
-
-
-
-
-
-
-<p>The seat of power in Brightend. From here, the King oversees the distribution of resources across the vale.</p>
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    ` },
-                    { y: 342, x: 119, icon: 'pay-money', title: 'Hammer\'s Candy', subtitle: 'Yummy yummy', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/hammer-candy.png', body: `
 
 
 
@@ -65,8 +41,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 916, x: 800, icon: 'fort', title: 'Warden Fort', aliases: ['Alabaster Warden Barracks'], subtitle: 'Headquarters and barracks', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_ward.png', body: `
+                    {
+                        y: 916, x: 800, icon: 'fort', title: 'Warden Fort', aliases: ['Alabaster Warden Barracks'], subtitle: 'Headquarters and barracks', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/alabaster_ward.png', body: `
+
 
 
 
@@ -88,8 +67,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 718, x: 424, icon: 'bookshelf', title: 'Oddmoss Librarium', subtitle: 'Ancient tomes and dusty books', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 718, x: 424, icon: 'bookshelf', title: 'Oddmoss Librarium', subtitle: 'Ancient tomes and dusty books', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 
 
 
@@ -109,8 +91,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 533, x: 1018, icon: 'spinning-blades', title: 'Brawn & Brawn Agency', subtitle: 'Nimo and Gust\'s mercenary agency', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/bbagency.png', body: `
+                    {
+                        y: 533, x: 1018, icon: 'spinning-blades', title: 'Brawn & Brawn Agency', subtitle: 'Nimo and Gust\'s mercenary agency', isDanger: false, isFeatured: false, isSafe: true, image: 'images/pois/bbagency.png', body: `
+
 
 
 
@@ -126,8 +111,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 730, x: 298, icon: 'beer', title: 'Gilded Goldfinch', subtitle: 'The finest drinks and eats the city has to offer', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/gilded_goldfinch.png', body: `
+                    {
+                        y: 730, x: 298, icon: 'beer', title: 'Gilded Goldfinch', subtitle: 'The finest drinks and eats the city has to offer', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/gilded_goldfinch.png', body: `
+
 
 
 
@@ -139,8 +127,11 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 367, x: 600, icon: 'house', title: 'Thayne Household', subtitle: 'Where the traumatized widower lives.', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/thaynehouse.png', body: `
+                    {
+                        y: 367, x: 600, icon: 'house', title: 'Thayne Household', subtitle: 'Where the traumatized widower lives.', isDanger: false, isFeatured: false, isSafe: false, image: 'images/pois/thaynehouse.png', body: `
+
 
 
 
@@ -148,9 +139,17 @@ const settlementRegistry = {
                     
                     
                     
+                    
                     ` },
-                    { y: 380, x: 640, icon: 'pay-money', title: 'Finest Cloth', aliases: ['Thayne\'s Finest Cloth'], subtitle: 'Where the best fabric is!', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 380, x: 640, icon: 'pay-money', title: 'Finest Cloth', aliases: ['Thayne\'s Finest Cloth'], subtitle: 'Where the best fabric is!', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 Late Elira Thayne's tailor shop. Only the best materials, coming from all over the continent, assembled by the best seamstresses!
+                    
+                    ` },
+                    {
+                        y: 785, x: 1038, icon: 'rook', title: 'Turris Magi Finisclari', aliases: ['Sorcerer Surpreme Sanctorum'], subtitle: 'The Archamge\'s Tower', isDanger: false, isFeatured: true, isSafe: false, image: '', body: `
+The Turris Magi is the second highest building in the cloud district, second the Alabaster Palace. It is a landmark known by all but feared by most. As a place of magic most people shun it and some even avoid it.  
                     ` }
                 ]
             },
@@ -159,6 +158,7 @@ Late Elira Thayne's tailor shop. Only the best materials, coming from all over t
                 mapImage: './images/ash_district_map.png', mapWidth: 1149, mapHeight: 1080,
                 lore: {
                     entry: 'District: Omega', title: 'The Ash District', body: `
+
 
 
 
@@ -180,11 +180,14 @@ Late Elira Thayne's tailor shop. Only the best materials, coming from all over t
                 
                 
                 
+                
                 ` },
                 npcs: [
                     'silas-smug'],
                 pins: [
-                    { y: 500, x: 500, icon: 'danger', title: 'The Fighting Pits', subtitle: 'Danger Zone', isDanger: true, isFeatured: false, isSafe: false, image: 'images/pois/brightend_fightpits.png', body: `
+                    {
+                        y: 500, x: 500, icon: 'danger', title: 'The Fighting Pits', subtitle: 'Danger Zone', isDanger: true, isFeatured: false, isSafe: false, image: 'images/pois/brightend_fightpits.png', body: `
+
 
 
 
@@ -206,6 +209,7 @@ Late Elira Thayne's tailor shop. Only the best materials, coming from all over t
                     
                     
                     
+                    
                     ` }
                 ]
             },
@@ -215,15 +219,20 @@ Late Elira Thayne's tailor shop. Only the best materials, coming from all over t
                 lore: {
                     entry: 'District: Delta', title: 'The Docks', body: `
 
+
 <p>Fish and ships</p>        
+                
                 
                 ` },
                 npcs: [
                 ],
                 pins: [
-                    { y: 514, x: 262, icon: 'castle', title: 'Harbour Master', subtitle: '', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 514, x: 262, icon: 'castle', title: 'Harbour Master', subtitle: '', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 
 Where the master habours... or something
+                    
                     
                     ` }
                 ]
@@ -243,7 +252,9 @@ Where the master habours... or something
 
 
 
+
 <p>The (once) heavily militarized entrance to the capital.</p>
+                
                 
                 
                 
@@ -271,7 +282,9 @@ Where the master habours... or something
 
 
 
+
 <p>Home to the great markets.</p>
+                
                 
                 
                 
@@ -295,17 +308,22 @@ Where the master habours... or something
                     entry: 'District: Zeta', title: 'The Artisan Row', body: `
 
 
+
 <p>Guildhouses and master crafters.</p>  
+                
                 
                 
                 ` },
                 npcs: [
                 ],
                 pins: [
-                    { y: 777, x: 277, icon: 'pay-money', title: 'Oxana\'s Gems', subtitle: 'Jewelry Emporium', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 777, x: 277, icon: 'pay-money', title: 'Oxana\'s Gems', subtitle: 'Jewelry Emporium', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 
 
 Oxana's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th generation shop is famous through out the city, and even further...
+                    
                     
                     
                     ` }
@@ -325,14 +343,18 @@ Oxana's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th g
                 lore: {
                     entry: 'Village', title: 'Deercrest', body: `
 
+
 <p>Cute lil town</p>. <p>At first a simple hunter's outpost, Deercrest grew in size quite rapidly. The first settlement there predates the Eperinian Kingdom, but only a few buildings are left from that era. Now it is a busy small town on the edge of the kingdom, famous for its venison and the extraordinary wood it offers.</p>                
+                
                 
                 
                 ` },
                 npcs: [
                 ],
                 pins: [
-                    { y: 581, x: 762, icon: 'beer', title: 'Black Rose Inn', subtitle: 'Fresh Water, Warm Beds, Decent Wine... sometimes', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+                    {
+                        y: 581, x: 762, icon: 'beer', title: 'Black Rose Inn', subtitle: 'Fresh Water, Warm Beds, Decent Wine... sometimes', isDanger: false, isFeatured: false, isSafe: false, image: '', body: `
+
 
 
 
@@ -344,6 +366,7 @@ Oxana's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th g
 
 
 <p>The coolest and edgiest inn in town.</p>
+                    
                     
                     
                     

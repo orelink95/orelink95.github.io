@@ -255,19 +255,22 @@ document.addEventListener("DOMContentLoaded", () => {
 // ==========================================
 
 function toggleLibrarySidebar() {
-    const sidebar = document.getElementById('library-sidebar-container');
+    const sidebarContent = document.getElementById('library-sidebar-content');
     const icon = document.getElementById('lib-sidebar-icon');
+    const btn = document.getElementById('lib-sidebar-btn');
 
-    if (!sidebar || !icon) return;
+    if (!sidebarContent || !icon || !btn) return;
 
-    if (sidebar.classList.contains('translate-x-full')) {
+    if (sidebarContent.classList.contains('opacity-0')) {
         // Open it
-        sidebar.classList.remove('translate-x-full');
+        sidebarContent.classList.remove('opacity-0', 'pointer-events-none', 'scale-95', 'translate-x-4');
+        btn.classList.add('-translate-x-64');
         icon.textContent = 'close';
         icon.classList.add('rotate-90');
     } else {
         // Close it
-        sidebar.classList.add('translate-x-full');
+        sidebarContent.classList.add('opacity-0', 'pointer-events-none', 'scale-95', 'translate-x-4');
+        btn.classList.remove('-translate-x-64');
         icon.textContent = 'menu_open';
         icon.classList.remove('rotate-90');
     }

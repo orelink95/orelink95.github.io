@@ -1,11 +1,10 @@
-// scripts/campaign-echoes.js
 
 // 1. Ensure the master registry exists
 window.campaignData = window.campaignData || {};
 
-// 2. Attach THIS campaign to the registry using its exact name!
+// 2. Attach THIS campaign to the registry using its exact name
 window.campaignData["Echoes from the Void"] = {
-    
+
     // --- THE GRAND NARRATIVE ---
     storySoFar: {
         preview: "A ragged band of mercenaries, drawn together by a mysterious summons, arrived in Brightend just as the King's peace began to fracture...",
@@ -35,6 +34,84 @@ window.campaignData["Echoes from the Void"] = {
     // --- ALL SESSION RECORDS ---
     sessions: [
         {
+            id: "session-6",
+            campaign: "Echoes from the Void",
+            dateSpan: "Eksten 7, Pholawal 1693 LF",
+            region: "Brightend, Maltona",
+            title: "The Shadow Takes All",
+            arc: "Remnants of the Past",
+            summary: "The party investigated a string of thefts, captured a shadow-infused thief, and discovered a terrifying alchemical conspiracy tied to other planes of existence.",
+
+            locationsVisited: [
+                "Hammer's Candy",
+                "Warden Fort",
+                "Harth's Gems",
+                "Alchemy & Ashes",
+                "Illuminated Manuscripts"
+            ],
+
+            npcsMet: [
+                { id: "maeravoss", sentiment: "like" },
+                { id: "wardenfoll", sentiment: "like" },
+                { id: "sephet", sentiment: "neutral" }
+            ],
+
+            lootObtained: [
+                "Vial of mysterious black substance",
+                "Dark Shard Amulet",
+                "Book of city sewer maps",
+                "Partially broken token",
+                "Queen Thalen Compendium (borrowed)"
+            ],
+
+            accomplished: [
+                "Chased down and captured the elusive 'Shadow Girl' thief.",
+                "Investigated multiple crime scenes across Brightend for magical anomalies.",
+                "Discovered the existence of a highly dangerous, shadow-infused alchemical compound.",
+                "Obtained a mysterious Dark Shard Amulet from a captured thief."
+            ],
+
+            leadsPursued: [
+                "Debriefed Maera on smuggling rings and shadow tentacles.",
+                "Investigated Harth's Gems, Alchemy & Ashes, and Illuminated Manuscript.",
+                "Covertly interrogated the captured thief using the Message cantrip."
+            ],
+
+            futureLeads: [
+                "Investigate 'The Roost' outside the Rusty Anchor.",
+                "Look into the burned-down apothecary and who is buying Alseid blood.",
+                "Investigate the hunting town of Deercrest.",
+                "Identify the master alchemist capable of creating the shadow compound."
+            ],
+
+            keywords: [
+                "Shadow",
+                "The Roost",
+                "Sephet Halfborn",
+                "Queen Thalen"
+            ],
+
+            body: `
+                <p>Following the deadly alleyway encounter, the party opted to leave the strange notebook behind—after Eli meticulously copied its contents—and took the mysterious vial. Leaving the Wardens to clean up the mess (and omitting Gust and Bran's involvement), they headed to Hammer's place to debrief <span class="kw-person">Maera Voss</span> about the smuggling operations and shadow tentacles. They noted that deer weren't significant in Brightend, but there was a hunting community called Deercrest near the Eperina border.</p>
+                
+                <p>Meeting with Grand Warden Foll, they found him upset about the visibility of the recent murder. The party shared their findings, and Foll recalled hearing about "The Roost" in connection to robberies near the Rusty Anchor. He also remembered that Mason Borne's apothecary had burned down shortly after someone inquired about buying Alseid (half-deer, half-elf) blood.</p>
+                
+                <p>Investigating the city's ongoing thefts, they started at Hauth's Gems, where non-magical engraved rings had just been stolen. Tracking unnatural, unmoving shadows outside the shop, they were interrupted by cries of "Thief!" and bolted into a chase. They cornered a pale, black-veined figure with jet-black eyes—the "Shadow Girl." Davnis and Nimo bound and gagged her while M3MU cast light to prevent her escape. They recovered a dark amulet, and Eli acquired her book of city sewer maps.</p>
+                
+                <div class="pl-6 border-l-2 border-[#1a3020] my-8 py-2">
+                    <p class="font-newsreader italic text-[#e2e3df] text-xl">
+                        "The shadow takes all."
+                    </p>
+                </div>
+                
+                <p>While Gust and Eli accompanied the Wardens back to the Alabaster Palace, Nimo and Davnis investigated <i>Alchemy & Ashes</i> (finding remnants of conjuration magic and a broken token) and <i>Illuminated Manuscripts</i> (borrowing a valuable compendium on Queen Thalen from the proprietor, Hal, after finding a red thread snagged on a bookshelf).</p>
+                
+                <p>Back at the Warden Fort, interrogation of the thief stalled. Eli covertly cast <i>Message</i> on the girl, receiving only a whispered, repeating response: <i>"The shadow takes all."</i> Foll called in the city's Archmage, <span class="kw-person">Sephet</span>—a silver fox half-elf with red eyes who exuded serious "Daddy" energy. Sephet used intense magic to force the girl's mouth open, breaking her jaw to extract a black, shadow-infused alchemical goop.</p>
+                
+                <p>Sephet grimly explained that the compound required traveling to the Plane of Shadows, an extensive component list, and immense raw power. Gust noted genuine fear in Sephet's voice as the mage admitted he knew no one in the region capable of such a feat.</p>
+            `
+        },
+        {
             id: "session-4",
             dateSpan: "Pemtasten 6 Pholawal, 1693LF",
             region: "Brightend, Maltona",
@@ -49,7 +126,7 @@ window.campaignData["Echoes from the Void"] = {
             ],
 
             npcsMet: [
-                { id: "wardenfoll", sentiment: "positive" },
+                { id: "wardenfoll", sentiment: "like" },
                 { id: "erikthayne", sentiment: "dislike" },
             ],
 

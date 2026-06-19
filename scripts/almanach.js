@@ -95,6 +95,23 @@ const npcAlmanach = {
         "biography": "This former carpenter was married to Elira Thayne, who died in her home in mysterious circumstances. He is left heartbroken. ",
         "secrets": ""
     },
+    "sephet": {
+        "name": "Sephet Halfborn",
+        "role": "Eperina's Sorcerer Supreme",
+        "quote": "En dynamei sōtēria",
+        "image": "./images/sephet-halfborn.webp",
+        "avatar": "./images/avatars/sephet-halfborn.png",
+        "homePinTitle": "Turris Magi Finisclari",
+        "settlement": "Brightend",
+        "species": "Half-Elf",
+        "age": "64",
+        "gender": "Male",
+        "affiliation": "???",
+        "relationToParty": "Neutral",
+        "biography": "Sephet Halfborn, the Sorcerer Supreme of the City of Brightend, is a figure of awe and fear across the Kingdom of Eperina. A half-elf of striking presence, his burning-red eyes seem to flicker like embers, a testament to his mastery over fire magic. His salt-and-pepper hair, coupled with a rugged stubble, hints at his maturity and the weight of countless battles and political maneuverings. Sephet's attire is as commanding as his demeanor—a flowing, dark blue cape of the finest weave drapes over an elegant tunic, both exuding refinement and power. As Brightend’s foremost magical authority, he oversees the arcane academies, advises the monarch, and ensures that the kingdom’s magical defenses remain impenetrable. ",
+        "secrets": "ezrt _: zf e'!fzattgzesrd"
+    },
+
     "talonoperative": {
         "name": "Mystery man",
         "role": "??",

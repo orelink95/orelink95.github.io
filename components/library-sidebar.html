@@ -1,14 +1,14 @@
 <div id="library-sidebar-container"
-    class="fixed top-1/4 right-0 z-[100] flex transition-transform duration-500 translate-x-full">
+    class="fixed top-1/4 right-0 z-[100]">
 
-    <button onclick="toggleLibrarySidebar()"
-        class="absolute -left-12 top-6 w-12 h-14 bg-[#050505]/90 backdrop-blur-md border-y border-l border-secondary/30 rounded-l-lg flex items-center justify-center shadow-[-5px_0_15px_rgba(0,0,0,0.5)] group hover:border-secondary/60 transition-colors">
+    <button id="lib-sidebar-btn" onclick="toggleLibrarySidebar()"
+        class="absolute right-0 top-6 w-12 h-14 bg-[#050505]/90 backdrop-blur-md border-y border-l border-secondary/30 rounded-l-lg flex items-center justify-center shadow-[-5px_0_15px_rgba(0,0,0,0.5)] group hover:border-secondary/60 transition-transform duration-500 z-50">
         <span id="lib-sidebar-icon"
             class="material-symbols-outlined text-secondary/70 group-hover:text-secondary group-hover:scale-110 transition-all drop-shadow-[0_0_5px_rgba(233,193,118,0.5)]">key_vertical</span>
     </button>
 
-    <aside
-        class="w-64 bg-[#050505]/90 backdrop-blur-xl border-y border-l border-secondary/20 rounded-l-2xl py-8 px-4 shadow-[-20px_0_50px_rgba(26,11,46,0.6)] flex flex-col gap-6 relative overflow-hidden">
+    <aside id="library-sidebar-content"
+        class="absolute right-0 top-0 w-64 bg-[#050505]/90 backdrop-blur-xl border-y border-l border-secondary/20 rounded-l-2xl py-8 px-4 shadow-[-20px_0_50px_rgba(26,11,46,0.6)] flex flex-col gap-6 overflow-hidden transition-all duration-500 opacity-0 pointer-events-none scale-95 translate-x-4 origin-right">
 
         <div class="absolute top-0 right-0 w-32 h-32 bg-void/60 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 w-32 h-32 bg-ethereal/60 rounded-full blur-3xl pointer-events-none"></div>

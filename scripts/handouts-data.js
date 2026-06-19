@@ -23,6 +23,17 @@ const handoutsData = [
         thumbnail: "images/str_token.PNG",
         fileUrl: "images/str_token.PNG",
     },
+    {
+        id: "dark-shard-amulet",
+        campaign: "Echoes from the Void",
+        title: "Dark Shard Amulet",
+        category: "Object",
+        icon: "diamond",
+        thumbnail: "images/Dark_Shard_Amulet.png",
+        fileUrl: "images/Dark_Shard_Amulet.png",
+        locationFound: "Cloud District",
+        description: "A heavy, aged bronze amulet featuring a swirling, trapped galaxy of indigo and green.It hums with a faint, cosmic pulse, and a drift of purple smoke sometimes reveals shifting runes."
+    },
     /*{
         id: "smugglers-map",
         title: "Smuggler's Route",

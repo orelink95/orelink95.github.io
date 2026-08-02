@@ -24,10 +24,6 @@ const keywordLexicon = {
         type: "place",
         definition: "Eperina's seat of power, on the cliff of Brightend."
     },
-    "Behemoth": {
-        type: "monster",
-        definition: "A colossal, mutated fungal beast native to the deepest caverns of Maltona. Highly dangerous."
-    },
     "The Wardens": {
         type: "faction",
         definition: "The elite militia tasked with protecting Brightend and enforcing the law. The most prestigious branch of Eperinian Wardens."
@@ -35,7 +31,6 @@ const keywordLexicon = {
     "Lemerolai": {
         type: "place",
         definition: "The Great City-State is one of the oldest continuous settlements in Maltona, and is home to the Caeraotrom Athenæum."
-
     }
 
 };

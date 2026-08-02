@@ -57,7 +57,6 @@ module.exports = {
         "on-secondary-container": "#dab36a",
         "on-surface-variant": "#c3c8c0",
         "on-primary-fixed-variant": "#354c3a",
-        // New Mystical Ambient Colors
         "void": "#1a0b2e",
         "ethereal": "#0f172a"
       },

@@ -315,7 +315,7 @@ window.campaignData["Echoes from the Void"] = {
                 { id: "aregan-olm", sentiment: "neutral" },
                 { id: "bram-sureoak", sentiment: "neutral" },
                 { id: "ovan", sentiment: "neutral" },
-                { id: "jeff-the-skull", sentiment: "dislike" }
+                { id: "jeff-skull", sentiment: "dislike" }
             ],
 
             lootObtained: [

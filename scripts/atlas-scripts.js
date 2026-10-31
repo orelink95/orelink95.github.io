@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 4. THE MASTER REGISTRY & LORE PANEL FUNC 
     // -----------------------------------------------------------------
 
-    // Master registry moved to standalone file (atlas-registry) for clarity
+    // World lore and continent pins come from data/world.json and data/continents.json
 
     // Keep the default lore here for the overview/reset
     const defaultLore = {

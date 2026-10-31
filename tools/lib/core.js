@@ -35,7 +35,10 @@ function loadStore() {
     let privateData;
     try { privateData = readJSON('data/private.json', true); }
     catch (e) { problems.push(e.message); }
-    return { ATH, store: ATH.createStore(ATH.schema, datasets, privateData), problems, hasPrivate: privateData !== undefined };
+    let settings;
+    try { settings = ATH.schema.settings ? readJSON(ATH.schema.settings.file, true) : undefined; }
+    catch (e) { problems.push(e.message); }
+    return { ATH, store: ATH.createStore(ATH.schema, datasets, privateData, settings), problems, hasPrivate: privateData !== undefined };
 }
 
 module.exports = { ROOT, loadCore, loadStore, readJSON };

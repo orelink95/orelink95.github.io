@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const grid = document.getElementById('poi-grid');
     const continentFilter = document.getElementById('filter-continent');
     const countryFilter = document.getElementById('filter-country');
@@ -6,42 +6,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let allPOIs = [];
 
-    // Instantly grab all NPCs from the Almanach
-    let allNPCs = Object.keys(npcAlmanach).map(id => ({
-        id: id,
-        ...npcAlmanach[id]
-    }));
-
-    // 1. EXTRACT DATA FROM REGISTRY
-    for (const [settId, settlement] of Object.entries(settlementRegistry)) {
-        if (!settlement.districts) continue;
-
-        settlement.districts.forEach(district => {
-            // Extract Pins
-            if (district.pins) {
-                district.pins.forEach(pin => {
-                    const defaultImage = 'images/pois/placeholder.png';
-                    const uid = pin.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
-
-                    allPOIs.push({
-                        uid: uid,
-                        continent: settlement.continentName,
-                        country: settlement.countryName,
-                        settlement: settlement.settlementName,
-                        district: district.name,
-                        title: pin.title,
-                        subtitle: pin.subtitle || 'Landmark',
-                        isDanger: pin.isDanger,
-                        isFeatured: pin.isFeatured || false,
-                        isSafe: pin.isSafe || false,
-                        icon: pin.icon,
-                        body: pin.body,
-                        image: pin.image || pin.images || defaultImage
-                    });
-                });
-            }
-        });
-    }
+    // 1. BUILD THE VIEW MODEL FROM THE STORE
+    const store = await Athenaeum.ready;
+    allPOIs = store.all('poi').map(poi => {
+        const chain = store.ancestors(poi);
+        const at = type => (chain.find(p => store.typeOf(p) === type) || {});
+        const district = at('district'), settlement = at('settlement'), country = at('country');
+        return {
+            uid: poi.id,
+            url: store.url(poi),
+            continent: at('continent').name,
+            country: country.name,
+            settlement: settlement.name || country.name || '',
+            district: district.shortName || district.name || '',
+            title: poi.name,
+            subtitle: poi.subtitle || 'Landmark',
+            isDanger: !!poi.danger,
+            isFeatured: !!poi.featured,
+            isSafe: !!poi.safe,
+            isTavern: !!(poi.tavern && poi.tavern.tier),
+            icon: (poi.map || {}).icon,
+            body: poi.body ? store.autolink(store.md(poi.body, { dropCap: true }), { exclude: poi.id }) : '',
+            image: poi.image || 'images/pois/placeholder.png',
+            residents: store.backrefs(poi, 'npc', 'home')
+        };
+    });
 
     // 2. POPULATE DROPDOWNS
     const populate = (el, key, label) => {
@@ -129,7 +118,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 5. MODAL LOGIC (Updated to inject NPCs)
     window.openPOIModal = (uid) => {
-        const poi = allPOIs.find(p => p.uid === uid);
+        const legacy = String(uid || '').replace(/_/g, '-').replace(/^the-/, '');
+        const poi = allPOIs.find(p => p.uid === uid) || allPOIs.find(p => p.uid === legacy);
         if (!poi) return;
 
         // Populate standard POI details
@@ -137,23 +127,12 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('modal-uid').textContent = `ARCHIVE ID: ${poi.uid.toUpperCase()}`;
         document.getElementById('modal-title').textContent = poi.title;
         document.getElementById('modal-body').innerHTML = poi.body || '<p class="italic text-on-surface/40">No deep lore recorded for this landmark yet.</p>';
-        document.getElementById('modal-location').textContent = `${poi.settlement}, ${poi.district}`;
+        document.getElementById('modal-location').textContent = [poi.settlement, poi.district].filter(Boolean).join(', ');
+        const pageLink = document.getElementById('modal-page-link');
+        pageLink.href = poi.url;
+        pageLink.textContent = poi.isTavern ? 'Enter the Tavern' : 'Open the Full Entry';
 
-        // Cross-reference and inject associated NPCs (with flexible matching because i can't keep track of what i write apparently)
-        const linkedNPCs = allNPCs.filter(npc => {
-            if (!npc.homePinTitle) return false;
-
-            // 1. Flexible Pin Match (e.g. "Alabaster Palace" will match "The Alabaster Palace")
-            const pinMatch = poi.title.toLowerCase().includes(npc.homePinTitle.toLowerCase()) ||
-                npc.homePinTitle.toLowerCase().includes(poi.title.toLowerCase());
-
-            // 2. Flexible Location Match (Matches either the City Name OR the District Name)
-            const locMatch = !npc.settlement ||
-                npc.settlement.toLowerCase() === poi.settlement.toLowerCase() ||
-                npc.settlement.toLowerCase() === poi.district.toLowerCase();
-
-            return pinMatch && locMatch;
-        });
+        const linkedNPCs = poi.residents.map(npc => ({ id: npc.id, name: npc.name, role: npc.role || '', image: npc.avatar || npc.portrait }));
         const npcSection = document.getElementById('modal-npc-section');
         const npcContainer = document.getElementById('modal-npcs');
 
@@ -161,12 +140,12 @@ document.addEventListener("DOMContentLoaded", () => {
             npcContainer.innerHTML = linkedNPCs.map(npc => `
                 <div class="group flex items-center gap-4 p-3 rounded bg-black/20 border border-white/5 hover:border-secondary/30 transition-colors">
                     
-                    <img src="${npc.image || 'images/placeholder_profile.png'}" class="w-12 h-12 rounded object-cover grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100" alt="${npc.name}">
+                    <img src="${npc.image || 'images/placeholder.png'}" class="w-12 h-12 rounded object-cover grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100" alt="${npc.name}">
                     
                     <div class="flex-grow">
                         <div class="flex justify-between items-start">
                             <h4 class="font-headline text-secondary text-sm font-bold">${npc.name}</h4>
-                            <a href="npc.html?id=${npc.id}" class="text-on-surface-variant hover:text-primary material-symbols-outlined text-sm" title="View Profile">person_search</a>
+                            <a href="${store.url(npc.id)}" class="text-on-surface-variant hover:text-primary material-symbols-outlined text-sm" title="View Profile">person_search</a>
                         </div>
                         <p class="font-label text-[9px] uppercase tracking-widest text-on-surface/40">${npc.role}</p>
                     </div>

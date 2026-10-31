@@ -47,6 +47,14 @@ function legacyContinentMap() {
 
 /* ---------- helpers ---------- */
 const cleanPath = p => (typeof p === 'string' ? p.trim().replace(/^\.\//, '') : p);
+/* Local image that does not exist -> dropped (the page shows its default instead). */
+function image(p, where) {
+    const src = cleanPath(p);
+    if (!src || /^(https?:)?\/\//.test(src)) return src || undefined;
+    if (fs.existsSync(path.join(ROOT, src))) return src;
+    report.notes.push(`${where}: image "${src}" does not exist; left empty`);
+    return undefined;
+}
 const norm = s => String(s || '').toLowerCase().replace(/[’']/g, "'").replace(/^the\s+/, '').replace(/\s+/g, ' ').trim();
 const slug = s => String(s).toLowerCase()
     .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/æ/g, 'ae')
@@ -98,9 +106,19 @@ function tidy(type, rec) {
     for (const k of Object.keys(rec)) if (!(k in out) && !empty(rec[k]) && !order.includes(k)) report.notes.push(`${type} ${rec.id}: dropped unknown key "${k}"`);
     return out;
 }
+const iconExists = name => fs.existsSync(path.join(ROOT, 'images/atlas_icons', name + '.svg'));
 const mapPin = (m, layer) => {
     const pin = { x: m.x, y: m.y };
-    if (m.icon) pin.icon = m.icon;
+    if (m.icon) {
+        pin.icon = m.icon;
+        // GitHub Pages is case-sensitive: "Verdena" does not find verdena.svg there.
+        if (!iconExists(m.icon) && iconExists(m.icon.toLowerCase())) {
+            pin.icon = m.icon.toLowerCase();
+            report.notes.push(`pin "${m.title}": icon "${m.icon}" -> "${pin.icon}" (file name case; broken on GitHub Pages)`);
+        } else if (!iconExists(m.icon)) {
+            report.unresolved.push(`pin "${m.title}": icon "${m.icon}" has no images/atlas_icons/${m.icon}.svg`);
+        }
+    }
     if (layer || m.layer) pin.layer = layer || m.layer;
     return pin;
 };
@@ -275,6 +293,8 @@ for (const [id, n] of Object.entries(almanach)) {
         if (hit) {
             home = hit.id;
             if (hit.name !== n.homePinTitle) report.resolved.push(`npc ${id}: home "${n.homePinTitle}" -> ${hit.id} ("${hit.name}")`);
+        } else if (fixes.npcWhereabouts[n.homePinTitle]) {
+            report.resolved.push(`npc ${id}: "${n.homePinTitle}" is not a place on the site; kept as whereabouts`);
         } else {
             report.unresolved.push(`npc ${id}: home "${n.homePinTitle}" matches no place`);
         }
@@ -298,13 +318,14 @@ for (const [id, n] of Object.entries(almanach)) {
     add('npc', {
         id, name: n.name, role: isPlaceholder(n.role) ? undefined : n.role,
         quote: isPlaceholder(n.quote) ? undefined : n.quote,
-        portrait: cleanPath(n.image), avatar: cleanPath(n.avatar),
-        home, species: n.species, age: isPlaceholder(n.age) ? undefined : n.age, gender: n.gender,
-        factions: [factionRef(n.affiliation || '', `npc ${id}`)].filter(Boolean),
+        portrait: image(n.image, `npc ${id} portrait`), avatar: image(n.avatar, `npc ${id} avatar`),
+        home, whereabouts: fixes.npcWhereabouts[n.homePinTitle], species: n.species, age: isPlaceholder(n.age) ? undefined : n.age, gender: n.gender,
+        factions: fixes.npcFactions[id] || [factionRef(n.affiliation || '', `npc ${id}`)].filter(Boolean),
         relation, biography: htmlToMd(n.biography, `npc ${id}`),
     });
     if (n.secrets && n.secrets.trim()) privateOut.npc[id] = { secrets: htmlToMd(n.secrets, `npc ${id} secrets`) };
-    if (isPlaceholder(n.affiliation) && n.affiliation) report.unresolved.push(`npc ${id}: affiliation "${n.affiliation}" is a placeholder; no faction set`);
+    if (fixes.npcFactions[id]) report.resolved.push(`npc ${id}: factions set to ${fixes.npcFactions[id].join(', ')} (decided 1 Nov)`);
+    else if (isPlaceholder(n.affiliation) && n.affiliation) report.notes.push(`npc ${id}: affiliation "${n.affiliation}" left unknown`);
 }
 for (const [npcId, distId] of districtNpcs) report.unresolved.push(`district ${distId}: lists npc "${npcId}", who does not exist`);
 
@@ -321,6 +342,7 @@ for (const [type, list] of Object.entries(out)) {
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, JSON.stringify(list.map(r => tidy(type, r)), null, 2) + '\n');
 }
+fs.writeFileSync(path.join(ROOT, schema.settings.file), JSON.stringify(fixes.settings, null, 2) + '\n');
 fs.writeFileSync(path.join(ROOT, 'data/private.json'), JSON.stringify(privateOut, null, 2) + '\n');
 
 /* ---------- report ---------- */

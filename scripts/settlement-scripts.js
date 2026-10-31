@@ -1,16 +1,4 @@
-// --- URL PARAMETER LISTENER ---
-const urlParams = new URLSearchParams(window.location.search);
-const targetId = urlParams.get('id');
-
-if (targetId) {
-    setTimeout(() => {
-        if (typeof window.loadSettlement === 'function') {
-            window.loadSettlement(targetId);
-        }
-    }, 150);
-};
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
 
 
@@ -25,17 +13,47 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- 2. URL & REGISTRY SETUP ---
+    // --- 2. URL & DATA SETUP ---
+    const store = await Athenaeum.ready;
     const urlParams = new URLSearchParams(window.location.search);
-    let settlementId = urlParams.get('id');
     let targetDistrict = urlParams.get('district');
+    let settlement = store.get(urlParams.get('id'));
+    if (!settlement || store.typeOf(settlement) !== 'settlement') settlement = store.get('brightend') || store.all('settlement')[0];
 
-    if (!settlementId || !settlementRegistry[settlementId]) {
-        settlementId = 'brightend';
-    }
+    const lore = (rec, dropCap) => rec.body ? store.autolink(store.md(rec.body, { dropCap }), { exclude: rec.id }) : '';
+    const npcView = npc => ({
+        id: npc.id, name: npc.name, role: npc.role || '', quote: npc.quote || '…',
+        image: npc.avatar || npc.portrait || 'images/placeholder.png',
+        homePinTitle: (store.get(npc.home) || {}).name || npc.whereabouts || ''
+    });
+    const country = store.ancestors(settlement).find(p => store.typeOf(p) === 'country') || {};
+    const continent = store.ancestors(settlement).find(p => store.typeOf(p) === 'continent') || {};
 
-    const data = settlementRegistry[settlementId];
-    let currentDistrictIdx = 0;
+    // Same shape the page always rendered; built from the store.
+    const data = {
+        continentName: continent.name, continentId: continent.id ? store.url(continent) : '#',
+        countryName: country.name, countryId: country.id ? store.url(country) : '#',
+        settlementName: settlement.name,
+        descriptor: settlement.summary || '',
+        districts: store.children(settlement, 'district').map(d => {
+            const pois = store.children(d, 'poi');
+            const residents = [...store.backrefs(d, 'npc', 'home'), ...pois.flatMap(p => store.backrefs(p, 'npc', 'home'))];
+            return {
+                id: d.id,
+                name: d.shortName || d.name,
+                mapImage: (d.mapImage || {}).src || 'images/placeholder.png',
+                mapWidth: (d.mapImage || {}).width || 1000,
+                mapHeight: (d.mapImage || {}).height || 1000,
+                lore: { title: d.name, entry: d.codex, body: lore(d, true) },
+                npcs: residents.map(npcView),
+                pins: pois.filter(p => p.map).map(p => ({
+                    id: p.id, title: p.name, subtitle: p.subtitle || '', entry: p.codex,
+                    body: lore(p, true), icon: p.map.icon || 'settlement', isDanger: !!p.danger,
+                    y: p.map.y, x: p.map.x, url: store.url(p), isTavern: !!(p.tavern && p.tavern.tier)
+                }))
+            };
+        })
+    };
 
     // --- 3. INJECT BREADCRUMBS & HEADERS ---
     document.getElementById('dynamic-continent-link').textContent = data.continentName;
@@ -73,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         <div class="flex justify-between items-start">
                             <h4 class="font-noto-serif text-sm font-bold text-secondary group-hover:text-secondary-fixed transition-colors leading-tight mb-1">${npc.name}</h4>
                             
-                            <a href="npc.html?id=${npc.id}" class="material-symbols-outlined text-[14px] text-on-surface/20 hover:text-primary transition-colors" title="View Full Profile">person_search</a>
+                            <a href="${store.url(npc.id)}" class="material-symbols-outlined text-[14px] text-on-surface/20 hover:text-primary transition-colors" title="View Full Profile">person_search</a>
                         </div>
                         <p class="font-label text-[9px] uppercase tracking-widest text-on-surface/40 mb-2">${npc.role}</p>
                         <p class="font-newsreader text-xs text-on-surface/70 line-clamp-2 leading-tight italic mb-2">"${npc.quote}"</p>
@@ -145,6 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class='text-center p-1'>
                     <b class='font-headline text-lg ${pin.isDanger ? 'text-error' : 'text-secondary'} block mb-1'>${pin.title}</b>
                     <span class='font-label text-[9px] uppercase tracking-widest text-on-surface-variant/80'>${pin.subtitle}</span>
+                    <a href='${pin.url}' class='block mt-2 font-label text-[9px] uppercase tracking-widest text-secondary underline'>${pin.isTavern ? 'Enter the tavern' : 'Open the entry'}</a>
                 </div>
             `, { className: 'fantasy-popup' });
 
@@ -155,14 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
             pinLookup[pin.title] = marker;
         });
 
-        // REFRESH NPCS for the new district (Maps IDs to Almanach Data)
-        const npcObjects = (dist.npcs || []).map(id => {
-            if (typeof npcAlmanach !== 'undefined' && npcAlmanach[id]) {
-                return { id: id, ...npcAlmanach[id] };
-            }
-            return null;
-        }).filter(n => n !== null);
-
+        const npcObjects = dist.npcs;
         renderNPCs(npcObjects, pinLookup);
         updateLorePanel(dist.lore.title, dist.lore.entry, dist.lore.body);
 

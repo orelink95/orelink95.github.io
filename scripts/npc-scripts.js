@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const grid = document.getElementById('npc-grid');
 
     // UI Elements
@@ -10,42 +10,34 @@ document.addEventListener("DOMContentLoaded", () => {
     let allNPCs = [];
     let currentRelation = 'all'; // State tracker for the tabs
 
-    // 1. CONJURE & MERGE DATA
-    Object.keys(npcAlmanach).forEach(id => {
-        const lore = npcAlmanach[id];
-
-        // Quickly cross-reference the map registry to find their current District
-        let foundDistrict = 'Unknown District';
-        for (const [settId, settlement] of Object.entries(settlementRegistry)) {
-            for (const district of settlement.districts || []) {
-                if ((district.npcs || []).includes(id)) {
-                    foundDistrict = district.name;
-                    break;
-                }
-            }
-        }
-
-        allNPCs.push({
-            id: id,
-            name: lore.name || 'Unknown',
-            role: lore.role || 'Unknown',
-            quote: lore.quote || 'No recorded dialogue.',
-            image: lore.image || 'images/placeholder_profile.png',
-            homePinTitle: lore.homePinTitle || 'Unknown Location',
-            settlement: lore.settlement || 'Unknown',
-            district: foundDistrict,
-
-            species: lore.species || 'Unknown',
-            age: lore.age || 'Unknown',
-            gender: lore.gender || 'Unknown',
-            affiliation: lore.affiliation || 'Independent',
-            relationToParty: lore.relationToParty || 'Unknown',
-            biography: lore.biography || '<p class="italic text-on-surface/40">No archival biography exists for this individual.</p>',
-            secrets: lore.secrets || ''
-        });
+    // 1. BUILD THE VIEW MODEL FROM THE STORE
+    const store = await Athenaeum.ready;
+    allNPCs = store.all('npc').map(npc => {
+        const home = store.get(npc.home);
+        const chain = home ? [...store.ancestors(home), home] : [];
+        const at = type => (chain.find(p => store.typeOf(p) === type) || {}).name;
+        const factions = (npc.factions || []).map(id => store.get(id)).filter(Boolean);
+        return {
+            id: npc.id,
+            name: npc.name || 'Unknown',
+            role: npc.role || 'Unknown',
+            quote: npc.quote || 'No recorded dialogue.',
+            image: npc.portrait || 'images/placeholder.png',
+            homePinTitle: home ? home.name : (npc.whereabouts || 'Unknown Location'),
+            homeUrl: home ? store.url(home) : null,
+            settlement: at('settlement') || npc.whereabouts || 'Unknown',
+            district: at('district') || '',
+            species: npc.species || 'Unknown',
+            age: npc.age || 'Unknown',
+            gender: npc.gender || 'Unknown',
+            affiliation: factions.length ? factions.map(f => f.name).join(', ') : 'Independent',
+            relationToParty: npc.relation || 'Unknown',
+            biography: npc.biography
+                ? store.autolink(store.md(npc.biography), { exclude: npc.id })
+                : '<p class="italic text-on-surface/40">No archival biography exists for this individual.</p>',
+            secrets: npc.secrets ? store.md(npc.secrets) : ''
+        };
     });
-
-
 
     // 2. POPULATE PILL DROPDOWNS
     const populate = (el, key, label) => {
@@ -184,12 +176,14 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('modal-npc-species').textContent = npc.species;
         document.getElementById('modal-npc-demographics').textContent = `${npc.age} / ${npc.gender}`;
         document.getElementById('modal-npc-affiliation').textContent = npc.affiliation;
-        document.getElementById('modal-npc-location').textContent = `${npc.district}, ${npc.settlement}`;
+        const place = [npc.homePinTitle, npc.district, npc.settlement].filter((v, i, a) => v && a.indexOf(v) === i).join(', ');
+        const locEl = document.getElementById('modal-npc-location');
+        locEl.innerHTML = npc.homeUrl ? `<a href="${npc.homeUrl}" class="kw-place">${place}</a>` : place;
         document.getElementById('modal-npc-body').innerHTML = npc.biography;
 
         const secretsContainer = document.getElementById('modal-npc-secrets').parentElement;
         if (npc.secrets && npc.secrets.trim() !== '') {
-            document.getElementById('modal-npc-secrets').textContent = npc.secrets;
+            document.getElementById('modal-npc-secrets').innerHTML = npc.secrets;
             secretsContainer.classList.remove('hidden');
         } else {
             secretsContainer.classList.add('hidden');

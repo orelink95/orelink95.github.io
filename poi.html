@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Landmark - The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+    <link href="styles/poi-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/tavern-menu.js"></script>
+    <script src="scripts/poi-scripts.js"></script>
+</head>
+
+<body class="bg-surface text-on-surface font-body overflow-x-hidden">
+    <div id="header-placeholder"></div>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="md:ml-20 pt-24 px-4 md:px-8 pb-12 min-h-screen flex flex-col bg-surface-dim">
+        <div id="poi-root" class="poi-root">
+
+            <!-- HERO -->
+            <header class="poi-hero">
+                <div class="poi-hero-img">
+                    <img id="poi-image" src="" alt="" />
+                </div>
+                <div class="poi-hero-text">
+                    <p id="poi-eyebrow" class="poi-eyebrow">Landmark</p>
+                    <h2 id="poi-title" class="poi-title"></h2>
+                    <p id="poi-subtitle" class="poi-subtitle"></p>
+
+                    <dl class="poi-facts">
+                        <div>
+                            <dt>Location</dt>
+                            <dd id="poi-location" class="poi-crumbs"></dd>
+                        </div>
+                        <div id="poi-tier-fact" hidden>
+                            <dt>Standing</dt>
+                            <dd id="poi-tier"></dd>
+                        </div>
+                        <div id="poi-hours-fact" hidden>
+                            <dt>Hours</dt>
+                            <dd id="poi-hours"></dd>
+                        </div>
+                    </dl>
+                </div>
+            </header>
+
+            <div id="poi-grid" class="poi-grid">
+                <!-- LEFT: lore, residents, services -->
+                <div class="poi-col">
+                    <section class="poi-panel">
+                        <h3 id="poi-body-title" class="poi-panel-title">Archive Entry</h3>
+                        <div id="poi-body" class="poi-prose lore"></div>
+                    </section>
+
+                    <section id="poi-people-section" class="poi-panel" hidden>
+                        <h3 id="poi-people-title" class="poi-panel-title">Found Here</h3>
+                        <div id="poi-people" class="poi-staff"></div>
+                    </section>
+
+                    <section id="poi-services-section" class="poi-panel" hidden>
+                        <h3 class="poi-panel-title">Services</h3>
+                        <ul id="poi-services" class="poi-services"></ul>
+                    </section>
+                </div>
+
+                <!-- RIGHT: the bill of fare (taverns only) -->
+                <section id="poi-menu-card" class="poi-menu-card" aria-labelledby="poi-folio" hidden>
+                    <p class="poi-eyebrow poi-center">Today at the Bar</p>
+                    <h3 id="poi-folio" class="poi-menu-heading"></h3>
+                    <div class="poi-rule"></div>
+                    <div id="poi-menu" class="poi-menu"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+</body>
+
+</html>

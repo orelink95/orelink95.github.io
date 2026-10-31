@@ -16,9 +16,10 @@
     <link href="styles/main-style.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
-    <script src="scripts/settlement-registry.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
     <script src="scripts/pois-scripts.js"></script>
-    <script src="scripts/almanach.js"></script>
 </head>
 
 <body class="bg-surface text-on-surface font-body overflow-x-hidden">
@@ -75,7 +76,14 @@
                 </button>
                 <p id="modal-uid" class="font-label text-secondary text-xs uppercase tracking-[0.4em] mb-4"></p>
                 <h2 id="modal-title" class="text-4xl font-headline font-bold text-on-surface mb-6"></h2>
-                <div id="modal-body" class="space-y-6 text-on-surface-variant font-body text-sm leading-relaxed mb-8">
+                <div id="modal-body" class="space-y-6 text-on-surface-variant font-body text-sm leading-relaxed mb-8 lore">
+                </div>
+
+                <div class="mb-8">
+                    <a id="modal-page-link" href="#"
+                        class="inline-block px-6 py-2 border border-secondary/50 text-secondary text-[10px] font-label uppercase tracking-widest hover:bg-secondary hover:text-black transition-all duration-300 rounded-sm shadow-lg">
+                        Open the Full Entry
+                    </a>
                 </div>
 
                 <div id="modal-npc-section" class="mb-8 hidden">

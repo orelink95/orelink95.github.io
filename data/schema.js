@@ -47,6 +47,14 @@
             mapImage: { src: 'images/eraldom_world_map.png', width: 1920, height: 1078 },
         },
 
+        /* Site-wide settings: one object, not a list of records. */
+        settings: {
+            file: 'data/settings.json',
+            fields: {
+                tavernCode: { kind: 'text', label: 'Bill of fare code: every tavern menu is drawn from it, the same for everyone. Change it to change all menus.' },
+            },
+        },
+
         /* Value lists shared by several fields. */
         enums: {
             relation: ['Ally', 'Ally (Friendly)', 'Neutral', 'Displeased', 'Hostile', 'Hostile (Threat)', 'Enemy', 'Killed', 'Unknown'],
@@ -169,6 +177,7 @@
                     portrait:  { kind: 'image', label: 'Portrait' },
                     avatar:    { kind: 'image', label: 'Avatar (small)' },
                     home:      { kind: 'ref', to: ['poi', 'district', 'settlement', 'country'], label: 'Where they are found' },
+                    whereabouts: { kind: 'text', label: 'Whereabouts, when not a place on the site (e.g. another plane)' },
                     species:   { kind: 'text', label: 'Species' },
                     age:       { kind: 'text', label: 'Age' },
                     gender:    { kind: 'text', label: 'Gender' },

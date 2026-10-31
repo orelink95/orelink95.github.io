@@ -1,0 +1,230 @@
+/* Point-of-interest page (poi.html), taverns included — plain CSS so it works
+   without rebuilding output.css.
+   Palette mirrors tailwind.config.js tokens. */
+
+.poi-root {
+    --poi-gold: #e9c176;
+    --poi-gold-soft: #dab36a;
+    --poi-ink: #e2e3df;
+    --poi-ink-dim: #c3c8c0;
+    --poi-outline: #8d928b;
+    --poi-line: rgba(233, 193, 118, 0.18);
+    --poi-panel: #1e201e;
+    --poi-panel-deep: #1a1c1a;
+    --poi-paper: #201b14;
+    --poi-paper-edge: #3a2d1a;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    color: var(--poi-ink);
+}
+
+/* --- Shared bits --- */
+.poi-eyebrow {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--poi-gold);
+    margin: 0 0 0.5rem;
+}
+.poi-center { text-align: center; }
+.poi-muted { color: var(--poi-outline); font-style: italic; }
+.poi-link {
+    color: var(--poi-gold);
+    text-decoration: underline;
+    text-decoration-color: rgba(233, 193, 118, 0.3);
+    text-underline-offset: 3px;
+    transition: color .2s, text-decoration-color .2s;
+}
+.poi-link:hover { color: #ffdea5; text-decoration-color: currentColor; }
+
+/* --- Hero --- */
+.poi-hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--poi-line);
+    border-radius: 0.25rem;
+    overflow: hidden;
+    background: var(--poi-panel);
+    margin-bottom: 2rem;
+    box-shadow: 0 0 80px rgba(26, 48, 32, 0.5);
+}
+.poi-hero-img { position: relative; min-height: 240px; }
+.poi-hero-img img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+}
+.poi-hero-img::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, var(--poi-panel), transparent 60%);
+}
+.poi-hero-text { padding: 1.75rem 1.5rem 2rem; }
+.poi-title {
+    font-family: 'Noto Serif', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+    margin: 0 0 0.5rem;
+}
+.poi-subtitle {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--poi-ink-dim);
+    margin: 0 0 1.75rem;
+}
+.poi-facts {
+    display: flex; flex-wrap: wrap; gap: 1.25rem 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 1.25rem;
+    margin: 0;
+}
+.poi-facts dt {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--poi-outline);
+    margin-bottom: 0.25rem;
+}
+.poi-facts dd {
+    margin: 0;
+    font-family: 'Noto Serif', serif;
+    font-size: 1.05rem;
+}
+
+@media (min-width: 900px) {
+    .poi-hero { grid-template-columns: 1.1fr 1fr; }
+    .poi-hero-img { min-height: 380px; }
+    .poi-hero-img::after { background: linear-gradient(to right, transparent 55%, var(--poi-panel)); }
+    .poi-hero-text { padding: 3rem 3rem 3rem 2rem; align-self: center; }
+}
+
+/* --- Body grid --- */
+.poi-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+@media (min-width: 1100px) {
+    .poi-grid { grid-template-columns: 1fr 1.05fr; }
+}
+.poi-col { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+
+.poi-panel {
+    background: var(--poi-panel-deep);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.25rem;
+    padding: 1.5rem;
+}
+.poi-panel-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em;
+    color: var(--poi-outline);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 0.6rem;
+    margin: 0 0 1rem;
+}
+.poi-prose { font-family: 'Newsreader', serif; font-size: 1.05rem; line-height: 1.65; color: var(--poi-ink-dim); }
+.poi-prose p + p { margin-top: 0.9rem; }
+
+/* Staff */
+.poi-staff { display: grid; gap: 0.75rem; }
+.poi-npc {
+    display: flex; align-items: center; gap: 0.9rem;
+    padding: 0.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0.25rem;
+    background: rgba(0, 0, 0, 0.2);
+    transition: border-color .2s;
+}
+.poi-npc:hover { border-color: rgba(233, 193, 118, 0.35); }
+.poi-npc img {
+    width: 48px; height: 48px; object-fit: cover; border-radius: 0.25rem;
+    filter: grayscale(1); opacity: .8; transition: filter .4s, opacity .4s;
+}
+.poi-npc:hover img { filter: none; opacity: 1; }
+.poi-npc-name { display: block; font-family: 'Noto Serif', serif; font-weight: 700; color: var(--poi-gold); font-size: 0.95rem; }
+.poi-npc-role { display: block; font-family: 'Manrope', sans-serif; font-size: 9px; text-transform: uppercase; letter-spacing: 0.2em; color: var(--poi-outline); margin-top: 2px; }
+
+/* --- Menu card (the bill of fare) --- */
+.poi-menu-card {
+    position: relative;
+    background:
+        radial-gradient(ellipse at top, rgba(233, 193, 118, 0.07), transparent 60%),
+        var(--poi-paper);
+    border: 1px solid var(--poi-paper-edge);
+    outline: 1px solid rgba(233, 193, 118, 0.12);
+    outline-offset: -8px;
+    border-radius: 0.25rem;
+    padding: 2.25rem 1.5rem 1.25rem;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+@media (min-width: 640px) { .poi-menu-card { padding: 2.75rem 2.75rem 1.5rem; } }
+
+.poi-menu-heading {
+    font-family: 'Noto Serif', serif;
+    font-size: 1.6rem; font-weight: 700;
+    text-align: center;
+    color: var(--poi-gold-soft);
+    margin: 0;
+}
+.poi-rule {
+    width: 120px; height: 1px; margin: 1.1rem auto 1.75rem;
+    background: linear-gradient(to right, transparent, rgba(233, 193, 118, 0.5), transparent);
+}
+
+.poi-menu-cat + .poi-menu-cat { margin-top: 1.75rem; }
+.poi-menu-cat-title {
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.3em;
+    color: var(--poi-gold);
+    text-align: center;
+    margin: 0 0 1rem;
+}
+
+.poi-menu ul, .poi-services { list-style: none; margin: 0; padding: 0; }
+.poi-item + .poi-item { margin-top: 0.85rem; }
+.poi-item-line { display: flex; align-items: baseline; gap: 0.5rem; }
+.poi-item-name { font-family: 'Noto Serif', serif; font-size: 1rem; color: var(--poi-ink); }
+.poi-leader {
+    flex: 1 1 auto; min-width: 1.5rem;
+    border-bottom: 1px dotted rgba(233, 193, 118, 0.3);
+    transform: translateY(-4px);
+}
+.poi-item-price {
+    font-family: 'Manrope', sans-serif; font-weight: 700;
+    font-size: 0.8rem; letter-spacing: 0.05em;
+    color: var(--poi-gold);
+    white-space: nowrap;
+}
+.poi-unit { font-weight: 400; color: var(--poi-outline); font-size: 0.7rem; }
+.poi-item-desc {
+    font-family: 'Newsreader', serif; font-style: italic;
+    font-size: 0.95rem; color: var(--poi-outline);
+    margin: 0.15rem 0 0;
+}
+.poi-item--signature .poi-item-name { color: #ffdea5; }
+.poi-star { color: var(--poi-gold); margin-right: 0.4rem; font-size: 0.8em; }
+
+.poi-refresh { animation: poi-ink-in .6s ease both; }
+@keyframes poi-ink-in {
+    from { opacity: 0; filter: blur(3px); }
+    to   { opacity: 1; filter: none; }
+}
+@media (prefers-reduced-motion: reduce) { .poi-refresh { animation: none; } }
+
+/* --- Not found --- */
+.poi-empty { text-align: center; padding: 6rem 1rem; }
+.poi-empty h2 { font-family: 'Noto Serif', serif; font-size: 2rem; margin: 0 0 0.75rem; }
+.poi-empty p { font-family: 'Newsreader', serif; color: var(--poi-ink-dim); margin-bottom: 1.5rem; }
+
+/* --- Non-tavern POIs: one column, no menu --- */
+.poi-grid--single { grid-template-columns: 1fr !important; max-width: 900px; }
+.poi-root.is-danger .poi-eyebrow { color: #ffb4ab; }
+.poi-root.is-danger .poi-hero { border-color: rgba(255, 180, 171, 0.25); }
+.poi-crumbs a + a::before { content: ' · '; color: var(--poi-outline); }
+
+.poi-root [hidden] { display: none !important; }

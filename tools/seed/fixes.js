@@ -26,6 +26,11 @@ module.exports = {
        becomes a POI of Eperina instead of a broken settlement link. */
     pinAsPoi: ['loc_bereft-hills'],
 
+    /* Decided 1 Nov 2026. */
+    npcFactions: { talonoperative: ['thieves-guild'] },      // sephet stays unknown
+    npcWhereabouts: { 'The Vale House': 'The Vale House (a pocket dimension)' },
+    settings: { tavernCode: '' },
+
     /* Audit #5, for the second pass (campaign files): session npcsMet ids. */
     npcIdRenames: { 'jeff-the-skull': 'jeff-skull' },
 };

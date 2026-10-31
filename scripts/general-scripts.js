@@ -115,6 +115,10 @@ function toggleMobileSidebar() {
 
 // Start the fetch process when the page loads
 document.addEventListener("DOMContentLoaded", () => {
+    // Library pages load their own header/footer variants; skip the defaults
+    // there to avoid a double fetch and a flash of the wrong header.
+    if (document.getElementById("library-sidebar-placeholder")) return;
+
     loadComponent("header-placeholder", "components/header.html");
     loadComponent("footer-placeholder", "components/footer.html");
     loadComponent("sidebar-placeholder", "components/sidebar.html");
@@ -232,6 +236,7 @@ if (document.readyState === 'loading') {
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById('dust-container');
+    if (!container) return; // only the library pages have the dust layer
     const particleCount = 20;
 
     for (let i = 0; i < particleCount; i++) {

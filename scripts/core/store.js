@@ -18,6 +18,7 @@
        store.md(text, {dropCap:true})         -> HTML
        store.autolink(html, {exclude: id})    -> names turned into links
        store.validate()                       -> {errors, warnings}
+       store.settings                         -> data/settings.json
    Node tools build a store from files with Athenaeum.createStore().
    ===================================================================== */
 (function (root) {
@@ -27,7 +28,7 @@
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
     const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction' };
 
-    function createStore(schema, datasets, privateData) {
+    function createStore(schema, datasets, privateData, settingsData) {
         const types = schema.types;
         const byId = new Map();
         const typeOfRec = new WeakMap();
@@ -53,6 +54,8 @@
                 if (rec && typeOfRec.get(rec) === type) Object.assign(rec, fields);
             }
         }
+
+        const settings = Object.assign({}, settingsData || {});
 
         const resolve = x => (typeof x === 'string' ? byId.get(x) : x) || null;
         const typeOf = x => { const r = resolve(x); return r ? typeOfRec.get(r) : null; };
@@ -308,6 +311,12 @@
                 }
             }
 
+            // Settings
+            if (schema.settings) {
+                if (settingsData !== undefined && (typeof settingsData !== 'object' || Array.isArray(settingsData))) errors.push(`[settings] ${schema.settings.file} must be a JSON object`);
+                else checkFields(schema.settings.fields, settingsData || {}, '[settings]', report, false);
+            }
+
             // Type-specific rules
             const tiers = enumValues('tavernTier');
             for (const item of byType.menuItem || []) {
@@ -317,7 +326,7 @@
         }
 
         return {
-            schema, get: resolve, typeOf,
+            schema, settings, get: resolve, typeOf,
             all: type => (byType[type] || []).slice(),
             parent, ancestors, children, descendants, backrefs,
             url, enumOptions, enumValues,
@@ -348,8 +357,11 @@
                 try { return [type, await getJSON(def.file)]; }
                 catch (e) { console.error('[Athenaeum]', e.message); return [type, undefined]; }
             }));
-            const privateData = await getJSON('data/private.json', true).catch(() => undefined);
-            ATH.store = createStore(ATH.schema, Object.fromEntries(entries), privateData);
+            const [privateData, settings] = await Promise.all([
+                getJSON('data/private.json', true).catch(() => undefined),
+                ATH.schema.settings ? getJSON(ATH.schema.settings.file, true).catch(() => undefined) : undefined,
+            ]);
+            ATH.store = createStore(ATH.schema, Object.fromEntries(entries), privateData, settings);
             return ATH.store;
         })();
     }

@@ -1225,10 +1225,6 @@ input:where([type='file']):focus {
   margin-bottom: 2rem;
 }
 
-.\!mt-0 {
-  margin-top: 0px !important;
-}
-
 .-mb-16 {
   margin-bottom: -4rem;
 }
@@ -1347,10 +1343,6 @@ input:where([type='file']):focus {
 
 .mt-auto {
   margin-top: auto;
-}
-
-.ml-4 {
-  margin-left: 1rem;
 }
 
 .line-clamp-1 {
@@ -1540,10 +1532,6 @@ input:where([type='file']):focus {
 
 .h-\[700px\] {
   height: 700px;
-}
-
-.h-\[75vh\] {
-  height: 75vh;
 }
 
 .h-auto {
@@ -2342,10 +2330,6 @@ input:where([type='file']):focus {
   border-color: rgb(26 48 32 / var(--tw-border-opacity, 1));
 }
 
-.border-\[\#4ade80\]\/20 {
-  border-color: rgb(74 222 128 / 0.2);
-}
-
 .border-\[\#4ade80\]\/30 {
   border-color: rgb(74 222 128 / 0.3);
 }
@@ -3045,6 +3029,10 @@ input:where([type='file']):focus {
   background-image: radial-gradient(ellipse at center, rgba(233,193,118,0.15) 0%, transparent 70%);
 }
 
+.bg-\[radial-gradient\(ellipse_at_center\2c rgba\(0\2c 0\2c 0\2c 0\.55\)_0\%\2c rgba\(0\2c 0\2c 0\2c 0\.25\)_45\%\2c transparent_75\%\)\] {
+  background-image: radial-gradient(ellipse at center,rgba(0,0,0,0.55) 0%,rgba(0,0,0,0.25) 45%,transparent 75%);
+}
+
 .bg-\[radial-gradient\(ellipse_at_top_right\2c _rgba\(233\2c 193\2c 118\2c 0\.1\)_0\%\2c _transparent_70\%\)\] {
   background-image: radial-gradient(ellipse at top right, rgba(233,193,118,0.1) 0%, transparent 70%);
 }
@@ -3216,6 +3204,11 @@ input:where([type='file']):focus {
   --tw-gradient-stops: var(--tw-gradient-from), #4ade80 var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
 
+.via-\[\#60a5fa\]\/50 {
+  --tw-gradient-to: rgb(96 165 250 / 0)  var(--tw-gradient-to-position);
+  --tw-gradient-stops: var(--tw-gradient-from), rgb(96 165 250 / 0.5) var(--tw-gradient-via-position), var(--tw-gradient-to);
+}
+
 .via-\[\#e9c176\] {
   --tw-gradient-to: rgb(233 193 118 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), #e9c176 var(--tw-gradient-via-position), var(--tw-gradient-to);
@@ -3269,11 +3262,6 @@ input:where([type='file']):focus {
 .via-transparent {
   --tw-gradient-to: rgb(0 0 0 / 0)  var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), transparent var(--tw-gradient-via-position), var(--tw-gradient-to);
-}
-
-.via-\[\#60a5fa\]\/50 {
-  --tw-gradient-to: rgb(96 165 250 / 0)  var(--tw-gradient-to-position);
-  --tw-gradient-stops: var(--tw-gradient-from), rgb(96 165 250 / 0.5) var(--tw-gradient-via-position), var(--tw-gradient-to);
 }
 
 .to-\[\#1a3020\] {
@@ -4656,6 +4644,11 @@ input:where([type='file']):focus {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
+.blur-\[1\.5px\] {
+  --tw-blur: blur(1.5px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
 .blur-\[100px\] {
   --tw-blur: blur(100px);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -4688,6 +4681,11 @@ input:where([type='file']):focus {
 
 .brightness-75 {
   --tw-brightness: brightness(.75);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.brightness-\[0\.55\] {
+  --tw-brightness: brightness(0.55);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
@@ -4776,11 +4774,6 @@ input:where([type='file']):focus {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
-.drop-shadow-\[0_10px_30px_rgba\(0\2c 0\2c 0\2c 0\.8\)\] {
-  --tw-drop-shadow: drop-shadow(0 10px 30px rgba(0,0,0,0.8));
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-
 .drop-shadow-lg {
   --tw-drop-shadow: drop-shadow(0 10px 8px rgb(0 0 0 / 0.04)) drop-shadow(0 4px 3px rgb(0 0 0 / 0.1));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -4803,6 +4796,11 @@ input:where([type='file']):focus {
 
 .invert {
   --tw-invert: invert(100%);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+
+.saturate-\[0\.85\] {
+  --tw-saturate: saturate(0.85);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
@@ -4892,10 +4890,6 @@ input:where([type='file']):focus {
   transition-duration: 700ms;
 }
 
-.duration-\[3000ms\] {
-  transition-duration: 3000ms;
-}
-
 .duration-\[800ms\] {
   transition-duration: 800ms;
 }
@@ -4914,6 +4908,14 @@ input:where([type='file']):focus {
 
 .\[perspective\:1000px\] {
   perspective: 1000px;
+}
+
+.\[text-shadow\:0_1px_3px_rgba\(0\2c 0\2c 0\2c 0\.9\)\] {
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}
+
+.\[text-shadow\:0_2px_4px_rgba\(0\2c 0\2c 0\2c 0\.9\)\2c 0_0_24px_rgba\(0\2c 0\2c 0\2c 0\.6\)\] {
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9),0 0 24px rgba(0,0,0,0.6);
 }
 
 .\[transform-style\:preserve-3d\] {
@@ -5173,10 +5175,6 @@ input:where([type='file']):focus {
   background-color: rgb(74 222 128 / 0.1);
 }
 
-.hover\:bg-\[\#4ade80\]\/20:hover {
-  background-color: rgb(74 222 128 / 0.2);
-}
-
 .hover\:bg-\[\#60a5fa\]\/10:hover {
   background-color: rgb(96 165 250 / 0.1);
 }
@@ -5204,10 +5202,6 @@ input:where([type='file']):focus {
 
 .hover\:bg-black\/60:hover {
   background-color: rgb(0 0 0 / 0.6);
-}
-
-.hover\:bg-black\/80:hover {
-  background-color: rgb(0 0 0 / 0.8);
 }
 
 .hover\:bg-primary\/10:hover {
@@ -5240,10 +5234,6 @@ input:where([type='file']):focus {
   background-color: rgb(233 193 118 / 0.2);
 }
 
-.hover\:bg-secondary\/30:hover {
-  background-color: rgb(233 193 118 / 0.3);
-}
-
 .hover\:bg-surface-bright:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(56 58 55 / var(--tw-bg-opacity, 1));
@@ -5266,10 +5256,6 @@ input:where([type='file']):focus {
 
 .hover\:bg-white\/10:hover {
   background-color: rgb(255 255 255 / 0.1);
-}
-
-.hover\:bg-white\/20:hover {
-  background-color: rgb(255 255 255 / 0.2);
 }
 
 .hover\:bg-white\/5:hover {
@@ -6146,10 +6132,6 @@ input:where([type='file']):focus {
 
   .lg\:grid-cols-12 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-
-  .lg\:grid-cols-2 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .lg\:grid-cols-3 {

@@ -43,18 +43,20 @@
 
       <!-- Hero Image Layer -->
       <div class="absolute inset-0 z-0">
-        <img class="w-full h-full object-cover opacity-50 transition-opacity duration-[3000ms] animate-pulse-slow"
-          data-alt="The Floating Citadel of the Ancient Library of Oneirakis" src="images/homebg.png" />
+        <img
+          class="w-full h-full object-cover scale-105 brightness-[0.55] saturate-[0.85] blur-[1.5px] animate-pulse-slow"
+          alt="" src="images/homebg.jpg" />
         <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
       </div>
+
       <div class="relative z-20 text-center px-4 max-w-5xl mx-auto animate-float">
         <h1
-          class="font-headline text-5xl md:text-7xl lg:text-8xl font-bold text-on-surface mb-6 leading-tight tracking-tight drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+          class="font-headline text-5xl md:text-7xl lg:text-8xl font-bold text-on-surface mb-6 leading-tight tracking-tight [text-shadow:0_2px_4px_rgba(0,0,0,0.9),0_0_24px_rgba(0,0,0,0.6)]">
           The Eraldom Archive: <br />
           <span class="text-secondary italic font-normal animate-glow">Chronicles of the Athenaeum's Vaults</span>
         </h1>
         <p
-          class="font-body text-xl md:text-2xl text-on-surface-variant max-w-2xl mx-auto mb-10 leading-relaxed italic opacity-80">
+          class="font-body text-xl md:text-2xl text-on-surface max-w-2xl mx-auto mb-10 leading-relaxed italic [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]">
           "Step within the sanctum of forgotten ages, where every whisper of wind turns a page in the tapestry of
           existence."
         </p>
@@ -169,10 +171,11 @@
         </div>
       </div>
     </section>
-    
+
     <section class="py-20 px-6 relative z-20 max-w-7xl mx-auto -mb-16">
       <div class="flex flex-col items-center mb-10">
-        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-secondary animate-pulse-slow mb-2">The Loom of Fate</span>
+        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-secondary animate-pulse-slow mb-2">The Loom
+          of Fate</span>
         <h2 class="font-headline text-3xl md:text-4xl text-on-surface flex items-center gap-4">
           <span class="h-px w-12 bg-gradient-to-r from-transparent to-secondary/50"></span>
           Upcoming Sessions
@@ -180,80 +183,129 @@
         </h2>
       </div>
 
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="upcoming-sessions-grid">
-        
-        <div class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-secondary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(233,193,118,0.15)] hover:-translate-y-2 cursor-default" style="--glow-color: rgba(233, 193, 118, 0.15);">
-          
-          <div class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);"></div>
-          
-          <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-secondary to-transparent opacity-50 group-hover:opacity-100 transition-opacity z-10"></div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="upcoming-sessions-grid">
+
+        <div
+          class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-secondary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(233,193,118,0.15)] hover:-translate-y-2 cursor-default"
+          style="--glow-color: rgba(233, 193, 118, 0.15);">
+
+          <div
+            class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);">
+          </div>
+
+          <div
+            class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-secondary to-transparent opacity-50 group-hover:opacity-100 transition-opacity z-10">
+          </div>
 
           <div class="flex justify-between items-start mb-6 relative z-10">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-secondary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
-                <span class="material-symbols-outlined text-secondary text-xl opacity-80 group-hover:opacity-100 group-hover:animate-pulse" style="font-variation-settings: 'FILL' 1;">hourglass_top</span>
+              <div
+                class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-secondary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                <span
+                  class="material-symbols-outlined text-secondary text-xl opacity-80 group-hover:opacity-100 group-hover:animate-pulse"
+                  style="font-variation-settings: 'FILL' 1;">hourglass_top</span>
               </div>
               <div>
-                <h3 class="font-headline text-xl font-bold text-white group-hover:text-secondary transition-colors">Echoes from the Void</h3>
-                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 6</p>
+                <h3 class="font-headline text-xl font-bold text-white group-hover:text-secondary transition-colors">
+                  The Last Sigil</h3>
+                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 10</p>
               </div>
             </div>
-            <span class="px-2.5 py-1 rounded bg-secondary/15 border border-secondary/30 text-secondary text-[8px] uppercase tracking-widest font-bold shadow-[0_0_10px_rgba(233,193,118,0.2)] animate-pulse">Up Next</span>
+            <span
+              class="px-2.5 py-1 rounded bg-secondary/15 border border-secondary/30 text-secondary text-[8px] uppercase tracking-widest font-bold shadow-[0_0_10px_rgba(233,193,118,0.2)] animate-pulse">Up
+              Next</span>
           </div>
 
           <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
-            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">event</span> Saturday, May 9th</p>
-            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 11:00 am</p>
+            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span
+                class="material-symbols-outlined text-[16px] text-white/30">event</span> Wednesday, Nov 4th</p>
+            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span
+                class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 2:00 PM</p>
           </div>
         </div>
 
-        <div class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(74,222,128,0.1)] hover:-translate-y-2 cursor-default" style="--glow-color: rgba(74, 222, 128, 0.15);">
-          
-          <div class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);"></div>
+        <div
+          class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(74,222,128,0.1)] hover:-translate-y-2 cursor-default"
+          style="--glow-color: rgba(74, 222, 128, 0.15);">
 
-          <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+          <div
+            class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);">
+          </div>
+
+          <div
+            class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          </div>
 
           <div class="flex justify-between items-start mb-6 relative z-10">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-primary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
-                <span class="material-symbols-outlined text-primary text-xl opacity-80 group-hover:opacity-100" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+              <div
+                class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-primary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                <span class="material-symbols-outlined text-primary text-xl opacity-80 group-hover:opacity-100"
+                  style="font-variation-settings: 'FILL' 1;">calendar_month</span>
               </div>
               <div>
-                <h3 class="font-headline text-xl font-bold text-white group-hover:text-primary transition-colors">The Last Sigil</h3>
-                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 9</p>
+                <h3 class="font-headline text-xl font-bold text-white group-hover:text-primary transition-colors">The
+                  Last Sigil</h3>
+                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 11</p>
               </div>
             </div>
-            <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/60 text-[8px] uppercase tracking-widest font-bold group-hover:text-primary group-hover:border-primary/30 transition-colors">Scheduled</span>
+            <span
+              class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/60 text-[8px] uppercase tracking-widest font-bold group-hover:text-primary group-hover:border-primary/30 transition-colors">Scheduled</span>
           </div>
 
           <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
-            <p class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">event</span> Saturday, June 13th</p>
-            <p class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 2:00 PM </p>
+            <p
+              class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3">
+              <span class="material-symbols-outlined text-[16px] text-white/30">event</span> Wednesday, November 18th
+            </p>
+            <p
+              class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3">
+              <span class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 2:00 PM
+            </p>
           </div>
         </div>
 
-        <div class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-purple-400/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(192,132,252,0.1)] hover:-translate-y-2 cursor-default" style="--glow-color: rgba(192, 132, 252, 0.15);">
-          
-          <div class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100" style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);"></div>
+        <div
+          class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-purple-400/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(192,132,252,0.1)] hover:-translate-y-2 cursor-default"
+          style="--glow-color: rgba(192, 132, 252, 0.15);">
 
-          <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10"></div>
+          <div
+            class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);">
+          </div>
+
+          <div
+            class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          </div>
 
           <div class="flex justify-between items-start mb-6 relative z-10">
             <div class="flex items-center gap-4">
-              <div class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-purple-400/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
-                <span class="material-symbols-outlined text-purple-400 text-xl opacity-80 group-hover:opacity-100" style="font-variation-settings: 'FILL' 1;">explore</span>
+              <div
+                class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-purple-400/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                <span class="material-symbols-outlined text-purple-400 text-xl opacity-80 group-hover:opacity-100"
+                  style="font-variation-settings: 'FILL' 1;">explore</span>
               </div>
               <div>
-                <h3 class="font-headline text-xl font-bold text-white group-hover:text-purple-400 transition-colors">Echoes from the Void</h3>
+                <h3 class="font-headline text-xl font-bold text-white group-hover:text-purple-400 transition-colors">
+                  Echoes from the Void</h3>
                 <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 7</p>
               </div>
             </div>
-            <span class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/40 text-[8px] uppercase tracking-widest font-bold">TBD</span>
+            <span
+              class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/40 text-[8px] uppercase tracking-widest font-bold">TBD</span>
           </div>
 
           <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
-            <p class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/20">event</span> Date Pending</p>
-            <p class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3"><span class="material-symbols-outlined text-[16px] text-white/20">schedule</span> Time Pending</p>
+            <p
+              class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3">
+              <span class="material-symbols-outlined text-[16px] text-white/20">event</span> Saturday, December 5th
+            </p>
+            <p
+              class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3">
+              <span class="material-symbols-outlined text-[16px] text-white/20">schedule</span> 11:00 AM
+            </p>
           </div>
         </div>
 
@@ -304,7 +356,7 @@
               <img
                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:-rotate-1"
                 data-alt="mystical dark forest with a single white stag glowing with ethereal light in the shadows"
-                src="images/maera_voss.png" />
+                src="images/sephet-halfborn.webp" />
               <div
                 class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
               </div>
@@ -312,10 +364,10 @@
                 class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
               </div>
             </div>
-            <a href="npc.html?id=maeravoss"
+            <a href="npc.html?id=sephet"
               class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
-              Maera Voss</a>
-            <p class="font-body italic text-sm text-on-surface-variant/60">Added 4 cycles ago</p>
+              Sephet Halfborn</a>
+            <p class="font-body italic text-sm text-on-surface-variant/60">Added 2 cycles ago</p>
           </div>
 
           <!-- Update Item 3 -->

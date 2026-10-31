@@ -1,0 +1,272 @@
+[
+  {
+    "id": "bereft-hills",
+    "name": "Bereft Hills",
+    "parent": "eperina",
+    "subtitle": "Wilderness",
+    "codex": "Codex Entry: 99.X",
+    "body": "The bereft hill are shunned by locals for a good reason. Strange things wander these parts, the walls of Modbury seem too frail hold the flood of nightmares from the region.",
+    "danger": true,
+    "map": {
+      "x": 1074,
+      "y": 835,
+      "icon": "danger"
+    }
+  },
+  {
+    "id": "caeraotrom-athenaeum",
+    "name": "Caeraotrom Athenæum",
+    "parent": "lemerolai",
+    "subtitle": "Oghma's Blessing",
+    "codex": "Codex Entry: 03.H",
+    "body": "Aratanath Surrkerin, an ancient dragon sage is fabled to have conversed with Oghma. After their last discussion the god missioned him with the construction of the greatest trove of knowledge of the material plane - a place where all could aspire to learn.\n\nThere is only one way in and out of the Caeraotrom Athenæum: a small road coming up the mountain from the closest town. There is 150 km separating the two, with a 600m elevation gain.",
+    "map": {
+      "x": 206,
+      "y": 335,
+      "icon": "capital"
+    }
+  },
+  {
+    "id": "alabaster-palace",
+    "name": "The Alabaster Palace",
+    "parent": "cloud_district",
+    "subtitle": "King's Estate",
+    "body": "The seat of power in Brightend. From here, the King oversees the distribution of resources across the vale.",
+    "image": "images/pois/alabaster_palace.png",
+    "map": {
+      "x": 705,
+      "y": 990,
+      "icon": "capital"
+    }
+  },
+  {
+    "id": "hammers-candy",
+    "name": "Hammer's Candy",
+    "parent": "cloud_district",
+    "subtitle": "Yummy yummy",
+    "body": "Hammer's famousest candy ! Now 100% crack-free.",
+    "image": "images/pois/hammer-candy.png",
+    "safe": true,
+    "map": {
+      "x": 119,
+      "y": 342,
+      "icon": "pay-money"
+    }
+  },
+  {
+    "id": "warden-fort",
+    "name": "Warden Fort",
+    "aliases": [
+      "Alabaster Warden Barracks"
+    ],
+    "parent": "cloud_district",
+    "subtitle": "Headquarters and barracks",
+    "body": "The epicenter of law enforcement and military power in Brightend. The elite military corp is respected through the whole country.",
+    "image": "images/pois/alabaster_ward.png",
+    "map": {
+      "x": 800,
+      "y": 916,
+      "icon": "fort"
+    }
+  },
+  {
+    "id": "oddmoss-librarium",
+    "name": "Oddmoss Librarium",
+    "parent": "cloud_district",
+    "subtitle": "Ancient tomes and dusty books",
+    "body": "One of the finest bookshops in the region, known by scholars for their dedication to procuring old and rare volumes.",
+    "map": {
+      "x": 424,
+      "y": 718,
+      "icon": "bookshelf"
+    }
+  },
+  {
+    "id": "brawn-brawn-agency",
+    "name": "Brawn & Brawn Agency",
+    "parent": "cloud_district",
+    "subtitle": "Nimo and Gust's mercenary agency",
+    "body": "A small office tucked neatly between two impressive homes in the Cloud District houses the yound mercenary agency. Already hired by the Crown, the agency sees itself becoming a staple of the city.",
+    "image": "images/pois/bbagency.png",
+    "safe": true,
+    "map": {
+      "x": 1018,
+      "y": 533,
+      "icon": "spinning-blades"
+    }
+  },
+  {
+    "id": "gilded-goldfinch",
+    "name": "Gilded Goldfinch",
+    "parent": "cloud_district",
+    "subtitle": "The finest drinks and eats the city has to offer",
+    "body": "The finest inn in the city... or the country, according to owner Merton Lensher.",
+    "image": "images/pois/gilded_goldfinch.png",
+    "map": {
+      "x": 298,
+      "y": 730,
+      "icon": "beer"
+    },
+    "tavern": {
+      "tier": "wealthy",
+      "hours": "Noon until the last candle",
+      "picks": {
+        "drinks": 4,
+        "meals": 3,
+        "bites": 3
+      },
+      "excludeTags": [
+        "rustic",
+        "coastal"
+      ],
+      "signature": [
+        {
+          "category": "drinks",
+          "name": "Goldfinch Reserve",
+          "desc": "Amber mead aged in the cellar; Merton pours it himself.",
+          "price": 150
+        },
+        {
+          "category": "meals",
+          "name": "The Lensher Roast",
+          "desc": "Whatever Merton deems worthy today. Ask.",
+          "price": 120
+        }
+      ],
+      "services": [
+        "room-private",
+        "room-suite",
+        "bath",
+        "stabling",
+        "messenger",
+        "private-hall"
+      ]
+    }
+  },
+  {
+    "id": "thayne-household",
+    "name": "Thayne Household",
+    "parent": "cloud_district",
+    "subtitle": "Where the traumatized widower lives.",
+    "body": "We all know what happened here... it's like zombies were done to the cupboard",
+    "image": "images/pois/thaynehouse.png",
+    "map": {
+      "x": 600,
+      "y": 367,
+      "icon": "house"
+    }
+  },
+  {
+    "id": "finest-cloth",
+    "name": "Finest Cloth",
+    "aliases": [
+      "Thayne's Finest Cloth"
+    ],
+    "parent": "cloud_district",
+    "subtitle": "Where the best fabric is!",
+    "body": "Late Elira Thayne's tailor shop. Only the best materials, coming from all over the continent, assembled by the best seamstresses!",
+    "map": {
+      "x": 640,
+      "y": 380,
+      "icon": "pay-money"
+    }
+  },
+  {
+    "id": "turris-magi-finisclari",
+    "name": "Turris Magi Finisclari",
+    "aliases": [
+      "Sorcerer Surpreme Sanctorum"
+    ],
+    "parent": "cloud_district",
+    "subtitle": "The Archamge's Tower",
+    "body": "The Turris Magi is the second highest building in the cloud district, second the Alabaster Palace. It is a landmark known by all but feared by most. As a place of magic most people shun it and some even avoid it.",
+    "featured": true,
+    "map": {
+      "x": 1038,
+      "y": 785,
+      "icon": "rook"
+    }
+  },
+  {
+    "id": "fighting-pits",
+    "name": "The Fighting Pits",
+    "parent": "ash_district",
+    "subtitle": "Danger Zone",
+    "body": "Underground arenas where disputes are settled in blood and illegal wagers are the city's true currency.",
+    "danger": true,
+    "image": "images/pois/brightend_fightpits.png",
+    "map": {
+      "x": 500,
+      "y": 500,
+      "icon": "danger"
+    }
+  },
+  {
+    "id": "harbour-master",
+    "name": "Harbour Master",
+    "parent": "the_docks",
+    "body": "Where the master habours... or something",
+    "map": {
+      "x": 262,
+      "y": 514,
+      "icon": "castle"
+    }
+  },
+  {
+    "id": "oxanas-gems",
+    "name": "Oxana's Gems",
+    "parent": "brightend_artisan",
+    "subtitle": "Jewelry Emporium",
+    "body": "Oxana's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th generation shop is famous through out the city, and even further...",
+    "map": {
+      "x": 277,
+      "y": 777,
+      "icon": "pay-money"
+    }
+  },
+  {
+    "id": "black-rose-inn",
+    "name": "Black Rose Inn",
+    "parent": "deercrest-district",
+    "subtitle": "Fresh Water, Warm Beds, Decent Wine... sometimes",
+    "body": "The coolest and edgiest inn in town.",
+    "image": "images/pois/blackrose_inn.webp",
+    "map": {
+      "x": 762,
+      "y": 581,
+      "icon": "beer"
+    },
+    "tavern": {
+      "tier": "modest",
+      "hours": "Dawn to midnight; later if the wine holds out",
+      "picks": {
+        "drinks": 3,
+        "meals": 3,
+        "bites": 2
+      },
+      "includeTags": [
+        "common",
+        "rustic",
+        "hunter"
+      ],
+      "excludeTags": [
+        "fine"
+      ],
+      "signature": [
+        {
+          "category": "meals",
+          "name": "Deercrest Venison Stew",
+          "desc": "The town's pride, simmered since morning.",
+          "price": 25
+        }
+      ],
+      "services": [
+        "room-common",
+        "room-private",
+        "bath",
+        "stabling",
+        "laundry"
+      ]
+    }
+  }
+]

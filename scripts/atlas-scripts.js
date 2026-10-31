@@ -1,5 +1,5 @@
 // Magic Glow Spotlight Effect for Lore Cards
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const loreCards = document.querySelectorAll('.lore-card');
 
     loreCards.forEach(card => {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // This file controls the Leaflet map, custom markers, and layer toggles.
 // =====================================================================
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     // -----------------------------------------------------------------
     // 1. MAP INITIALIZATION & SETUP
     // -----------------------------------------------------------------
@@ -30,6 +30,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Grab the HTML container for the map. If it doesn't exist on this page, stop running.
     const mapElement = document.getElementById('world-map');
     if (!mapElement) return;
+    const store = await Athenaeum.ready;
+    const world = store.world;
 
     // Create the Leaflet map instance. 
     // L.CRS.Simple tells Leaflet this is a flat image, not a real globe with GPS coordinates.
@@ -41,16 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
         attributionControl: false // Removes the "Leaflet" watermark at the bottom right
     });
 
-    // Map Image Dimensions: MUST exactly match the pixel resolution of your uploaded map images!
-    const imgWidth = 1920;
-    const imgHeight = 1078;
+    // Map image and its pixel size come from data/world.json
+    const imgWidth = world.mapImage.width;
+    const imgHeight = world.mapImage.height;
 
     // Define the corners of the map [Bottom-Left [Y, X], Top-Right [Y, X]]
     const bounds = [[0, 0], [imgHeight, imgWidth]];
 
     // Load the initial background image (Cartographic layer by default)
     // We save this into a variable ('mapOverlay') so we can swap the URL later when buttons are clicked!
-    const mapOverlay = L.imageOverlay('./images/eraldom_world_map.png', bounds).addTo(map);
+    const mapOverlay = L.imageOverlay(world.mapImage.src, bounds).addTo(map);
 
     // Force the map to center itself perfectly within the bounds we just set
     map.fitBounds(bounds);
@@ -111,30 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Keep the default lore here for the overview/reset
     const defaultLore = {
-        entry: 'Codex Entry: 04.A',
-        title: 'The Known Realms',
-        body: `<p>
-                            <span
-                                class="float-left text-6xl font-headline text-secondary leading-none pr-3 pt-2 drop-shadow-[0_0_10px_rgba(233,193,118,0.3)]">B</span>
-                            eyond the jagged peaks of the Iron Span lies a world scarred by ancient magic and forgotten
-                            dynasties. The Athenaeum records these lands not as they are, but as they survive.
-                        </p>
-                        <p>
-                            To the east, the <span class="text-e2e3df font-semibold">Sunken Isles</span> still radiate
-                            with the chaotic energy of the First Sundering. Travelers speak of waters that glow like
-                            liquid starlight, though few return to verify such claims.
-                        </p>
-
-                        <div class="relative my-8 pl-6 border-l-2 border-primary/30">
-                            <span
-                                class="material-symbols-outlined absolute -left-3 -top-3 text-primary/20 text-4xl bg-surface-container-low"
-                                style="font-variation-settings: 'FILL' 1;">format_quote</span>
-                            <p class="italic text-on-surface/80 relative z-10">
-                                "Do not trust the maps drawn before the War. The land remembers the trauma, it has been disfigured."
-                            </p>
-                            <span class="block text-[10px] font-label uppercase tracking-widest text-primary mt-3">—
-                                Master Sage Elara</span>
-                        </div>`
+        entry: world.codex || '',
+        title: world.loreTitle || world.name,
+        body: store.autolink(store.md(world.body, { dropCap: true }))
     };
 
     // Updated Lore Panel Function
@@ -151,9 +132,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    updateLorePanel(defaultLore);
+
     // -----------------------------------------------------------------
     // 5. AUTOMATED MARKER GENERATION
     // -----------------------------------------------------------------
+    // Continents pinned on the world map, in the shape the markers code expects
+    const allMarkersData = store.all('continent').filter(c => c.map).map(c => ({
+        id: c.id, title: c.name, subtitle: c.subtitle || '', entry: c.codex || '',
+        body: store.autolink(store.md(c.body, { dropCap: true }), { exclude: c.id }),
+        icon: c.map.icon, layer: c.map.layer || 'cartographic', isDanger: !!c.danger,
+        y: c.map.y, x: c.map.x, url: c.mapImage ? store.url(c) : null
+    }));
+
     allMarkersData.forEach(data => {
         const marker = L.marker(L.latLng(data.y, data.x), {
             icon: createFantasyIcon(data.icon, data.isDanger)
@@ -165,6 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class='text-center'>
                 <b class='font-headline text-xl ${colorClass} block mb-1'>${data.title}</b>
                 <span class='font-label text-[10px] uppercase tracking-widest text-on-surface-variant/80'>${data.subtitle}</span>
+                ${data.url ? `<a href="${data.url}" class="block mt-3 font-label text-[10px] uppercase tracking-widest text-secondary underline">Explore the continent</a>` : ''}
             </div>
         `, popupOptions);
 
@@ -202,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const mapData = {
         cartographic: {
             markers: cartographicLayer,
-            image: './images/eraldom_world_map.png'
+            image: world.mapImage.src
         },
         political: {
             markers: politicalLayer,
@@ -210,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         relic: {
             markers: relicLayer,
-            image: './images/eraldom_world_map.png'
+            image: world.mapImage.src
         }
     };
 

@@ -18,6 +18,7 @@ const vm = require('vm');
 const { ROOT, loadCore } = require('./lib/core');
 const seedTaverns = require('./seed/taverns');
 const fixes = require('./seed/fixes');
+const legacyPages = require('./seed/legacy-pages');
 
 const ATH = loadCore();
 const schema = ATH.schema;
@@ -35,15 +36,6 @@ function loadLegacy() {
     return ctx;
 }
 const L = loadLegacy();
-
-/* The continent map is hard-coded in continent-scripts.js; read it from there. */
-function legacyContinentMap() {
-    const s = fs.readFileSync(path.join(ROOT, 'scripts/continent-scripts.js'), 'utf8');
-    const w = +(s.match(/imgWidth\s*=\s*(\d+)/) || [])[1];
-    const h = +(s.match(/imgHeight\s*=\s*(\d+)/) || [])[1];
-    const src = (s.match(/imageOverlay\(\s*'([^']+)'/) || [])[1];
-    return src && w && h ? { src: cleanPath(src), width: w, height: h } : undefined;
-}
 
 /* ---------- helpers ---------- */
 const cleanPath = p => (typeof p === 'string' ? p.trim().replace(/^\.\//, '') : p);
@@ -76,12 +68,13 @@ function htmlToMd(html, where) {
 
     // Pull-quote block: <div …><span>format_quote</span><p>"…"</p><span>— Name</span></div>
     s = s.replace(/<div[^>]*>\s*<span[^>]*>\s*format_quote\s*<\/span>\s*<p[^>]*>([\s\S]*?)<\/p>\s*<span[^>]*>([\s\S]*?)<\/span>\s*<\/div>/gi,
-        (_, q, who) => `\n\n> ${q.trim().replace(/\s*\n\s*/g, ' ')}\n> ${who.trim()}\n\n`);
+        (_, q, who) => `\n\n> ${q.trim().replace(/\s+/g, ' ')}\n> ${who.trim().replace(/\s+/g, ' ')}\n\n`);
     // Drop caps: <span class="float-left …">X</span> -> X (and glue "T he" back to "The")
-    s = s.replace(/<span[^>]*float-left[^>]*>\s*([^<]*?)\s*<\/span>\s?(?=[a-zà-ÿ])/g, '$1');
+    s = s.replace(/<span[^>]*float-left[^>]*>\s*([^<]*?)\s*<\/span>\s*(?=[a-zà-ÿ])/g, '$1');
     s = s.replace(/<span[^>]*float-left[^>]*>\s*([^<]*?)\s*<\/span>/g, '$1');
     // Keyword spans: the store's autolink does this now.
     s = s.replace(/<span[^>]*class="kw-[^"]*"[^>]*>([\s\S]*?)<\/span>/g, '$1');
+    s = s.replace(/<span[^>]*font-(?:semibold|bold)[^>]*>([\s\S]*?)<\/span>/g, '**$1**');
     s = s.replace(/<br\s*\/?>\s*/gi, '  \n');
     s = s.replace(/<(strong|b)>([\s\S]*?)<\/\1>/gi, '**$2**');
     s = s.replace(/<(em|i)>([\s\S]*?)<\/\1>/gi, '*$2*');
@@ -110,7 +103,9 @@ const iconExists = name => fs.existsSync(path.join(ROOT, 'images/atlas_icons', n
 const mapPin = (m, layer) => {
     const pin = { x: m.x, y: m.y };
     if (m.icon) {
-        pin.icon = m.icon;
+        pin.icon = (fixes.pinIcons || {})[m.title] || m.icon;
+        if (pin.icon !== m.icon) report.resolved.push(`pin "${m.title}": icon "${m.icon}" -> "${pin.icon}" (decided 1 Nov)`);
+        m = { ...m, icon: pin.icon };
         // GitHub Pages is case-sensitive: "Verdena" does not find verdena.svg there.
         if (!iconExists(m.icon) && iconExists(m.icon.toLowerCase())) {
             pin.icon = m.icon.toLowerCase();
@@ -147,17 +142,25 @@ const findByName = (types, name) => {
     return null;
 };
 
+/* ---------- world (lore + map that were hard-coded in atlas-scripts.js) ---------- */
+function legacyWorld() {
+    const w = legacyPages.world;
+    return { name: 'Eraldom', codex: w.entry, loreTitle: w.title, body: htmlToMd(w.body, 'world'), mapImage: w.map };
+}
+const world = legacyWorld();
+
 /* ---------- continents (world map markers) ---------- */
-const continentMap = legacyContinentMap();
 for (const m of L.allMarkersData) {
     add('continent', {
         id: m.id, name: m.title, subtitle: m.subtitle, codex: m.entry,
         body: htmlToMd(m.body, `continent ${m.id}`),
         map: mapPin(m, m.layer), danger: !!m.isDanger,
-        mapImage: m.id === 'maltona' ? continentMap : undefined,
+        mapImage: legacyPages.continentMaps[m.id],
+        ...(fixes.continentPages[m.id] || {}),
     });
+    if (fixes.continentPages[m.id]) report.notes.push(`continent ${m.id}: era, info cards, notables and epigraph taken from continent.html`);
 }
-report.notes.push('continent maltona: map image read from continent-scripts.js (the only continent page today)');
+report.notes.push('continent maltona: map image as hard-coded in the old continent-scripts.js');
 
 /* ---------- countries (continent markers + country registry) ---------- */
 const continentOf = name => {
@@ -176,16 +179,24 @@ for (const id of countryIds) {
         name: reg ? reg.regionName : marker.title,
         aliases: [...aliases],
         parent: reg ? continentOf(reg.continentName) : 'maltona',
+        shortName: marker && reg && marker.title !== reg.regionName ? marker.title : undefined,
         subtitle: marker ? marker.subtitle : undefined,
         summary: reg ? (reg.description || '').trim() : undefined,
         codex: reg && reg.defaultLore ? reg.defaultLore.entry : undefined,
         loreTitle: reg && reg.defaultLore ? reg.defaultLore.title : undefined,
         body: reg && reg.defaultLore ? htmlToMd(reg.defaultLore.body, `country ${id}`) : undefined,
+        epithet: fixes.countryEpithets[id],
+        unlisted: fixes.unlistedCountries.includes(id),
         danger: marker ? !!marker.isDanger : false,
         map: marker ? mapPin(marker, marker.layer) : undefined,
         mapImage: reg && reg.mapImage ? { src: cleanPath(reg.mapImage), width: reg.mapWidth, height: reg.mapHeight } : undefined,
     });
     if (!reg) report.notes.push(`country ${id}: on the continent map only (no country page data yet)`);
+}
+
+for (const c of fixes.extraCountries) {
+    add('country', { ...c });
+    report.created.push(`country ${c.id}: listed in continent.html's nations list, absent from the data`);
 }
 
 /* ---------- settlements (settlement registry + their country pins) ---------- */
@@ -342,7 +353,14 @@ for (const [type, list] of Object.entries(out)) {
     fs.mkdirSync(path.dirname(file), { recursive: true });
     fs.writeFileSync(file, JSON.stringify(list.map(r => tidy(type, r)), null, 2) + '\n');
 }
-fs.writeFileSync(path.join(ROOT, schema.settings.file), JSON.stringify(fixes.settings, null, 2) + '\n');
+const writeSingleton = (name, obj) => {
+    const fields = schema.singletons[name].fields;
+    const out = {};
+    for (const k of Object.keys(fields)) if (obj[k] !== undefined && obj[k] !== '') out[k] = obj[k];
+    fs.writeFileSync(path.join(ROOT, schema.singletons[name].file), JSON.stringify(out, null, 2) + '\n');
+};
+writeSingleton('world', world);
+fs.writeFileSync(path.join(ROOT, schema.singletons.settings.file), JSON.stringify(fixes.settings, null, 2) + '\n');
 fs.writeFileSync(path.join(ROOT, 'data/private.json'), JSON.stringify(privateOut, null, 2) + '\n');
 
 /* ---------- report ---------- */

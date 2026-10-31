@@ -17,8 +17,9 @@
        store.url(id)                          -> page URL from the schema
        store.md(text, {dropCap:true})         -> HTML
        store.autolink(html, {exclude: id})    -> names turned into links
+       store.find('The Gilded Goldfinch')     -> record by name or alias
        store.validate()                       -> {errors, warnings}
-       store.settings                         -> data/settings.json
+       store.world / store.settings           -> data/world.json, data/settings.json
    Node tools build a store from files with Athenaeum.createStore().
    ===================================================================== */
 (function (root) {
@@ -28,7 +29,7 @@
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
     const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction' };
 
-    function createStore(schema, datasets, privateData, settingsData) {
+    function createStore(schema, datasets, privateData, singletonData) {
         const types = schema.types;
         const byId = new Map();
         const typeOfRec = new WeakMap();
@@ -55,7 +56,8 @@
             }
         }
 
-        const settings = Object.assign({}, settingsData || {});
+        const singletons = {};
+        for (const name of Object.keys(schema.singletons || {})) singletons[name] = Object.assign({}, (singletonData || {})[name] || {});
 
         const resolve = x => (typeof x === 'string' ? byId.get(x) : x) || null;
         const typeOf = x => { const r = resolve(x); return r ? typeOfRec.get(r) : null; };
@@ -126,8 +128,21 @@
                 .map(h => h.record))];
         }
 
+        /* ---------- lookup by name (for legacy text that names things) ---------- */
+        const normName = n => String(n || '').toLowerCase().replace(/[’']/g, "'").replace(/^the\s+/, '').replace(/\s+/g, ' ').trim();
+        function find(name, typeList) {
+            const n = normName(name);
+            if (!n) return null;
+            for (const t of typeList || Object.keys(types)) {
+                const hit = (byType[t] || []).find(r => normName(r.name) === n || (r.aliases || []).some(a => normName(a) === n));
+                if (hit) return hit;
+            }
+            return null;
+        }
+
         /* ---------- URLs ---------- */
         function url(x) {
+            if (x === 'world') return (schema.singletons && schema.singletons.world && schema.singletons.world.page) || null;
             const r = resolve(x);
             if (!r) return null;
             const page = types[typeOfRec.get(r)].page;
@@ -183,7 +198,8 @@
                 return part.replace(linkIndex.re, match => {
                     const t = linkIndex.terms.get(match.toLowerCase());
                     if (!t || !t.href || exclude.has(t.id)) return match;
-                    return `<a href="${t.href}" class="${t.cls}">${match}</a>`;
+                    const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
+                    return `<a href="${t.href}" class="${cls}"${options.attrs ? ' ' + options.attrs : ''}>${match}</a>`;
                 });
             }).join('');
         }
@@ -277,7 +293,7 @@
                             checkRef({ to: def.parent }, rec.parent, `${where}.parent`, report);
                         }
                         if (rec.map) {
-                            const host = def.parent.length === 0 ? schema.world : parent(rec);
+                            const host = def.parent.length === 0 ? singletons.world : parent(rec);
                             if (host && !host.mapImage) warnings.push(`${where}.map: pinned on ${host.id || 'the world'}, which has no map image`);
                         }
                     } else if (rec.parent !== undefined) {
@@ -311,10 +327,12 @@
                 }
             }
 
-            // Settings
-            if (schema.settings) {
-                if (settingsData !== undefined && (typeof settingsData !== 'object' || Array.isArray(settingsData))) errors.push(`[settings] ${schema.settings.file} must be a JSON object`);
-                else checkFields(schema.settings.fields, settingsData || {}, '[settings]', report, false);
+            // One-object files
+            for (const [name, def] of Object.entries(schema.singletons || {})) {
+                const v = (singletonData || {})[name];
+                if (v === undefined) { if (Object.values(def.fields).some(f => f.required)) errors.push(`[${name}] ${def.file} was not loaded`); continue; }
+                if (typeof v !== 'object' || Array.isArray(v)) { errors.push(`[${name}] ${def.file} must be a JSON object`); continue; }
+                checkFields(def.fields, v, `[${name}]`, report, false);
             }
 
             // Type-specific rules
@@ -326,9 +344,9 @@
         }
 
         return {
-            schema, settings, get: resolve, typeOf,
+            schema, settings: singletons.settings || {}, world: singletons.world || {}, singletons, get: resolve, typeOf,
             all: type => (byType[type] || []).slice(),
-            parent, ancestors, children, descendants, backrefs,
+            find, parent, ancestors, children, descendants, backrefs,
             url, enumOptions, enumValues,
             md: (t, o) => (ATH.md ? ATH.md(t, o) : t),
             plain: t => (ATH.mdPlain ? ATH.mdPlain(t) : t),
@@ -357,11 +375,10 @@
                 try { return [type, await getJSON(def.file)]; }
                 catch (e) { console.error('[Athenaeum]', e.message); return [type, undefined]; }
             }));
-            const [privateData, settings] = await Promise.all([
-                getJSON('data/private.json', true).catch(() => undefined),
-                ATH.schema.settings ? getJSON(ATH.schema.settings.file, true).catch(() => undefined) : undefined,
-            ]);
-            ATH.store = createStore(ATH.schema, Object.fromEntries(entries), privateData, settings);
+            const privateData = await getJSON('data/private.json', true).catch(() => undefined);
+            const singles = await Promise.all(Object.entries(ATH.schema.singletons || {}).map(async ([name, def]) =>
+                [name, await getJSON(def.file, true).catch(() => undefined)]));
+            ATH.store = createStore(ATH.schema, Object.fromEntries(entries), privateData, Object.fromEntries(singles));
             return ATH.store;
         })();
     }

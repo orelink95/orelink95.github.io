@@ -25,6 +25,11 @@ function eachImage(fields, obj, where, fn) {
         else if (f.kind === 'objects' && Array.isArray(v)) v.forEach((o, i) => eachImage(f.fields, o, `${where}.${k}[${i}]`, fn));
     }
 }
+for (const [name, def] of Object.entries(ATH.schema.singletons || {})) {
+    eachImage(def.fields, store.singletons[name], `[${name}]`, (src, where) => {
+        if (!fs.existsSync(path.join(ROOT, src))) warnings.push(`${where}: image "${src}" not found`);
+    });
+}
 for (const [type, def] of Object.entries(ATH.schema.types)) {
     for (const rec of store.all(type)) {
         eachImage(def.fields, rec, `[${type}] ${rec.id}`, (src, where) => {

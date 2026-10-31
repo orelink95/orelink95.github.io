@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 1. MAGIC GLOW SPOTLIGHT FOR LORE CARD ---
     const loreCards = document.querySelectorAll('.lore-card');
@@ -12,15 +12,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- 2. URL & REGISTRY SETUP ---
+    // --- 2. URL & DATA SETUP ---
+    const store = await Athenaeum.ready;
     const urlParams = new URLSearchParams(window.location.search);
-    let regionId = urlParams.get('id');
+    let country = store.get(urlParams.get('id'));
+    if (!country || store.typeOf(country) !== 'country') country = store.get('eperina') || store.all('country')[0];
 
-    if (!regionId || !countryRegistry[regionId]) {
-        regionId = 'eperina';
-    }
+    const lore = rec => rec.body ? store.autolink(store.md(rec.body, { dropCap: true }), { exclude: rec.id }) : '';
+    const continent = store.parent(country) || {};
+    const mapImage = country.mapImage || null;
 
-    const data = countryRegistry[regionId];
+    // Same shape the page always rendered; built from the store.
+    const data = {
+        continentName: continent.name || '',
+        continentId: continent.id ? store.url(continent) : '#',
+        regionName: country.name,
+        description: country.summary || country.subtitle || '',
+        mapImage: mapImage ? mapImage.src : '',
+        mapWidth: mapImage ? mapImage.width : 0,
+        mapHeight: mapImage ? mapImage.height : 0,
+        defaultLore: { entry: country.codex, title: country.loreTitle || country.name, body: lore(country) },
+        // Pins: the settlements and POIs placed on this country's map.
+        pins: store.children(country).filter(c => c.map).map(c => ({
+            id: c.id, title: c.name, subtitle: c.subtitle || '', entry: c.codex, body: lore(c),
+            icon: c.map.icon || 'settlement', isDanger: !!c.danger, y: c.map.y, x: c.map.x,
+            url: store.url(c), kind: store.typeOf(c)
+        }))
+    };
 
     // Basic Page Info Injection
     const continentLink = document.getElementById('dynamic-continent-name');
@@ -29,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('dynamic-region-name').textContent = data.regionName;
     document.getElementById('dynamic-title').textContent = data.regionName;
     document.getElementById('dynamic-description').textContent = data.description;
-    document.getElementById('dynamic-bg-blur').style.backgroundImage = `url('${data.mapImage}')`;
+    if (data.mapImage) document.getElementById('dynamic-bg-blur').style.backgroundImage = `url('${data.mapImage}')`;
+    document.title = `${data.regionName} - The Athenaeum Vault`;
 
 
     // --- 3. LORE PANEL LOGIC ---
@@ -61,6 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 4. MAP INITIALIZATION ---
     const mapElement = document.getElementById('country-map');
     if (!mapElement) return;
+    if (!data.mapImage) {
+        mapElement.innerHTML = '<p class="h-full flex items-center justify-center italic text-on-surface/40 font-newsreader text-lg">No map of this land has reached the archive yet.</p>';
+        return;
+    }
 
     const map = L.map('country-map', {
         crs: L.CRS.Simple,
@@ -104,10 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const marker = L.marker(L.latLng(pin.y, pin.x), { icon: createFantasyIcon(pin.icon, pin.isDanger) });
         const colorClass = pin.isDanger ? 'text-error' : 'text-secondary';
 
-        // Conditionally build the Explore button if the pin has a linkId
-        const exploreButton = pin.linkId
-            ? `<a href="settlement.html?id=${pin.linkId}" class="inline-block mt-3 px-4 py-1.5 border border-secondary/40 text-secondary font-label text-[10px] uppercase tracking-widest rounded hover:bg-secondary/10 hover:border-secondary transition-all">Explore Settlement</a>`
-            : '';
+        const exploreButton = `<a href="${pin.url}" class="inline-block mt-3 px-4 py-1.5 border border-secondary/40 text-secondary font-label text-[10px] uppercase tracking-widest rounded hover:bg-secondary/10 hover:border-secondary transition-all">${pin.kind === 'settlement' ? 'Explore Settlement' : 'Open the Entry'}</a>`;
 
         marker.bindPopup(`
             <div class='text-center p-1'>
@@ -119,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Update lore panel when a specific pin is clicked
         marker.on('click', () => {
-            // Note: We use the country registry's pin entry/body data here
             updateLorePanel({
                 title: pin.title,
                 entry: pin.entry,

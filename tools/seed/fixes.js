@@ -30,6 +30,33 @@ module.exports = {
     npcFactions: { talonoperative: ['thieves-guild'] },      // sephet stays unknown
     npcWhereabouts: { 'The Vale House': 'The Vale House (a pocket dimension)' },
     settings: { tavernCode: '' },
+    pinIcons: { 'Harbour Master': 'rook' },                // castle.svg does not exist
+
+    /* Content that was hard-coded in continent.html (Maltona only), copied
+       verbatim so continent.html can render any continent from the data. */
+    continentPages: {
+        maltona: {
+            era: 'Year 1466 LF',
+            facts: [
+                { title: 'Climate & Fauna', text: 'High humidity, perennially overcast with emerald-tinged mists. Home to the elusive Glass-Winged Wyverns and bioluminescent flora.' },
+                { title: 'Political Tension', text: 'The death of King Teal of Eperina has destabilized the country, prompting increased Warden presence across the hold and diminishing their number in Brightend.' },
+            ],
+            notables: ['maeravoss', 'lordwhite'],
+            epigraph: 'Maltona is not merely land and sea; it is a memory written in stone and sang by the winds, a story told by the rocks, the trees and the blood that fed the earth. the Spires.',
+            epigraphSource: 'Chronicle of the First Era',
+        },
+    },
+    /* The "Nations of Maltona" list in continent.html. */
+    countryEpithets: {
+        eperina: 'Humanrest',
+        lemerolai: 'Protectorate of the Athenaeum',
+        'wolf-teeth-emp': 'The Great Dwarven Empire',
+        northlands: 'The Septentrional Peninsula',   // its list entry was commented out
+    },
+    unlistedCountries: ['northlands', 'beliene'],      // on the map, not in the list
+    extraCountries: [
+        { id: 'kentaresham', name: 'Duchy of Kentaresham', parent: 'maltona', epithet: 'The Somber Realms' },
+    ],
 
     /* Audit #5, for the second pass (campaign files): session npcsMet ids. */
     npcIdRenames: { 'jeff-the-skull': 'jeff-skull' },

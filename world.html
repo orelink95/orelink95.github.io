@@ -21,7 +21,9 @@
     <link href="styles/atlas-style.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
     <script src="scripts/general-scripts.js"></script>
-    <script src="scripts/atlas-registry.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
     <script src="scripts/atlas-scripts.js"></script>
 </head>
 
@@ -85,8 +87,7 @@
                     <div class="mb-6 lg:mb-8">
                         <div class="flex justify-between items-start mb-2">
                             <span id="lore-entry-id"
-                                class="font-label text-[10px] uppercase tracking-[0.2em] text-primary block animate-pulse-slow">Codex
-                                Entry: 04.A</span>
+                                class="font-label text-[10px] uppercase tracking-[0.2em] text-primary block animate-pulse-slow"></span>
                             <button id="reset-lore-btn"
                                 class="hidden text-on-surface-variant hover:text-secondary hover:-translate-x-1 transition-all duration-300 group flex items-center gap-1"
                                 title="Return to Overview">
@@ -96,31 +97,13 @@
                             </button>
                         </div>
                         <h2 id="lore-title"
-                            class="font-headline text-2xl lg:text-3xl text-secondary font-bold tracking-tight mb-4">The
-                            Known Realms</h2>
+                            class="font-headline text-2xl lg:text-3xl text-secondary font-bold tracking-tight mb-4"></h2>
                         <div class="w-16 h-px bg-gradient-to-r from-secondary via-secondary/50 to-transparent"></div>
                     </div>
 
                     <div id="lore-body"
-                        class="font-body text-sm lg:text-base text-on-surface-variant leading-relaxed space-y-4 lg:space-y-6">
-                        <p><span
-                                class="float-left text-5xl lg:text-6xl font-headline text-secondary leading-none pr-3 pt-1 lg:pt-2 drop-shadow-[0_0_10px_rgba(233,193,118,0.3)]">F</span>rom
-                            the jagged peaks of the Wolf's Teeth Range to the depths of the North Sea, lies a world
-                            scarred by ancient magic and forgotten dynasties. The Athenaeum records these lands as they
-                            are, open to what they might become.</p>
-                        <p>To the east, the <span class="text-[#e2e3df] font-semibold">Boundless Vale</span> still
-                            radiate with the chaotic energy of the Ophrasian War.</p>
-
-                        <div class="relative my-6 lg:my-8 pl-6 border-l-2 border-primary/30">
-                            <span
-                                class="material-symbols-outlined absolute -left-3 -top-3 text-primary/20 text-3xl lg:text-4xl bg-surface-container-low"
-                                style="font-variation-settings: 'FILL' 1;">format_quote</span>
-                            <p class="italic text-on-surface/80 relative z-10 text-sm">"Do not trust the maps drawn
-                                before the War. The land remembers the trauma, it has been disfigured."</p>
-                            <span
-                                class="block text-[9px] lg:text-[10px] font-label uppercase tracking-widest text-primary mt-3">—
-                                Master Sage Elara</span>
-                        </div>
+                        class="font-body text-sm lg:text-base text-on-surface-variant leading-relaxed space-y-4 lg:space-y-6 lore">
+                        <!-- filled from data/world.json -->
                     </div>
                 </div>
             </div>

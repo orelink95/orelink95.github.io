@@ -1,5 +1,7 @@
 # Site data
 
+> **These files are the source of truth.** The pages read only them. The old `scripts/*-registry.js`, `almanach.js` and `factions-data.js` are no longer read, so the old admin tools change nothing until the new dashboard replaces them. Don't re-run `tools/convert.js` either: it rebuilds these files from the old ones and would discard your edits.
+
 One file per type. Every record has an `id` (never renamed), a `name` and optional `aliases`.
 `data/schema.js` declares every field; `node tools/validate.js` checks the files against it.
 
@@ -14,6 +16,7 @@ One file per type. Every record has an `id` (never renamed), a `name` and option
 | Faction | `factions.json` | — (NPCs list theirs in `factions`) |
 | Tavern menu pool | `menu-items.json` | — |
 | Tavern services | `services.json` | — |
+| World | `world.json` | one object: world lore and map |
 | Site settings | `settings.json` | one object, e.g. `tavernCode` |
 | DM-only fields | `private.json` | git-ignored; only your local copy has it |
 

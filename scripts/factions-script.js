@@ -1,5 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
-    if (typeof factionsData === 'undefined') return;
+// Built from the store on load, in the shape the dossier code expects.
+var factionsData = [];
+var factionsStore = null;
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const store = factionsStore = await Athenaeum.ready;
+    const names = ids => (ids || []).map(id => (store.get(id) || {}).name).filter(Boolean);
+    // Stubs (named somewhere, not written up yet) get no dossier tab.
+    factionsData = store.all('faction').filter(f => !f.stub).map(f => ({
+        id: f.id, name: f.name, crest: f.crest || 'images/placeholder.png',
+        status: f.status || 'Unknown', quote: f.quote || '',
+        reputation: f.reputation || 0, reputationText: f.reputationText || '',
+        quickFacts: { base: f.base, scale: f.scale, mo: f.mo, threatLevel: f.threatLevel },
+        relationships: { allies: names(f.allies), rivals: names(f.rivals) },
+        assets: f.assets || [], directives: f.directives || [], rumors: f.rumors || [], intel: f.intel || []
+    }));
 
     const tabsContainer = document.getElementById('faction-tabs');
 
@@ -196,18 +210,12 @@ window.openDossier = (id) => {
     // 4.5 Known Roster (Auto-generated Target Profiles from Almanach)
     let affiliatedNPCs = [];
 
-    // Scan the almanach for anyone affiliated with this faction
-    if (typeof npcAlmanach !== 'undefined') {
-        for (const [npcId, npcData] of Object.entries(npcAlmanach)) {
-            // Check if the NPC's affiliation matches the Faction Name
-            if (npcData.affiliation && (
-                npcData.affiliation.toLowerCase().includes(faction.name.toLowerCase()) ||
-                faction.name.toLowerCase().includes(npcData.affiliation.toLowerCase())
-            )) {
-                affiliatedNPCs.push({ id: npcId, ...npcData });
-            }
-        }
-    }
+    // Members: NPCs whose factions list this one
+    affiliatedNPCs = factionsStore.backrefs(faction.id, 'npc', 'factions').map(npc => ({
+        id: npc.id, name: npc.name, role: npc.role || '', relationToParty: npc.relation || 'Unknown',
+        image: npc.portrait || npc.avatar || 'images/placeholder.png',
+        biography: factionsStore.plain(npc.biography)
+    }));
 
     // If we found matches, build the Target Profiles!
     if (affiliatedNPCs.length > 0) {
@@ -224,7 +232,7 @@ window.openDossier = (id) => {
 
             // The Clickable Card linking to npc.html
             return `
-            <a href="npc.html?id=${npc.id}" class="bg-black/40 border border-white/5 rounded-lg p-5 flex gap-5 group hover:border-[#e9c176]/50 transition-colors md:col-span-2 cursor-pointer relative overflow-hidden">
+            <a href="${factionsStore.url(npc.id)}" class="bg-black/40 border border-white/5 rounded-lg p-5 flex gap-5 group hover:border-[#e9c176]/50 transition-colors md:col-span-2 cursor-pointer relative overflow-hidden">
                 <img src="${npc.image || npc.avatar}" class="w-24 h-24 rounded object-cover border border-white/10 shrink-0 grayscale group-hover:grayscale-0 transition-all">
                 <div class="flex flex-col justify-center min-w-0 w-full">
                     <div class="flex justify-between items-start mb-1">

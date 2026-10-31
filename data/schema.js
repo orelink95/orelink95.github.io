@@ -40,18 +40,29 @@
     ATH.schema = {
         version: 1,
 
-        /* The world map is the root every continent is pinned on. */
-        world: {
-            name: 'Eraldom',
-            page: 'world.html',
-            mapImage: { src: 'images/eraldom_world_map.png', width: 1920, height: 1078 },
-        },
-
-        /* Site-wide settings: one object, not a list of records. */
-        settings: {
-            file: 'data/settings.json',
-            fields: {
-                tavernCode: { kind: 'text', label: 'Bill of fare code: every tavern menu is drawn from it, the same for everyone. Change it to change all menus.' },
+        /* One-object files (not lists of records). The store exposes them
+           as store.world and store.settings. */
+        singletons: {
+            /* The world map is the root every continent is pinned on. */
+            world: {
+                label: 'World', icon: 'travel_explore',
+                file: 'data/world.json',
+                page: 'world.html',
+                fields: {
+                    name:      { kind: 'text', label: 'Name', required: true },
+                    codex:     { kind: 'text', label: 'Codex entry' },
+                    loreTitle: { kind: 'text', label: 'Lore heading' },
+                    body:      { kind: 'markdown', label: 'Lore (shown when no pin is selected)' },
+                    mapImage:  { kind: 'mapImage', label: 'World map', required: true },
+                },
+            },
+            /* Site-wide settings. */
+            settings: {
+                label: 'Settings', icon: 'tune',
+                file: 'data/settings.json',
+                fields: {
+                    tavernCode: { kind: 'text', label: 'Bill of fare code: every tavern menu is drawn from it, the same for everyone. Change it to change all menus.' },
+                },
             },
         },
 
@@ -86,8 +97,16 @@
                 place: true, parent: [], autolink: true,
                 fields: {
                     ...PLACE_FIELDS,
+                    era:      { kind: 'text', label: 'Era shown on the map (e.g. Year 1466 LF)' },
                     map:      { kind: 'map', label: 'Pin on the world map' },
                     mapImage: { kind: 'mapImage', label: 'Continent map' },
+                    facts:    { kind: 'objects', label: 'Info cards under the map', itemLabel: 'title', fields: {
+                        title: { kind: 'text', label: 'Title' },
+                        text:  { kind: 'text', label: 'Text', long: true },
+                    } },
+                    notables: { kind: 'refs', to: ['npc'], label: 'Very important people' },
+                    epigraph:       { kind: 'text', label: 'Epigraph', long: true },
+                    epigraphSource: { kind: 'text', label: 'Epigraph source' },
                 },
             },
             country: {
@@ -97,6 +116,9 @@
                 place: true, parent: ['continent'], autolink: true,
                 fields: {
                     ...PLACE_FIELDS,
+                    shortName: { kind: 'text', label: 'Short name (map labels)' },
+                    epithet:   { kind: 'text', label: 'Epithet (nations list)' },
+                    unlisted:  { kind: 'boolean', label: 'Hide from the nations list' },
                     loreTitle: { kind: 'text', label: 'Lore heading' },
                     map:       { kind: 'map', label: 'Pin on the continent map' },
                     mapImage:  { kind: 'mapImage', label: 'Country map' },

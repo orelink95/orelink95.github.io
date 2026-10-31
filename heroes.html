@@ -18,7 +18,9 @@
     <script src="scripts/general-scripts.js"></script>
     <script src="scripts/campaign-echoes.js"></script>
     <script src="scripts/heroes-data.js"></script>
-    <script src="scripts/factions-data.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
 </head>
 
 <body class="bg-[#0a0b0a] text-[#e2e3df] font-body overflow-x-hidden archival-bg">
@@ -177,7 +179,13 @@
 
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Hero data still names factions (pass 2 turns these into ids)
+            const store = await Athenaeum.ready;
+            const factionUrl = name => {
+                const f = store.find(name, ['faction']);
+                return f && !f.stub ? store.url(f) : 'factions.html';
+            };
             if (typeof partyData === 'undefined') return;
 
             // 1. Populate Header & Funds
@@ -229,8 +237,7 @@
                 const level = hero.level || 1;
                 const bg = hero.background || "Unknown";
                 const factions = (hero.factions || []).map(f => {
-                    const matchingFaction = typeof factionsData !== 'undefined' ? factionsData.find(fd => fd.name.toLowerCase() === f.toLowerCase()) : null;
-                    const href = matchingFaction ? `factions.html?id=${matchingFaction.id}` : `factions.html`;
+                    const href = factionUrl(f);
                     return `<a href="${href}" onclick="event.stopPropagation();" class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] uppercase tracking-widest text-white/60 hover:bg-[#e9c176]/10 hover:border-[#e9c176]/30 hover:text-[#e9c176] transition-colors">${f}</a>`;
                 }).join('');
 
@@ -383,28 +390,33 @@
         };
 
         // --- RENDER GROUP FACTIONS ---
-        const factionsList = document.getElementById('group-factions-list');
-        if (partyData.groupFactions && partyData.groupFactions.length > 0) {
-            factionsList.innerHTML = partyData.groupFactions.map(faction => {
-                // Determine the status color
-                let statusColor = "text-white/40"; // Neutral default
-                if (faction.status.toLowerCase() === "allied") statusColor = "text-[#4ade80]";
-                if (faction.status.toLowerCase() === "hostile") statusColor = "text-error";
+        Athenaeum.ready.then(store => {
+            const factionUrl = name => {
+                const f = store.find(name, ['faction']);
+                return f && !f.stub ? store.url(f) : 'factions.html';
+            };
+            const factionsList = document.getElementById('group-factions-list');
+            if (partyData.groupFactions && partyData.groupFactions.length > 0) {
+                factionsList.innerHTML = partyData.groupFactions.map(faction => {
+                    // Determine the status color
+                    let statusColor = "text-white/40"; // Neutral default
+                    if (faction.status.toLowerCase() === "allied") statusColor = "text-[#4ade80]";
+                    if (faction.status.toLowerCase() === "hostile") statusColor = "text-error";
 
-                const matchingFaction = typeof factionsData !== 'undefined' ? factionsData.find(fd => fd.name.toLowerCase() === faction.name.toLowerCase()) : null;
-                const href = matchingFaction ? `factions.html?id=${matchingFaction.id}` : `factions.html`;
+                    const href = factionUrl(faction.name);
 
-                return `
-                <li>
-                    <a href="${href}" class="flex items-center justify-between text-sm bg-black/20 p-2 rounded border border-white/5 hover:border-[#e9c176]/30 hover:bg-[#e9c176]/5 group transition-colors">
-                        <span class="text-white/80 group-hover:text-[#e9c176] transition-colors">${faction.name}</span>
-                        <span class="text-[9px] uppercase tracking-widest ${statusColor} font-bold">${faction.status}</span>
-                    </a>
-                </li>
-            `}).join('');
-        } else {
-            factionsList.innerHTML = `<li class="text-sm text-white/40 italic p-2">No known allegiances.</li>`;
-        }
+                    return `
+                    <li>
+                        <a href="${href}" class="flex items-center justify-between text-sm bg-black/20 p-2 rounded border border-white/5 hover:border-[#e9c176]/30 hover:bg-[#e9c176]/5 group transition-colors">
+                            <span class="text-white/80 group-hover:text-[#e9c176] transition-colors">${faction.name}</span>
+                            <span class="text-[9px] uppercase tracking-widest ${statusColor} font-bold">${faction.status}</span>
+                        </a>
+                    </li>
+                `}).join('');
+            } else {
+                factionsList.innerHTML = `<li class="text-sm text-white/40 italic p-2">No known allegiances.</li>`;
+            }
+        });
 
         // --- FOLDABLE UI ENGINE ---
         window.toggleSection = (contentId, iconId) => {

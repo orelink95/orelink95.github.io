@@ -1,0 +1,65 @@
+[
+  {
+    "id": "room-common",
+    "name": "Common Room Bedroll",
+    "desc": "A spot by the hearth.",
+    "basePrice": 5,
+    "unit": "per night"
+  },
+  {
+    "id": "room-private",
+    "name": "Private Room",
+    "desc": "Bed, lock, washbasin.",
+    "basePrice": 50,
+    "unit": "per night"
+  },
+  {
+    "id": "room-suite",
+    "name": "Suite",
+    "desc": "Two rooms, a fire, a view.",
+    "basePrice": 200,
+    "unit": "per night"
+  },
+  {
+    "id": "bath",
+    "name": "Hot Bath",
+    "desc": "Water heated on request.",
+    "basePrice": 10,
+    "unit": "each"
+  },
+  {
+    "id": "laundry",
+    "name": "Laundry",
+    "desc": "Back dry by morning.",
+    "basePrice": 5,
+    "unit": "per bundle"
+  },
+  {
+    "id": "stabling",
+    "name": "Stabling",
+    "desc": "Stall, feed and grooming.",
+    "basePrice": 50,
+    "unit": "per day"
+  },
+  {
+    "id": "messenger",
+    "name": "Messenger",
+    "desc": "Runner within the settlement.",
+    "basePrice": 2,
+    "unit": "per message"
+  },
+  {
+    "id": "gaming-table",
+    "name": "Gaming Table",
+    "desc": "Dice and cards; the house takes a cut.",
+    "basePrice": 10,
+    "unit": "per evening"
+  },
+  {
+    "id": "private-hall",
+    "name": "Private Dining Hall",
+    "desc": "For meetings best not overheard.",
+    "basePrice": 500,
+    "unit": "per evening"
+  }
+]

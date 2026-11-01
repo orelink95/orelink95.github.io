@@ -1,0 +1,101 @@
+[
+  {
+    "id": "eperina",
+    "name": "Kingdom of Eperina",
+    "aliases": [
+      "Eperina"
+    ],
+    "parent": "maltona",
+    "subtitle": "Kingdom",
+    "codex": "Codex Entry: 01.E",
+    "summary": "Built by the survivors of the Ophrasian War, Eperina is the beacon of hope that lights the East of the Vale.",
+    "body": "Built upon the ruins of the old world, Eperina stands as a testament to mortal resilience in the face of ancient terrors.\n\nIts grand libraries and enchanted fortifications attract scholars, mercenaries, and those fleeing the shadow of the western mountains.\n\n> \"The stone of Eperina does not crumble; it paves the way for tomorrow.\"\n> — High Archivist Kaelen",
+    "shortName": "Eperina",
+    "epithet": "Humanrest",
+    "loreTitle": "The Kingdom of Eperina",
+    "map": {
+      "x": 2637,
+      "y": 998,
+      "icon": "eperina",
+      "layer": "locations"
+    },
+    "mapImage": {
+      "src": "images/eperina_map.png",
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  {
+    "id": "northlands",
+    "name": "The Northlands",
+    "parent": "maltona",
+    "subtitle": "Clanic Federation",
+    "epithet": "The Septentrional Peninsula",
+    "unlisted": true,
+    "map": {
+      "x": 2068,
+      "y": 1622,
+      "icon": "northlands",
+      "layer": "locations"
+    }
+  },
+  {
+    "id": "lemerolai",
+    "name": "City-State of Lemerolai",
+    "aliases": [
+      "Lemerolai",
+      "The Great City"
+    ],
+    "parent": "maltona",
+    "subtitle": "City-State",
+    "codex": "Codex 01.H",
+    "summary": "Lemerolai is one of the oldest continuous settlements in Maltona, its survival owed not just to formidable walls but to the iron resolve of its rulers and the hard-earned neutrality it has brokered in countless conflicts.",
+    "body": "Lemerolai rises like a dark jewel from the crag-shadowed base of the Wolf’s Teeth Range, nestled just west of the Wolf’s Cradle. Carved into basalt and ironstone, it is a fortress-metropolis whose foundations predate many nations. Its streets are paved with ancient stone, its towers etched with old runes, and its gates, massive and ever-guarded, have not fallen in living memory.\n\nLemerolai is one of the oldest continuous settlements in Maltona, its survival owed not just to formidable walls but to the iron resolve of its rulers and the hard-earned neutrality it has brokered in countless conflicts. Even the devastating Ophrasian War left its gates unbreached, its people bloodied but unbowed. Over time, the city expanded its influence beyond the mountain’s shadow: lesser settlements have sprung in the nearby valleys and ridgelines, dependent on Lemerolai’s protection and subject to its law and trade.\n\nToday, Lemerolai stands as both a bastion and a beacon—a city of ancient pacts, militant guilds, and secretive archives. Rumors speak of old vaults hidden beneath the city, sealed since before the Ophrasian War, and of a relic-bound throne still held in trust by the Assembly, Lemerolai’s ruling council of houses.",
+    "shortName": "Lemerolai",
+    "epithet": "Protectorate of the Athenaeum",
+    "loreTitle": "Lemerolai",
+    "map": {
+      "x": 2056,
+      "y": 950,
+      "icon": "lemerolai",
+      "layer": "locations"
+    },
+    "mapImage": {
+      "src": "images/lemerolai_map.png",
+      "width": 1920,
+      "height": 1080
+    }
+  },
+  {
+    "id": "wolf-teeth-emp",
+    "name": "Wolf's Teeth Empire",
+    "parent": "maltona",
+    "subtitle": "Dwarven Empire",
+    "epithet": "The Great Dwarven Empire",
+    "map": {
+      "x": 1845,
+      "y": 1012,
+      "icon": "wolf-teeth-emp",
+      "layer": "locations"
+    }
+  },
+  {
+    "id": "beliene",
+    "name": "Beliene",
+    "parent": "maltona",
+    "subtitle": "Free Isle",
+    "unlisted": true,
+    "map": {
+      "x": 396,
+      "y": 643,
+      "icon": "beliene",
+      "layer": "locations"
+    }
+  },
+  {
+    "id": "kentaresham",
+    "name": "Duchy of Kentaresham",
+    "parent": "maltona",
+    "epithet": "The Somber Realms"
+  }
+]

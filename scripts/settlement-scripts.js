@@ -1,16 +1,4 @@
-// --- URL PARAMETER LISTENER ---
-const urlParams = new URLSearchParams(window.location.search);
-const targetId = urlParams.get('id');
-
-if (targetId) {
-    setTimeout(() => {
-        if (typeof window.loadSettlement === 'function') {
-            window.loadSettlement(targetId);
-        }
-    }, 150);
-};
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
 
 
@@ -25,17 +13,47 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // --- 2. URL & REGISTRY SETUP ---
+    // --- 2. URL & DATA SETUP ---
+    const store = await Athenaeum.ready;
     const urlParams = new URLSearchParams(window.location.search);
-    let settlementId = urlParams.get('id');
     let targetDistrict = urlParams.get('district');
+    let settlement = store.get(urlParams.get('id'));
+    if (!settlement || store.typeOf(settlement) !== 'settlement') settlement = store.get('brightend') || store.all('settlement')[0];
 
-    if (!settlementId || !settlementRegistry[settlementId]) {
-        settlementId = 'brightend';
-    }
+    const lore = (rec, dropCap) => rec.body ? store.autolink(store.md(rec.body, { dropCap }), { exclude: rec.id }) : '';
+    const npcView = npc => ({
+        id: npc.id, name: npc.name, role: npc.role || '', quote: npc.quote || '…',
+        image: npc.avatar || npc.portrait || 'images/placeholder.png',
+        homePinTitle: (store.get(npc.home) || {}).name || npc.whereabouts || ''
+    });
+    const country = store.ancestors(settlement).find(p => store.typeOf(p) === 'country') || {};
+    const continent = store.ancestors(settlement).find(p => store.typeOf(p) === 'continent') || {};
 
-    const data = settlementRegistry[settlementId];
-    let currentDistrictIdx = 0;
+    // Same shape the page always rendered; built from the store.
+    const data = {
+        continentName: continent.name, continentId: continent.id ? store.url(continent) : '#',
+        countryName: country.name, countryId: country.id ? store.url(country) : '#',
+        settlementName: settlement.name,
+        descriptor: settlement.summary || '',
+        districts: store.children(settlement, 'district').map(d => {
+            const pois = store.children(d, 'poi');
+            const residents = [...store.backrefs(d, 'npc', 'home'), ...pois.flatMap(p => store.backrefs(p, 'npc', 'home'))];
+            return {
+                id: d.id,
+                name: d.shortName || d.name,
+                mapImage: (d.mapImage || {}).src || 'images/placeholder.png',
+                mapWidth: (d.mapImage || {}).width || 1000,
+                mapHeight: (d.mapImage || {}).height || 1000,
+                lore: { title: d.name, entry: d.codex, body: lore(d, true) },
+                npcs: residents.map(npcView),
+                pins: pois.filter(p => p.map).map(p => ({
+                    id: p.id, title: p.name, subtitle: p.subtitle || '', entry: p.codex,
+                    body: lore(p, true), icon: p.map.icon || 'settlement', isDanger: !!p.danger,
+                    y: p.map.y, x: p.map.x, url: store.url(p), isTavern: !!(p.tavern && p.tavern.tier)
+                }))
+            };
+        })
+    };
 
     // --- 3. INJECT BREADCRUMBS & HEADERS ---
     document.getElementById('dynamic-continent-link').textContent = data.continentName;
@@ -63,22 +81,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = document.createElement('div');
             // We add the ID as a data-attribute for future-proofing
             card.setAttribute('data-npc-id', npc.id);
-            card.className = "group cursor-pointer p-3 rounded-lg hover:bg-white/5 transition-all duration-300 border border-transparent hover:border-outline-variant/10";
+            card.className = "resident";
             card.innerHTML = `
-                <div class="flex gap-4 items-start">
-                    <div class="relative w-14 h-18 flex-shrink-0">
-                        <img class="w-full h-full object-cover rounded shadow-md grayscale group-hover:grayscale-0 transition-all duration-500 border border-outline-variant/30" src="${npc.image}" alt="${npc.name}"/>
+                <div class="resident__row">
+                    <div class="resident__portrait h-18">
+                        <img class="resident__image" src="${npc.image}" alt="${npc.name}"/>
                     </div>
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-noto-serif text-sm font-bold text-secondary group-hover:text-secondary-fixed transition-colors leading-tight mb-1">${npc.name}</h4>
+                    <div class="resident__body">
+                        <div class="resident__name-row">
+                            <h4 class="resident__name font-noto-serif">${npc.name}</h4>
                             
-                            <a href="npc.html?id=${npc.id}" class="material-symbols-outlined text-[14px] text-on-surface/20 hover:text-primary transition-colors" title="View Full Profile">person_search</a>
+                            <a href="${store.url(npc.id)}" class="resident__profile-link material-symbols-outlined" title="View Full Profile">person_search</a>
                         </div>
-                        <p class="font-label text-[9px] uppercase tracking-widest text-on-surface/40 mb-2">${npc.role}</p>
-                        <p class="font-newsreader text-xs text-on-surface/70 line-clamp-2 leading-tight italic mb-2">"${npc.quote}"</p>
-                        <div class="flex items-center gap-1.5 text-primary/60 text-[9px] uppercase tracking-widest font-label">
-                            <span class="material-symbols-outlined text-[14px]">location_on</span>
+                        <p class="resident__role">${npc.role}</p>
+                        <p class="resident__quote font-newsreader">"${npc.quote}"</p>
+                        <div class="resident__place">
+                            <span class="resident__place-icon material-symbols-outlined">location_on</span>
                             ${npc.homePinTitle || 'Unknown Location'}
                         </div>
                     </div>
@@ -110,12 +128,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let markerGroup = L.layerGroup().addTo(map);
 
     function createFantasyIcon(iconName, isDanger = false) {
-        const bgColor = isDanger ? 'bg-[#3b0909]' : 'bg-[#1a3020]';
-        const borderColor = isDanger ? 'border-[#ff5252]' : 'border-[#f8fafc]';
+        const tone = isDanger ? 'region-pin--danger' : '';   // red pins for dangerous places
         return L.divIcon({
-            className: 'bg-transparent border-none cursor-pointer transition-transform duration-300 hover:-translate-y-1',
+            className: 'map-pin-shell',
             html: `
-                <div class="${bgColor} ${borderColor} border-2 shadow-[0_4px_10px_rgba(0,0,0,0.6)]" style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; box-sizing: border-box;">
+                <div class="region-pin ${tone}" style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; box-sizing: border-box;">
                     <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%); pointer-events: none;"></div>
                     <img src="./images/atlas_icons/${iconName}.svg" style="width: 16px; height: 16px; min-width: 16px; object-fit: contain; display: block; filter: brightness(0) invert(1) sepia(1) saturate(${isDanger ? '4' : '0'}) hue-rotate(${isDanger ? '-50deg' : '0deg'});" />
                 </div>
@@ -142,9 +159,10 @@ document.addEventListener("DOMContentLoaded", () => {
         dist.pins.forEach(pin => {
             const marker = L.marker(L.latLng(pin.y, pin.x), { icon: createFantasyIcon(pin.icon, pin.isDanger) });
             marker.bindPopup(`
-                <div class='text-center p-1'>
-                    <b class='font-headline text-lg ${pin.isDanger ? 'text-error' : 'text-secondary'} block mb-1'>${pin.title}</b>
-                    <span class='font-label text-[9px] uppercase tracking-widest text-on-surface-variant/80'>${pin.subtitle}</span>
+                <div class='map-popup'>
+                    <b class='map-popup__title ${pin.isDanger ? 'map-popup__title--danger' : ''}'>${pin.title}</b>
+                    <span class='map-popup__subtitle'>${pin.subtitle}</span>
+                    <a href='${pin.url}' class='map-popup__link'>${pin.isTavern ? 'Enter the tavern' : 'Open the entry'}</a>
                 </div>
             `, { className: 'fantasy-popup' });
 
@@ -155,24 +173,15 @@ document.addEventListener("DOMContentLoaded", () => {
             pinLookup[pin.title] = marker;
         });
 
-        // REFRESH NPCS for the new district (Maps IDs to Almanach Data)
-        const npcObjects = (dist.npcs || []).map(id => {
-            if (typeof npcAlmanach !== 'undefined' && npcAlmanach[id]) {
-                return { id: id, ...npcAlmanach[id] };
-            }
-            return null;
-        }).filter(n => n !== null);
-
+        const npcObjects = dist.npcs;
         renderNPCs(npcObjects, pinLookup);
         updateLorePanel(dist.lore.title, dist.lore.entry, dist.lore.body);
 
         document.querySelectorAll('.district-btn').forEach((btn, i) => {
             if (i === index) {
-                btn.classList.replace('text-on-surface-variant', 'text-primary');
-                btn.classList.add('bg-primary-container');
+                btn.classList.add('is-active');
             } else {
-                btn.classList.replace('text-primary', 'text-on-surface-variant');
-                btn.classList.remove('bg-primary-container');
+                btn.classList.remove('is-active');
             }
         });
     }
@@ -185,11 +194,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (data.districts.length > 1) {
         toggleBtn.classList.remove('hidden');
-        toggleBtn.classList.add('flex');
 
         data.districts.forEach((dist, i) => {
             const btn = document.createElement('button');
-            btn.className = `district-btn px-4 py-1.5 text-[10px] font-label uppercase tracking-widest rounded-sm transition-all duration-300`;
+            btn.className = 'district-btn';
             btn.textContent = dist.name;
             btn.onclick = () => {
                 loadDistrict(i);
@@ -200,19 +208,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         function toggleDistrictMenu() {
-            if (navWrapper.classList.contains('max-h-0')) {
-                navWrapper.classList.remove('max-h-0', 'opacity-0');
-                navWrapper.classList.add('max-h-[200px]', 'opacity-100');
-                chevron.classList.add('rotate-180');
+            if (!navWrapper.classList.contains('is-open')) {
+                navWrapper.classList.add('is-open');
+                chevron.classList.add('is-open');
             } else {
                 closeDistrictMenu();
             }
         }
 
         function closeDistrictMenu() {
-            navWrapper.classList.add('max-h-0', 'opacity-0');
-            navWrapper.classList.remove('max-h-[200px]', 'opacity-100');
-            chevron.classList.remove('rotate-180');
+            navWrapper.classList.remove('is-open');
+            chevron.classList.remove('is-open');
         }
 
         toggleBtn.addEventListener('click', toggleDistrictMenu);

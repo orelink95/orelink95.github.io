@@ -53,16 +53,15 @@ function highlightActiveLink() {
         const linkHref = link.getAttribute("href");
 
         if (linkHref === currentFileName) {
-            // Remove the default dull text color
-            link.classList.remove("text-[#e2e3df]");
+            // Gold, glowing, with its icon tilted (see .site-header__link.is-active)
+            link.classList.add("is-active");
 
-            // Add the glowing gold active colors
-            link.classList.add("text-[#e9c176]", "drop-shadow-[0_0_8px_rgba(233,193,118,0.4)]");
-
-            // Find the icon inside this link and make it permanently tilted and gold
-            const icon = link.querySelector(".material-symbols-outlined");
-            if (icon) {
-                icon.classList.add("rotate-12", "text-[#e9c176]");
+            // Library header (still Tailwind until pass 2)
+            if (!link.classList.contains("site-header__link")) {
+                link.classList.remove("text-[#e2e3df]");
+                link.classList.add("text-[#e9c176]", "drop-shadow-[0_0_8px_rgba(233,193,118,0.4)]");
+                const icon = link.querySelector(".material-symbols-outlined");
+                if (icon) icon.classList.add("rotate-12", "text-[#e9c176]");
             }
         }
     });
@@ -79,11 +78,7 @@ function highlightActiveSidebarItem() {
         const itemHref = item.getAttribute('href');
 
         if (itemHref === currentPath) {
-            // Remove the inactive classes
-            item.classList.remove('text-on-surface', 'hover:text-secondary', 'hover:bg-surface-container-high');
-
-            // Add the golden active classes
-            item.classList.add('text-secondary', 'bg-surface-container-highest', 'shadow-inner', 'hover:bg-surface-bright', 'relative');
+            item.classList.add('is-active');
         }
     });
 }
@@ -95,26 +90,26 @@ function toggleMobileSidebar() {
 
     if (!sidebar || !backdrop) return;
 
-    // Check if it's currently hidden off-screen
-    if (sidebar.classList.contains('-translate-x-full')) {
-        // Slide it in
-        sidebar.classList.remove('-translate-x-full');
-        // Show the dark background
+    if (!sidebar.classList.contains('is-open')) {
+        // Slide it in and show the dark background
+        sidebar.classList.add('is-open');
         backdrop.classList.remove('hidden');
-        // Tiny delay to allow the 'hidden' class removal to register before fading in
-        setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+        // Tiny delay so the fade-in starts after 'hidden' is gone
+        setTimeout(() => backdrop.classList.add('is-visible'), 10);
     } else {
-        // Slide it out
-        sidebar.classList.add('-translate-x-full');
-        // Fade out the dark background
-        backdrop.classList.add('opacity-0');
-        // Wait for the fade animation to finish before hiding completely
+        // Slide it out, fade the background, then hide it completely
+        sidebar.classList.remove('is-open');
+        backdrop.classList.remove('is-visible');
         setTimeout(() => backdrop.classList.add('hidden'), 300);
     }
 }
 
 // Start the fetch process when the page loads
 document.addEventListener("DOMContentLoaded", () => {
+    // Library pages load their own header/footer variants; skip the defaults
+    // there to avoid a double fetch and a flash of the wrong header.
+    if (document.getElementById("library-sidebar-placeholder")) return;
+
     loadComponent("header-placeholder", "components/header.html");
     loadComponent("footer-placeholder", "components/footer.html");
     loadComponent("sidebar-placeholder", "components/sidebar.html");
@@ -127,12 +122,13 @@ document.addEventListener("DOMContentLoaded", () => {
 function createMobileOrbMenu() {
     const orbContainer = document.createElement('div');
     orbContainer.id = 'mobile-orb-menu';
-    orbContainer.className = 'fixed bottom-6 left-6 z-20 md:hidden font-body';
+    orbContainer.className = 'orb-menu';
 
     const links = [
-        { name: 'NPCs', url: 'npc.html', icon: 'group', color: 'text-blue-400', border: 'border-blue-400/50', shadow: 'shadow-[0_0_15px_rgba(96,165,250,0.4)]' },
-        { name: 'Story', url: 'scriptorium.html', icon: 'book', color: 'text-secondary', border: 'border-secondary/50', shadow: 'shadow-[0_0_15px_rgba(233,193,118,0.4)]' },
-        { name: 'Atlas', url: 'world.html', icon: 'public', color: 'text-primary', border: 'border-primary/50', shadow: 'shadow-[0_0_15px_rgba(179,205,182,0.4)]' }
+        // tone: orb-item--blue / --gold / --green in components.css
+        { name: 'NPCs', url: 'npc.html', icon: 'group', tone: 'blue' },
+        { name: 'Story', url: 'scriptorium.html', icon: 'book', tone: 'gold' },
+        { name: 'Atlas', url: 'world.html', icon: 'public', tone: 'green' }
     ];
 
     // --- MATH: CIRCLE PERIMETER CALCULATION ---
@@ -157,13 +153,13 @@ function createMobileOrbMenu() {
         const y = Math.round(-Math.sin(rad) * radius) - centerOffset;
 
         return `
-        <a href="${link.url}" class="orb-item absolute bottom-0 left-0 transition-all duration-500 opacity-0 pointer-events-none w-10 h-10" style="transform: translate(0px, 0px) scale(0.5);" data-x="${x}" data-y="${y}">
+        <a href="${link.url}" class="orb-item orb-item--${link.tone}" style="transform: translate(0px, 0px) scale(0.5);" data-x="${x}" data-y="${y}">
             
-            <div class="w-full h-full rounded-full bg-[#121412] border ${link.border} flex items-center justify-center ${link.shadow}">
-                <span class="material-symbols-outlined ${link.color} text-[18px]">${link.icon}</span>
+            <div class="orb-item__disc">
+                <span class="orb-item__icon material-symbols-outlined">${link.icon}</span>
             </div>
             
-            <span class="absolute text-[11px] font-label uppercase tracking-widest ${link.color} drop-shadow-md whitespace-nowrap bg-black/80 border border-white/10 px-3 py-1 rounded-full shadow-lg backdrop-blur-sm transition-transform"
+            <span class="orb-item__label"
                   style="top: -10px; left: 35px; transform-origin: bottom left; transform: rotate(-15deg);">
                 ${link.name}
             </span>
@@ -173,11 +169,11 @@ function createMobileOrbMenu() {
     }).join('');
 
     orbContainer.innerHTML = `
-        <div id="orb-items-container" class="absolute bottom-0 left-0 w-0 h-0">
+        <div id="orb-items-container" class="orb-menu__items">
             ${itemsHtml}
         </div>
-        <button id="main-orb-btn" class="relative w-14 h-14 rounded-full bg-[#0a0b0a] border border-secondary shadow-[0_0_20px_rgba(233,193,118,0.3)] flex items-center justify-center z-10 transition-transform duration-300 hover:scale-105 active:scale-95">
-            <span id="main-orb-icon" class="material-symbols-outlined text-secondary text-3xl transition-transform duration-500">explore</span>
+        <button id="main-orb-btn" class="orb-menu__button">
+            <span id="main-orb-icon" class="orb-menu__icon material-symbols-outlined">explore</span>
         </button>
     `;
 
@@ -194,7 +190,7 @@ function createMobileOrbMenu() {
 
         if (isOrbOpen) {
             orbIcon.style.transform = 'rotate(135deg)';
-            orbBtn.classList.add('shadow-[0_0_30px_rgba(233,193,118,0.6)]');
+            orbBtn.classList.add('is-open');
 
             orbItems.forEach((item, index) => {
                 item.style.pointerEvents = 'auto';
@@ -209,7 +205,7 @@ function createMobileOrbMenu() {
             });
         } else {
             orbIcon.style.transform = 'rotate(0deg)';
-            orbBtn.classList.remove('shadow-[0_0_30px_rgba(233,193,118,0.6)]');
+            orbBtn.classList.remove('is-open');
 
             orbItems.forEach(item => {
                 item.style.pointerEvents = 'none';
@@ -232,6 +228,7 @@ if (document.readyState === 'loading') {
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById('dust-container');
+    if (!container) return; // only the library pages have the dust layer
     const particleCount = 20;
 
     for (let i = 0; i < particleCount; i++) {

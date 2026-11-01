@@ -331,3 +331,39 @@
         transform: scale(1.15) translateY(-8px);
     }
 }
+
+/* Drop cap for Markdown lore bodies (store.md(text, {dropCap: true})) */
+.drop-cap {
+    float: left;
+    font-family: 'Noto Serif', serif;
+    font-size: 3.75rem;
+    line-height: 1;
+    color: #e9c176;
+    padding-right: 0.75rem;
+    padding-top: 0.5rem;
+    filter: drop-shadow(0 0 10px rgba(233, 193, 118, 0.3));
+}
+.is-danger .drop-cap {
+    color: #ffb4ab;
+    filter: drop-shadow(0 0 10px rgba(255, 180, 171, 0.3));
+}
+
+/* Markdown blockquotes in lore bodies */
+.lore blockquote {
+    position: relative;
+    margin: 2rem 0;
+    padding-left: 1.5rem;
+    border-left: 2px solid rgba(151, 211, 158, 0.3);
+}
+.lore blockquote p { font-style: italic; opacity: 0.8; }
+.lore blockquote cite {
+    display: block;
+    margin-top: 0.75rem;
+    font-style: normal;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #97d39e;
+}
+.lore blockquote cite::before { content: '— '; }
+.lore p + p { margin-top: 1rem; }

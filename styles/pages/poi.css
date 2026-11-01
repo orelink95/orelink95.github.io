@@ -1,0 +1,23 @@
+/* Landmark page (poi.html); the entry itself is styled by poi-style.css */
+
+.page {
+    overflow-x: hidden;
+    background-color: var(--color-surface);
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+}
+
+.poi-main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 6rem 1rem 3rem;
+    background-color: var(--color-surface);
+}
+@media (min-width: 768px) {
+    .poi-main {
+        margin-left: 5rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}

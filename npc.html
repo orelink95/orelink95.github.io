@@ -11,174 +11,178 @@
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
-    <link href="styles/output.css" rel="stylesheet" />
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/npc.css" rel="stylesheet" />
     <link href="styles/atlas-style.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
 
-    <script src="scripts/settlement-registry.js"></script>
-    <script src="scripts/almanach.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
 
     <script src="scripts/npc-scripts.js"></script>
 </head>
 
-<body class="bg-surface text-on-surface font-body overflow-x-hidden">
+<body class="page">
     <div id="header-placeholder"></div>
 
-    <main class="pt-24 px-4 md:px-8 pb-12 min-h-screen flex flex-col archival-bg">
-        <div class="max-w-[1600px] w-full mx-auto">
-            <header class="mb-12 flex flex-col gap-8">
-                <div class="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6">
-                    <div class="flex flex-col gap-4">
+    <main class="roster-main archival-bg">
+        <div class="roster">
+            <header class="roster-header">
+                <div class="roster-header__top">
+                    <div class="roster-header__intro">
                         <div>
-                            <p class="font-label text-secondary text-sm uppercase tracking-[0.3em] mb-2">The Archival
+                            <p class="roster-header__eyebrow">The Archival
                                 Roster</p>
-                            <h2 class="text-4xl md:text-5xl font-headline font-bold text-on-surface leading-tight">
+                            <h2 class="roster-header__title">
                                 Dramatis Personae</h2>
                         </div>
 
-                        <div class="flex flex-wrap items-center gap-3 mt-2">
+                        <div class="archive-links">
                             <span
-                                class="font-label text-[10px] uppercase tracking-widest text-on-surface/40 mr-2">Related
+                                class="archive-links__label">Related
                                 Archives:</span>
 
                             <a href="factions.html"
-                                class="flex items-center gap-2 px-4 py-1.5 rounded border border-white/10 bg-[#0a0b0a] hover:bg-secondary/10 hover:border-secondary/50 text-on-surface-variant hover:text-secondary font-label text-[10px] uppercase tracking-widest transition-all group">
+                                class="archive-link">
                                 <span
-                                    class="material-symbols-outlined text-[14px] group-hover:scale-110 transition-transform">swords</span>
+                                    class="archive-link__icon material-symbols-outlined">swords</span>
                                 Factions & Guilds
                             </a>
 
                             <a href="heroes.html"
-                                class="flex items-center gap-2 px-4 py-1.5 rounded border border-white/10 bg-[#0a0b0a] hover:bg-primary/10 hover:border-primary/50 text-on-surface-variant hover:text-primary font-label text-[10px] uppercase tracking-widest transition-all group">
+                                class="archive-link archive-link--heroes">
                                 <span
-                                    class="material-symbols-outlined text-[14px] group-hover:scale-110 transition-transform">local_fire_department</span>
+                                    class="archive-link__icon material-symbols-outlined">local_fire_department</span>
                                 Player Heroes
                             </a>
                         </div>
                     </div>
 
-                    <div class="relative w-full xl:w-96">
+                    <div class="roster-search">
                         <span
-                            class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary/50">search</span>
+                            class="roster-search__icon material-symbols-outlined">search</span>
                         <input type="text" id="search-input" placeholder="Search by name, role, or faction..."
-                            class="w-full bg-[#0a0b0a]/80 border border-white/10 text-on-surface font-body text-sm pl-12 pr-4 py-3 rounded-lg outline-none focus:border-secondary/50 focus:bg-[#0a0b0a] transition-all shadow-inner placeholder-on-surface/30">
+                            class="roster-search__input">
                     </div>
                 </div>
 
                 <div
-                    class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 py-4 border-y border-white/5">
+                    class="roster-filters">
 
-                    <div class="flex bg-[#0a0b0a] border border-white/10 rounded-lg p-1 w-full md:w-auto overflow-x-auto custom-scrollbar"
+                    <div class="relation-tabs custom-scrollbar"
                         id="relation-tabs">
                         <button data-rel="all"
-                            class="rel-tab flex-shrink-0 px-5 py-2 rounded-md text-[10px] font-label uppercase tracking-widest transition-all bg-secondary/20 text-secondary border border-secondary/30 shadow-sm">Any
+                            class="rel-tab relation-tab is-active relation-tab--all">Any
                             Relation</button>
                         <button data-rel="ally"
-                            class="rel-tab flex-shrink-0 px-5 py-2 rounded-md text-[10px] font-label uppercase tracking-widest text-on-surface-variant hover:text-white transition-all border border-transparent">Allies</button>
+                            class="relation-tab rel-tab">Allies</button>
                         <button data-rel="neutral"
-                            class="rel-tab flex-shrink-0 px-5 py-2 rounded-md text-[10px] font-label uppercase tracking-widest text-on-surface-variant hover:text-white transition-all border border-transparent">Neutral</button>
+                            class="relation-tab rel-tab">Neutral</button>
                         <button data-rel="hostile"
-                            class="rel-tab flex-shrink-0 px-5 py-2 rounded-md text-[10px] font-label uppercase tracking-widest text-on-surface-variant hover:text-white transition-all border border-transparent">Hostiles</button>
+                            class="relation-tab rel-tab">Hostiles</button>
                     </div>
 
-                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <div class="roster-filters__selects">
                         <span
-                            class="font-label text-[9px] uppercase tracking-widest text-on-surface/40 mr-2 hidden md:block">Filter
+                            class="roster-filters__label">Filter
                             By:</span>
 
-                        <div class="relative group flex-grow md:flex-grow-0">
+                        <div class="filter-select">
                             <select id="filter-settlement"
-                                class="appearance-none w-full bg-surface-container-high border border-white/10 group-hover:border-secondary/50 text-on-surface font-label text-[10px] uppercase tracking-widest pl-4 pr-10 py-2.5 rounded-full outline-none cursor-pointer transition-colors">
+                                class="filter-select__input">
                                 <option value="all">All Locations</option>
                             </select>
                             <span
-                                class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-secondary pointer-events-none group-hover:translate-y-[1px] transition-transform">expand_more</span>
+                                class="filter-select__chevron material-symbols-outlined">expand_more</span>
                         </div>
 
-                        <div class="relative group flex-grow md:flex-grow-0">
+                        <div class="filter-select">
                             <select id="filter-affiliation"
-                                class="appearance-none w-full bg-surface-container-high border border-white/10 group-hover:border-secondary/50 text-on-surface font-label text-[10px] uppercase tracking-widest pl-4 pr-10 py-2.5 rounded-full outline-none cursor-pointer transition-colors">
+                                class="filter-select__input">
                                 <option value="all">All Affiliations</option>
                             </select>
                             <span
-                                class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[14px] text-secondary pointer-events-none group-hover:translate-y-[1px] transition-transform">expand_more</span>
+                                class="filter-select__chevron material-symbols-outlined">expand_more</span>
                         </div>
                     </div>
                 </div>
             </header>
 
             <div id="npc-grid"
-                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                class="npc-grid">
             </div>
         </div>
     </main>
 
     <div id="npc-modal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#121412]/95 backdrop-blur-xl p-4 md:p-8">
+        class="npc-modal hidden">
         <div
-            class="max-w-5xl w-full bg-surface-container rounded-lg overflow-hidden border border-secondary/30 shadow-[0_0_100px_rgba(26,48,32,0.8)] flex flex-col md:flex-row max-h-[90vh]">
+            class="npc-modal__card">
 
-            <div class="md:w-5/12 relative h-80 md:h-auto flex-shrink-0">
-                <img id="modal-npc-img" class="w-full h-full object-cover" src="" alt="Character Portrait" />
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-surface-container hidden md:block">
+            <div class="npc-modal__portrait">
+                <img id="modal-npc-img" class="npc-modal__img" src="" alt="Character Portrait" />
+                <div class="npc-modal__fade-side">
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-surface-container to-transparent md:hidden"></div>
+                <div class="npc-modal__fade-bottom"></div>
             </div>
 
-            <div class="md:w-7/12 p-8 md:p-12 relative text-left flex flex-col overflow-y-auto custom-scrollbar">
+            <div class="npc-modal__content custom-scrollbar">
                 <button onclick="closeNPCModal()"
-                    class="absolute top-6 right-6 text-on-surface-variant hover:text-secondary z-10 transition-colors">
+                    class="npc-modal__close">
                     <span class="material-symbols-outlined">close</span>
                 </button>
 
-                <p id="modal-npc-role" class="font-label text-secondary text-xs uppercase tracking-[0.4em] mb-2"></p>
-                <h2 id="modal-npc-name" class="text-4xl font-headline font-bold text-on-surface mb-2"></h2>
-                <p id="modal-npc-quote" class="font-newsreader italic text-on-surface-variant text-lg mb-8">""</p>
+                <p id="modal-npc-role" class="npc-modal__role"></p>
+                <h2 id="modal-npc-name" class="npc-modal__name"></h2>
+                <p id="modal-npc-quote" class="npc-modal__quote font-newsreader">""</p>
 
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-6 border-y border-white/5 py-6 mb-8">
+                <div class="npc-modal__facts">
                     <div>
-                        <p class="font-label text-[9px] uppercase text-outline tracking-widest mb-1">Species</p>
-                        <p id="modal-npc-species" class="font-headline text-on-surface text-base"></p>
+                        <p class="npc-modal__fact-label">Species</p>
+                        <p id="modal-npc-species" class="npc-modal__fact-value"></p>
                     </div>
                     <div>
-                        <p class="font-label text-[9px] uppercase text-outline tracking-widest mb-1">Age / Gender</p>
-                        <p id="modal-npc-demographics" class="font-headline text-on-surface text-base"></p>
+                        <p class="npc-modal__fact-label">Age / Gender</p>
+                        <p id="modal-npc-demographics" class="npc-modal__fact-value"></p>
                     </div>
                     <div>
-                        <p class="font-label text-[9px] uppercase text-outline tracking-widest mb-1">Affiliation</p>
-                        <p id="modal-npc-affiliation" class="font-headline text-on-surface text-base"></p>
+                        <p class="npc-modal__fact-label">Affiliation</p>
+                        <p id="modal-npc-affiliation" class="npc-modal__fact-value"></p>
                     </div>
-                    <div class="col-span-2 lg:col-span-3">
-                        <p class="font-label text-[9px] uppercase text-outline tracking-widest mb-1">Known Whereabouts
+                    <div class="npc-modal__whereabouts">
+                        <p class="npc-modal__fact-label">Known Whereabouts
                         </p>
-                        <div class="flex items-center gap-2 text-primary">
-                            <span class="material-symbols-outlined text-[14px]">location_on</span>
-                            <p id="modal-npc-location" class="font-headline text-base"></p>
+                        <div class="npc-modal__location">
+                            <span class="npc-modal__location-icon material-symbols-outlined">location_on</span>
+                            <p id="modal-npc-location" class="npc-modal__location-text"></p>
                         </div>
                     </div>
                 </div>
 
-                <h3 class="font-label text-[10px] uppercase text-outline tracking-widest mb-4">Archival Biography</h3>
+                <h3 class="npc-modal__section-title">Archival Biography</h3>
                 <div id="modal-npc-body"
-                    class="space-y-4 text-on-surface-variant font-body text-sm leading-relaxed mb-8">
+                    class="npc-modal__body">
                 </div>
 
-                <div class="mt-auto p-6 bg-[#0a0b0a] border border-error/20 rounded relative group overflow-hidden">
+                <div class="npc-secrets">
                     <h3
-                        class="font-label text-[10px] uppercase text-error tracking-widest mb-3 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">lock</span> Classified Secrets
+                        class="npc-secrets__title">
+                        <span class="npc-secrets__icon material-symbols-outlined">lock</span> Classified Secrets
                     </h3>
 
                     <div id="modal-npc-secrets"
-                        class="font-newsreader italic text-error/80 text-sm blur-[6px] group-hover:blur-none transition-all duration-700 cursor-help select-none">
+                        class="npc-secrets__text font-newsreader">
                     </div>
 
                     <div
-                        class="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:opacity-0 transition-opacity duration-500 bg-[#0a0b0a]/50">
+                        class="npc-secrets__veil">
                         <span
-                            class="bg-black text-error px-4 py-1.5 rounded text-[9px] uppercase tracking-[0.2em] border border-error/50 shadow-lg shadow-error/20 backdrop-blur-sm">Hover
+                            class="npc-secrets__badge">Hover
                             to Decrypt</span>
                     </div>
                 </div>

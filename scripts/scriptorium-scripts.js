@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    const store = await Athenaeum.ready;
     const timelineContainer = document.getElementById('chronicle-timeline');
     const questList = document.getElementById('quest-list');
     const lootList = document.getElementById('notable-loot-list');
@@ -98,90 +99,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function findNPC(id) {
-        if (typeof npcAlmanach !== 'undefined' && npcAlmanach[id]) {
-            return { id: id, ...npcAlmanach[id] };
-        }
-        return null;
+        const npc = store.get(id);
+        if (!npc || store.typeOf(npc) !== 'npc') return null;
+        return { ...npc, image: npc.portrait, avatar: npc.avatar || npc.portrait };
     }
 
+    // Campaign files still name places; resolve them through names and aliases.
     function findLocation(title) {
-        const lowerTitle = title.toLowerCase();
-
-        if (typeof countryRegistry !== 'undefined') {
-            for (const [countryId, country] of Object.entries(countryRegistry)) {
-                const countryMatch = (country.regionName && country.regionName.toLowerCase() === lowerTitle) ||
-                    (country.aliases || []).some(a => a.toLowerCase() === lowerTitle);
-                if (countryMatch) return { title: country.regionName, url: `country.html?id=${countryId}` };
-            }
-        }
-
-        if (typeof settlementRegistry !== 'undefined') {
-            for (const [settId, sett] of Object.entries(settlementRegistry)) {
-                const settMatch = sett.settlementName.toLowerCase() === lowerTitle || (sett.aliases || []).some(a => a.toLowerCase() === lowerTitle);
-                if (settMatch) return { title: sett.settlementName, url: `settlement.html?id=${settId}` };
-
-                for (const dist of sett.districts || []) {
-                    const distMatch = dist.name.toLowerCase() === lowerTitle || (dist.aliases || []).some(a => a.toLowerCase() === lowerTitle);
-                    if (distMatch) return { title: dist.name, url: `settlement.html?id=${settId}` };
-
-                    const found = (dist.pins || []).find(p => p.title.toLowerCase() === lowerTitle || (p.aliases || []).some(a => a.toLowerCase() === lowerTitle));
-                    if (found) {
-                        const uid = found.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                        return { ...found, url: `pois.html?id=${uid}` };
-                    }
-                }
-            }
-        }
-        return null;
+        const place = store.find(title, ['poi', 'district', 'settlement', 'country', 'continent']);
+        return place ? { title: place.name, url: store.url(place) } : null;
     }
 
     function autoLinkContent(text) {
         if (!text) return "";
         let linkedText = text;
 
-        if (typeof npcAlmanach !== 'undefined') {
-            Object.keys(npcAlmanach).forEach(id => {
-                const npcData = findNPC(id);
-                if (npcData) {
-                    const regex = new RegExp(`\\b${npcData.name}\\b(?![^<]*>)`, 'gi');
-                    linkedText = linkedText.replace(regex, (match) => `<a href="npc.html?id=${id}" onclick="event.stopPropagation()" class="kw-person relative z-10">${match}</a>`);
-                }
-            });
-        }
-
-        let locTargets = [];
-
-        if (typeof countryRegistry !== 'undefined') {
-            Object.entries(countryRegistry).forEach(([countryId, country]) => {
-                if (country.regionName) locTargets.push({ name: country.regionName, url: `country.html?id=${countryId}` });
-                (country.aliases || []).forEach(alias => locTargets.push({ name: alias, url: `country.html?id=${countryId}` }));
-            });
-        }
-
-        if (typeof settlementRegistry !== 'undefined') {
-            Object.entries(settlementRegistry).forEach(([settId, sett]) => {
-                if (sett.settlementName) locTargets.push({ name: sett.settlementName, url: `settlement.html?id=${settId}` });
-                (sett.aliases || []).forEach(alias => locTargets.push({ name: alias, url: `settlement.html?id=${settId}` }));
-
-                (sett.districts || []).forEach(dist => {
-                    if (dist.name) locTargets.push({ name: dist.name, url: `settlement.html?id=${settId}` });
-                    (dist.aliases || []).forEach(alias => locTargets.push({ name: alias, url: `settlement.html?id=${settId}` }));
-
-                    (dist.pins || []).forEach(pin => {
-                        const uid = pin.title.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                        if (pin.title) locTargets.push({ name: pin.title, url: `pois.html?id=${uid}` });
-                        (pin.aliases || []).forEach(alias => locTargets.push({ name: alias, url: `pois.html?id=${uid}` }));
-                    });
-                });
-            });
-        }
-
-        locTargets.sort((a, b) => b.name.length - a.name.length);
-
-        locTargets.forEach(target => {
-            const regex = new RegExp(`\\b${target.name}\\b(?![^<]*>)`, 'gi');
-            linkedText = linkedText.replace(regex, (match) => `<a href="${target.url}" onclick="event.stopPropagation()" class="kw-place relative z-10">${match}</a>`);
-        });
+        // NPCs, places and factions (from the data files)
+        linkedText = store.autolink(linkedText, { className: 'relative z-10', attrs: 'onclick="event.stopPropagation()"' });
 
         if (typeof keywordLexicon !== 'undefined') {
             Object.keys(keywordLexicon).forEach(term => {

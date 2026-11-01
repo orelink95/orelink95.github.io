@@ -1,0 +1,76 @@
+[
+  {
+    "id": "darphrena",
+    "name": "Daphrena",
+    "subtitle": "The Ancient World",
+    "codex": "Codex Entry",
+    "body": "Darphena lies far to the west, rugged and ancient. Among its great peaks and deep caverns, the Ancient Dwarves—a lineage untouched by time—still dwell. Many dwarves believe, without tangible proof, that their race was forged in Darphena’s mountains, born of stone and memory.",
+    "map": {
+      "x": 576,
+      "y": 754,
+      "icon": "darphrena",
+      "layer": "cartographic"
+    }
+  },
+  {
+    "id": "maltona",
+    "name": "Maltona",
+    "subtitle": "The Boundless Vale",
+    "codex": "Codex Entry",
+    "body": "The greatest of the four continents, Maltona is the heart of the known world. Often called The Boundless Vale, it is a land of breathtaking beauty and brutal challenge. Some say the first sentient beings walked here, and even now, its soil holds ancient power. Kingdoms have risen and fallen vying for control of Maltona’s secrets, its riches, and its legacy. It remains, as ever, a land of promise, peril, and possibility.\n\nExplore the Boundless Vale, discover its history, its scars andthe people who call it home, just with [a simple click](continent.html?id=maltona).",
+    "era": "Year 1466 LF",
+    "map": {
+      "x": 1377,
+      "y": 517,
+      "icon": "maltona",
+      "layer": "cartographic"
+    },
+    "mapImage": {
+      "src": "images/maltona_map.png",
+      "width": 2930,
+      "height": 1760
+    },
+    "facts": [
+      {
+        "title": "Climate & Fauna",
+        "text": "High humidity, perennially overcast with emerald-tinged mists. Home to the elusive Glass-Winged Wyverns and bioluminescent flora."
+      },
+      {
+        "title": "Political Tension",
+        "text": "The death of King Teal of Eperina has destabilized the country, prompting increased Warden presence across the hold and diminishing their number in Brightend."
+      }
+    ],
+    "notables": [
+      "maeravoss",
+      "lordwhite"
+    ],
+    "epigraph": "Maltona is not merely land and sea; it is a memory written in stone and sang by the winds, a story told by the rocks, the trees and the blood that fed the earth. the Spires.",
+    "epigraphSource": "Chronicle of the First Era"
+  },
+  {
+    "id": "eldenna",
+    "name": "Eldenna",
+    "subtitle": "The Torn Lands",
+    "codex": "Codex Entry",
+    "body": "To the north, where the sea and sky blur into mist, rises Eldenna. Some call it a continent, others an island. Elven legend holds that this was their first home in Eraldom, arriving from the shattered realm of Ydalheim when it collided with the Material Plane in ages long forgotten.",
+    "map": {
+      "x": 1009,
+      "y": 714,
+      "icon": "eldenna",
+      "layer": "cartographic"
+    }
+  },
+  {
+    "id": "verdena",
+    "name": "Verdena",
+    "subtitle": "The Shun Lands",
+    "codex": "Codex Entry",
+    "body": "Shrouded in secrecy and dread, Verdena is known as the Shun Lands. It is spoken of in hushed tones, wrapped in myths of horrors that defy mortal understanding. Few have traveled there—and fewer have returned.",
+    "map": {
+      "x": 869,
+      "y": 253,
+      "icon": "verdena",
+      "layer": "cartographic"
+    }
+  }
+]

@@ -1,0 +1,1116 @@
+/* Factions & guilds (factions.html) */
+
+.page {
+    overflow-x: hidden;
+    background-color: #0a0b0a;
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+}
+
+.factions-main {
+    min-height: 100vh;
+    max-width: 1500px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 7rem 1rem 5rem;
+}
+@media (min-width: 768px) {
+    .factions-main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.archive-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.archive-links__label {
+    margin-right: 0.5rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.archive-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 1rem;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.1);
+    background-color: #0a0b0a;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.7);
+    transition: all 150ms var(--ease);
+}
+.archive-link:hover {
+    border-color: rgb(96 165 250 / 0.5);
+    background-color: rgb(96 165 250 / 0.1);
+    color: #60a5fa;
+}
+
+.archive-link__icon {
+    font-size: 14px;
+    transition: transform 150ms var(--ease);
+}
+.archive-link:hover .archive-link__icon {
+    transform: scale(1.1);
+}
+
+.factions-hero {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
+.factions-hero__eyebrow {
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: #60a5fa;
+    animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.factions-hero__title {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-headline);
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    filter: drop-shadow(0 0 15px rgba(96,165,250,0.2));
+}
+@media (min-width: 768px) {
+    .factions-hero__title {
+        font-size: 3.75rem;
+        line-height: 1;
+    }
+}
+
+.factions-hero__rule {
+    height: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    background-image: linear-gradient(to right, transparent, rgb(96 165 250 / 0.5), transparent);
+}
+
+.factions-layout {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    align-items: flex-start;
+    gap: 1.5rem;
+    width: 100%;
+}
+@media (min-width: 1024px) {
+    .factions-layout {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 2rem;
+    }
+}
+
+.faction-tabs > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.625rem;
+    margin-bottom: 0;
+}
+@media (min-width: 1024px) {
+    .faction-tabs {
+        grid-column: span 3 / span 3;
+    }
+}
+
+.dossier {
+    position: relative;
+    min-height: 600px;
+    overflow: hidden;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.1);
+    background-color: color-mix(in srgb, var(--color-surface) 90%, transparent);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+@media (min-width: 768px) {
+    .dossier {
+        padding: 3rem;
+    }
+}
+@media (min-width: 1024px) {
+    .dossier {
+        grid-column: span 9 / span 9;
+    }
+}
+
+.dossier-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 600px;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-style: dashed;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(255 255 255 / 0.02);
+    text-align: center;
+}
+@media (min-width: 1024px) {
+    .dossier-empty {
+        grid-column: span 8 / span 8;
+    }
+}
+
+.dossier-empty__icon {
+    margin-bottom: 1rem;
+    font-size: 3.75rem;
+    line-height: 1;
+    color: rgb(255 255 255 / 0.1);
+}
+
+.dossier-empty__text {
+    font-family: var(--font-label);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+
+/* "Player Heroes" link */
+
+.archive-link--heroes:hover {
+    border-color: rgb(74 222 128 / 0.5);
+    background-color: rgb(74 222 128 / 0.1);
+    color: #4ade80;
+}
+
+/* Selected tab (factions-script.js toggles .is-active). The old gold border never showed, so only the background changes. */
+
+.faction-tab.is-active .faction-tab__card {
+    background-color: var(--color-surface-container-highest);
+}
+
+/* Tabs and dossier (built in factions-script.js) */
+
+.faction-tab {
+    width: 100%;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    text-align: left;
+    transform: skewX(-3deg);
+    transition: all 300ms var(--ease);
+}
+.faction-tab:hover {
+    transform: translateX(0.5rem) skewX(-1deg);
+}
+
+.faction-tab__card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: var(--color-surface);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+.faction-tab:hover .faction-tab__card {
+    border-color: rgb(255 255 255 / 0.2);
+}
+@media (min-width: 768px) {
+    .faction-tab__card {
+        padding: 1rem;
+    }
+}
+
+.faction-tab__badge {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    width: 2.25rem;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(0 0 0 / 0.4);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.faction-tab:hover .faction-tab__badge {
+    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+}
+
+.faction-tab__icon {
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: rgb(255 255 255 / 0.4);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.faction-tab:hover .faction-tab__icon {
+    color: var(--color-secondary);
+}
+
+.faction-tab__text {
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+.faction-tab__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-headline);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    color: #fff;
+    transform: skewX(3deg);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.faction-tab:hover .faction-tab__name {
+    color: var(--color-secondary);
+}
+@media (min-width: 768px) {
+    .faction-tab__name {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+    }
+}
+
+.faction-tab__status {
+    margin-top: 0.125rem;
+    font-family: var(--font-label);
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+    transform: skewX(3deg);
+}
+
+.dossier__watermark {
+    position: absolute;
+    right: -8rem;
+    top: -8rem;
+    color: rgb(255 255 255 / 0.05);
+    transform: rotate(12deg) scale(1.5);
+    pointer-events: none;
+}
+
+.dossier__watermark-icon {
+    font-size: 300px;
+}
+
+.dossier-head {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+}
+@media (min-width: 768px) {
+    .dossier-head {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+}
+
+.dossier-head__identity {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.dossier-head__crest {
+    flex-shrink: 0;
+    height: 6rem;
+    width: 6rem;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    box-shadow: 0 0 20px rgba(233,193,118,0.2);
+}
+
+.dossier-head__name {
+    margin-bottom: 0.5rem;
+    font-family: var(--font-headline);
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+}
+@media (min-width: 768px) {
+    .dossier-head__name {
+        font-size: 3rem;
+        line-height: 1;
+    }
+}
+
+.dossier-head__quote {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-secondary) 80%, transparent);
+}
+
+.dossier-head__stamp-wrap {
+    display: none;
+    flex-shrink: 0;
+    padding-top: 0.5rem;
+    text-align: right;
+}
+@media (min-width: 768px) {
+    .dossier-head__stamp-wrap {
+        display: block;
+    }
+}
+
+.dossier-head__stamp {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.125rem;
+    border-width: 2px;
+    border-color: color-mix(in srgb, var(--color-error) 40%, transparent);
+    font-family: var(--font-label);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--color-error);
+    opacity: 0.8;
+    box-shadow: 0 0 15px rgba(248,113,113,0.1);
+}
+
+.dossier-facts {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(0 0 0 / 0.4);
+}
+@media (min-width: 768px) {
+    .dossier-facts {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+.dossier-facts__label {
+    margin-bottom: 0.25rem;
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+}
+
+.dossier-facts__value {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(255 255 255 / 0.9);
+}
+
+.dossier-facts__long-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(255 255 255 / 0.9);
+}
+
+.dossier-facts__threat {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+}
+
+.standing {
+    position: relative;
+    z-index: 10;
+    margin-bottom: 2.5rem;
+}
+
+.standing__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.standing__label {
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.standing__value {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+}
+
+.standing__track {
+    height: 0.375rem;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background-color: rgb(255 255 255 / 0.1);
+}
+
+.standing__bar {
+    height: 100%;
+    width: 0%;
+    background-image: linear-gradient(to right, transparent, var(--color-secondary), var(--color-secondary));
+    transition: all 1000ms var(--ease);
+}
+
+.dossier-columns {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+}
+@media (min-width: 768px) {
+    .dossier-columns {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+.assets__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #60a5fa;
+}
+
+.dossier-column__icon {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.dossier-list > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+
+.dossier-list__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.assets__bullet {
+    margin-top: 0.125rem;
+    color: rgb(96 165 250 / 0.5);
+}
+
+.directives__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-error);
+}
+
+.directives__bullet {
+    margin-top: 0.125rem;
+    color: color-mix(in srgb, var(--color-error) 50%, transparent);
+}
+
+.power {
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(255 255 255 / 0.02);
+}
+
+.power__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+}
+
+.power__allies-label {
+    margin-bottom: 0.5rem;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #4ade80;
+}
+
+.power__allies {
+    margin-bottom: 1rem;
+}
+.power__allies > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+.power__ally {
+    padding-left: 0.5rem;
+    border-left-width: 1px;
+    border-color: rgb(74 222 128 / 0.3);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.power__rivals-label {
+    margin-bottom: 0.5rem;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-error);
+}
+
+.power__rivals > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+}
+
+.power__rival {
+    padding-left: 0.5rem;
+    border-left-width: 1px;
+    border-color: color-mix(in srgb, var(--color-error) 30%, transparent);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.dossier-section-title {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-label);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: rgb(255 255 255 / 0.9);
+}
+
+.dossier-section-title__icon {
+    color: var(--color-secondary);
+}
+
+.evidence-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+@media (min-width: 768px) {
+    .evidence-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.roster-card {
+    position: relative;
+    display: flex;
+    gap: 1.25rem;
+    overflow: hidden;
+    padding: 1.25rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(0 0 0 / 0.4);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+    cursor: pointer;
+}
+.roster-card:hover {
+    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+}
+@media (min-width: 768px) {
+    .roster-card {
+        grid-column: span 2 / span 2;
+    }
+}
+
+.profile-img {
+    flex-shrink: 0;
+    height: 6rem;
+    width: 6rem;
+    object-fit: cover;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.1);
+    filter: grayscale(100%);
+    transition: all 150ms var(--ease);
+}
+.roster-card:hover .profile-img,
+.intel-target:hover .profile-img {
+    filter: grayscale(0);
+}
+
+.roster-card__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    min-width: 0;
+}
+
+.roster-card__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+}
+
+.roster-card__kicker {
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+}
+
+.roster-card__open {
+    font-size: 16px;
+    color: rgb(255 255 255 / 0.2);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.roster-card:hover .roster-card__open {
+    color: var(--color-secondary);
+}
+
+.roster-card__name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-headline);
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    color: #fff;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.roster-card:hover .roster-card__name {
+    color: var(--color-secondary);
+}
+
+.profile-desc {
+    display: -webkit-box;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    color: rgb(255 255 255 / 0.6);
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.intel-note {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(0 0 0 / 0.4);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.intel-note:hover {
+    border-color: rgb(255 255 255 / 0.1);
+}
+
+.intel-note__seal {
+    position: absolute;
+    right: -0.75rem;
+    top: -0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    width: 3rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-error);
+    transform: rotate(12deg);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    transition: transform 150ms var(--ease);
+}
+.intel-note:hover .intel-note__seal {
+    transform: rotate(12deg) scale(1.1);
+}
+
+.intel-note__seal-text {
+    font-family: var(--font-headline);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.intel-note__title {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+}
+
+.intel-note__text {
+    padding-right: 1.5rem;
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.625;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.intel-map {
+    position: relative;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(0 0 0 / 0.4);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.intel-map:hover {
+    border-color: rgb(255 255 255 / 0.1);
+}
+
+.intel-map__label {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    z-index: 10;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    background-color: rgb(0 0 0 / 0.8);
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.intel-map__img {
+    height: 10rem;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 0.125rem;
+    opacity: 0.8;
+    filter: grayscale(100%);
+    transition: opacity 150ms var(--ease);
+}
+.intel-map__img:hover {
+    filter: grayscale(0);
+}
+.intel-map:hover .intel-map__img {
+    opacity: 1;
+}
+
+.intel-target {
+    display: flex;
+    gap: 1.25rem;
+    padding: 1.25rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: rgb(0 0 0 / 0.4);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.intel-target:hover {
+    border-color: rgb(255 255 255 / 0.1);
+}
+@media (min-width: 768px) {
+    .intel-target {
+        grid-column: span 2 / span 2;
+    }
+}
+
+.intel-target__body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.intel-target__kicker {
+    margin-bottom: 0.25rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+}
+
+.intel-target__name {
+    margin-bottom: 0.5rem;
+    font-family: var(--font-headline);
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    color: #fff;
+}
+
+.rumors {
+    position: relative;
+    z-index: 10;
+    margin-top: 3rem;
+    padding: 2rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+    background-color: color-mix(in srgb, var(--color-secondary) 5%, transparent);
+    transform: rotate(1deg);
+}
+
+.rumors__clip {
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    color: rgb(255 255 255 / 0.4);
+    transform: translateX(-50%);
+}
+
+.rumors__clip-icon {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    transform: rotate(-12deg);
+}
+
+.rumors__title {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--color-secondary);
+}
+
+.rumors__list > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.rumors__item {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.8);
+}
+
+.rumors__icon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    color: var(--color-error);
+}
+
+/* Tab tone from the faction status */
+
+.faction-tab--allied .faction-tab__icon {
+    color: #4ade80;
+}
+
+.faction-tab--allied .faction-tab__status {
+    color: #4ade80;
+}
+
+.faction-tab--hostile .faction-tab__icon {
+    color: var(--color-error);
+}
+
+.faction-tab--hostile .faction-tab__status {
+    color: var(--color-error);
+}
+
+/* Threat level */
+
+.dossier-facts__threat--none {
+    color: rgb(255 255 255 / 0.4);
+}
+
+.dossier-facts__threat--low {
+    color: #4ade80;
+}
+
+.dossier-facts__threat--moderate {
+    color: var(--color-secondary);
+}
+
+.dossier-facts__threat--severe {
+    color: var(--color-error);
+}
+
+.dossier-facts__threat--omega {
+    color: #c084fc;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.dossier-facts__threat--other {
+    color: rgb(255 255 255 / 0.6);
+}
+
+/* Standing bar: gold by default */
+
+.standing--allied .standing__value {
+    color: #4ade80;
+}
+
+.standing--allied .standing__bar {
+    background-image: linear-gradient(to right, transparent, #4ade80, #4ade80);
+}
+
+.standing--hostile .standing__value {
+    color: var(--color-error);
+}
+
+.standing--hostile .standing__bar {
+    background-image: linear-gradient(to right, transparent, #f87171, #f87171);
+}
+
+/* Tags: role (gold), relation to the party, and evidence tags ("tone" in data/factions.json) */
+
+.tag {
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.tag--gold {
+    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    color: var(--color-secondary);
+}
+
+.tag--blue {
+    border-color: rgb(96 165 250 / 0.3);
+    color: #60a5fa;
+}
+
+.tag--green {
+    border-color: rgb(74 222 128 / 0.3);
+    color: #4ade80;
+}
+
+.tag--red {
+    border-color: color-mix(in srgb, var(--color-error) 30%, transparent);
+    color: var(--color-error);
+}
+
+.tag--ally {
+    border-color: rgb(74 222 128 / 0.3);
+    background-color: rgb(74 222 128 / 0.1);
+    color: #4ade80;
+}
+
+.tag--hostile {
+    border-color: color-mix(in srgb, var(--color-error) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+    color: var(--color-error);
+}
+
+.tag--killed {
+    border-color: rgb(255 255 255 / 0.2);
+    background-color: rgb(255 255 255 / 0.05);
+    color: rgb(255 255 255 / 0.4);
+}

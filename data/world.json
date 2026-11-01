@@ -1,0 +1,11 @@
+{
+  "name": "Eraldom",
+  "codex": "Codex Entry: 04.A",
+  "loreTitle": "The Known Realms",
+  "body": "From\nthe jagged peaks of the Wolf's Teeth Range to the depths of the North Sea, lies a world\nscarred by ancient magic and forgotten dynasties. The Athenaeum records these lands as they\nare, open to what they might become.\n\nTo the east, the **Boundless Vale** still\nradiate with the chaotic energy of the Ophrasian War.\n\n> \"Do not trust the maps drawn before the War. The land remembers the trauma, it has been disfigured.\"\n> — Master Sage Elara",
+  "mapImage": {
+    "src": "images/eraldom_world_map.png",
+    "width": 1920,
+    "height": 1078
+  }
+}

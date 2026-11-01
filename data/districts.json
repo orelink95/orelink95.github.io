@@ -1,0 +1,92 @@
+[
+  {
+    "id": "cloud_district",
+    "name": "The Cloud District",
+    "parent": "brightend",
+    "shortName": "Cloud District",
+    "codex": "District: Alpha",
+    "body": "Suspended above the smog, this is where the elite reside. Palaces of white marble and hanging gardens dominate the skyline.",
+    "mapImage": {
+      "src": "images/cloud_district_map.png",
+      "width": 1167,
+      "height": 1080
+    }
+  },
+  {
+    "id": "ash_district",
+    "name": "The Ash District",
+    "parent": "brightend",
+    "shortName": "Ash",
+    "codex": "District: Omega",
+    "body": "Beneath the shadow of the industrial forges lies the Ash District. Crime is rampant, and the air is thick with soot.",
+    "mapImage": {
+      "src": "images/ash_district_map.png",
+      "width": 1149,
+      "height": 1080
+    }
+  },
+  {
+    "id": "the_docks",
+    "name": "The Docks",
+    "parent": "brightend",
+    "shortName": "Docks",
+    "codex": "District: Delta",
+    "body": "Fish and ships",
+    "mapImage": {
+      "src": "images/brightend_docks_map.png",
+      "width": 926,
+      "height": 1080
+    }
+  },
+  {
+    "id": "the_gate",
+    "name": "The Gate",
+    "parent": "brightend",
+    "shortName": "Gate",
+    "codex": "District: Gamma",
+    "body": "The (once) heavily militarized entrance to the capital.",
+    "mapImage": {
+      "src": "images/placeholder.png",
+      "width": 1000,
+      "height": 1000
+    }
+  },
+  {
+    "id": "bazaar",
+    "name": "The Grand Bazaar",
+    "parent": "brightend",
+    "shortName": "Bazaar",
+    "codex": "District: Epsilon",
+    "body": "Home to the great markets.",
+    "mapImage": {
+      "src": "images/placeholder_text.png",
+      "width": 1000,
+      "height": 1000
+    }
+  },
+  {
+    "id": "brightend_artisan",
+    "name": "The Artisan Row",
+    "parent": "brightend",
+    "shortName": "Artisan Row",
+    "codex": "District: Zeta",
+    "body": "Guildhouses and master crafters.",
+    "mapImage": {
+      "src": "images/brightend_artisan.png",
+      "width": 862,
+      "height": 1080
+    }
+  },
+  {
+    "id": "deercrest-district",
+    "name": "Deercrest",
+    "parent": "deercrest",
+    "codex": "Village",
+    "body": "Cute lil town.\n\nAt first a simple hunter's outpost, Deercrest grew in size quite rapidly. The first settlement there predates the Eperinian Kingdom, but only a few buildings are left from that era. Now it is a busy small town on the edge of the kingdom, famous for its venison and the extraordinary wood it offers.",
+    "mapImage": {
+      "src": "images/deercrest-map.png",
+      "width": 1411,
+      "height": 1080
+    }
+  }
+]

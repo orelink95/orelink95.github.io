@@ -69,20 +69,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     function createFantasyIcon(iconName, isDanger = false) {
 
         // Ternary operators (? :) check if isDanger is true. If true, use red 'error' colors. Otherwise, use gold 'secondary' colors.
-        const glowColor = isDanger ? 'bg-error/30' : 'bg-secondary/30';
-        const borderColor = isDanger ? 'border-error' : 'border-secondary';
-
-        // Hover states specific to the group
-        const hoverBg = isDanger ? 'group-hover/pin:bg-error' : 'group-hover/pin:bg-secondary';
+        // Red pins for dangerous places (see .atlas-pin--danger in pages/world.css)
+        const tone = isDanger ? 'atlas-pin--danger' : '';
 
         return L.divIcon({
-            className: 'bg-transparent border-none', // Removes default Leaflet white square styling
+            className: 'map-pin-shell', // no Leaflet white square behind the pin
             html: `
-                <div class="relative group/pin flex items-center justify-center w-10 h-10 cursor-pointer">
-                    <div class="absolute inset-0 ${glowColor} rounded-full blur-md group-hover/pin:blur-lg group-hover/pin:scale-125 transition-all duration-300"></div>
+                <div class="atlas-pin ${tone}">
+                    <div class="atlas-pin__glow"></div>
                     
-                    <div class="relative z-10 w-10 h-10 bg-surface-container-high border-2 ${borderColor} rounded-full flex items-center justify-center shadow-xl group-hover/pin:scale-110 transition-all duration-300">
-                        <img src="./images/atlas_icons/${iconName}.svg" class="w-6 h-6 transition-transform duration-300 group-hover/pin:scale-110 pointer-events-none" style="filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(10deg);" />
+                    <div class="atlas-pin__disc">
+                        <img src="./images/atlas_icons/${iconName}.svg" class="atlas-pin__icon" style="filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(10deg);" />
                     </div>
                 </div>
             `,
@@ -151,12 +148,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         // Set popup style based on danger
-        const colorClass = data.isDanger ? 'text-error' : 'text-secondary';
+        const colorClass = data.isDanger ? 'map-popup__title--danger' : '';
         marker.bindPopup(`
-            <div class='text-center'>
-                <b class='font-headline text-xl ${colorClass} block mb-1'>${data.title}</b>
-                <span class='font-label text-[10px] uppercase tracking-widest text-on-surface-variant/80'>${data.subtitle}</span>
-                ${data.url ? `<a href="${data.url}" class="block mt-3 font-label text-[10px] uppercase tracking-widest text-secondary underline">Explore the continent</a>` : ''}
+            <div class='map-popup'>
+                <b class='map-popup__title ${colorClass}'>${data.title}</b>
+                <span class='map-popup__subtitle'>${data.subtitle}</span>
+                ${data.url ? `<a href="${data.url}" class="map-popup__link">Explore the continent</a>` : ''}
             </div>
         `, popupOptions);
 
@@ -227,16 +224,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             map.addLayer(mapData[selectedLayer].markers);
 
             // D. Update the visual styling of the HTML buttons
-            layerButtons.forEach(btn => {
-                // Remove active colors from all buttons
-                btn.classList.remove('bg-primary-container', 'text-primary');
-                // Add inactive colors to all buttons
-                btn.classList.add('text-on-surface-variant', 'hover:text-secondary');
-            });
-
-            // Finally, add the active colors to the specific button the user clicked
-            button.classList.remove('text-on-surface-variant', 'hover:text-secondary');
-            button.classList.add('bg-primary-container', 'text-primary');
+            layerButtons.forEach(btn => btn.classList.remove('is-active'));
+            button.classList.add('is-active');
         });
     });
 });

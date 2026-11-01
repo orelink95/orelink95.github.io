@@ -12,9 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <link href="styles/output.css" rel="stylesheet" />
     <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/continent.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
@@ -32,7 +33,7 @@
 </head>
 
 <body
-    class="bg-surface text-on-surface font-body selection:bg-secondary-container selection:text-on-secondary-container overflow-x-hidden">
+    class="page">
     <input class="hidden" id="sidebar-toggle-input" type="checkbox" />
 
     <!--Header component-->
@@ -41,53 +42,53 @@
     <!--sidebar component-->
     <div id="sidebar-placeholder"></div>
 
-    <main class="md:ml-20 pt-24 px-4 md:px-8 pb-12 flex-1 overflow-y-auto bg-surface-dim relative min-h-screen">
+    <main class="continent-main">
         <nav
-            class="flex items-center space-x-2 font-label text-[11px] uppercase tracking-widest text-on-surface-variant/60 mb-8">
-            <a id="world-link" class="hover:text-secondary transition-colors" href="world.html">Eraldom</a>
-            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span id="crumb-continent" class="text-secondary/80"></span>
+            class="breadcrumbs">
+            <a id="world-link" class="breadcrumbs__link" href="world.html">Eraldom</a>
+            <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
+            <span id="crumb-continent" class="breadcrumbs__current"></span>
         </nav>
-        <div class="grid grid-cols-12 gap-10">
-            <div class="col-span-12 lg:col-span-8 space-y-8">
-                <div class="relative group">
+        <div class="continent-grid">
+            <div class="continent-main-column">
+                <div class="continent-map-card">
                     <div
-                        class="absolute -inset-1 bg-gradient-to-tr from-secondary/20 via-transparent to-primary/20 rounded-xl opacity-50 blur-sm pointer-events-none">
+                        class="continent-map-card__halo">
                     </div>
                     <div
-                        class="relative bg-surface-container-lowest border border-outline-variant/20 rounded-xl overflow-hidden shadow-2xl p-2">
-                        <div id="continent-frame" class="relative w-full aspect-[293/176] rounded-lg overflow-hidden shadow-2xl">
+                        class="continent-map-card__frame">
+                        <div id="continent-frame" class="continent-map-card__viewport">
                             <div id="continent-map"
-                                class="absolute inset-0 !bg-black z-10 border border-secondary/10 shadow-inner"></div>
+                                class="continent-map"></div>
                             <div
-                                class="absolute top-4 left-4 p-3 bg-surface-container/60 backdrop-blur-lg border border-secondary/20 rounded shadow-xl z-[10] pointer-events-none">
-                                <h1 id="continent-name" class="font-headline text-3xl text-secondary mb-1"></h1>
-                                <p id="continent-tagline" class="font-label text-[10px] text-on-surface-variant uppercase tracking-widest"></p>
+                                class="continent-map-card__label">
+                                <h1 id="continent-name" class="continent-map-card__name"></h1>
+                                <p id="continent-tagline" class="continent-map-card__tagline"></p>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="continent-facts" class="grid grid-cols-2 gap-6"></div>
+                <div id="continent-facts" class="continent-facts"></div>
             </div>
-            <div class="col-span-12 lg:col-span-4 space-y-10">
+            <div class="continent-side">
                 <section id="nations-section">
-                    <div class="flex items-center justify-between mb-6 border-b border-outline-variant/30 pb-2">
-                        <h2 id="nations-title" class="font-headline text-xl text-[#ffdea5]">Nations</h2>
+                    <div class="continent-section__head">
+                        <h2 id="nations-title" class="continent-section__title">Nations</h2>
                     </div>
-                    <ul id="nations-list" class="space-y-4"></ul>
+                    <ul id="nations-list" class="continent-nations"></ul>
                 </section>
                 <section id="notables-section" class="hidden">
-                    <div class="flex items-center justify-between mb-6 border-b border-outline-variant/30 pb-2">
-                        <h2 class="font-headline text-xl text-[#ffdea5]">Very Important People</h2>
-                        <a href="npc.html" class="font-label text-[10px] text-secondary/60">Read the Almanach</a>
+                    <div class="continent-section__head">
+                        <h2 class="continent-section__title">Very Important People</h2>
+                        <a href="npc.html" class="continent-section__link">Read the Almanach</a>
                     </div>
-                    <div id="notables-list" class="space-y-6"></div>
+                    <div id="notables-list" class="continent-notables"></div>
                 </section>
-                <div id="epigraph" class="p-8 border-t border-b border-outline-variant/20 relative hidden">
+                <div id="epigraph" class="continent-epigraph hidden">
                     <span
-                        class="material-symbols-outlined absolute top-2 left-2 text-secondary/20 text-4xl">format_quote</span>
-                    <p id="epigraph-text" class="font-newsreader italic text-on-surface/70 text-center leading-relaxed"></p>
-                    <p id="epigraph-source" class="text-center font-label text-[9px] uppercase tracking-[0.2em] mt-4 text-secondary/50"></p>
+                        class="continent-epigraph__mark material-symbols-outlined">format_quote</span>
+                    <p id="epigraph-text" class="continent-epigraph__text font-newsreader"></p>
+                    <p id="epigraph-source" class="continent-epigraph__source"></p>
                 </div>
             </div>
         </div>

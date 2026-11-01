@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const mapElement = document.getElementById('country-map');
     if (!mapElement) return;
     if (!data.mapImage) {
-        mapElement.innerHTML = '<p class="h-full flex items-center justify-center italic text-on-surface/40 font-newsreader text-lg">No map of this land has reached the archive yet.</p>';
+        mapElement.innerHTML = '<p class="map-empty font-newsreader">No map of this land has reached the archive yet.</p>';
         return;
     }
 
@@ -106,13 +106,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 5. RENDER PINS ---
     function createFantasyIcon(iconName, isDanger = false) {
-        const bgColor = isDanger ? 'bg-[#3b0909]' : 'bg-[#1a3020]';
-        const borderColor = isDanger ? 'border-[#ff5252]' : 'border-[#f8fafc]';
+        const tone = isDanger ? 'region-pin--danger' : '';   // red pins for dangerous places
 
         return L.divIcon({
-            className: 'bg-transparent border-none cursor-pointer transition-transform duration-300 hover:-translate-y-1',
+            className: 'map-pin-shell',
             html: `
-                <div class="${bgColor} ${borderColor} border-2 shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+                <div class="region-pin ${tone}"
                      style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; box-sizing: border-box;">
                     <div style="position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 60%); pointer-events: none;"></div>
                     <img src="./images/atlas_icons/${iconName}.svg" 
@@ -125,14 +124,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     data.pins.forEach(pin => {
         const marker = L.marker(L.latLng(pin.y, pin.x), { icon: createFantasyIcon(pin.icon, pin.isDanger) });
-        const colorClass = pin.isDanger ? 'text-error' : 'text-secondary';
+        const colorClass = pin.isDanger ? 'map-popup__title--danger' : '';
 
-        const exploreButton = `<a href="${pin.url}" class="inline-block mt-3 px-4 py-1.5 border border-secondary/40 text-secondary font-label text-[10px] uppercase tracking-widest rounded hover:bg-secondary/10 hover:border-secondary transition-all">${pin.kind === 'settlement' ? 'Explore Settlement' : 'Open the Entry'}</a>`;
+        const exploreButton = `<a href="${pin.url}" class="map-popup__button">${pin.kind === 'settlement' ? 'Explore Settlement' : 'Open the Entry'}</a>`;
 
         marker.bindPopup(`
-            <div class='text-center p-1'>
-                <b class='font-headline text-lg ${colorClass} block mb-1'>${pin.title}</b>
-                <span class='font-label text-[9px] uppercase tracking-widest text-on-surface-variant/80 block'>${pin.subtitle}</span>
+            <div class='map-popup'>
+                <b class='map-popup__title ${colorClass}'>${pin.title}</b>
+                <span class='map-popup__subtitle'>${pin.subtitle}</span>
                 ${exploreButton}
             </div>
         `, { className: 'fantasy-popup' });

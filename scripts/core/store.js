@@ -17,6 +17,8 @@
        store.url(id)                          -> page URL from the schema
        store.md(text, {dropCap:true})         -> HTML
        store.autolink(html, {exclude: id})    -> names turned into links
+                                                 (glossary terms too, as spans,
+                                                 with {terms: true})
        store.find('The Gilded Goldfinch')     -> record by name or alias
        store.validate()                       -> {errors, warnings}
        store.world / store.settings           -> data/world.json, data/settings.json
@@ -27,7 +29,7 @@
 
     const ID_RE = /^[a-z0-9][a-z0-9_-]*$/;
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
-    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction' };
+    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster' };
 
     function createStore(schema, datasets, privateData, singletonData) {
         const types = schema.types;
@@ -164,13 +166,15 @@
             const terms = new Map();
             for (const [type, def] of Object.entries(types)) {
                 if (!def.autolink) continue;
-                const cls = LINK_CLASS[type] || (def.place ? 'kw-place' : 'kw-lore');
+                const typeCls = LINK_CLASS[type] || (def.place ? 'kw-place' : 'kw-lore');
                 for (const rec of byType[type]) {
+                    // Glossary terms are coloured by their kind
+                    const cls = type === 'lore' ? `kw-${rec.kind || 'lore'}` : typeCls;
                     for (const term of [rec.name, ...(rec.aliases || [])]) {
                         // Skip short terms and placeholders such as "??????".
                         if (!term || term.length < 3 || !/\p{L}/u.test(term)) continue;
                         const key = term.toLowerCase();
-                        if (!terms.has(key)) terms.set(key, { id: rec.id, href: url(rec), cls });
+                        if (!terms.has(key)) terms.set(key, { id: rec.id, href: url(rec), cls, rec });
                     }
                 }
             }
@@ -182,6 +186,9 @@
             return { terms, re };
         }
         // Only touches text outside tags, and never inside an existing <a>.
+        // options: exclude (ids), className (added to each link), attrs (string,
+        // or function(record) -> string), terms (also wrap glossary terms, which
+        // have no page, in a <span>).
         function autolink(html, options = {}) {
             if (!html) return '';
             linkIndex = linkIndex || buildLinkIndex();
@@ -197,9 +204,14 @@
                 if (inAnchor || !part) return part;
                 return part.replace(linkIndex.re, match => {
                     const t = linkIndex.terms.get(match.toLowerCase());
-                    if (!t || !t.href || exclude.has(t.id)) return match;
+                    if (!t || exclude.has(t.id)) return match;
+                    if (!t.href && !options.terms) return match;
                     const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
-                    return `<a href="${t.href}" class="${cls}"${options.attrs ? ' ' + options.attrs : ''}>${match}</a>`;
+                    const attrs = typeof options.attrs === 'function' ? options.attrs(t.rec, match) : options.attrs;
+                    const extra = attrs ? ' ' + attrs : '';
+                    return t.href
+                        ? `<a href="${t.href}" class="${cls}"${extra}>${match}</a>`
+                        : `<span class="${cls}"${extra}>${match}</span>`;
                 });
             }).join('');
         }
@@ -252,6 +264,9 @@
                     v.forEach((o, i) => checkFields(f.fields, o, `${where}[${i}]`, report, isPrivateFile));
                     break;
                 case 'json': break;
+                case 'sealed':
+                    if (typeof v !== 'object' || ['salt', 'iv', 'data'].some(k => typeof v[k] !== 'string')) error(`${where}: expected {salt, iv, data} (written by the dashboard)`);
+                    break;
                 default: error(`${where}: schema uses unknown field kind "${f.kind}"`);
             }
         }
@@ -323,6 +338,18 @@
                         const f = types[type].fields[k];
                         if (!f || !f.private) errors.push(`[private] ${type} ${id}.${k}: not a private field in the schema`);
                         else checkValue({ ...f, private: false }, v, `[private] ${id}.${k}`, report, true);
+                    }
+                }
+            }
+
+            // Sealed fields: a private text with no encrypted copy is not on the site yet
+            for (const [type, def] of Object.entries(types)) {
+                for (const [key, f] of Object.entries(def.fields)) {
+                    if (f.kind !== 'sealed') continue;
+                    for (const rec of byType[type]) {
+                        const text = rec[f.from], pw = rec[f.password];
+                        if (text && !pw) warnings.push(`[${type}] ${rec.id}.${f.password}: ${f.from} has no password, so it is not published`);
+                        else if (text && pw && !rec[key]) warnings.push(`[${type}] ${rec.id}.${key}: not encrypted yet (save from the dashboard)`);
                     }
                 }
             }

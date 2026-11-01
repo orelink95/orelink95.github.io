@@ -1,6 +1,9 @@
 
 
-document.addEventListener("DOMContentLoaded", () => {
+// scripts/bestiary-scripts.js — the codex of creatures (data/creatures.json)
+document.addEventListener("DOMContentLoaded", async () => {
+    const store = await Athenaeum.ready;
+    const bestiaryData = store.all('creature');
     const grid = document.getElementById('bestiary-grid');
     const searchInput = document.getElementById('bestiary-search');
     const realmFilter = document.getElementById('filter-realm');
@@ -17,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const phylogenies = ['All', ...new Set(bestiaryData.map(b => b.phylogeny))].filter(Boolean).sort();
 
         // NEW: Extract unique threat levels
-        const threats = ['All', ...new Set(bestiaryData.map(b => b.threatLevel))].filter(Boolean).sort();
+        const threats = ['All', ...new Set(bestiaryData.map(b => b.threat))].filter(Boolean).sort();
 
         const createPills = (arr, container, currentVal, clickHandler) => {
             container.innerHTML = arr.map(val => {
@@ -52,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let tIcon = 'shield';
             let tGlow = 'drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]';
 
-            const tLevel = beast.threatLevel.toLowerCase();
+            const tLevel = (beast.threat || '').toLowerCase();
             if (tLevel.includes('lethal') || tLevel.includes('extreme')) {
                 tColor = 'text-error'; tBorder = 'border-error/30';
                 tIcon = 'skull'; tGlow = 'drop-shadow-[0_0_8px_rgba(255,82,82,0.8)]';
@@ -89,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="w-full flex justify-end">
                         <div class="flex items-center gap-1.5 px-3 py-1 bg-black/60 backdrop-blur-sm border ${tBorder} rounded-full shadow-lg group-hover:border-opacity-100 transition-colors">
                             <span class="material-symbols-outlined text-[14px] ${tColor} ${tGlow} animate-pulse" style="font-variation-settings: 'FILL' 1;">${tIcon}</span>
-                            <span class="text-[8px] font-bold uppercase tracking-widest ${tColor}">${beast.threatLevel}</span>
+                            <span class="text-[8px] font-bold uppercase tracking-widest ${tColor}">${beast.threat || ''}</span>
                         </div>
                     </div>
 
@@ -111,10 +114,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const query = searchInput.value.toLowerCase();
 
         const filtered = bestiaryData.filter(b => {
-            const matchSearch = b.name.toLowerCase().includes(query) || b.location.toLowerCase().includes(query);
+            const matchSearch = b.name.toLowerCase().includes(query) || (b.location || '').toLowerCase().includes(query);
             const matchRealm = currentRealm === 'All Realms' || b.realm === currentRealm;
             const matchPhylogeny = currentPhylogeny === 'All' || b.phylogeny === currentPhylogeny;
-            const matchThreat = currentThreat === 'All' || b.threatLevel === currentThreat;
+            const matchThreat = currentThreat === 'All' || b.threat === currentThreat;
 
             return matchSearch && matchRealm && matchPhylogeny && matchThreat;
         });
@@ -136,11 +139,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.getElementById('modal-beast-phylogeny').textContent = beast.phylogeny;
         document.getElementById('modal-beast-realm').textContent = beast.realm;
-        document.getElementById('modal-beast-body').innerHTML = beast.body;
+        document.getElementById('modal-beast-body').innerHTML = store.autolink(store.md(beast.body, { dropCap: true }), { exclude: beast.id });
         document.getElementById('modal-beast-link').href = `beast.html?id=${beast.id}`;
 
         // Apply Threat Colors to Modal
-        const tLevel = beast.threatLevel.toLowerCase();
+        const tLevel = (beast.threat || '').toLowerCase();
         let tColor = 'text-blue-400'; let tBorder = 'border-blue-400/30'; let tBg = 'bg-blue-400 shadow-[0_0_5px_rgba(96,165,250,0.8)]';
 
         if (tLevel.includes('lethal') || tLevel.includes('extreme')) {
@@ -160,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const text = document.getElementById('modal-beast-threat-text');
         text.className = `text-[9px] uppercase tracking-widest font-bold ${tColor}`;
-        text.textContent = `${beast.threatLevel}`;
+        text.textContent = `${beast.threat || ''}`;
 
         document.getElementById('bestiary-modal').classList.replace('hidden', 'flex');
     };

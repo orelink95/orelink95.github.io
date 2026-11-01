@@ -1,6 +1,8 @@
-// scripts/tomes-scripts.js
+// scripts/tomes-scripts.js — the shelf of tomes (data/tomes.json)
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    const store = await Athenaeum.ready;
+    const tomesData = store.all('tome').filter(t => !t.draft);
     const grid = document.getElementById('tome-grid');
     const searchInput = document.getElementById('tome-search');
     const filtersContainer = document.getElementById('tome-filters');
@@ -41,20 +43,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         grid.innerHTML = tomes.map(tome => {
-            const theme = themeMap[tome.themeColor] || themeMap.secondary;
+            const theme = themeMap[tome.tone] || themeMap.secondary;
             
             // --- NEW: Smart Title Resizer ---
             let titleSize = "text-3xl"; // Default size
-            if (tome.title.length > 35) {
+            if (tome.name.length > 35) {
                 titleSize = "text-lg"; // Very long titles
-            } else if (tome.title.length > 20) {
+            } else if (tome.name.length > 20) {
                 titleSize = "text-xl"; // Medium-long titles
-            } else if (tome.title.length > 15) {
+            } else if (tome.name.length > 15) {
                 titleSize = "text-2xl"; // Slightly long titles
             }
             
             // IF SCROLL
-            if (tome.type === 'Scroll') {
+            if (tome.kind === 'Scroll') {
                 const scrollIcon = tome.icon || 'history_edu';
                 const customColorStyle = tome.iconColor ? `color: ${tome.iconColor}; filter: drop-shadow(0 0 8px ${tome.iconColor}80);` : '';
                 const iconClass = tome.iconColor ? '' : `${theme.text} drop-shadow-[0_0_8px_currentColor]`;
@@ -69,18 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
 
                     <div class="absolute top-8 left-0 right-0 text-center px-6">
-                        <h3 class="font-headline ${titleSize} font-bold text-white mb-2 group-hover:${theme.text} transition-colors drop-shadow-md leading-tight">${tome.title}</h3>
-                        <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60">${tome.author}</p>
+                        <h3 class="font-headline ${titleSize} font-bold text-white mb-2 group-hover:${theme.text} transition-colors drop-shadow-md leading-tight">${tome.name}</h3>
+                        <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/60">${tome.author || ''}</p>
                     </div>
 
                     <div class="absolute bottom-8 border-t border-white/10 pt-4 text-center w-full px-6">
-                        <span class="inline-block px-4 py-1.5 bg-black/50 border border-white/10 rounded-full text-[9px] font-label uppercase tracking-widest text-white/50">${tome.category}</span>
+                        <span class="inline-block px-4 py-1.5 bg-black/50 border border-white/10 rounded-full text-[9px] font-label uppercase tracking-widest text-white/50">${tome.category || ''}</span>
                     </div>
                 </div>`;
             }
 
             // IF BOOK (IMAGE OR CSS)
-            const hasImage = tome.coverImage ? true : false;
+            const hasImage = tome.cover ? true : false;
             const isCleanCover = tome.cleanCover ? true : false; // Checks for your new flag
             
             let bookHtml = `
@@ -88,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (hasImage) {
                 bookHtml += ` border-l border-white/20 p-0">
-                    <img src="${tome.coverImage}" class="absolute inset-0 w-full h-full object-cover ${isCleanCover ? 'opacity-95' : 'opacity-70'} group-hover:opacity-100 transition-opacity duration-700 z-0">
+                    <img src="${tome.cover}" class="absolute inset-0 w-full h-full object-cover ${isCleanCover ? 'opacity-95' : 'opacity-70'} group-hover:opacity-100 transition-opacity duration-700 z-0">
                     
                     <div class="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-black/90 to-transparent z-10 pointer-events-none border-l-2 border-white/30"></div>
                     
@@ -106,16 +108,16 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!isCleanCover) {
                 bookHtml += `
                     <div class="relative z-20 flex flex-col h-full ${hasImage ? 'p-8' : ''}">
-                        <p class="font-label text-[10px] uppercase tracking-[0.4em] ${hasImage ? 'text-white/90 drop-shadow-md' : theme.text+'/80'} mb-auto text-center pt-2">${tome.spineText}</p>
+                        <p class="font-label text-[10px] uppercase tracking-[0.4em] ${hasImage ? 'text-white/90 drop-shadow-md' : theme.text+'/80'} mb-auto text-center pt-2">${tome.spineText || ''}</p>
                         
                         <div class="text-center flex flex-col items-center mt-auto mb-auto bg-black/40 p-4 rounded-xl backdrop-blur-sm border border-white/5 group-hover:border-white/20 transition-colors">
                             <span class="material-symbols-outlined ${hasImage ? 'text-white/80' : theme.text+'/60'} text-5xl mb-4 group-hover:${theme.text} transition-colors drop-shadow-lg">${hasImage ? 'import_contacts' : 'menu_book'}</span>
-                            <h3 class="font-headline ${titleSize} font-bold text-white mb-3 group-hover:${theme.text} transition-colors drop-shadow-lg leading-tight">${tome.title}</h3>
-                            <p class="font-label text-[10px] uppercase tracking-[0.3em] text-white/70 drop-shadow-md">By ${tome.author}</p>
+                            <h3 class="font-headline ${titleSize} font-bold text-white mb-3 group-hover:${theme.text} transition-colors drop-shadow-lg leading-tight">${tome.name}</h3>
+                            <p class="font-label text-[10px] uppercase tracking-[0.3em] text-white/70 drop-shadow-md">By ${tome.author || 'an unknown hand'}</p>
                         </div>
 
                         <div class="mt-auto ${hasImage ? '' : `border-t ${theme.border}/30 pt-3.5 mb-3`} text-center">
-                            <span class="inline-block px-4 py-1.5 bg-black/70 backdrop-blur-md border border-white/20 rounded-full text-[9px] font-label uppercase tracking-widest text-white/70 shadow-lg">${tome.category}</span>
+                            <span class="inline-block px-4 py-1.5 bg-black/70 backdrop-blur-md border border-white/20 rounded-full text-[9px] font-label uppercase tracking-widest text-white/70 shadow-lg">${tome.category || ''}</span>
                         </div>
                     </div>
                 `;
@@ -130,7 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function applyFilters() {
         const query = searchInput.value.toLowerCase();
         const filtered = tomesData.filter(t => {
-            const matchSearch = t.title.toLowerCase().includes(query) || t.author.toLowerCase().includes(query);
+            const matchSearch = t.name.toLowerCase().includes(query) || (t.author || '').toLowerCase().includes(query);
             const matchCategory = currentCategory === 'All' || t.category === currentCategory;
             return matchSearch && matchCategory;
         });
@@ -142,11 +144,11 @@ document.addEventListener("DOMContentLoaded", () => {
     window.openTomeModal = (id) => {
         const tome = tomesData.find(t => t.id === id);
         if (!tome) return;
-        document.getElementById('modal-tome-type').textContent = `${tome.category} ${tome.type}`;
-        document.getElementById('modal-tome-title').textContent = tome.title;
-        document.getElementById('modal-tome-author').textContent = `By ${tome.author}`;
+        document.getElementById('modal-tome-type').textContent = `${tome.category || ''} ${tome.kind}`;
+        document.getElementById('modal-tome-title').textContent = tome.name;
+        document.getElementById('modal-tome-author').textContent = `By ${tome.author || 'an unknown hand'}`;
         const contentArea = document.getElementById('modal-tome-content');
-        contentArea.innerHTML = typeof autoLinkContent === 'function' ? autoLinkContent(tome.content) : tome.content;
+        contentArea.innerHTML = store.autolink(store.md(tome.body, { dropCap: tome.kind !== 'Scroll' }), { exclude: tome.id });
         document.getElementById('tome-modal').classList.replace('hidden', 'flex');
     };
 
@@ -154,4 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderFilters();
     renderGrid(tomesData);
+
+    // tomes.html?id=… opens that tome
+    const linked = new URLSearchParams(window.location.search).get('id');
+    if (linked) window.openTomeModal(linked);
 });

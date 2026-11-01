@@ -51,6 +51,7 @@
     "id": "maeravoss",
     "name": "Maera Voss",
     "role": "Scholar",
+    "summary": "Middle-aged female Madura Scholar. Hired by Runebridge to work in conjunction with The Crown to translate a mysterious tome.",
     "quote": "Knowledge, always",
     "portrait": "images/maera_voss.png",
     "avatar": "images/avatars/maera_voss.png",
@@ -92,6 +93,9 @@
   {
     "id": "sephet",
     "name": "Sephet Halfborn",
+    "aliases": [
+      "Sephet"
+    ],
     "role": "Eperina's Sorcerer Supreme",
     "quote": "En dynamei sōtēria",
     "portrait": "images/sephet-halfborn.webp",

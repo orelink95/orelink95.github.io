@@ -18,11 +18,10 @@
     <link href="styles/main-style.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
-    <script src="scripts/campaign-echoes.js"></script>
-    <script src="scripts/heroes-data.js"></script>
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/core/seal.js"></script>
 </head>
 
 <body class="bg-[#0a0b0a] text-[#e2e3df] font-body overflow-x-hidden archival-bg">
@@ -55,6 +54,9 @@
                 class="text-4xl md:text-6xl font-headline font-bold text-white mb-6 drop-shadow-[0_0_15px_rgba(233,193,118,0.2)]">
                 The Heroes</h1>
             <div class="w-34 h-px bg-gradient-to-r from-transparent via-[#e9c176]/50 to-transparent mx-auto"></div>
+            <select id="party-campaign"
+                class="hidden mt-6 bg-black/40 border border-white/20 text-white/70 text-[10px] font-label uppercase tracking-widest rounded px-3 py-2 outline-none focus:border-secondary transition-colors"
+                aria-label="Campaign"></select>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start">
@@ -182,34 +184,45 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            // Hero data still names factions (pass 2 turns these into ids)
             const store = await Athenaeum.ready;
-            const factionUrl = name => {
-                const f = store.find(name, ['faction']);
-                return f && !f.stub ? store.url(f) : 'factions.html';
-            };
-            if (typeof partyData === 'undefined') return;
+            window.heroesStore = store;
+            const campaigns = store.all('campaign').filter(c => (c.party || []).length);
+            if (!campaigns.length) return;
 
-            // 1. Populate Header & Funds
-            document.getElementById('party-title').textContent = partyData.partyName;
-            document.getElementById('gold-amt').textContent = partyData.assets.gold;
-            document.getElementById('silver-amt').textContent = partyData.assets.silver;
-            document.getElementById('copper-amt').textContent = partyData.assets.copper;
+            // Which party: ?campaign=… , else the current campaign (data/settings.json), else the first
+            const asked = new URLSearchParams(window.location.search).get('campaign');
+            const preferred = asked || store.settings.currentCampaign;
+            let campaign = campaigns.find(c => c.id === preferred) || campaigns[0];
 
-            // 2. Populate Shared Inventory (Dynamic Scriptorium Pull)
-            let dynamicLoot = [];
-
-            // Check if the scriptorium campaign data loaded successfully
-            if (typeof window.campaignData !== 'undefined') {
-                // Grab every single session from all loaded campaigns
-                const allSessions = Object.values(window.campaignData).flatMap(campaign => campaign.sessions || []);
-
-                // Extract all the 'lootObtained' arrays and remove any duplicates
-                dynamicLoot = [...new Set(allSessions.flatMap(session => session.lootObtained || []))];
+            const picker = document.getElementById('party-campaign');
+            if (campaigns.length > 1) {
+                picker.innerHTML = campaigns.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                picker.value = campaign.id;
+                picker.classList.remove('hidden');
+                picker.addEventListener('change', () => {
+                    campaign = campaigns.find(c => c.id === picker.value);
+                    history.replaceState(null, '', `?campaign=${campaign.id}`);
+                    renderParty();
+                });
             }
 
-            // Merge the dynamic loot with any permanent manual items (like the "Bag of Holding" itself)
-            const combinedInventory = [...new Set([...(partyData.sharedInventory || []), ...dynamicLoot])];
+            const getMod = (score) => {
+                const mod = Math.floor((score - 10) / 2);
+                return mod >= 0 ? `+${mod}` : mod;
+            };
+
+            function renderParty() {
+            // 1. Header & funds
+            document.getElementById('party-title').textContent = campaign.partyName || campaign.name;
+            const funds = campaign.funds || {};
+            document.getElementById('gold-amt').textContent = funds.gold || 0;
+            document.getElementById('silver-amt').textContent = funds.silver || 0;
+            document.getElementById('copper-amt').textContent = funds.copper || 0;
+
+            // 2. Shared inventory: the party's own items + everything found in this campaign's sessions
+            const sessions = store.all('session').filter(s => s.campaign === campaign.id);
+            const itemIds = [...new Set([...(campaign.inventory || []), ...sessions.flatMap(s => s.loot || [])])];
+            const combinedInventory = itemIds.map(id => store.get(id)).filter(Boolean).map(i => i.name);
 
             const invList = document.getElementById('shared-inv-list');
 
@@ -224,23 +237,19 @@
                 `).join('');
             }
 
-            // 3. Render Hero Cards
+            // 3. Hero cards
             const grid = document.getElementById('heroes-grid');
+            const heroes = (campaign.party || []).map(id => store.get(id)).filter(Boolean);
 
-            const getMod = (score) => {
-                const mod = Math.floor((score - 10) / 2);
-                return mod >= 0 ? `+${mod}` : mod;
-            };
-
-            grid.innerHTML = partyData.heroes.map(hero => {
+            grid.innerHTML = heroes.map(hero => {
                 const st = hero.stats || { ac: 10, hp: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
 
                 // Pulling the new data (with fallbacks just in case)
                 const level = hero.level || 1;
                 const bg = hero.background || "Unknown";
-                const factions = (hero.factions || []).map(f => {
-                    const href = factionUrl(f);
-                    return `<a href="${href}" onclick="event.stopPropagation();" class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] uppercase tracking-widest text-white/60 hover:bg-[#e9c176]/10 hover:border-[#e9c176]/30 hover:text-[#e9c176] transition-colors">${f}</a>`;
+                const factions = (hero.factions || []).map(id => store.get(id)).filter(Boolean).map(f => {
+                    const href = f.stub ? 'factions.html' : store.url(f);
+                    return `<a href="${href}" onclick="event.stopPropagation();" class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] uppercase tracking-widest text-white/60 hover:bg-[#e9c176]/10 hover:border-[#e9c176]/30 hover:text-[#e9c176] transition-colors">${f.name}</a>`;
                 }).join('');
 
                 return `
@@ -253,26 +262,26 @@
                             
                             <div class="p-6 md:p-8 flex flex-col h-full relative z-10">
                                 <div class="flex items-center gap-5 mb-6">
-                                    <img src="${hero.avatar}" alt="${hero.name}" class="w-16 h-16 rounded-full border-2 border-[#121412] object-cover shadow-[0_0_15px_rgba(233,193,118,0.2)]">
+                                    <img src="${hero.avatar || ''}" alt="${hero.name}" class="w-16 h-16 rounded-full border-2 border-[#121412] object-cover shadow-[0_0_15px_rgba(233,193,118,0.2)]">
                                     <div>
                                         <h2 class="text-2xl font-headline font-bold text-white group-hover:text-[#e9c176] transition-colors">${hero.name}</h2>
-                                        <p class="font-label text-[10px] uppercase tracking-[0.2em] text-[#4ade80]">Level ${level} ${hero.raceClass}</p>
+                                        <p class="font-label text-[10px] uppercase tracking-[0.2em] text-[#4ade80]">Level ${level} ${hero.raceClass || ''}</p>
                                     </div>
                                 </div>
 
                                 <div class="mb-6 relative">
                                     <span class="material-symbols-outlined absolute -top-2 -left-2 text-white/5 text-4xl -z-10">format_quote</span>
-                                    <p class="font-newsreader italic text-[#e2e3df] text-sm leading-relaxed pl-4 border-l-2 border-[#1a3020]">"${hero.quote}"</p>
+                                    <p class="font-newsreader italic text-[#e2e3df] text-sm leading-relaxed pl-4 border-l-2 border-[#1a3020]">"${hero.quote || ''}"</p>
                                 </div>
 
-                                <p class="font-body text-sm text-[#8a8a8a] leading-relaxed mb-6 flex-grow">${hero.backstory}</p>
+                                <p class="font-body text-sm text-[#8a8a8a] leading-relaxed mb-6 flex-grow">${hero.backstory || ''}</p>
 
                                 <div class="pt-4 border-t border-white/5 mt-auto flex justify-between items-center">
                                     <div>
                                         <h4 class="font-label text-[9px] uppercase tracking-widest text-[#e9c176]/50 mb-1">Current Personal Goal</h4>
                                         <p class="text-xs text-white/80 flex items-center gap-2">
                                             <span class="material-symbols-outlined text-[14px] text-error">target</span>
-                                            ${hero.personalGoal}
+                                            ${hero.personalGoal || ''}
                                         </p>
                                     </div>
                                     <span class="material-symbols-outlined text-white/20 group-hover:text-[#e9c176] transition-colors" title="View Stats">autorenew</span>
@@ -289,7 +298,7 @@
                                 <div class="flex justify-between items-start">
                                     <div>
                                         <h2 class="text-3xl font-headline font-bold text-[#e9c176] drop-shadow-md">${hero.name}</h2>
-                                        <p class="font-body text-sm italic text-[#4ade80] mb-2">Level ${level} ${hero.raceClass}</p>
+                                        <p class="font-body text-sm italic text-[#4ade80] mb-2">Level ${level} ${hero.raceClass || ''}</p>
                                     </div>
                                     <div class="text-right">
                                         <p class="font-label text-[8px] uppercase tracking-widest text-[#e9c176]/50 mb-1">Background</p>
@@ -325,9 +334,9 @@
                                     </div>
                                 </div>
 
-                                <button onclick="event.stopPropagation(); promptSecret('${hero.id}')" class="absolute bottom-6 right-6 md:bottom-8 md:right-8 text-white/20 hover:text-error hover:scale-125 transition-all z-20" title="Classified File">
+                                ${hero.sealedSecret ? `<button onclick="event.stopPropagation(); promptSecret('${hero.id}')" class="absolute bottom-6 right-6 md:bottom-8 md:right-8 text-white/20 hover:text-error hover:scale-125 transition-all z-20" title="Classified File">
                                     <span class="material-symbols-outlined text-xl">lock</span>
-                                </button>
+                                </button>` : ''}
                                 
                             </div>
                         </div>
@@ -337,6 +346,33 @@
                 </div>
                 `;
             }).join('');
+
+            // 4. Party allegiances (factions, or places such as a library)
+            const factionsList = document.getElementById('group-factions-list');
+            const standings = (campaign.standings || []).map(g => ({ rec: store.get(g.faction), status: g.status || 'Unknown' })).filter(g => g.rec);
+            if (standings.length > 0) {
+                factionsList.innerHTML = standings.map(({ rec, status }) => {
+                    // Determine the status color
+                    let statusColor = "text-white/40"; // Neutral default
+                    if (status.toLowerCase() === "allied") statusColor = "text-[#4ade80]";
+                    if (status.toLowerCase() === "hostile") statusColor = "text-error";
+
+                    const href = rec.stub ? 'factions.html' : (store.url(rec) || 'factions.html');
+
+                    return `
+                    <li>
+                        <a href="${href}" class="flex items-center justify-between text-sm bg-black/20 p-2 rounded border border-white/5 hover:border-[#e9c176]/30 hover:bg-[#e9c176]/5 group transition-colors">
+                            <span class="text-white/80 group-hover:text-[#e9c176] transition-colors">${rec.name}</span>
+                            <span class="text-[9px] uppercase tracking-widest ${statusColor} font-bold">${status}</span>
+                        </a>
+                    </li>
+                `}).join('');
+            } else {
+                factionsList.innerHTML = `<li class="text-sm text-white/40 italic p-2">No known allegiances.</li>`;
+            }
+            }
+
+            renderParty();
         });
 
         // --- 3D CARD FLIP ---
@@ -352,10 +388,10 @@
         let currentSecretHeroId = null;
 
         window.promptSecret = (heroId) => {
-            const hero = partyData.heroes.find(h => h.id === heroId);
+            const hero = window.heroesStore && window.heroesStore.get(heroId);
 
-            // If the hero doesn't have a password set up, do nothing!
-            if (!hero || !hero.password) return;
+            // Only heroes with a sealed secret have a file
+            if (!hero || !hero.sealedSecret) return;
 
             currentSecretHeroId = heroId;
             document.getElementById('pwd-title').textContent = `${hero.name}'s File`;
@@ -368,16 +404,18 @@
             setTimeout(() => document.getElementById('secret-pwd-input').focus(), 100);
         };
 
-        window.checkPassword = () => {
-            const input = document.getElementById('secret-pwd-input').value.trim();
-            const hero = partyData.heroes.find(h => h.id === currentSecretHeroId);
+        window.checkPassword = async () => {
+            const input = document.getElementById('secret-pwd-input').value;
+            const store = window.heroesStore;
+            const hero = store && store.get(currentSecretHeroId);
 
-            // Check if password matches (case-insensitive so they don't get frustrated)
-            if (hero && input.toLowerCase() === hero.password.toLowerCase()) {
+            // The secret is stored encrypted: only the right password opens it (capitals don't matter)
+            const secret = hero ? await Athenaeum.unseal(hero.sealedSecret, input) : null;
+            if (secret !== null) {
                 // Success! Close password modal and open secret modal
                 document.getElementById('password-modal').classList.replace('flex', 'hidden');
                 document.getElementById('secret-hero-name').textContent = `Classified: ${hero.name}`;
-                document.getElementById('secret-content').innerHTML = hero.secret;
+                document.getElementById('secret-content').innerHTML = store.md(secret);
                 document.getElementById('secret-modal').classList.replace('hidden', 'flex');
             } else {
                 // Failure! Show error message
@@ -390,35 +428,6 @@
             document.getElementById('secret-modal').classList.replace('flex', 'hidden');
             currentSecretHeroId = null;
         };
-
-        // --- RENDER GROUP FACTIONS ---
-        Athenaeum.ready.then(store => {
-            const factionUrl = name => {
-                const f = store.find(name, ['faction']);
-                return f && !f.stub ? store.url(f) : 'factions.html';
-            };
-            const factionsList = document.getElementById('group-factions-list');
-            if (partyData.groupFactions && partyData.groupFactions.length > 0) {
-                factionsList.innerHTML = partyData.groupFactions.map(faction => {
-                    // Determine the status color
-                    let statusColor = "text-white/40"; // Neutral default
-                    if (faction.status.toLowerCase() === "allied") statusColor = "text-[#4ade80]";
-                    if (faction.status.toLowerCase() === "hostile") statusColor = "text-error";
-
-                    const href = factionUrl(faction.name);
-
-                    return `
-                    <li>
-                        <a href="${href}" class="flex items-center justify-between text-sm bg-black/20 p-2 rounded border border-white/5 hover:border-[#e9c176]/30 hover:bg-[#e9c176]/5 group transition-colors">
-                            <span class="text-white/80 group-hover:text-[#e9c176] transition-colors">${faction.name}</span>
-                            <span class="text-[9px] uppercase tracking-widest ${statusColor} font-bold">${faction.status}</span>
-                        </a>
-                    </li>
-                `}).join('');
-            } else {
-                factionsList.innerHTML = `<li class="text-sm text-white/40 italic p-2">No known allegiances.</li>`;
-            }
-        });
 
         // --- FOLDABLE UI ENGINE ---
         window.toggleSection = (contentId, iconId) => {

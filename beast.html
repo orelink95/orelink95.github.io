@@ -18,7 +18,9 @@
     <link href="styles/main-style.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
-    <script src="scripts/bestiary-data.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
 </head>
 
 <body class="bg-[#050505] text-on-surface font-body flex flex-col min-h-screen">
@@ -90,7 +92,7 @@
                         <span class="material-symbols-outlined text-4xl text-white/10">history_edu</span>
                     </div>
                     <div id="b-lore-body"
-                        class="prose prose-invert prose-gold font-body text-base leading-relaxed text-white/70 max-w-none">
+                        class="small-drop-cap prose prose-invert prose-gold font-body text-base leading-relaxed text-white/70 max-w-none">
                     </div>
                 </div>
 
@@ -133,12 +135,14 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", async () => {
+            const store = await Athenaeum.ready;
             const urlParams = new URLSearchParams(window.location.search);
             const targetId = urlParams.get('id');
 
-            // Find the ~beast~ in data
-            const beast = typeof bestiaryData !== 'undefined' ? bestiaryData.find(b => b.id === targetId) : null;
+            // Find the ~beast~ in data/creatures.json
+            let beast = store.get(targetId);
+            if (beast && store.typeOf(beast) !== 'creature') beast = null;
 
             if (!beast) {
                 document.getElementById('b-name').textContent = "Record Not Found";
@@ -151,7 +155,7 @@
             document.getElementById('b-specimen').textContent = beast.specimenNo || "UNKNOWN";
             document.getElementById('b-name').textContent = beast.name;
             document.getElementById('b-lore-title').textContent = beast.loreTitle || "Archival Record";
-            document.getElementById('b-lore-body').innerHTML = beast.body;
+            document.getElementById('b-lore-body').innerHTML = store.autolink(store.md(beast.body, { dropCap: true }), { exclude: beast.id });
 
             // Populate Tags (over the image)
             if (beast.tags) {
@@ -162,7 +166,7 @@
 
             // Populate Progress Bars (Stats)
             if (beast.stats) {
-                document.getElementById('b-stats').innerHTML = Object.entries(beast.stats).map(([statName, value]) => `
+                document.getElementById('b-stats').innerHTML = beast.stats.map(({ label: statName, value }) => `
                     <div>
                         <div class="flex justify-between text-[10px] font-label uppercase tracking-widest text-white/60 mb-2">
                             <span>${statName}</span>
@@ -188,8 +192,8 @@
             document.getElementById('b-weaknesses').innerHTML = makeList(beast.weaknesses);
 
             // Populate Loot
-            if (beast.loot) {
-                document.getElementById('b-loot').innerHTML = beast.loot.map(l => `
+            if (beast.drops) {
+                document.getElementById('b-loot').innerHTML = beast.drops.map(l => `
                     <div class="flex items-center gap-4 bg-[#0a0b0a] border border-white/5 p-3 rounded-lg hover:border-secondary/30 transition-colors group">
                         <div class="w-10 h-10 shrink-0 bg-[#121412] border border-white/10 rounded flex items-center justify-center group-hover:border-secondary/50 transition-colors">
                             <span class="material-symbols-outlined text-white/50 text-[18px] group-hover:text-secondary transition-colors">${l.icon}</span>

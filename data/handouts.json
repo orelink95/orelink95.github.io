@@ -1,0 +1,57 @@
+[
+  {
+    "id": "warden-reports",
+    "name": "Alabaster Wardens Reports",
+    "campaign": "echoes-from-the-void",
+    "category": "Legal",
+    "icon": "contract",
+    "foundAt": "Alabaster Wardens Headquarters",
+    "description": "A series of official reports detailing strange crimes happening around the city.",
+    "thumbnail": "images/map_of_crime.png",
+    "file": "https://drive.google.com/file/d/1AOwrKik_tXenz1uWHUh9mHasHbh3xglL/view?usp=sharing"
+  },
+  {
+    "id": "str-token",
+    "name": "Strange Token",
+    "campaign": "echoes-from-the-void",
+    "category": "Object",
+    "icon": "poker_chip",
+    "foundAt": "Cloud District",
+    "description": "A small wooden token circled with an exotic metal, featuring three roughly made claw marks.",
+    "thumbnail": "images/str_token.PNG",
+    "file": "images/str_token.PNG"
+  },
+  {
+    "id": "dark-shard-amulet-handout",
+    "name": "Dark Shard Amulet",
+    "campaign": "echoes-from-the-void",
+    "category": "Object",
+    "icon": "diamond",
+    "foundAt": "Cloud District",
+    "description": "A heavy, aged bronze amulet featuring a swirling, trapped galaxy of indigo and green.It hums with a faint, cosmic pulse, and a drift of purple smoke sometimes reveals shifting runes.",
+    "thumbnail": "images/Dark_Shard_Amulet.png",
+    "file": "images/Dark_Shard_Amulet.png"
+  },
+  {
+    "id": "smugglers-map",
+    "name": "Smuggler's Route",
+    "draft": true,
+    "category": "Map",
+    "icon": "map",
+    "foundAt": "The Docks",
+    "description": "A heavily water-damaged map detailing safe passage through the Whispering Woods.",
+    "thumbnail": "images/placeholder.png",
+    "file": "handouts/smugglers-map.jpg"
+  },
+  {
+    "id": "wanted-verrick",
+    "name": "Missing: Verrick",
+    "draft": true,
+    "category": "Bounty Poster",
+    "icon": "assignment_late",
+    "foundAt": "Cloud District Noticeboard",
+    "description": "A royal decree offering 500 gold for information regarding the King's missing mage cadet.",
+    "thumbnail": "images/placeholder.png",
+    "file": "handouts/verrick-poster.jpg"
+  }
+]

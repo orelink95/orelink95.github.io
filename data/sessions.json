@@ -1,0 +1,316 @@
+[
+  {
+    "id": "echoes-session-6",
+    "name": "The Shadow Takes All",
+    "campaign": "echoes-from-the-void",
+    "date": "Eksten 7, Pholawal 1693 LF",
+    "region": "Brightend, Maltona",
+    "arc": "Remnants of the Past",
+    "summary": "The party investigated a string of thefts, captured a shadow-infused thief, and discovered a terrifying alchemical conspiracy tied to other planes of existence.",
+    "places": [
+      "hammers-candy",
+      "warden-fort"
+    ],
+    "otherPlaces": [
+      "Harth's Gems",
+      "Alchemy & Ashes",
+      "Illuminated Manuscripts"
+    ],
+    "npcs": [
+      {
+        "npc": "maeravoss",
+        "sentiment": "like"
+      },
+      {
+        "npc": "wardenfoll",
+        "sentiment": "like"
+      },
+      {
+        "npc": "sephet",
+        "sentiment": "neutral"
+      }
+    ],
+    "loot": [
+      "vial-of-mysterious-black-substance",
+      "dark-shard-amulet",
+      "book-of-city-sewer-maps",
+      "partially-broken-token",
+      "queen-thalen-compendium-borrowed"
+    ],
+    "accomplished": [
+      "Chased down and captured the elusive 'Shadow Girl' thief.",
+      "Investigated multiple crime scenes across Brightend for magical anomalies.",
+      "Discovered the existence of a highly dangerous, shadow-infused alchemical compound.",
+      "Obtained a mysterious Dark Shard Amulet from a captured thief."
+    ],
+    "leadsPursued": [
+      "Debriefed Maera on smuggling rings and shadow tentacles.",
+      "Investigated Harth's Gems, Alchemy & Ashes, and Illuminated Manuscript.",
+      "Covertly interrogated the captured thief using the Message cantrip."
+    ],
+    "futureLeads": [
+      "Investigate 'The Roost' outside the Rusty Anchor.",
+      "Look into the burned-down apothecary and who is buying Alseid blood.",
+      "Investigate the hunting town of Deercrest.",
+      "Identify the master alchemist capable of creating the shadow compound."
+    ],
+    "keywords": [
+      "Shadow",
+      "The Roost",
+      "Sephet Halfborn",
+      "Queen Thalen"
+    ],
+    "body": "Following the deadly alleyway encounter, the party opted to leave the strange notebook behind—after Eli meticulously copied its contents—and took the mysterious vial. Leaving the Wardens to clean up the mess (and omitting Gust and Bran's involvement), they headed to Hammer's place to debrief Maera Voss about the smuggling operations and shadow tentacles. They noted that deer weren't significant in Brightend, but there was a hunting community called Deercrest near the Eperina border.\n\nMeeting with Grand Warden Foll, they found him upset about the visibility of the recent murder. The party shared their findings, and Foll recalled hearing about \"The Roost\" in connection to robberies near the Rusty Anchor. He also remembered that Mason Borne's apothecary had burned down shortly after someone inquired about buying Alseid (half-deer, half-elf) blood.\n\nInvestigating the city's ongoing thefts, they started at Hauth's Gems, where non-magical engraved rings had just been stolen. Tracking unnatural, unmoving shadows outside the shop, they were interrupted by cries of \"Thief!\" and bolted into a chase. They cornered a pale, black-veined figure with jet-black eyes—the \"Shadow Girl.\" Davnis and Nimo bound and gagged her while M3MU cast light to prevent her escape. They recovered a dark amulet, and Eli acquired her book of city sewer maps.\n\n> \"The shadow takes all.\"\n\nWhile Gust and Eli accompanied the Wardens back to the Alabaster Palace, Nimo and Davnis investigated *Alchemy & Ashes* (finding remnants of conjuration magic and a broken token) and *Illuminated Manuscripts* (borrowing a valuable compendium on Queen Thalen from the proprietor, Hal, after finding a red thread snagged on a bookshelf).\n\nBack at the Warden Fort, interrogation of the thief stalled. Eli covertly cast *Message* on the girl, receiving only a whispered, repeating response: *\"The shadow takes all.\"* Foll called in the city's Archmage, Sephet—a silver fox half-elf with red eyes who exuded serious \"Daddy\" energy. Sephet used intense magic to force the girl's mouth open, breaking her jaw to extract a black, shadow-infused alchemical goop.\n\nSephet grimly explained that the compound required traveling to the Plane of Shadows, an extensive component list, and immense raw power. Gust noted genuine fear in Sephet's voice as the mage admitted he knew no one in the region capable of such a feat."
+  },
+  {
+    "id": "echoes-session-4",
+    "name": "Stretched thin",
+    "campaign": "echoes-from-the-void",
+    "date": "Pemtasten 6 Pholawal, 1693LF",
+    "region": "Brightend, Maltona",
+    "arc": "Remnants of the Past",
+    "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
+    "places": [
+      "cloud_district",
+      "warden-fort",
+      "finest-cloth"
+    ],
+    "npcs": [
+      {
+        "npc": "wardenfoll",
+        "sentiment": "like"
+      },
+      {
+        "npc": "erikthayne",
+        "sentiment": "dislike"
+      }
+    ],
+    "loot": [
+      "strange-token"
+    ],
+    "accomplished": [
+      "Obtain authority from the Grand Warden to investigate crimes in Brightend.",
+      "Met the families and neighbors of the victims of a string of murders.",
+      "Uncovered a strange token and pinpointed the probable origin of a piece of fabric found in Maera's study."
+    ],
+    "leadsPursued": [
+      "Investigated the murder of Elira Thayne by talking to her husband and her employee at Finest Cloth",
+      "Discovered that the courrier who had been killed actually carried the same metal the tokens are made of."
+    ],
+    "futureLeads": [
+      "Investigate the thefts and disappearances plaguing the city"
+    ],
+    "keywords": [
+      "Maera Voss",
+      "Alabaster Wardens",
+      "Thieves Guild",
+      "Murder"
+    ],
+    "body": "*Nothing yet, come back soon*"
+  },
+  {
+    "id": "echoes-session-3",
+    "name": "Back in Brightend",
+    "campaign": "echoes-from-the-void",
+    "date": "Pemtasten 6 Pholawal, 1693LF",
+    "region": "Brightend, Maltona",
+    "arc": "Remnants of the Past",
+    "summary": "After rescuing Maera Voss and escaping the Vale House, the party discovered a highly coordinated thieve's guild had stolen their prize.",
+    "places": [
+      "cloud_district",
+      "hammers-candy",
+      "alabaster-palace"
+    ],
+    "otherPlaces": [
+      "The Vale House"
+    ],
+    "npcs": [
+      {
+        "npc": "maeravoss",
+        "sentiment": "like"
+      },
+      {
+        "npc": "hammer_nim",
+        "sentiment": "like"
+      },
+      {
+        "npc": "lordwhite",
+        "sentiment": "neutral"
+      },
+      {
+        "npc": "wardenfoll",
+        "sentiment": "neutral"
+      }
+    ],
+    "accomplished": [
+      "Rescued Maera Voss from a hidden, chained room in the Vale House.",
+      "Escaped the pocket dimension and safely smuggled Maera to a hideout.",
+      "Secured an alliance with the Grand Warden to hunt the new thieve's guild."
+    ],
+    "leadsPursued": [
+      "Discussed the timeline paradox of the Doleris civilization with Maera.",
+      "Used magic to view a 'security recording' of the thieves stealing the tome.",
+      "Reported their findings (mostly) honestly to Lord White and the Grand Warden."
+    ],
+    "futureLeads": [
+      "Track down the three hooded figures and recover The Ninefold Commentary.",
+      "Locate Verrick, the missing King's mage cadet.",
+      "Smuggle Maera Voss out of the capital to the Lemerolai border."
+    ],
+    "keywords": [
+      "Maera Voss",
+      "Doleris",
+      "The Ninefold Commentary",
+      "Alabaster Wardens",
+      "Thieves Guild",
+      "Lemerolai"
+    ],
+    "body": "Solving the telescope puzzle in the planetarium triggered a secret door in the basement. Inside, the party found a chained bookshelf and a heavily cloaked figure passed out on the floor. It was Maera Voss—who was surprisingly revealed to be a Madaru (an anthropomorphic fox).\n\nAfter surviving an attack by the magically chained books, Maera explained the terrifying truth of her research. The Doleris civilization supposedly vanished around 700 2E, but the books in this house referenced the Ophrasian War from 1341. History had been rewritten, and the Vale House was proof.\n\nFleeing back through the portal, the party emerged in Maera's office only to find it ransacked. **The Ninefold Commentary** was gone. Maera cast a spell to reveal the past, showing three highly organized, hooded figures stealing the tome in a Bag of Holding.\n\n> \"Only the King and I seem to think something is happening... there is no 'guild', but one group has become much more present.\"\n\nKnowing Lord White could not be fully trusted, the party smuggled Maera to Hammer's Candy, a front run by Nimo's ex-lover, to lay low. They then marched to the Alabaster Palace to report the theft.\n\nLord White directed them to the Grand Warden. A review of the Warden's case-board revealed clerical errors, erased witnesses, and a chillingly precise crime wave that began right after the King's mage cadet, Verrick, disappeared. The hunt for the phantom guild had officially begun."
+  },
+  {
+    "id": "echoes-session-2",
+    "name": "Secrets of the Vale House",
+    "campaign": "echoes-from-the-void",
+    "date": "???",
+    "region": "The Vale House",
+    "arc": "Remnants of the Past",
+    "summary": "The party explored the impossible mansion, battling animated furniture and uncovering the disturbing, time-displaced experiments of its ancient masters.",
+    "otherPlaces": [
+      "The Vale House",
+      "Maera Voss's Study"
+    ],
+    "npcs": [
+      {
+        "npc": "jeff-skull",
+        "sentiment": "like"
+      },
+      {
+        "npc": "coriander",
+        "sentiment": "like"
+      },
+      {
+        "npc": "cumin",
+        "sentiment": "like"
+      }
+    ],
+    "loot": [
+      "potion-of-healing",
+      "4-pints-of-excellent-whisky"
+    ],
+    "accomplished": [
+      "Defeated an animated suit of armor and a mimic disguised as a dining chair.",
+      "Slew a Quasit that burst from the mouth of an enchanted toad.",
+      "Discovered a hidden basement filled with alchemical and necromantic experiments.",
+      "Mapped a constellation puzzle within a magical planetarium."
+    ],
+    "leadsPursued": [
+      "Investigated the master bedroom, finding evidence of the mansion's masters: Alensia and Freyot."
+    ],
+    "futureLeads": [
+      "Figure out the purpose of the pristine blue books scattered around the house.",
+      "Find the missing Maera Voss, who Jeff claims is somewhere 'no fun'."
+    ],
+    "keywords": [
+      "Alensia",
+      "Freyot",
+      "Homunculi",
+      "Mimic",
+      "Quasit"
+    ],
+    "body": "Ascending the stairs of the extradimensional mansion they learned was called the Vale House, the party quickly realized the home was aggressively defending itself. After Gust poked a highly ornate suit of armor, Nimo was forced to quickly dispatch it in combat.\n\nExploring the upper floors, they found a bizarre mix of the mundane and the magical. A planetarium housed five telescopes, each transporting the viewer's mind to a grassy hill under a specific star. In the master bedroom, they found correspondence between the mansion's creators: an elven mistress named Alensia and a mage named Freyot.\n\nDown in the kitchens, they were greeted by two ancient, talking homunculi named Coriander and Cumin, who peacefully cooked them ratatouille and provided Davnis with an Alchemist's Jug full of whisky. However, the peace was short-lived when the dining room chairs revealed themselves to be Mimics.\n\n> \"The longevity of this pocket dimension is incredibly unusual... we are completely outside of time and space.\"\n\nUsing a fake wooden book, Gust and Nimo uncovered a secret stairwell leading down into the dark. The basement revealed a horrific magical laboratory. They found transmutational alchemy notes, a demonic altar that spat a Quasit at them, and massive glass tubes preserving bizarre creatures—including a cockatrice, a fire beetle, and severed hands pulsing with necromancy."
+  },
+  {
+    "id": "echoes-session-1",
+    "name": "A Tome Twice Missing",
+    "campaign": "echoes-from-the-void",
+    "date": "Deftesten 3 Pholawal, 1693LF",
+    "region": "Brightend, Eperina",
+    "arc": "Remnants of the Past",
+    "summary": "Hired by Lord White and two anxious scholars, the party tracked a missing academic through a disappearing door into an impossible pocket dimension.",
+    "places": [
+      "alabaster-palace",
+      "cloud_district",
+      "oddmoss-librarium",
+      "gilded-goldfinch"
+    ],
+    "otherPlaces": [
+      "The Vale House"
+    ],
+    "npcs": [
+      {
+        "npc": "lordwhite",
+        "sentiment": "neutral"
+      },
+      {
+        "npc": "aregan-olm",
+        "sentiment": "neutral"
+      },
+      {
+        "npc": "bram-sureoak",
+        "sentiment": "neutral"
+      },
+      {
+        "npc": "ovan",
+        "sentiment": "neutral"
+      },
+      {
+        "npc": "jeff-skull",
+        "sentiment": "dislike"
+      }
+    ],
+    "loot": [
+      "notes-on-the-everlasting-book",
+      "meditations-on-the-way-of-the-lizard-book",
+      "pirate-erotica",
+      "maeras-shawl"
+    ],
+    "accomplished": [
+      "Secured a 2,000gp contract to retrieve Maera Voss and her tome.",
+      "Discovered an invisible, primal sylvan portal hidden in an alleyway.",
+      "Survived an ambush by an animated suit of armor.",
+      "Bested a fiendish shapeshifter at its own riddles."
+    ],
+    "leadsPursued": [
+      "Questioned Ovan at the Oddmoss Librarium about Maera's reading habits.",
+      "Followed a trail of conjuration magic and rats' whispers to a blank wall."
+    ],
+    "futureLeads": [
+      "Explore the rest of the Vale House to locate Maera Voss.",
+      "Decipher the moving Doleris symbols on the cover of the tome."
+    ],
+    "keywords": [
+      "Maera Voss",
+      "Runebridge",
+      "Doleris",
+      "Ekelph",
+      "The Ninefold Commentary",
+      "Pocket Dimension"
+    ],
+    "body": "The party—Nimo, Gust, Eli, and Davnis—were summoned to the Alabaster Palace to meet with Derral Sitsk, the Lord White. He was accompanied by two scholars from Runebridge: a tiefling named Aregan Olm and an owlin named Bram Sureoak.\n\nThe scholars were in a panic. Their colleague, the quirky and highly secretive Maera Voss, had vanished. She was in possession of a highly precious ancient tome, and the scholars were acting noticeably cagey about its true contents. Nimo expertly negotiated a hefty 2,000gp reward for both the scholar's safe return and the retrieval of the book.\n\nFollowing leads to the wealthy Cloud District, the party stopped at the Oddmoss Librarium. A gnome clerk named Ovan revealed that Maera had recently requested books be delivered to an empty brick wall down the street. While Davnis, Gust, and Nimo did some light book shopping, Eli cast Detect Magic near the wall, picking up trails of abjuration and conjuration magic.\n\nAfter Davnis cleverly distracted some local guards (who were already arguing about disappearing buildings), Nimo pushed against the empty space. A door infused with primal sylvan magic opened into pitch blackness.\n\n> \"The book on the desk had strange geometries that seemed to move if you looked too long...\"\n\nThey stepped into an abandoned, chaotic study. The desk was burnt in the exact shape of a book resting upon it—a tome titled **The Ninefold Commentary**, covered in an ancient Doleris alphabet variant known as Ekelph. The book itself acted as a gateway. When Davnis jumped inside, the rest followed.\n\nThey emerged on the porch of a massive, eerie mansion utterly disconnected from the material plane. Inside, they were taunted by a fiendish entity pretending to be a cat (and later a floating skull) named 'Jeff'. Amidst slamming doors, flying books, and a battle with a massive suit of sentient armor, the party realized Maera Voss was trapped somewhere deep within this impossible house."
+  },
+  {
+    "id": "sigil-session-4",
+    "name": "In a hole, in the ground, there lived a Sigil",
+    "campaign": "last-sigil",
+    "date": "Deftesten 28 Mystawal, 1693LF",
+    "region": "Wolf's Cradle, Maltona",
+    "arc": "Main",
+    "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
+    "otherPlaces": [
+      "Wolf's Cradle"
+    ],
+    "loot": [
+      "trauma"
+    ],
+    "accomplished": [
+      "Weird timey things and odd dreams"
+    ],
+    "leadsPursued": [
+      "Went into the hole in the ground"
+    ],
+    "futureLeads": [
+      "Figure out what the deal is with this Last Sigil thing"
+    ],
+    "body": "*Nothing yet, come back soon*"
+  }
+]

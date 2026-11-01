@@ -31,6 +31,7 @@
     "name": "The Alabaster Palace",
     "parent": "cloud_district",
     "subtitle": "King's Estate",
+    "summary": "Eperina's seat of power, on the cliff of Brightend.",
     "body": "The seat of power in Brightend. From here, the King oversees the distribution of resources across the vale.",
     "image": "images/pois/alabaster_palace.png",
     "map": {

@@ -136,6 +136,7 @@
         icons: null,
         thumbs: new Map(),
         menuCode: null,
+        sealed: new Map(),   // "type:id:key" -> the {text, password} its encrypted copy was made from
     };
     if (TEST) { window.__dash = S; window.__dashboardIO = io; } // inspected by the headless tests
 
@@ -209,7 +210,51 @@
             }
         }
         S.base = serializeAll(); // normalised: an unchanged file never counts as edited
+        await checkSealed();
         rebuild();
+    }
+
+    /* Sealed fields (hero secrets): the public file holds an encrypted copy of a
+       private text, made with a private password. On load we note which copies
+       still match; on save only changed ones are re-encrypted, so unchanged
+       secrets never show up as edited files. */
+    const sealedFields = () => Object.entries(TYPES).flatMap(([type, def]) =>
+        Object.entries(def.fields).filter(([, f]) => f.kind === 'sealed').map(([key, f]) => ({ type, key, f })));
+    const sealKey = (type, id, key) => `${type}:${id}:${key}`;
+    async function checkSealed() {
+        S.sealed.clear();
+        if (!ATH.unseal) return;
+        for (const { type, key, f } of sealedFields()) {
+            for (const r of S.data[type]) {
+                const text = r[f.from], pw = r[f.password];
+                if (!r[key] || !text || !pw) continue;
+                if (await ATH.unseal(r[key], pw) === text) S.sealed.set(sealKey(type, r.id, key), JSON.stringify([text, pw]));
+            }
+        }
+    }
+    async function updateSealed() {
+        for (const { type, key, f } of sealedFields()) {
+            for (const r of S.data[type]) {
+                const text = r[f.from], pw = r[f.password], k = sealKey(type, r.id, key);
+                if (!text || !pw) {
+                    // No secret, or no password: nothing to publish. Keep an existing copy only
+                    // while the private file is missing (another computer), never otherwise.
+                    if (!text && !pw) continue;
+                    delete r[key]; S.sealed.delete(k); continue;
+                }
+                const sig = JSON.stringify([text, pw]);
+                if (r[key] && S.sealed.get(k) === sig) continue;
+                r[key] = await ATH.seal(text, pw);
+                S.sealed.set(k, sig);
+            }
+        }
+    }
+    function sealedStatus(f, rec, key) {
+        const text = rec[f.from], pw = rec[f.password];
+        if (!text) return rec[key] ? 'Encrypted copy present; its text is not on this computer (data/private.json).' : 'No secret.';
+        if (!pw) return '⚠ No password: the secret will not be published.';
+        return rec[key] && S.sealed.get(sealKey(S.view.key, rec.id, key)) === JSON.stringify([text, pw])
+            ? '✓ Encrypted and up to date.' : 'Will be encrypted when you save.';
     }
     function rebuild() {
         const datasets = {};
@@ -220,6 +265,8 @@
         S.issues = S.store.validate();
     }
     async function save() {
+        try { await updateSealed(); }
+        catch (e) { alertBox('Could not encrypt the secrets', `<p>${esc(e.message)}</p>`); return; }
         rebuild();
         if (S.issues.errors.length) { showIssues(true); return; }
         const files = dirtyFiles();
@@ -471,6 +518,11 @@
                         <div><button class="btn ghost" data-action="list-add" data-path="${p}" data-object="1">+ Add</button></div>
                     </div>
                 </fieldset>`;
+            }
+            case 'sealed': {
+                const rec = curRecord();
+                return `<div class="fld wide"><label>${label}</label><em>${esc(rec ? sealedStatus(f, rec, key) : '')}</em>
+                    <span class="help">Written on save from “${esc((curDef().fields[f.from] || {}).label || f.from)}” and “${esc((curDef().fields[f.password] || {}).label || f.password)}”. Players see the secret only after typing the password (capitals don't matter).</span></div>`;
             }
             case 'json':
                 return `<div class="fld wide"><label>${label} <span style="text-transform:none;letter-spacing:0">(JSON)</span></label>

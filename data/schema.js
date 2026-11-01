@@ -25,6 +25,9 @@
    enum (options | enum: '<name of a shared enum below>')
    ref / refs (to: [types]) · map ({x, y, icon, layer}) · mapImage
    object (fields) · objects (array; fields) · json (free-form, raw)
+   sealed  text encrypted with a password ({v, salt, iv, data}); the
+           dashboard writes it from a private plain-text field (`from`)
+           and a private password field (`password`)
    ===================================================================== */
 (function (root) {
     const ATH = root.Athenaeum = root.Athenaeum || {};
@@ -62,6 +65,7 @@
                 file: 'data/settings.json',
                 fields: {
                     tavernCode: { kind: 'text', label: 'Bill of fare code: every tavern menu is drawn from it, the same for everyone. Change it to change all menus.' },
+                    currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Campaign shown first (scriptorium, heroes)' },
                 },
             },
         },
@@ -72,6 +76,17 @@
             factionStatus: ['Allied', 'Neutral', 'Hostile', 'Unknown'],
             threatLevel: ['Low', 'Moderate', 'Severe', 'Omega'],
             mapLayer: ['locations', 'cartographic', 'political', 'relic', 'events', 'hazards'],
+            /* Library and campaigns */
+            loreKind: ['lore', 'object', 'monster', 'person', 'place', 'faction'],
+            tomeKind: ['Book', 'Scroll'],
+            tomeTone: ['secondary', 'primary', 'error', 'void', 'ethereal', 'cyan'],
+            creatureThreat: ['Lethal', 'High', 'Moderate', 'Low', 'Harmless', 'Friendly'],
+            questStatus: ['Primary', 'Secondary'],
+            sentiment: [
+                { id: 'like',    label: 'Positive' },
+                { id: 'neutral', label: 'Neutral / business' },
+                { id: 'dislike', label: 'Hostile / negative' },
+            ],
             menuCategory: [
                 { id: 'drinks', label: 'Drinks' },
                 { id: 'meals',  label: 'Hearty Fare' },
@@ -195,6 +210,7 @@
                 autolink: true,
                 fields: {
                     role:      { kind: 'text', label: 'Role / title' },
+                    summary:   { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
                     quote:     { kind: 'text', label: 'Quote' },
                     portrait:  { kind: 'image', label: 'Portrait' },
                     avatar:    { kind: 'image', label: 'Avatar (small)' },
@@ -216,6 +232,7 @@
                 autolink: true,
                 fields: {
                     stub:           { kind: 'boolean', label: 'Stub (named somewhere, not written up yet)' },
+                    summary:        { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
                     crest:          { kind: 'image', label: 'Crest' },
                     status:         { kind: 'enum', enum: 'factionStatus', label: 'Standing with the party' },
                     quote:          { kind: 'text', label: 'Motto / quote' },
@@ -231,6 +248,177 @@
                     directives:     { kind: 'list', label: 'Active directives' },
                     rumors:         { kind: 'list', label: 'Unverified rumours' },
                     intel:          { kind: 'json', label: 'Field evidence cards' },
+                },
+            },
+
+            /* ---------------------------------------------------- LIBRARY */
+            /* A glossary term: lore, an object, a creature... that has no page
+               of its own. Shown as a keyword (with its definition as tooltip)
+               in the scriptorium. */
+            lore: {
+                label: 'Glossary term', plural: 'Glossary', icon: 'key', group: 'Library',
+                file: 'data/lore.json',
+                autolink: true,
+                fields: {
+                    kind:       { kind: 'enum', enum: 'loreKind', label: 'Kind (keyword colour)', required: true },
+                    definition: { kind: 'text', label: 'Definition (tooltip)', long: true },
+                },
+            },
+            tome: {
+                label: 'Tome', plural: 'Tomes', icon: 'menu_book', group: 'Library',
+                file: 'data/tomes.json',
+                page: 'tomes.html?id={id}',
+                fields: {
+                    draft:      { kind: 'boolean', label: 'Draft (not shown on the site)' },
+                    author:     { kind: 'text', label: 'Author' },
+                    kind:       { kind: 'enum', enum: 'tomeKind', label: 'Book or scroll', required: true },
+                    category:   { kind: 'text', label: 'Category (shelf filter)' },
+                    spineText:  { kind: 'text', label: 'Spine text' },
+                    cover:      { kind: 'image', label: 'Cover image (books)' },
+                    cleanCover: { kind: 'boolean', label: 'Clean cover: show the image alone, no title over it' },
+                    tone:       { kind: 'enum', enum: 'tomeTone', label: 'Colour (books without a cover, scrolls)' },
+                    icon:       { kind: 'text', label: 'Seal icon (scrolls; Material Symbols name)' },
+                    iconColor:  { kind: 'text', label: 'Seal icon colour (scrolls; CSS colour)' },
+                    body:       { kind: 'markdown', label: 'Text' },
+                },
+            },
+            handout: {
+                label: 'Handout', plural: 'Handouts', icon: 'contract', group: 'Library',
+                file: 'data/handouts.json',
+                page: 'handouts.html',
+                fields: {
+                    draft:       { kind: 'boolean', label: 'Draft (not shown on the site)' },
+                    campaign:    { kind: 'ref', to: ['campaign'], label: 'Campaign' },
+                    category:    { kind: 'text', label: 'Category (filter)' },
+                    icon:        { kind: 'text', label: 'Icon (Material Symbols name)' },
+                    foundAt:     { kind: 'text', label: 'Where it was found' },
+                    description: { kind: 'text', label: 'Description', long: true },
+                    thumbnail:   { kind: 'image', label: 'Card image' },
+                    file:        { kind: 'url', label: 'File to open (image or link)' },
+                },
+            },
+            creature: {
+                label: 'Creature', plural: 'Bestiary', icon: 'pest_control', group: 'Library',
+                file: 'data/creatures.json',
+                page: 'beast.html?id={id}',
+                autolink: true,
+                fields: {
+                    arcana:      { kind: 'text', label: 'Arcana (e.g. I · THE GUARDIAN)' },
+                    specimenNo:  { kind: 'text', label: 'Specimen number' },
+                    location:    { kind: 'text', label: 'Where it was met' },
+                    image:       { kind: 'image', label: 'Image' },
+                    threat:      { kind: 'enum', enum: 'creatureThreat', label: 'Threat level' },
+                    realm:       { kind: 'text', label: 'Realm' },
+                    phylogeny:   { kind: 'text', label: 'Phylogeny' },
+                    shortDesc:   { kind: 'text', label: 'Short description', long: true },
+                    stats:       { kind: 'objects', label: 'Stat bars (0-100)', itemLabel: 'label', fields: {
+                        label: { kind: 'text', label: 'Stat' },
+                        value: { kind: 'number', label: 'Value (0-100)' },
+                    } },
+                    tags:        { kind: 'list', label: 'Tags' },
+                    habitats:    { kind: 'list', label: 'Habitats' },
+                    loreTitle:   { kind: 'text', label: 'Lore heading' },
+                    body:        { kind: 'markdown', label: 'Lore' },
+                    behaviors:   { kind: 'list', label: 'Behaviours' },
+                    weaknesses:  { kind: 'list', label: 'Weaknesses' },
+                    drops:       { kind: 'objects', label: 'Harvestable parts', itemLabel: 'name', fields: {
+                        name: { kind: 'text', label: 'Name' },
+                        type: { kind: 'text', label: 'Type' },
+                        icon: { kind: 'text', label: 'Icon (Material Symbols name)' },
+                    } },
+                    scholarQuote: { kind: 'text', label: 'Scholar quote', long: true },
+                    scholarName:  { kind: 'text', label: 'Scholar name' },
+                },
+            },
+            /* Something the party can find. Sessions list the items found; the
+               loot cards (coming) are drawn from these records. */
+            item: {
+                label: 'Item', plural: 'Items', icon: 'diamond', group: 'Library',
+                file: 'data/items.json',
+                fields: {
+                    description: { kind: 'text', label: 'Description', long: true },
+                    image:       { kind: 'image', label: 'Image' },
+                },
+            },
+
+            /* ---------------------------------------------------- CAMPAIGNS */
+            campaign: {
+                label: 'Campaign', plural: 'Campaigns', icon: 'auto_stories', group: 'Campaigns',
+                file: 'data/campaigns.json',
+                page: 'scriptorium.html?campaign={id}',
+                fields: {
+                    preview:   { kind: 'text', label: 'Story so far: teaser', long: true },
+                    story:     { kind: 'markdown', label: 'Story so far' },
+                    quests:    { kind: 'objects', label: 'Active quests', itemLabel: 'title', fields: {
+                        title:       { kind: 'text', label: 'Title' },
+                        description: { kind: 'text', label: 'Description', long: true },
+                        status:      { kind: 'enum', enum: 'questStatus', label: 'Status' },
+                    } },
+                    partyName: { kind: 'text', label: 'Party name' },
+                    party:     { kind: 'refs', to: ['hero'], label: 'Heroes' },
+                    funds:     { kind: 'object', label: 'Party funds', fields: {
+                        gold:   { kind: 'number', label: 'Gold' },
+                        silver: { kind: 'number', label: 'Silver' },
+                        copper: { kind: 'number', label: 'Copper' },
+                    } },
+                    inventory: { kind: 'refs', to: ['item'], label: 'Shared inventory (besides the loot from sessions)' },
+                    standings: { kind: 'objects', label: 'Party allegiances', itemLabel: 'faction', fields: {
+                        faction: { kind: 'ref', to: ['faction', 'poi'], label: 'Faction (or place)' },
+                        status:  { kind: 'enum', enum: 'factionStatus', label: 'Standing' },
+                    } },
+                },
+            },
+            session: {
+                label: 'Session', plural: 'Sessions', icon: 'history_edu', group: 'Campaigns',
+                file: 'data/sessions.json',
+                page: 'scriptorium.html?session={id}',
+                fields: {
+                    campaign:     { kind: 'ref', to: ['campaign'], label: 'Campaign', required: true },
+                    date:         { kind: 'text', label: 'In-world date' },
+                    region:       { kind: 'text', label: 'Region' },
+                    arc:          { kind: 'text', label: 'Arc' },
+                    summary:      { kind: 'text', label: 'Summary', long: true },
+                    places:       { kind: 'refs', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Places visited' },
+                    otherPlaces:  { kind: 'list', label: 'Places visited that have no page' },
+                    npcs:         { kind: 'objects', label: 'NPCs met', itemLabel: 'npc', fields: {
+                        npc:       { kind: 'ref', to: ['npc'], label: 'NPC' },
+                        sentiment: { kind: 'enum', enum: 'sentiment', label: 'How it went' },
+                    } },
+                    loot:         { kind: 'refs', to: ['item'], label: 'Loot obtained' },
+                    accomplished: { kind: 'list', label: 'Things accomplished' },
+                    leadsPursued: { kind: 'list', label: 'Leads pursued' },
+                    futureLeads:  { kind: 'list', label: 'Future leads' },
+                    keywords:     { kind: 'list', label: 'Search keywords' },
+                    body:         { kind: 'markdown', label: 'Transcript' },
+                },
+            },
+            hero: {
+                label: 'Hero', plural: 'Heroes', icon: 'local_fire_department', group: 'Campaigns',
+                file: 'data/heroes.json',
+                page: 'heroes.html',
+                fields: {
+                    raceClass:    { kind: 'text', label: 'Race and class' },
+                    level:        { kind: 'number', label: 'Level' },
+                    background:   { kind: 'text', label: 'Background' },
+                    avatar:       { kind: 'image', label: 'Avatar' },
+                    quote:        { kind: 'text', label: 'Quote' },
+                    backstory:    { kind: 'text', label: 'Backstory', long: true },
+                    personalGoal: { kind: 'text', label: 'Personal goal' },
+                    stats:        { kind: 'object', label: 'Statistics', fields: {
+                        ac:    { kind: 'number', label: 'Armour class' },
+                        hp:    { kind: 'number', label: 'Hit points' },
+                        speed: { kind: 'number', label: 'Speed (ft.)' },
+                        str:   { kind: 'number', label: 'STR' },
+                        dex:   { kind: 'number', label: 'DEX' },
+                        con:   { kind: 'number', label: 'CON' },
+                        int:   { kind: 'number', label: 'INT' },
+                        wis:   { kind: 'number', label: 'WIS' },
+                        cha:   { kind: 'number', label: 'CHA' },
+                    } },
+                    factions:     { kind: 'refs', to: ['faction'], label: 'Factions' },
+                    secret:       { kind: 'markdown', label: 'Secret (revealed by the password)', private: true },
+                    password:     { kind: 'text', label: 'Password for the secret', private: true },
+                    sealedSecret: { kind: 'sealed', from: 'secret', password: 'password', label: 'Encrypted secret (written by the dashboard)' },
                 },
             },
 

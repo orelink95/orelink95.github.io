@@ -1,0 +1,45 @@
+[
+  {
+    "id": "ophrasian-war",
+    "name": "Ophrasian War",
+    "kind": "lore",
+    "definition": "A cataclysmic conflict that lasted for forty years, reshaping the borders of Maltona and leaving the Boundless Vale scarred by wild magic."
+  },
+  {
+    "id": "void-crystal",
+    "name": "Void Crystal",
+    "kind": "object",
+    "definition": "A rare mineral found only in the deepest reaches of Blackreach; it hums with the frequency of the Ethereal Plane."
+  },
+  {
+    "id": "behemoth",
+    "name": "Behemoth",
+    "kind": "monster",
+    "definition": "A colossal, mutated fungal beast native to the deepest caverns of Maltona. Highly dangerous."
+  },
+  {
+    "id": "vale-house",
+    "name": "Vale House",
+    "kind": "place"
+  },
+  {
+    "id": "doleris",
+    "name": "Doleris",
+    "kind": "lore"
+  },
+  {
+    "id": "alensia",
+    "name": "Alensia",
+    "kind": "lore"
+  },
+  {
+    "id": "freyot",
+    "name": "Freyot",
+    "kind": "lore"
+  },
+  {
+    "id": "ekelph",
+    "name": "Ekelph",
+    "kind": "lore"
+  }
+]

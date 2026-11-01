@@ -1,0 +1,58 @@
+[
+  {
+    "id": "vial-of-mysterious-black-substance",
+    "name": "Vial of mysterious black substance"
+  },
+  {
+    "id": "dark-shard-amulet",
+    "name": "Dark Shard Amulet",
+    "description": "A heavy, aged bronze amulet featuring a swirling, trapped galaxy of indigo and green.It hums with a faint, cosmic pulse, and a drift of purple smoke sometimes reveals shifting runes.",
+    "image": "images/Dark_Shard_Amulet.png"
+  },
+  {
+    "id": "book-of-city-sewer-maps",
+    "name": "Book of city sewer maps"
+  },
+  {
+    "id": "partially-broken-token",
+    "name": "Partially broken token"
+  },
+  {
+    "id": "queen-thalen-compendium-borrowed",
+    "name": "Queen Thalen Compendium (borrowed)"
+  },
+  {
+    "id": "strange-token",
+    "name": "Strange Token",
+    "description": "A small wooden token circled with an exotic metal, featuring three roughly made claw marks.",
+    "image": "images/str_token.PNG"
+  },
+  {
+    "id": "potion-of-healing",
+    "name": "Potion of Healing"
+  },
+  {
+    "id": "4-pints-of-excellent-whisky",
+    "name": "4 Pints of Excellent Whisky"
+  },
+  {
+    "id": "notes-on-the-everlasting-book",
+    "name": "Notes on The Everlasting (Book)"
+  },
+  {
+    "id": "meditations-on-the-way-of-the-lizard-book",
+    "name": "Meditations on the Way of the Lizard (Book)"
+  },
+  {
+    "id": "pirate-erotica",
+    "name": "Pirate Erotica"
+  },
+  {
+    "id": "maeras-shawl",
+    "name": "Maera's Shawl"
+  },
+  {
+    "id": "trauma",
+    "name": "Trauma"
+  }
+]

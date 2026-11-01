@@ -53,16 +53,8 @@ function highlightActiveLink() {
         const linkHref = link.getAttribute("href");
 
         if (linkHref === currentFileName) {
-            // Gold, glowing, with its icon tilted (see .site-header__link.is-active)
+            // Gold, glowing, with its icon tilted (.site-header__link.is-active, .library-header__link.is-active)
             link.classList.add("is-active");
-
-            // Library header (still Tailwind until pass 2)
-            if (!link.classList.contains("site-header__link")) {
-                link.classList.remove("text-[#e2e3df]");
-                link.classList.add("text-[#e9c176]", "drop-shadow-[0_0_8px_rgba(233,193,118,0.4)]");
-                const icon = link.querySelector(".material-symbols-outlined");
-                if (icon) icon.classList.add("rotate-12", "text-[#e9c176]");
-            }
         }
     });
 }
@@ -258,19 +250,10 @@ function toggleLibrarySidebar() {
 
     if (!sidebarContent || !icon || !btn) return;
 
-    if (sidebarContent.classList.contains('opacity-0')) {
-        // Open it
-        sidebarContent.classList.remove('opacity-0', 'pointer-events-none', 'scale-95', 'translate-x-4');
-        btn.classList.add('-translate-x-64');
-        icon.textContent = 'close';
-        icon.classList.add('rotate-90');
-    } else {
-        // Close it
-        sidebarContent.classList.add('opacity-0', 'pointer-events-none', 'scale-95', 'translate-x-4');
-        btn.classList.remove('-translate-x-64');
-        icon.textContent = 'menu_open';
-        icon.classList.remove('rotate-90');
-    }
+    // Open/closed looks: .library-sidebar__panel.is-open etc. in components.css
+    const open = !sidebarContent.classList.contains('is-open');
+    [sidebarContent, btn, icon].forEach(el => el.classList.toggle('is-open', open));
+    icon.textContent = open ? 'close' : 'menu_open';
 }
 
 function highlightLibrarySidebar() {
@@ -286,12 +269,8 @@ function highlightLibrarySidebar() {
         const href = link.getAttribute('href');
 
         if (href === currentFileName) {
-            // Apply Active Gold Styles
-            link.className = "flex items-center gap-4 px-4 py-3 rounded-lg text-secondary border border-secondary/20 bg-secondary/10 shadow-[0_0_15px_rgba(233,193,118,0.1)] transition-all group";
-            const icon = link.querySelector('.material-symbols-outlined');
-            if (icon) icon.className = "material-symbols-outlined text-secondary text-lg drop-shadow-[0_0_5px_rgba(233,193,118,0.5)]";
-            const text = link.querySelector('span:not(.material-symbols-outlined)');
-            if (text) text.classList.add('font-bold');
+            // Gold, bold label (see .library-sidebar__link.is-active)
+            link.classList.add('is-active');
         }
     });
 }

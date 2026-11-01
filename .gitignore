@@ -1,6 +1,4 @@
 /node_modules
-package.json
-package-lock.json
 
 # DM-only data (NPC secrets, later hero secrets). Never published.
 /data/private.json

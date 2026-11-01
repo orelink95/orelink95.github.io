@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <a href="${store.url(c)}"
                 class="continent-nation__link">
                 <div>
-                    <p class="continent-nation__name font-noto-serif">${c.name}</p>
+                    <p class="continent-nation__name">${c.name}</p>
                     <p class="continent-nation__epithet">${c.epithet || c.subtitle || ''}</p>
                 </div>
                 <span class="continent-nation__arrow material-symbols-outlined">arrow_forward</span>
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         alt="${npc.name}" src="${npc.portrait || 'images/placeholder.png'}" />
                 </div>
                 <div class="notable__body">
-                    <h4 class="notable__name font-noto-serif">${npc.name}</h4>
+                    <h4 class="notable__name">${npc.name}</h4>
                     <p class="notable__role">${npc.role || ''}</p>
                     <div class="notable__tags">
                         ${npc.species ? `<span class="notable__tag">${npc.species}</span>` : ''}
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const img = continent.mapImage;
     if (!mapElement) return;
     if (!img) {
-        mapElement.innerHTML = '<p class="map-empty font-newsreader">No map of this continent has reached the archive yet.</p>';
+        mapElement.innerHTML = '<p class="map-empty">No map of this continent has reached the archive yet.</p>';
         return;
     }
     $('continent-frame').style.aspectRatio = `${img.width} / ${img.height}`;

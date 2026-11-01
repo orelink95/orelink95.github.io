@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 3. RENDER GRID
     function renderGrid(pois) {
         if (pois.length === 0) {
-            grid.innerHTML = `<p class="poi-grid__empty font-newsreader">No landmarks found in these records.</p>`;
+            grid.innerHTML = `<p class="poi-grid__empty">No landmarks found in these records.</p>`;
             return;
         }
 
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             return `
-            <div class="poi-card perspective-1000" onclick="openPOIModal('${poi.uid}')">
+            <div class="poi-card" onclick="openPOIModal('${poi.uid}')">
                 <div class="poi-card-inner">
                     <div class="poi-card-front">
                         <img class="poi-card__img" src="${poi.image}" />

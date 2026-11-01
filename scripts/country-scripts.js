@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const mapElement = document.getElementById('country-map');
     if (!mapElement) return;
     if (!data.mapImage) {
-        mapElement.innerHTML = '<p class="map-empty font-newsreader">No map of this land has reached the archive yet.</p>';
+        mapElement.innerHTML = '<p class="map-empty">No map of this land has reached the archive yet.</p>';
         return;
     }
 

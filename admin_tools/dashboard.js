@@ -118,6 +118,20 @@
         },
     };
 
+    // Comes back on the tool and record last used, unless they no longer exist.
+    function rememberUI() {
+        if (!TEST) kv.set('ui', { view: S.view, sel: S.sel, listCollapsed: $('#app').classList.contains('list-collapsed') });
+    }
+    async function restoreUI() {
+        const ui = TEST ? null : await kv.get('ui');
+        if (!ui || !ui.view) return;
+        const known = ui.view.kind === 'single' ? SINGLES[ui.view.key] : TYPES[ui.view.key];
+        if (!known) return;
+        S.view = { kind: ui.view.kind, key: ui.view.key };
+        S.sel = ui.view.kind === 'type' && S.data[ui.view.key].some(r => r.id === ui.sel) ? ui.sel : null;
+        $('#app').classList.toggle('list-collapsed', !!ui.listCollapsed);
+    }
+
     /* =================================================================
        STATE
        ================================================================= */
@@ -348,19 +362,24 @@
     /* =================================================================
        NAV & LIST
        ================================================================= */
+    // Menu colour of each group. A group added to the schema takes one of the spare colours.
+    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Taverns: '#f0a35e' };
+    const SPARE_COLOURS = ['#4fd1c5', '#f48fb1', '#d4d86a'];
     function renderNav() {
         const entries = [
             ...Object.entries(TYPES).map(([key, d]) => ({ kind: 'type', key, d })),
             ...Object.entries(SINGLES).map(([key, d]) => ({ kind: 'single', key, d })),
         ];
         const groups = [...new Set(entries.map(e => e.d.group || 'Other'))];
-        $('#nav').innerHTML = groups.map(g => `
+        $('#nav').innerHTML = groups.map((g, i) => `
+            <div class="nav-sec" style="--c:${GROUP_COLOURS[g] || SPARE_COLOURS[i % SPARE_COLOURS.length]}">
             <div class="nav-group">${esc(g)}</div>
             ${entries.filter(e => (e.d.group || 'Other') === g).map(e => `
                 <button class="nav-btn ${S.view.kind === e.kind && S.view.key === e.key ? 'active' : ''}" data-nav="${e.kind}:${e.key}">
                     <span class="material-symbols-outlined">${esc(e.d.icon || 'description')}</span>
                     <span class="lbl">${esc(e.d.navLabel || e.d.plural || e.d.label)}</span>
-                </button>`).join('')}`).join('');
+                </button>`).join('')}
+            </div>`).join('');
     }
     function renderList() {
         $('#new-btn').hidden = isSingle();
@@ -502,9 +521,9 @@
                     <legend class="fs-legend" data-action="collapse" data-key="${esc(ck)}">${collapsed ? '▸' : '▾'} ${label} <span style="color:var(--ink-faint)">(${arr.length})</span></legend>
                     <div class="fs-body">
                         ${arr.map((item, i) => {
-                            const ik = JSON.stringify([...path, i]);
-                            const ic = S.collapsed.has(ik);
-                            return `<div class="card ${ic ? 'collapsed' : ''}">
+                    const ik = JSON.stringify([...path, i]);
+                    const ic = S.collapsed.has(ik);
+                    return `<div class="card ${ic ? 'collapsed' : ''}">
                                 <div class="card-head" data-action="collapse" data-key="${esc(ik)}">
                                     <b>${ic ? '▸' : '▾'} ${esc((item && item[f.itemLabel]) || `Entry ${i + 1}`)}</b>
                                     <span class="row">
@@ -515,7 +534,7 @@
                                 </div>
                                 <div class="fs-body">${Object.entries(f.fields).map(([k, sf]) => fieldHtml(sf, k, (item || {})[k], [...path, i, k])).join('')}</div>
                             </div>`;
-                        }).join('')}
+                }).join('')}
                         <div><button class="btn ghost" data-action="list-add" data-path="${p}" data-object="1">+ Add</button></div>
                     </div>
                 </fieldset>`;
@@ -557,6 +576,7 @@
        EDITOR
        ================================================================= */
     function renderEditor() {
+        rememberUI(); // every change of tool or record ends up here
         const ed = $('#editor');
         const def = curDef();
         const rec = curRecord();
@@ -964,7 +984,7 @@
     $('#new-btn').addEventListener('click', newRecord);
     $('#save-btn').addEventListener('click', save);
     $('#issues-pill').addEventListener('click', () => showIssues(false));
-    $('#collapse-btn').addEventListener('click', () => $('#app').classList.toggle('list-collapsed'));
+    $('#collapse-btn').addEventListener('click', () => { $('#app').classList.toggle('list-collapsed'); rememberUI(); });
     $('#reload-btn').addEventListener('click', async () => {
         if (dirtyFiles().length && !confirm('Reload from disk and lose the unsaved changes?')) return;
         S.thumbs.clear();
@@ -992,13 +1012,17 @@
         $('#gate').hidden = true;
         $('#app').hidden = false;
         $('#folder-name').textContent = io.name();
+        await restoreUI();
         renderNav(); renderList(); renderEditor(); refreshChrome();
+        const active = $('.li.active');
+        if (active) active.scrollIntoView({ block: 'nearest' });
     }
     function gateError(msg) {
         const el = $('#gate-error');
         el.textContent = msg; el.hidden = false;
     }
     async function useFolder(handle) {
+        $('#gate-error').hidden = true;
         rootHandle = handle;
         if (await folderIO.read('data/schema.js') === null) {
             rootHandle = null;
@@ -1030,7 +1054,12 @@
                     if (perm === 'granted') useFolder(saved); else gateError('Permission was not granted.');
                 } catch (e) { gateError(e.message); }
             });
+            // Permission still held (same browser session, or "Allow on every visit"): no click
+            // needed. Otherwise the browser insists on one, on the Reopen button above.
+            const perm = await saved.queryPermission({ mode: 'readwrite' }).catch(() => 'prompt');
+            if (perm === 'granted') await useFolder(saved);
         }
     }
-    boot();
+    // The gate stays invisible until we know it is needed, so that it doesn't flash on reopening.
+    boot().finally(() => { $('#gate').style.visibility = ''; $('#reopen-btn').focus(); });
 })();

@@ -65,73 +65,55 @@
     "scholarName": "L. Maldy"
   },
   {
-    "id": "chimera",
-    "name": "Chimera",
-    "arcana": "XXII · THE ABOMINATION",
-    "specimenNo": "042",
-    "location": "Wolf's Teeth Range",
-    "image": "images/chimera.jpg",
-    "threat": "Lethal",
-    "realm": "Material Plane",
-    "phylogeny": "Monstrosity",
-    "shortDesc": "A monstrous fusion of predator, underworld fire, and petrifying venom.",
+    "id": "corrupted-stag",
+    "name": "Tainted Velociraptor",
+    "arcana": "VII - PESTILENCE",
+    "specimenNo": "04",
+    "location": "Balageal",
+    "image": "images/Tainted Velociraptor.png",
+    "threat": "High",
+    "phylogeny": "Aberration",
+    "shortDesc": "Its sinewy frame coils with unnatural tension, every muscle taut beneath its mottled plumage of inky black and deep indigo. Vicious talons scrape the ground with each step, and its feathers — once sleek — now jut out in ragged, uneven clumps, as though scorched by shadow. Streaks of seething violet energy pulse beneath its skin, crawling along its limbs and up its neck like veins filled with corrupted ethyria. Its eyes gleam a sickly yellow, alive with a malicious intelligence, burning with a hungry, unnatural gleam — not the mindless hunger of beasts, but something colder, calculated, and wrong. The air warps faintly around its form, and a low, almost imperceptible hum of magic seems to follow its movements — as if the creature exists partially out of phase with the world.",
     "stats": [
       {
-        "label": "Brute Strength",
-        "value": 94
+        "label": "Strength",
+        "value": 17
       },
       {
-        "label": "Agility & Speed",
-        "value": 78
+        "label": "Agility/Speed",
+        "value": 80
       },
       {
-        "label": "Arcane Resonance",
-        "value": 62
-      },
-      {
-        "label": "Cunning",
-        "value": 45
+        "label": "Nihilium Corruption",
+        "value": 100
       }
     ],
     "tags": [
-      "LEGENDARY",
-      "CURSED"
+      "ABERRATION",
+      "UNDEAD",
+      "BEAST",
+      "CORRUPTED"
     ],
     "habitats": [
-      "Obsidian Peaks",
-      "Whispering Woods",
-      "Lost Temples"
+      "Forest",
+      "Ruins"
     ],
-    "loreTitle": "Lore of the Tri-Headed",
-    "body": "First recorded in the *Annals of the Broken Sky*, the Chimera is not a creature of nature, but a scar upon it. Legends speak of a sorcerer-king who sought to bind the three primal instincts—might, cunning, and malice—into a single vessel.\n\nThe result was a monstrous fusion that defies biological logic. The lion's head provides the brute strength of the predator, the goat's head exhales the sulfurous fires of the underworld, and the serpent's tail carries a venom that turns the blood to stone.\n\nIn modern times, sightings have increased near the volcanic rifts of the Northern Reaches. They are solitary hunters, possessing a territorial instinct so fierce they will often engage in battles with their own shadows until the sun sets.",
+    "loreTitle": "Tainted Dinosaurs",
+    "body": "Little is known of these creatures. While it is known that some dinosaurs still roam the land, the existence of *tainted* ones remains purely theoretical. If it were to exist, it is safe to say that there little chance for someone to survive this encounter...",
     "behaviors": [
-      "Nocturnal territorial patrol",
-      "Triple-sensory awareness",
-      "Fire-breathing during threat displays"
+      "Mindless Rage",
+      "Pack Tactics",
+      "Magic resistance"
     ],
     "weaknesses": [
-      "Conflict between the heads",
-      "Vulnerable soft-belly under goat neck",
-      "Susceptible to silver-tipped arrows"
+      "Radiant Damage"
     ],
     "drops": [
       {
-        "name": "Chimera Venom",
-        "type": "Rare Alchemy Ingredient",
-        "icon": "colorize"
-      },
-      {
-        "name": "Mane Fragment",
-        "type": "Rare Alchemy Ingredient",
-        "icon": "colorize"
-      },
-      {
-        "name": "Ever-Warm Heart",
-        "type": "Legendary Essence",
-        "icon": "local_fire_department"
+        "name": "Tainted Blood",
+        "type": "Alchemical Compound",
+        "icon": "water_drop"
       }
-    ],
-    "scholarQuote": "The creature's heads do not always agree. If you can incite a disagreement between the serpent and the lion, the opening for a strike becomes wide enough for even a novice to exploit.",
-    "scholarName": "M. Valerius"
+    ]
   }
 ]

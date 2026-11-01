@@ -109,7 +109,9 @@
   },
   {
     "id": "talonoperative",
-    "name": "Mystery man",
+    "name": "Talon Shadow",
+    "role": "Spellcaster Spy",
+    "quote": "The night takes us all",
     "portrait": "images/mysteryman.png",
     "avatar": "images/avatars/mysteryman.png",
     "species": "Half-elf",
@@ -124,9 +126,12 @@
     "id": "aregan-olm",
     "name": "Aregan Olm",
     "role": "Runebridge Scholar",
+    "portrait": "images/Aregan Olm.png",
+    "avatar": "images/avatars/aregan_olm.png",
+    "home": "cloud_district",
     "species": "Tiefling",
-    "age": "Unknown",
-    "gender": "Unknown",
+    "age": "59",
+    "gender": "Female",
     "factions": [
       "runebridge"
     ],
@@ -137,9 +142,12 @@
     "id": "bram-sureoak",
     "name": "Bram Sureoak",
     "role": "Runebridge Scholar",
+    "portrait": "images/Bram Sureoak.jpg",
+    "avatar": "images/avatars/bram_sureoak.jpg",
+    "home": "cloud_district",
     "species": "Owlin",
-    "age": "Unknown",
-    "gender": "Unknown",
+    "age": "65",
+    "gender": "Male",
     "factions": [
       "runebridge"
     ],
@@ -150,10 +158,12 @@
     "id": "ovan",
     "name": "Ovan",
     "role": "Librarium Clerk",
+    "portrait": "images/Ovan.jpg",
+    "avatar": "images/Ovan.jpg",
     "home": "oddmoss-librarium",
     "species": "Gnome",
-    "age": "Unknown",
-    "gender": "Unknown",
+    "age": "27",
+    "gender": "Non-binary",
     "relation": "Neutral",
     "biography": "A gnome clerk at the Oddmoss Librarium who informed the party of Maera Voss's book deliveries to an empty wall."
   },
@@ -161,6 +171,8 @@
     "id": "coriander",
     "name": "Coriander",
     "role": "Homunculus Cook",
+    "portrait": "images/coriander.jpg",
+    "avatar": "images/coriander.jpg",
     "whereabouts": "The Vale House",
     "species": "Homunculus",
     "age": "Ancient",
@@ -172,6 +184,8 @@
     "id": "cumin",
     "name": "Cumin",
     "role": "Homunculus Cook",
+    "portrait": "images/cumin.jpg",
+    "avatar": "images/cumin.jpg",
     "whereabouts": "The Vale House",
     "species": "Homunculus",
     "age": "Ancient",
@@ -186,7 +200,7 @@
     "quote": "Pretending to be a person transformed into an object or horrifying monster is just a bit of fun.",
     "portrait": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/ToB2/creature/Wicked%20Skull.webp",
     "avatar": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/ToB2/creature/Wicked%20Skull.webp",
-    "whereabouts": "The Vale House (a pocket dimension)",
+    "whereabouts": "The Vale House",
     "species": "Construct (Wicked Skull)",
     "age": "Unknown",
     "gender": "Unknown",
@@ -209,5 +223,24 @@
     ],
     "relation": "Ally",
     "biography": "Known to most simply as \"Oldebear,\" Muraed Oldaber is an important figure in the sprawling underground network of Brightend. If you need something moved without the city guard seeing, or a problem made to quietly disappear, you talk to him.  \nDespite his gruff exterior and ruthless business practices in the Fighting Pits, he operates by a strict personal code of honor and has proven to be incredibly loyal to those who earn his trust."
+  },
+  {
+    "id": "shade-hand",
+    "name": "Iskavor Velsh",
+    "aliases": [
+      "Shade Hand"
+    ],
+    "role": "The Shade Hand",
+    "summary": "The mysterious leader of the secret organisation known as The Talons",
+    "portrait": "images/Iskavor Velsh.png",
+    "avatar": "images/avatars/shade-hand.png",
+    "home": "ash_district",
+    "species": "Hexblood",
+    "age": "43",
+    "gender": "Male",
+    "factions": [
+      "thieves-guild"
+    ],
+    "relation": "Enemy"
   }
 ]

@@ -58,13 +58,13 @@
   },
   {
     "id": "thieves-guild",
-    "name": "??????",
-    "crest": "https://ui-avatars.com/api/?background=121412&color=f87171&font-size=0.4&name=??",
+    "name": "The Talons",
+    "crest": "images/The Talon Symbol.png",
     "status": "Hostile",
     "quote": "\"????? \"",
     "reputation": 15,
     "reputationText": "Hunted",
-    "base": "Unknown",
+    "base": "The Roost, Brightend",
     "scale": "Regional",
     "mo": "Theft, Smuggling, Assassination, Extortion",
     "threatLevel": "Severe",
@@ -75,8 +75,9 @@
       "alabaster-wardens"
     ],
     "assets": [
-      "???",
-      "Highly trained magic operatives"
+      "Talon Shadow (Spellcasters)",
+      "Talon Acolytes",
+      "Talon Enforcers (Half-casters)"
     ],
     "directives": [
       "?????????",

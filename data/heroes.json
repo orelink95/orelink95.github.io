@@ -3,10 +3,10 @@
     "id": "nimo",
     "name": "Nimo",
     "raceClass": "Mousefolk Rogue/Warlock",
-    "level": 4,
+    "level": 6,
     "background": "Sailor",
-    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Nimo",
-    "quote": "I can pick that. Probably.",
+    "avatar": "images/Nimo.png",
+    "quote": "I can pick that lock. Probably. Definitely.",
     "backstory": "A quick-fingered resident of Brightend who negotiated the 2,000gp contract with Lord White.",
     "personalGoal": "Find what happened to their long lost brother.",
     "stats": {
@@ -34,9 +34,9 @@
     "id": "gust",
     "name": "Gust",
     "raceClass": "Shifter Monk",
-    "level": 4,
+    "level": 6,
     "background": "Mercenary",
-    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Gust",
+    "avatar": "images/Gust.jpg",
     "quote": "Let's just poke the ornate suit of armor and see what happens.",
     "backstory": "A brave combatant who isn't afraid to trigger a trap or get into a fight.",
     "personalGoal": "Avenge his family.",
@@ -65,9 +65,9 @@
     "id": "eli",
     "name": "Eli",
     "raceClass": "Elf Warlock",
-    "level": 4,
+    "level": 6,
     "background": "Scholar",
-    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Eli",
+    "avatar": "images/Eli.jpeg",
     "quote": "It's like Zombies were done to the cupboard.",
     "backstory": "A perceptive researcherr with a keen eye for detecting the unseen and unraveling magical mysteries.",
     "personalGoal": "Know more, discover all. Understand the world, and the Void beyond it.",
@@ -98,9 +98,9 @@
     "raceClass": "Human Fighter",
     "level": 6,
     "background": "Shepherd",
-    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Davnis",
+    "avatar": "images/avatars/davnis.jpg",
     "quote": "Look over there! Disappearing buildings!",
-    "backstory": "A master of distraction and holder of the Alchemist's jug. Always ready to jump into a magical book first.",
+    "backstory": "A master of distraction and holder of the Alchemist's jug. Always ready to jump into a magical book first, but mostly tired.",
     "personalGoal": "Keep the whisky flowing.",
     "stats": {
       "ac": 15,
@@ -126,6 +126,7 @@
   {
     "id": "maevik",
     "name": "Maevik",
+    "level": 5,
     "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Maevik"
   },
   {
@@ -134,6 +135,7 @@
     "raceClass": "Myconid Automaton",
     "level": 6,
     "background": "Cleric",
+    "avatar": "images/M3MU.png",
     "backstory": "A Myconid Automaton created by the Athenaeum and given to Eli for protection during field work."
   }
 ]

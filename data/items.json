@@ -66,6 +66,13 @@
   },
   {
     "id": "trauma",
-    "name": "Trauma"
+    "name": "Trauma",
+    "image": "images/trauma.jpg",
+    "type": "Psychic Wound",
+    "rarity": "Common",
+    "cost": "Everything ?",
+    "weight": "Really heavy",
+    "attunedBy": "maevik",
+    "summary": "The horrors of the world affected you deeply"
   }
 ]

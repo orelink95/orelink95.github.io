@@ -12,9 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <link href="styles/output.css" rel="stylesheet" />
     <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/factions.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
     <script src="scripts/general-scripts.js"></script>
     <script src="data/schema.js"></script>
@@ -23,54 +24,54 @@
     <script src="scripts/factions-script.js"></script>
 </head>
 
-<body class="bg-[#0a0b0a] text-[#e2e3df] font-body overflow-x-hidden archival-bg">
+<body class="page archival-bg">
     <div id="header-placeholder"></div>
 
 
 
-    <main class="pt-28 px-4 md:px-8 pb-20 min-h-screen max-w-[1500px] mx-auto">
-        <div class="w-full flex flex-wrap items-center gap-3 mb-8">
-            <span class="font-label text-[10px] uppercase tracking-widest text-white/40 mr-2">Related Archives:</span>
+    <main class="factions-main">
+        <div class="archive-links">
+            <span class="archive-links__label">Related Archives:</span>
 
             <a href="npc.html"
-                class="flex items-center gap-2 px-4 py-1.5 rounded border border-white/10 bg-[#0a0b0a] hover:bg-[#60a5fa]/10 hover:border-[#60a5fa]/50 text-white/70 hover:text-[#60a5fa] font-label text-[10px] uppercase tracking-widest transition-all group">
+                class="archive-link">
                 <span
-                    class="material-symbols-outlined text-[14px] group-hover:scale-110 transition-transform">group</span>
+                    class="archive-link__icon material-symbols-outlined">group</span>
                 NPCs
             </a>
 
             <a href="heroes.html"
-                class="flex items-center gap-2 px-4 py-1.5 rounded border border-white/10 bg-[#0a0b0a] hover:bg-[#4ade80]/10 hover:border-[#4ade80]/50 text-white/70 hover:text-[#4ade80] font-label text-[10px] uppercase tracking-widest transition-all group">
+                class="archive-link archive-link--heroes">
                 <span
-                    class="material-symbols-outlined text-[14px] group-hover:scale-110 transition-transform">local_fire_department</span>
+                    class="archive-link__icon material-symbols-outlined">local_fire_department</span>
                 Heroes
             </a>
         </div>
 
-        <div class="text-center mb-16 relative z-10 w-full">
-            <p class="font-label text-[#60a5fa] text-[10px] uppercase tracking-[0.4em] mb-4 animate-pulse-slow">World
+        <div class="factions-hero">
+            <p class="factions-hero__eyebrow">World
                 Powers
             </p>
             <h1
-                class="text-4xl md:text-6xl font-headline font-bold text-white mb-6 drop-shadow-[0_0_15px_rgba(96,165,250,0.2)]">
+                class="factions-hero__title">
                 Factions & Guilds</h1>
-            <div class="w-34 h-px bg-gradient-to-r from-transparent via-[#60a5fa]/50 to-transparent mx-auto"></div>
+            <div class="factions-hero__rule w-34"></div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 w-full items-start">
+        <div class="factions-layout">
 
-            <aside class="lg:col-span-3 space-y-2.5" id="faction-tabs">
+            <aside class="faction-tabs" id="faction-tabs">
             </aside>
 
-            <div class="lg:col-span-9 bg-[#121412]/90 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl p-8 md:p-12 min-h-[600px] hidden relative overflow-hidden"
+            <div class="dossier hidden"
                 id="dossier-view">
 
             </div>
 
             <div id="empty-state"
-                class="lg:col-span-8 flex flex-col items-center justify-center h-[600px] text-center border border-white/5 rounded-xl border-dashed bg-white/[0.02]">
-                <span class="material-symbols-outlined text-6xl text-white/10 mb-4">folder_open</span>
-                <p class="font-label uppercase tracking-widest text-white/40 text-sm">Select a dossier to view contents
+                class="dossier-empty">
+                <span class="dossier-empty__icon material-symbols-outlined">folder_open</span>
+                <p class="dossier-empty__text">Select a dossier to view contents
                 </p>
             </div>
 

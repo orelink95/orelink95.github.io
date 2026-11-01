@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 3. RENDER GRID
     function renderGrid(pois) {
         if (pois.length === 0) {
-            grid.innerHTML = `<p class="col-span-full text-center text-on-surface/40 py-20 italic font-newsreader text-xl">No landmarks found in these records.</p>`;
+            grid.innerHTML = `<p class="poi-grid__empty font-newsreader">No landmarks found in these records.</p>`;
             return;
         }
 
@@ -62,41 +62,41 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             let pillHTML = '';
             if (poi.isDanger) {
-                pillHTML = `<div class="absolute top-4 right-4 flex items-center gap-2 bg-surface-dim/80 backdrop-blur-sm border border-error/30 px-3 py-1.5 rounded-full z-10 shadow-lg">
-                    <span class="w-2 h-2 rounded-full bg-error animate-pulse shadow-[0_0_5px_rgba(255,82,82,0.8)]"></span>
-                    <span class="text-[9px] font-label uppercase text-error tracking-widest">Danger</span>
+                pillHTML = `<div class="poi-pill poi-pill--danger">
+                    <span class="poi-pill__dot"></span>
+                    <span class="poi-pill__label">Danger</span>
                 </div>`;
             } else if (poi.isFeatured) {
-                pillHTML = `<div class="absolute top-4 right-4 flex items-center gap-2 bg-surface-dim/80 backdrop-blur-sm border border-primary/30 px-3 py-1.5 rounded-full z-10 shadow-lg">
-                    <span class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_5px_rgba(179,205,182,0.8)]"></span>
-                    <span class="text-[9px] font-label uppercase text-primary tracking-widest">Featured</span>
+                pillHTML = `<div class="poi-pill poi-pill--featured">
+                    <span class="poi-pill__dot"></span>
+                    <span class="poi-pill__label">Featured</span>
                 </div>`;
             } else if (poi.isSafe || poi.icon === 'health_and_safety' || poi.title.toLowerCase().includes('safe')) {
-                pillHTML = `<div class="absolute top-4 right-4 flex items-center gap-2 bg-surface-dim/80 backdrop-blur-sm border border-secondary/30 px-3 py-1.5 rounded-full z-10 shadow-lg">
-                    <span class="w-2 h-2 rounded-full bg-secondary animate-pulse shadow-[0_0_5px_rgba(233,193,118,0.8)]"></span>
-                    <span class="text-[9px] font-label uppercase text-secondary tracking-widest">Safe</span>
+                pillHTML = `<div class="poi-pill poi-pill--safe">
+                    <span class="poi-pill__dot"></span>
+                    <span class="poi-pill__label">Safe</span>
                 </div>`;
             }
 
             return `
-            <div class="poi-card group w-full aspect-square perspective-1000 cursor-pointer" onclick="openPOIModal('${poi.uid}')">
-                <div class="poi-card-inner relative w-full h-full">
-                    <div class="poi-card-front absolute inset-0 rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container shadow-2xl">
-                        <img class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" src="${poi.image}" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-surface-dim via-transparent to-transparent"></div>
-                        <div class="absolute bottom-0 p-6 text-left">
-                            <h3 class="text-xl font-headline font-bold text-on-surface leading-tight">${poi.title}</h3>
-                            <p class="text-[10px] font-label text-secondary tracking-widest uppercase mt-2">${poi.settlement}</p>
+            <div class="poi-card perspective-1000" onclick="openPOIModal('${poi.uid}')">
+                <div class="poi-card-inner">
+                    <div class="poi-card-front">
+                        <img class="poi-card__img" src="${poi.image}" />
+                        <div class="poi-card__shade"></div>
+                        <div class="poi-card__caption">
+                            <h3 class="poi-card__name">${poi.title}</h3>
+                            <p class="poi-card__region">${poi.settlement}</p>
                         </div>
                         ${pillHTML}
                     </div>
 
-                    <div class="poi-card-back absolute inset-0 bg-surface-container-high rounded-lg p-8 border border-secondary/20 flex flex-col justify-center items-center text-center shadow-2xl">
-                        <span class="material-symbols-outlined text-4xl text-secondary/40 mb-4" style="font-variation-settings: 'FILL' 0;">${matIcon}</span>
-                        <h3 class="text-lg font-headline font-bold text-secondary mb-1">${poi.title}</h3>
-                        <p class="text-[10px] font-label text-on-surface-variant uppercase tracking-[0.2em] mb-6">${poi.subtitle}</p>
-                        <div class="w-12 h-px bg-gradient-to-r from-transparent via-secondary/30 to-transparent mb-8"></div>
-                        <button class="px-6 py-2 border border-secondary/50 text-secondary text-[10px] font-label uppercase tracking-widest hover:bg-secondary hover:text-black transition-all duration-300 rounded-sm shadow-lg">
+                    <div class="poi-card-back">
+                        <span class="poi-card__icon material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">${matIcon}</span>
+                        <h3 class="poi-card__back-name">${poi.title}</h3>
+                        <p class="poi-card__back-region">${poi.subtitle}</p>
+                        <div class="poi-card__rule"></div>
+                        <button class="poi-card__button">
                             Read Full Entry
                         </button>
                     </div>
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById('modal-img').src = poi.image;
         document.getElementById('modal-uid').textContent = `ARCHIVE ID: ${poi.uid.toUpperCase()}`;
         document.getElementById('modal-title').textContent = poi.title;
-        document.getElementById('modal-body').innerHTML = poi.body || '<p class="italic text-on-surface/40">No deep lore recorded for this landmark yet.</p>';
+        document.getElementById('modal-body').innerHTML = poi.body || '<p class="poi-modal__empty">No deep lore recorded for this landmark yet.</p>';
         document.getElementById('modal-location').textContent = [poi.settlement, poi.district].filter(Boolean).join(', ');
         const pageLink = document.getElementById('modal-page-link');
         pageLink.href = poi.url;
@@ -138,16 +138,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (linkedNPCs.length > 0) {
             npcContainer.innerHTML = linkedNPCs.map(npc => `
-                <div class="group flex items-center gap-4 p-3 rounded bg-black/20 border border-white/5 hover:border-secondary/30 transition-colors">
+                <div class="resident-row">
                     
-                    <img src="${npc.image || 'images/placeholder.png'}" class="w-12 h-12 rounded object-cover grayscale opacity-80 transition-all duration-500 group-hover:grayscale-0 group-hover:opacity-100" alt="${npc.name}">
+                    <img src="${npc.image || 'images/placeholder.png'}" class="resident-row__img" alt="${npc.name}">
                     
-                    <div class="flex-grow">
-                        <div class="flex justify-between items-start">
-                            <h4 class="font-headline text-secondary text-sm font-bold">${npc.name}</h4>
-                            <a href="${store.url(npc.id)}" class="text-on-surface-variant hover:text-primary material-symbols-outlined text-sm" title="View Profile">person_search</a>
+                    <div class="resident-row__info">
+                        <div class="resident-row__head">
+                            <h4 class="resident-row__name">${npc.name}</h4>
+                            <a href="${store.url(npc.id)}" class="resident-row__link material-symbols-outlined" title="View Profile">person_search</a>
                         </div>
-                        <p class="font-label text-[9px] uppercase tracking-widest text-on-surface/40">${npc.role}</p>
+                        <p class="resident-row__role">${npc.role}</p>
                     </div>
                 </div>
             `).join('');
@@ -158,10 +158,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const modal = document.getElementById('poi-modal');
-        modal.classList.replace('hidden', 'flex');
+        modal.classList.remove('hidden');
     };
 
-    window.closePOIModal = () => document.getElementById('poi-modal').classList.replace('flex', 'hidden');
+    window.closePOIModal = () => document.getElementById('poi-modal').classList.add('hidden');
 
     renderGrid(allPOIs);
 

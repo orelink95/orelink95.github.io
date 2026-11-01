@@ -46,7 +46,7 @@
         "tags": [
           {
             "text": "ALLY",
-            "color": "text-[#4ade80] border-[#4ade80]/30"
+            "tone": "green"
           }
         ]
       }

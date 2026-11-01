@@ -21,7 +21,8 @@
       "nimo",
       "gust",
       "eli",
-      "davnis"
+      "davnis",
+      "m3mu"
     ],
     "funds": {
       "gold": 60,
@@ -56,9 +57,11 @@
         "status": "Secondary"
       }
     ],
+    "partyName": "EM&M",
     "party": [
       "eli",
-      "maevik"
+      "maevik",
+      "m3mu"
     ]
   }
 ]

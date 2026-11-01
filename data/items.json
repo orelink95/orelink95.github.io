@@ -1,7 +1,12 @@
 [
   {
     "id": "vial-of-mysterious-black-substance",
-    "name": "Vial of mysterious black substance"
+    "name": "Vial of mysterious black substance",
+    "image": "images/black-vial.png",
+    "type": "Potion",
+    "rarity": "Rare",
+    "cost": "??",
+    "summary": "A strange vial filled with swirling black goo. In constant movement, it seems to have a mind of its own."
   },
   {
     "id": "dark-shard-amulet",
@@ -11,11 +16,15 @@
   },
   {
     "id": "book-of-city-sewer-maps",
-    "name": "Book of city sewer maps"
+    "name": "Book of city sewer maps",
+    "image": "images/sewermap.jpg",
+    "rarity": "Unknown",
+    "summary": "An old leather tome containing various schematics and blueprints for the ancient sewer system"
   },
   {
     "id": "partially-broken-token",
-    "name": "Partially broken token"
+    "name": "Partially broken token",
+    "image": "images/Talon Token half.PNG"
   },
   {
     "id": "queen-thalen-compendium-borrowed",
@@ -29,11 +38,15 @@
   },
   {
     "id": "potion-of-healing",
-    "name": "Potion of Healing"
+    "name": "Potion of Healing",
+    "image": "images/health-potion.png",
+    "summary": "The warm red liquid is bitter sweet, familiar yet always surprising."
   },
   {
     "id": "4-pints-of-excellent-whisky",
-    "name": "4 Pints of Excellent Whisky"
+    "name": "4 Pints of Excellent Whisky",
+    "image": "images/whiskey.jpg",
+    "attunedBy": "davnis"
   },
   {
     "id": "notes-on-the-everlasting-book",

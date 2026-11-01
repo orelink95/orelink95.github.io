@@ -20,7 +20,8 @@
   {
     "id": "vale-house",
     "name": "Vale House",
-    "kind": "place"
+    "kind": "place",
+    "definition": "A mysterious demi-plane consisting of a pristine yet apparently abandoned mansion, once inhabited by a mysterious spellcaster named Alensia."
   },
   {
     "id": "doleris",
@@ -30,16 +31,19 @@
   {
     "id": "alensia",
     "name": "Alensia",
-    "kind": "lore"
+    "kind": "lore",
+    "definition": "Wizard creator and owner of the Vale House, apparently involved with Freyot in a way."
   },
   {
     "id": "freyot",
     "name": "Freyot",
-    "kind": "lore"
+    "kind": "lore",
+    "definition": "Mysterious figure brought up by the homonculi that still inhabit the Vale House."
   },
   {
     "id": "ekelph",
     "name": "Ekelph",
-    "kind": "lore"
+    "kind": "lore",
+    "definition": "An alternative script used by the Doleris. Mostly thought to have been used to encrypt messages."
   }
 ]

@@ -115,6 +115,8 @@
   {
     "id": "blackwater-syndicate",
     "name": "The Blackwater Syndicate",
-    "stub": true
+    "summary": "A mysterious criminal syndicate involved in illegal fighting rings and gambling in Brightend",
+    "status": "Neutral",
+    "quote": "Gold never lies"
   }
 ]

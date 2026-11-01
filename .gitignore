@@ -2,3 +2,7 @@
 
 # DM-only data (NPC secrets, later hero secrets). Never published.
 /data/private.json
+
+/styles/README.md
+
+/admin_tools

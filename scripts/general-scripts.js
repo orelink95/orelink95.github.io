@@ -91,27 +91,6 @@ function highlightActiveSidebarItem() {
     });
 }
 
-// Function to handle the Mobile Sidebar toggle
-function toggleMobileSidebar() {
-    const sidebar = document.getElementById('atlas-sidebar');
-    const backdrop = document.getElementById('sidebar-backdrop');
-
-    if (!sidebar || !backdrop) return;
-
-    if (!sidebar.classList.contains('is-open')) {
-        // Slide it in and show the dark background
-        sidebar.classList.add('is-open');
-        backdrop.classList.remove('hidden');
-        // Tiny delay so the fade-in starts after 'hidden' is gone
-        setTimeout(() => backdrop.classList.add('is-visible'), 10);
-    } else {
-        // Slide it out, fade the background, then hide it completely
-        sidebar.classList.remove('is-open');
-        backdrop.classList.remove('is-visible');
-        setTimeout(() => backdrop.classList.add('hidden'), 300);
-    }
-}
-
 // Start the fetch process when the page loads
 document.addEventListener("DOMContentLoaded", () => {
     // Library pages load their own header/footer variants; skip the defaults
@@ -125,103 +104,112 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ==========================================
-// --- RADIAL ORB MOBILE MENU ---
+// --- MOBILE ORB MENU ---
+// One button (bottom-left) opening a vertical panel. It replaces, below 768px,
+// the atlas sidebar and the library "wings" sidebar: the section you are in
+// unfolds its own pages under its entry. Styles: components.css.
+// NB: the sub-links repeat those of components/sidebar.html and
+// components/library-sidebar.html (desktop). Keep the three in step.
 // ==========================================
+const MOBILE_NAV = [
+    {
+        name: 'Atlas', url: 'world.html', icon: 'public', tone: 'green',
+        pages: ['world.html', 'continent.html', 'country.html', 'settlement.html', 'pois.html', 'poi.html'],
+        sub: [
+            { name: 'Continents', url: 'continent.html', icon: 'map' },
+            { name: 'Kingdoms', url: 'country.html', icon: 'fort' },
+            { name: 'Settlements', url: 'settlement.html', icon: 'home_work' },
+            { name: 'Points of Interest', url: 'pois.html', icon: 'location_on', alias: ['poi.html'] }
+        ]
+    },
+    {
+        name: 'Archive', url: 'library.html', icon: 'account_balance', tone: 'violet',
+        pages: ['library.html', 'bestiary.html', 'beast.html', 'handouts.html', 'tomes.html', 'vault.html'],
+        sub: [
+            { name: 'Elder Tarot', url: 'bestiary.html', icon: 'temp_preferences_custom', alias: ['beast.html'] },
+            { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' },
+            { name: 'Reference', url: 'tomes.html', icon: 'menu_book' },
+            { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
+            { name: 'Exit Archive', url: 'index.html', icon: 'door_front', exit: true }
+        ]
+    },
+    { name: 'Story', url: 'scriptorium.html', icon: 'book', tone: 'gold', pages: ['scriptorium.html'], sub: [] },
+    { name: 'NPCs', url: 'npc.html', icon: 'group', tone: 'blue', pages: ['npc.html'], sub: [] }
+];
+
 function createMobileOrbMenu() {
-    const orbContainer = document.createElement('div');
-    orbContainer.id = 'mobile-orb-menu';
-    orbContainer.className = 'orb-menu';
+    if (document.getElementById('mobile-orb-menu')) return;
 
-    const links = [
-        // tone: orb-item--blue / --gold / --green in components.css
-        { name: 'NPCs', url: 'npc.html', icon: 'group', tone: 'blue' },
-        { name: 'Story', url: 'scriptorium.html', icon: 'book', tone: 'gold' },
-        { name: 'Atlas', url: 'world.html', icon: 'public', tone: 'green' }
-    ];
+    let page = window.location.pathname.split('/').pop();
+    if (page === '') page = 'index.html';
 
-    // --- MATH: CIRCLE PERIMETER CALCULATION ---
-    const radius = 110; // Distance of the circle's perimeter from the center
-    const startAngle = 90; // 90 degrees is straight up
-    const endAngle = 0; // 0 degrees is straight right
+    const isHere = item => item.url === page || (item.alias || []).includes(page);
+    let step = 0; // index used to stagger the entries when the panel opens
 
-    // The main button is 56px (w-14) and mini-orbs are 40px (w-10).
-    // To center their origins perfectly on each other, we offset by half their difference (8px).
-    const centerOffset = 8;
-
-    let itemsHtml = links.map((link, idx) => {
-        // Calcul de l'espacement
-        const angle = links.length > 1
-            ? startAngle - (idx * ((startAngle - endAngle) / (links.length - 1)))
-            : 45;
-
-        const rad = angle * (Math.PI / 180);
-
-        // Coordonnées X et Y
-        const x = Math.round(Math.cos(rad) * radius) + centerOffset;
-        const y = Math.round(-Math.sin(rad) * radius) - centerOffset;
-
-        return `
-        <a href="${link.url}" class="orb-item orb-item--${link.tone}" style="transform: translate(0px, 0px) scale(0.5);" data-x="${x}" data-y="${y}">
-            
-            <div class="orb-item__disc">
-                <span class="orb-item__icon material-symbols-outlined">${link.icon}</span>
-            </div>
-            
-            <span class="orb-item__label"
-                  style="top: -10px; left: 35px; transform-origin: bottom left; transform: rotate(-15deg);">
-                ${link.name}
-            </span>
-            
-        </a>
-        `;
+    const groupsHtml = MOBILE_NAV.map(section => {
+        const inSection = section.pages.includes(page);
+        const exact = section.url === page;
+        const parentStep = ++step;
+        const sub = inSection && section.sub.length
+            ? `<div class="orb-sub">${section.sub.map(s => `
+                <a href="${s.url}" class="orb-sublink${isHere(s) ? ' is-active' : ''}${s.exit ? ' orb-sublink--exit' : ''}"
+                   style="--i:${++step}"${isHere(s) ? ' aria-current="page"' : ''}>
+                    <span class="orb-sublink__icon material-symbols-outlined">${s.icon}</span>
+                    <span class="orb-sublink__label">${s.name}</span>
+                </a>`).join('')}</div>`
+            : '';
+        const html = `
+            <div class="orb-group orb-tone--${section.tone}${inSection ? ' is-current' : ''}">
+                <a href="${section.url}" class="orb-link${exact ? ' is-active' : ''}"
+                   style="--i:${parentStep}"${exact ? ' aria-current="page"' : ''}>
+                    <span class="orb-link__disc"><span class="orb-link__icon material-symbols-outlined">${section.icon}</span></span>
+                    <span class="orb-link__label">${section.name}</span>
+                </a>
+                ${sub}
+            </div>`;
+        return html;
     }).join('');
 
-    orbContainer.innerHTML = `
-        <div id="orb-items-container" class="orb-menu__items">
-            ${itemsHtml}
-        </div>
-        <button id="main-orb-btn" class="orb-menu__button">
+    const menu = document.createElement('div');
+    menu.id = 'mobile-orb-menu';
+    menu.className = 'orb-menu';
+    menu.innerHTML = `
+        <div class="orb-menu__backdrop"></div>
+        <nav id="orb-panel" class="orb-panel" aria-label="Site navigation" inert>
+            ${groupsHtml}
+        </nav>
+        <button id="main-orb-btn" class="orb-menu__button" type="button"
+                aria-label="Open navigation menu" aria-expanded="false" aria-controls="orb-panel">
             <span id="main-orb-icon" class="orb-menu__icon material-symbols-outlined">explore</span>
         </button>
     `;
+    document.body.appendChild(menu);
+    // The library pages filter <body>, which would pin this to the page, not the screen
+    liftOutOfBody(menu);
 
-    document.body.appendChild(orbContainer);
+    const btn = menu.querySelector('#main-orb-btn');
+    const icon = menu.querySelector('#main-orb-icon');
+    const panel = menu.querySelector('#orb-panel');
 
-    // Interaction Logic
-    const orbBtn = document.getElementById('main-orb-btn');
-    const orbIcon = document.getElementById('main-orb-icon');
-    const orbItems = document.querySelectorAll('.orb-item');
-    let isOrbOpen = false;
+    function setOpen(open) {
+        menu.classList.toggle('is-open', open);
+        btn.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', String(open));
+        btn.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+        icon.textContent = open ? 'close' : 'explore';
+        panel.toggleAttribute('inert', !open);
+    }
 
-    orbBtn.addEventListener('click', () => {
-        isOrbOpen = !isOrbOpen;
-
-        if (isOrbOpen) {
-            orbIcon.style.transform = 'rotate(135deg)';
-            orbBtn.classList.add('is-open');
-
-            orbItems.forEach((item, index) => {
-                item.style.pointerEvents = 'auto';
-                item.style.opacity = '1';
-
-                const targetX = item.getAttribute('data-x');
-                const targetY = item.getAttribute('data-y');
-
-                setTimeout(() => {
-                    item.style.transform = `translate(${targetX}px, ${targetY}px) scale(1)`;
-                }, index * 50);
-            });
-        } else {
-            orbIcon.style.transform = 'rotate(0deg)';
-            orbBtn.classList.remove('is-open');
-
-            orbItems.forEach(item => {
-                item.style.pointerEvents = 'none';
-                item.style.opacity = '0';
-                item.style.transform = 'translate(0px, 0px) scale(0.5)';
-            });
+    btn.addEventListener('click', () => setOpen(!menu.classList.contains('is-open')));
+    menu.querySelector('.orb-menu__backdrop').addEventListener('click', () => setOpen(false));
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+            setOpen(false);
+            btn.focus();
         }
     });
+    // Coming back with the browser's back button must not show the panel open
+    window.addEventListener('pageshow', () => setOpen(false));
 }
 
 if (document.readyState === 'loading') {
@@ -292,19 +280,19 @@ function highlightLibrarySidebar() {
 }
 
 // --- CURSOR GLOW ENGINE ---
-    document.addEventListener("DOMContentLoaded", () => {
-      const glowCards = document.querySelectorAll('.cursor-glow-card');
+document.addEventListener("DOMContentLoaded", () => {
+    const glowCards = document.querySelectorAll('.cursor-glow-card');
 
-      glowCards.forEach(card => {
+    glowCards.forEach(card => {
         card.addEventListener('mousemove', (e) => {
-          // Calculate the mouse's coordinates relative to the card's top-left corner
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
+            // Calculate the mouse's coordinates relative to the card's top-left corner
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-          // Inject those coordinates into the CSS variables
-          card.style.setProperty('--mouse-x', `${x}px`);
-          card.style.setProperty('--mouse-y', `${y}px`);
+            // Inject those coordinates into the CSS variables
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
         });
-      });
     });
+});

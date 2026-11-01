@@ -43,5 +43,24 @@
     "icon": "visibility",
     "iconColor": "#b891dc",
     "body": "\"When the first tide forgets the shore and the Four Pillars stand as one, the Great Anchor shall slip its chain. No ship shall rot in port, for the horizon has teeth to pull the bold into the skyless deep. They go not to the Shun Lands, but to the land that builds for no man; a sacrifice made to the silent reach where the map ends and the unobserved world begins.\""
+  },
+  {
+    "id": "sultry-deck-hand",
+    "name": "The sultry deck-hand and the Sirens",
+    "author": "Meleas Findregor",
+    "kind": "Book",
+    "category": "Fiction",
+    "tone": "primary",
+    "body": "The melodrama follows Jack \"Bronze-Chested\" Merriweather, an impossibly handsome sailor aboard the privateer brig Sea Nymph, whose linen shirts suffer an inexplicable tendency to rip open whenever a brisk ocean gale catches the rigging. When the vessel drifts into the cursed mists of the Serpent's Gulf, the crew scrambles to stuff beeswax into their ears against the lethal allure of the reefs. Jack, however, catches the eye of Sorsha—a haughty, silver-scaled siren sovereign who finds herself entirely unprepared for a mortal whose smoldering gaze rivals the fury of an arcane tempest.\n\nWhat begins as a battle of wits and wills over the ship's fate quickly spirals into breathless moonlit confrontations, stolen embraces against the capstan, and dramatic declarations of passion whispered over the crash of breaking surf. Jack must ultimately decide whether to heed the strict code of the privateer brotherhood or surrender to the treacherous, intoxicating pull of the deep."
+  },
+  {
+    "id": "way-of-lizard",
+    "name": "Meditations on the way of the lizard",
+    "author": "Master Sshev",
+    "kind": "Book",
+    "category": "Philosophy",
+    "spineText": "meditatio reptilis",
+    "tone": "ethereal",
+    "body": "Meditation on the Way of the Lizard is an obscure ascetic treatise documenting an all-but-extinct monastic discipline native to arid crags and subterranean ruins.\n\nPenned by the hermit-ascetic Master Sshev of the Sunken Terraces, the text fundamentally rejects the fluid momentum of water styles and the fierce exertion of dragon disciplines, advocating instead for the profound power of absolute inertia. Sshev argues that ki is not summoned through relentless motion, but cultivated in motionless basking—absorbing the ambient heat and pressure of the world until mind and muscle enter a state of preserved suspended stillness. The treatise is structured around four core contemplative disciplines: Unblinking Perception (cultivating peripheral awareness while maintaining utter physical stillness), The Shed Tail (the philosophical and martial willingness to sacrifice superficial ego or flesh to preserve the vital core), The Clinging Palm (mastery of surface friction and vertical mobility), and The Sudden Tongue (unleashing explosive, lethal strikes without windup or telegraphing).\n\nWhile orthodox monastic orders often criticized the Way of the Lizard as callous and cold-blooded—pointing to Sshev’s insistence that a master should let kingdoms burn around them if moving would break their inner equilibrium—the work is quietly revered by martial historians and assassins alike. Surviving copies are heavily annotated in the margins by centuries of curious initiates, all seeking Sshev’s lost methods for moving from complete rest to blinding lethality in the space of a single heartbeat."
   }
 ]

@@ -56,9 +56,9 @@
     ],
     "sealedSecret": {
       "v": 1,
-      "salt": "HWNeYC1iEsHDBYUGYpkSdQ==",
-      "iv": "h7NtZY5Sd7B86oXz",
-      "data": "c7D1c/1lmtwr0cKOuz+ka6Dk5dyv6C+SVxviQr4o/UMs/33h"
+      "salt": "HYsHld7PWXJ28ZyxJtoyzw==",
+      "iv": "WVpAsFDB0FARn3HE",
+      "data": "lHbwtq5dguRM6gwyMd6g53oRG17rcMa/G1AaOWlDW6AJiYPvxg=="
     }
   },
   {
@@ -127,5 +127,13 @@
     "id": "maevik",
     "name": "Maevik",
     "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Maevik"
+  },
+  {
+    "id": "m3mu",
+    "name": "M3MU",
+    "raceClass": "Myconid Automaton",
+    "level": 6,
+    "background": "Cleric",
+    "backstory": "A Myconid Automaton created by the Athenaeum and given to Eli for protection during field work."
   }
 ]

@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const search = document.getElementById('vault-search');
     const picker = document.getElementById('vault-campaign');
 
-    const RARITY_CLASS = r => 'rarity--' + String(r || 'none').toLowerCase().replace(/\s+/g, '-');
+    const RARITY_CLASS = Athenaeum.lootCard.rarityClass;
     const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
     // --- which cards this browser has already turned over
@@ -48,28 +48,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // --- the gallery
-    function cardHtml({ item, isNew }) {
-        const faceDown = isNew && !seen.has(item.id);
-        const meta = [item.type, item.rarity].filter(Boolean).map(esc);
-        const picture = item.image
-            ? `<img src="${esc(item.image)}" alt="" class="loot-card__img" loading="lazy">`
-            : `<span class="loot-card__placeholder material-symbols-outlined">diamond</span>`;
-        return `
-        <button type="button" class="loot-card ${RARITY_CLASS(item.rarity)}${faceDown ? ' is-face-down' : ''}" data-id="${item.id}"
-                aria-label="${faceDown ? 'A new find, face down: turn it over' : esc(item.name)}">
-            <span class="loot-card__inner">
-                <span class="loot-card__face loot-card__front">
-                    <span class="loot-card__picture">${picture}</span>
-                    <span class="loot-card__name">${esc(item.name)}</span>
-                    ${meta.length ? `<span class="loot-card__meta">${item.type ? `<span>${esc(item.type)}</span>` : ''}${item.type && item.rarity ? ' · ' : ''}${item.rarity ? `<span class="loot-card__rarity">${esc(item.rarity)}</span>` : ''}</span>` : ''}
-                    ${item.summary ? `<span class="loot-card__summary">${esc(item.summary)}</span>` : ''}
-                </span>
-                <span class="loot-card__face loot-card__back">
-                    <span class="loot-card__new">New find</span>
-                </span>
-            </span>
-        </button>`;
-    }
+    // A card (markup: scripts/loot-card.js); new finds lie face down until turned over
+    const cardHtml = ({ item, isNew }) => Athenaeum.lootCard.front(item, { faceDown: isNew && !seen.has(item.id) });
 
     function render() {
         const q = search.value.trim().toLowerCase();
@@ -103,20 +83,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const item = store.get(id);
         if (!item || store.typeOf(item) !== 'item') return;
         markSeen(id);
-        const set = (el, text) => { document.getElementById(el).textContent = text || ''; };
-        document.getElementById('sheet').className = `item-sheet ${RARITY_CLASS(item.rarity)}`;
-        set('sheet-name', item.name);
-        set('sheet-type', item.type);
-        set('sheet-rarity', item.rarity);
-        set('sheet-cost', item.cost);
-        set('sheet-weight', item.weight);
         const hero = item.attunedBy && store.get(item.attunedBy);
-        document.getElementById('sheet-required').classList.toggle('is-on', !!item.attunement);
-        document.getElementById('sheet-attuned').classList.toggle('is-on', !!hero);
-        document.getElementById('sheet-attuned').title = hero ? `Attuned to ${hero.name}` : 'Not attuned';
-        set('sheet-note', hero ? `Attuned to ${hero.name}` : '');
-        const text = item.body ? store.md(item.body) : (item.summary ? `<p>${esc(item.summary)}</p>` : '<p class="item-sheet__empty">No further notes in the archive.</p>');
-        document.getElementById('sheet-text').innerHTML = store.autolink(text, { exclude: item.id });
+        document.getElementById('sheet').innerHTML = Athenaeum.lootCard.sheet(item, store);
+        document.getElementById('sheet-note').textContent = hero ? `Attuned to ${hero.name}` : '';
         document.getElementById('sheet-picture').innerHTML = item.image
             ? `<img src="${esc(item.image)}" alt="${esc(item.name)}">`
             : `<span class="vault-modal__placeholder material-symbols-outlined ${RARITY_CLASS(item.rarity)}">diamond</span>`;

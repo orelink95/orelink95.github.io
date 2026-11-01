@@ -8,6 +8,7 @@ Plain CSS, no build step. Every page loads, in this order:
 | `base.css` | Browser reset, form defaults, the `.hidden` helper and the shared `@keyframes` (pulse, float, glow…). |
 | `components.css` | Pieces used on every page: header, atlas sidebar, footer, mobile orb menu. |
 | `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. |
+| `loot-card.css` | The item cards (front and opened, rarity colours), shared by the Vault and the dashboard preview. Markup: `scripts/loot-card.js`. |
 | `main-style.css`, `atlas-style.css`, `poi-style.css` | Older hand-written styles (lore text, keyword links, map tweaks, POI entries). |
 
 ## Conventions

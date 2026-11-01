@@ -12,6 +12,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/loot-card.css" rel="stylesheet" />
     <link href="styles/pages/vault.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
@@ -19,6 +20,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/loot-card.js"></script>
     <script src="scripts/vault-scripts.js"></script>
 </head>
 
@@ -57,20 +59,11 @@
     </main>
 
     <!-- A card, opened: its picture and the physical card, filled in -->
-    <div id="vault-modal" class="vault-modal hidden" role="dialog" aria-modal="true" aria-labelledby="sheet-name">
+    <div id="vault-modal" class="vault-modal hidden" role="dialog" aria-modal="true" aria-label="Item card">
         <div class="vault-modal__veil" onclick="closeItem()"></div>
         <div class="vault-modal__body">
             <figure class="vault-modal__picture" id="sheet-picture"></figure>
-            <article class="item-sheet" id="sheet">
-                <h2 class="item-sheet__value item-sheet__name" id="sheet-name"></h2>
-                <p class="item-sheet__value item-sheet__type" id="sheet-type"></p>
-                <p class="item-sheet__value item-sheet__rarity" id="sheet-rarity"></p>
-                <p class="item-sheet__value item-sheet__cost" id="sheet-cost"></p>
-                <p class="item-sheet__value item-sheet__weight" id="sheet-weight"></p>
-                <span class="item-sheet__dot item-sheet__dot--required" id="sheet-required" title="Requires attunement"></span>
-                <span class="item-sheet__dot item-sheet__dot--attuned" id="sheet-attuned"></span>
-                <div class="item-sheet__text custom-scrollbar" id="sheet-text"></div>
-            </article>
+            <div id="sheet"></div>
             <p class="vault-modal__note" id="sheet-note"></p>
         </div>
         <button class="vault-modal__close" onclick="closeItem()" aria-label="Close">

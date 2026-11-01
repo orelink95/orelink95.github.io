@@ -16,295 +16,298 @@
     rel="stylesheet" />
 
   <link href="styles/main-style.css" rel="stylesheet" />
-  <link href="styles/output.css" rel="stylesheet" />
+  <link href="styles/tokens.css" rel="stylesheet" />
+  <link href="styles/base.css" rel="stylesheet" />
+  <link href="styles/components.css" rel="stylesheet" />
+  <link href="styles/pages/index.css" rel="stylesheet" />
 </head>
 
 <body
-  class="bg-background text-on-surface font-body selection:bg-secondary/30 selection:text-secondary-fixed overflow-x-hidden">
+  class="page">
 
   <div id="header-placeholder"></div>
 
 
   <main>
     <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <section class="hero">
 
       <!-- Animated Background Gradient -->
-      <div class="absolute inset-0 z-0 bg-gradient-to-b from-primary-container/30 via-surface to-surface"></div>
+      <div class="hero__backdrop"></div>
 
       <!-- Floating Particles Effect -->
-      <div class="absolute inset-0 z-10 pointer-events-none opacity-40">
-        <div class="particle w-1 h-1 top-[20%] left-[30%] animate-drift" style="animation-delay: 0s"></div>
-        <div class="particle w-2 h-2 top-[40%] left-[70%] animate-drift" style="animation-delay: 2s"></div>
-        <div class="particle w-1.5 h-1.5 top-[60%] left-[10%] animate-drift" style="animation-delay: 4s"></div>
-        <div class="particle w-1 h-1 top-[80%] left-[80%] animate-drift" style="animation-delay: 1s"></div>
-        <div class="particle w-2 h-2 top-[10%] left-[50%] animate-drift" style="animation-delay: 5s"></div>
+      <div class="hero__particles">
+        <div class="hero__mote-1 particle" style="animation-delay: 0s"></div>
+        <div class="hero__mote-2 particle" style="animation-delay: 2s"></div>
+        <div class="hero__mote-3 particle" style="animation-delay: 4s"></div>
+        <div class="hero__mote-4 particle" style="animation-delay: 1s"></div>
+        <div class="hero__mote-5 particle" style="animation-delay: 5s"></div>
       </div>
 
       <!-- Hero Image Layer -->
-      <div class="absolute inset-0 z-0">
+      <div class="hero__image-frame">
         <img
-          class="w-full h-full object-cover scale-105 brightness-[0.55] saturate-[0.85] blur-[1.5px] animate-pulse-slow"
+          class="hero__image"
           alt="" src="images/homebg.jpg" />
-        <div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+        <div class="hero__image-fade"></div>
       </div>
 
-      <div class="relative z-20 text-center px-4 max-w-5xl mx-auto animate-float">
+      <div class="hero__content">
         <h1
-          class="font-headline text-5xl md:text-7xl lg:text-8xl font-bold text-on-surface mb-6 leading-tight tracking-tight [text-shadow:0_2px_4px_rgba(0,0,0,0.9),0_0_24px_rgba(0,0,0,0.6)]">
+          class="hero__title">
           The Eraldom Archive: <br />
-          <span class="text-secondary italic font-normal animate-glow">Chronicles of the Athenaeum's Vaults</span>
+          <span class="hero__title-accent">Chronicles of the Athenaeum's Vaults</span>
         </h1>
         <p
-          class="font-body text-xl md:text-2xl text-on-surface max-w-2xl mx-auto mb-10 leading-relaxed italic [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]">
+          class="hero__lead">
           "Step within the sanctum of forgotten ages, where every whisper of wind turns a page in the tapestry of
           existence."
         </p>
-        <div class=" ml-6 flex flex-col md:flex-row items-center justify-center">
+        <div class="hero__actions">
           <a href="world.html"
-            class="px-10 py-4 bg-primary-container border border-secondary/40 text-primary font-headline tracking-widest uppercase text-sm rounded-sm hover:bg-secondary-container hover:text-on-secondary-container transition-all duration-500 shadow-xl shadow-black/40 group relative overflow-hidden">
-            <span class="relative m-auto z-1">Explore the Grand Atlas</span>
+            class="hero__button">
+            <span class="hero__button-label z-1">Explore the Grand Atlas</span>
             <div
-              class="absolute inset-0 bg-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity animate-pulse">
+              class="hero__button-shimmer">
             </div>
           </a>
         </div>
       </div>
 
       <!-- Scroll Indicator -->
-      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce">
+      <div class="hero__scroll-hint">
         <span
-          class="material-symbols-outlined text-secondary opacity-50 text-4xl hover:opacity-100 transition-opacity cursor-pointer"
+          class="hero__scroll-icon material-symbols-outlined"
           data-icon="keyboard_double_arrow_down">keyboard_double_arrow_down</span>
       </div>
     </section>
 
     <!-- Navigation Portal -->
-    <section class="pt-24 pb-10 px-6 md:px-12 bg-surface max-w-7xl mx-auto">
-      <div class="mb-20 text-center">
-        <h2 class="font-headline text-4xl text-secondary mb-4 animate-glow">Gateways to the Beyond</h2>
-        <div class="w-24 h-px bg-gradient-to-r from-transparent via-secondary/50 to-transparent mx-auto"></div>
+    <section class="gateways">
+      <div class="gateways__header">
+        <h2 class="gateways__title">Gateways to the Beyond</h2>
+        <div class="gateways__rule"></div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+      <div class="gateways__grid">
 
         <div
-          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)] h-full min-h-[350px] md:min-h-[450px]">
+          class="gateway-wide">
           <img
-            class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-1000 scale-105 group-hover:scale-100"
+            class="gateway__image-settle"
             data-alt="map of lemerolai and adjacent wildlands" src="images/lemerolai_map.png" />
           <div
-            class="absolute inset-0 bg-[#121412]/20 opacity-0 group-hover:opacity-100 transition-opacity mix-blend-overlay">
+            class="gateway__tint">
           </div>
           <div
-            class="absolute inset-0 bg-gradient-to-t from-background via-background/60 md:via-background/40 to-transparent p-6 md:p-10 flex flex-col justify-end">
+            class="gateway__overlay-wide">
             <span
-              class="material-symbols-outlined text-secondary text-5xl mb-4 group-hover:scale-110 transition-transform group-hover:animate-pulse"
+              class="gateway__icon-pulse material-symbols-outlined"
               data-icon="public">public</span>
-            <h3 class="font-headline text-3xl text-on-surface mb-3">The Grand Atlas</h3>
-            <p class="font-body text-lg text-on-surface-variant/80 max-w-md">Navigate the shifting borders and mystical
+            <h3 class="gateway__title-lg">The Grand Atlas</h3>
+            <p class="gateway__text-lg">Navigate the shifting borders and mystical
               ley lines of Eraldom. Every peak and valley tells a tale of war and wonder.</p>
-            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
-              href="world.html">Map the World <span class="material-symbols-outlined text-sm"
+            <a class="gateway__link"
+              href="world.html">Map the World <span class="gateway__link-icon material-symbols-outlined"
                 data-icon="arrow_forward">arrow_forward</span></a>
           </div>
         </div>
 
         <div
-          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)] h-full min-h-[350px] md:min-h-[450px]">
+          class="gateway">
           <img
-            class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105"
+            class="gateway__image"
             data-alt="stack of ancient leather-bound books glowing with faint blue magical energy in a dark scholarly study"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQ7L4LV6mgw2CH710uCyGVLhimRq6ydms4SSVcfQLyN9_H3qC7amLWc51Rqc3dgAcPuWko-6tvVGvkFRDHbZtZwubpoGv0RqGE-A5UyAHc_caT5s8V69pY_PISOn0o4RHQoFlGoqe1OqkZcglPFQYAegr8SFlrnN8NrX0Ie0DFNY7mv2aoFZfZpw7085SM8JyX5isesk9XkiFz_qnUK839EyeexVLURHi9FkLaFS2EPl_dBYHWCsPyGH5rSLOEMu53aR2PjJxu3f0" />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent p-6 md:p-10 flex flex-col justify-end">
+            class="gateway__overlay">
             <span
-              class="material-symbols-outlined text-secondary text-4xl mb-4 group-hover:scale-110 transition-transform"
+              class="gateway__icon material-symbols-outlined"
               data-icon="library_books">library_books</span>
-            <h3 class="font-headline text-2xl text-on-surface mb-2">Library of Ages</h3>
-            <p class="font-body text-base text-on-surface-variant/80">The comprehensive archives of historical
+            <h3 class="gateway__title">Library of Ages</h3>
+            <p class="gateway__text">The comprehensive archives of historical
               manuscripts, forbidden lore, and cosmic cycles.</p>
-            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
-              href="#">Explore the shelves <span class="material-symbols-outlined text-sm"
+            <a class="gateway__link"
+              href="#">Explore the shelves <span class="gateway__link-icon material-symbols-outlined"
                 data-icon="arrow_forward">arrow_forward</span></a>
           </div>
         </div>
 
         <div
-          class="md:col-span-5 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(233,193,118,0.15)] h-full min-h-[350px] md:min-h-[450px]">
+          class="gateway">
           <img
-            class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000 group-hover:scale-105"
+            class="gateway__image"
             data-alt="close up of a silver fountain pen writing glowing magical runes onto a scroll of aged parchment"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuADdulN0YWYB_Weyk44yH_26kHXtynfq83CmNk36BEbA4sAayOv3cDWOZZOYVVB1Adfhanf5iIzY8amkm1Byosc8fnzT68BEIVZilXa4MJOqACUd8DuAmW7Mooar2lYKQkQxWyPWT9IhfaeELT8AWKofbbRrWAEKHjTrYDfd023wOJcXQdt9qBnIEYA0DqKLpsyNfJbRniMcBczAWmoFdDX1wpXb0KQTRsau1-dfD4PNnqyDgUd0rGur186pMWch2QKLvu-4yZVbRk" />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent p-6 md:p-10 flex flex-col justify-end">
+            class="gateway__overlay">
             <span
-              class="material-symbols-outlined text-secondary text-4xl mb-4 group-hover:scale-110 transition-transform"
+              class="gateway__icon material-symbols-outlined"
               data-icon="history_edu">history_edu</span>
-            <h3 class="font-headline text-2xl text-on-surface mb-2">The Scriptorium</h3>
-            <p class="font-body text-base text-on-surface-variant/80">Where the modern scribes transcribe current events
+            <h3 class="gateway__title">The Scriptorium</h3>
+            <p class="gateway__text">Where the modern scribes transcribe current events
               into the everlasting record.</p>
-            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
-              href="scriptorium.html">See the latest entries <span class="material-symbols-outlined text-sm"
+            <a class="gateway__link"
+              href="scriptorium.html">See the latest entries <span class="gateway__link-icon material-symbols-outlined"
                 data-icon="arrow_forward">arrow_forward</span></a>
           </div>
         </div>
 
         <div
-          class="md:col-span-7 group relative overflow-hidden rounded-lg bg-surface-container-low transition-all duration-700 hover:shadow-[0_0_60px_rgba(179,205,182,0.2)] h-full min-h-[350px] md:min-h-[450px]">
+          class="gateway-wide">
           <img
-            class="absolute inset-0 w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-70 transition-all duration-1000 group-hover:scale-105"
+            class="gateway__image-bright"
             data-alt="majestic silhouettes of fantasy heroes standing on a cliff edge looking at a distant gothic castle under a giant moon"
             src="https://lh3.googleusercontent.com/aida-public/AB6AXuDemIoo-bQl8xQGTmvESG7sv03kIx2HpO__r8s3f_IxS1B6aRPuzwHWrtnHX5ENHQaAHDkBKtCbBOIFbJ74uJn_Dd6s3bYDSLR0dWjS7elBUZt9bvW1ae4PiJPT1xmuJZxgKEHo2IXh8_fZwKXGo66VIR8cF2pLG6udnISgstWvNEIg2dgTLXxgcQ1QCAObSaPKlq4IMPy_0YMxpsh40TjSvUeH0qMk5IUVdDeFstRZqeHWtCbdrqEHzBjOROpa_y5n3HflXgOw2Mg" />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-background via-background/60 md:via-background/40 to-transparent p-6 md:p-10 flex flex-col justify-end">
+            class="gateway__overlay-wide">
             <span
-              class="material-symbols-outlined text-secondary text-5xl mb-4 group-hover:scale-110 transition-transform"
+              class="gateway__icon-lg material-symbols-outlined"
               data-icon="groups">groups</span>
-            <h3 class="font-headline text-3xl text-on-surface mb-3">Dramatis Personae</h3>
-            <p class="font-body text-lg text-on-surface-variant/80 max-w-md">The souls who shape history. Meet the
+            <h3 class="gateway__title-lg">Dramatis Personae</h3>
+            <p class="gateway__text-lg">The souls who shape history. Meet the
               kings, the heretics, and the harbingers of the new age.</p>
-            <a class="mt-6 text-secondary uppercase text-xs tracking-[0.2em] font-label hover:translate-x-4 transition-all inline-flex items-center gap-2 group-hover:text-secondary-fixed"
-              href="npc.html">Meet your heroes <span class="material-symbols-outlined text-sm"
+            <a class="gateway__link"
+              href="npc.html">Meet your heroes <span class="gateway__link-icon material-symbols-outlined"
                 data-icon="arrow_forward">arrow_forward</span></a>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="py-20 px-6 relative z-20 max-w-7xl mx-auto -mb-16">
-      <div class="flex flex-col items-center mb-10">
-        <span class="font-label text-[10px] uppercase tracking-[0.4em] text-secondary animate-pulse-slow mb-2">The Loom
+    <section class="sessions">
+      <div class="sessions__header">
+        <span class="sessions__eyebrow">The Loom
           of Fate</span>
-        <h2 class="font-headline text-3xl md:text-4xl text-on-surface flex items-center gap-4">
-          <span class="h-px w-12 bg-gradient-to-r from-transparent to-secondary/50"></span>
+        <h2 class="sessions__title">
+          <span class="sessions__rule-left"></span>
           Upcoming Sessions
-          <span class="h-px w-12 bg-gradient-to-l from-transparent to-secondary/50"></span>
+          <span class="sessions__rule-right"></span>
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="upcoming-sessions-grid">
+      <div class="sessions__grid" id="upcoming-sessions-grid">
 
         <div
-          class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-secondary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(233,193,118,0.15)] hover:-translate-y-2 cursor-default"
+          class="session-card--next cursor-glow-card"
           style="--glow-color: rgba(233, 193, 118, 0.15);">
 
           <div
-            class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            class="session-card__glow"
             style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);">
           </div>
 
           <div
-            class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-secondary to-transparent opacity-50 group-hover:opacity-100 transition-opacity z-10">
+            class="session-card__bar--next">
           </div>
 
-          <div class="flex justify-between items-start mb-6 relative z-10">
-            <div class="flex items-center gap-4">
+          <div class="session-card__head">
+            <div class="session-card__ident">
               <div
-                class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-secondary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
+                class="session-card__badge--next">
                 <span
-                  class="material-symbols-outlined text-secondary text-xl opacity-80 group-hover:opacity-100 group-hover:animate-pulse"
+                  class="session-card__badge-icon--next material-symbols-outlined"
                   style="font-variation-settings: 'FILL' 1;">hourglass_top</span>
               </div>
               <div>
-                <h3 class="font-headline text-xl font-bold text-white group-hover:text-secondary transition-colors">
+                <h3 class="session-card__title--next">
                   The Last Sigil</h3>
-                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 10</p>
+                <p class="session-card__number">Session 10</p>
               </div>
             </div>
             <span
-              class="px-2.5 py-1 rounded bg-secondary/15 border border-secondary/30 text-secondary text-[8px] uppercase tracking-widest font-bold shadow-[0_0_10px_rgba(233,193,118,0.2)] animate-pulse">Up
+              class="session-card__status--next">Up
               Next</span>
           </div>
 
-          <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
-            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span
-                class="material-symbols-outlined text-[16px] text-white/30">event</span> Wednesday, Nov 4th</p>
-            <p class="font-body text-sm text-white/90 flex items-center gap-3"><span
-                class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 2:00 PM</p>
+          <div class="session-card__details">
+            <p class="session-card__line--next"><span
+                class="session-card__line-icon material-symbols-outlined">event</span> Wednesday, Nov 4th</p>
+            <p class="session-card__line--next"><span
+                class="session-card__line-icon material-symbols-outlined">schedule</span> 2:00 PM</p>
           </div>
         </div>
 
         <div
-          class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(74,222,128,0.1)] hover:-translate-y-2 cursor-default"
+          class="session-card--scheduled cursor-glow-card"
           style="--glow-color: rgba(74, 222, 128, 0.15);">
 
           <div
-            class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            class="session-card__glow"
             style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);">
           </div>
 
           <div
-            class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            class="session-card__bar--scheduled">
           </div>
 
-          <div class="flex justify-between items-start mb-6 relative z-10">
-            <div class="flex items-center gap-4">
+          <div class="session-card__head">
+            <div class="session-card__ident">
               <div
-                class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-primary/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
-                <span class="material-symbols-outlined text-primary text-xl opacity-80 group-hover:opacity-100"
+                class="session-card__badge--scheduled">
+                <span class="session-card__badge-icon--scheduled material-symbols-outlined"
                   style="font-variation-settings: 'FILL' 1;">calendar_month</span>
               </div>
               <div>
-                <h3 class="font-headline text-xl font-bold text-white group-hover:text-primary transition-colors">The
+                <h3 class="session-card__title--scheduled">The
                   Last Sigil</h3>
-                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 11</p>
+                <p class="session-card__number">Session 11</p>
               </div>
             </div>
             <span
-              class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/60 text-[8px] uppercase tracking-widest font-bold group-hover:text-primary group-hover:border-primary/30 transition-colors">Scheduled</span>
+              class="session-card__status--scheduled">Scheduled</span>
           </div>
 
-          <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
+          <div class="session-card__details">
             <p
-              class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3">
-              <span class="material-symbols-outlined text-[16px] text-white/30">event</span> Wednesday, November 18th
+              class="session-card__line--scheduled">
+              <span class="session-card__line-icon material-symbols-outlined">event</span> Wednesday, November 18th
             </p>
             <p
-              class="font-body text-sm text-white/60 group-hover:text-white/90 transition-colors flex items-center gap-3">
-              <span class="material-symbols-outlined text-[16px] text-white/30">schedule</span> 2:00 PM
+              class="session-card__line--scheduled">
+              <span class="session-card__line-icon material-symbols-outlined">schedule</span> 2:00 PM
             </p>
           </div>
         </div>
 
         <div
-          class="cursor-glow-card group relative bg-[#0a0b0a]/80 backdrop-blur-md border border-white/10 rounded-xl p-6 overflow-hidden hover:border-purple-400/50 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(192,132,252,0.1)] hover:-translate-y-2 cursor-default"
+          class="session-card--tbd cursor-glow-card"
           style="--glow-color: rgba(192, 132, 252, 0.15);">
 
           <div
-            class="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            class="session-card__glow"
             style="background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), var(--glow-color), transparent 40%);">
           </div>
 
           <div
-            class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            class="session-card__bar--tbd">
           </div>
 
-          <div class="flex justify-between items-start mb-6 relative z-10">
-            <div class="flex items-center gap-4">
+          <div class="session-card__head">
+            <div class="session-card__ident">
               <div
-                class="w-12 h-12 rounded-full bg-black/60 border border-white/10 flex items-center justify-center group-hover:border-purple-400/60 group-hover:scale-110 transition-all duration-500 shadow-inner">
-                <span class="material-symbols-outlined text-purple-400 text-xl opacity-80 group-hover:opacity-100"
+                class="session-card__badge--tbd">
+                <span class="session-card__badge-icon--tbd material-symbols-outlined"
                   style="font-variation-settings: 'FILL' 1;">explore</span>
               </div>
               <div>
-                <h3 class="font-headline text-xl font-bold text-white group-hover:text-purple-400 transition-colors">
+                <h3 class="session-card__title--tbd">
                   Echoes from the Void</h3>
-                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mt-0.5">Session 7</p>
+                <p class="session-card__number">Session 7</p>
               </div>
             </div>
             <span
-              class="px-2.5 py-1 rounded bg-white/5 border border-white/10 text-white/40 text-[8px] uppercase tracking-widest font-bold">TBD</span>
+              class="session-card__status--tbd">TBD</span>
           </div>
 
-          <div class="space-y-2 border-t border-white/5 pt-4 relative z-10">
+          <div class="session-card__details">
             <p
-              class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3">
-              <span class="material-symbols-outlined text-[16px] text-white/20">event</span> Saturday, December 5th
+              class="session-card__line--tbd">
+              <span class="session-card__line-icon--faint material-symbols-outlined">event</span> Saturday, December 5th
             </p>
             <p
-              class="font-body text-sm text-white/40 group-hover:text-white/70 transition-colors flex items-center gap-3">
-              <span class="material-symbols-outlined text-[16px] text-white/20">schedule</span> 11:00 AM
+              class="session-card__line--tbd">
+              <span class="session-card__line-icon--faint material-symbols-outlined">schedule</span> 11:00 AM
             </p>
           </div>
         </div>
@@ -313,101 +316,100 @@
     </section>
 
     <!-- Latest Updates section -->
-    <section class=" py-20 relative overflow-hidden">
+    <section class="updates">
       <!-- Glow Pulse Background -->
       <div
-        class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-primary/5 rounded-full blur-[120px] animate-pulse-slow">
+        class="updates__glow">
       </div>
-      <div class="max-w-7xl mx-auto px-6 relative z-10">
-        <div class="flex items-end justify-between mb-8 border-b border-outline-variant/20 pb-3">
+      <div class="updates__inner">
+        <div class="updates__header">
           <div>
-            <span class="font-label text-xs uppercase tracking-[0.3em] text-primary animate-pulse">New
+            <span class="updates__eyebrow">New
               Revelations</span>
-            <h2 class="font-headline text-3xl text-on-surface mt-2">Latest Updates</h2>
+            <h2 class="updates__title">Latest Updates</h2>
           </div>
-          <a class="text-secondary font-label text-xs uppercase tracking-widest hover:text-secondary-fixed transition-all hover:scale-105"
+          <a class="updates__all-link"
             href="scriptorium.html">View All Scrolls</a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="updates__grid">
 
           <!-- Update Item 1 -->
-          <div class="group cursor-pointer">
-            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+          <div class="update-card">
+            <div class="update-card__frame">
               <img
-                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
+                class="update-card__image-tilt-right"
                 data-alt="misty jagged mountains reflecting in a still dark lake at dawn with teal and deep green tones"
                 src="images/pois/brightend_docks.png" />
               <div
-                class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
+                class="update-card__ring">
               </div>
               <div
-                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                class="update-card__fade">
               </div>
             </div>
             <a href="settlement.html?city=brightend&district=the_docks"
-              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              class="update-card__title">
               The Brightend Docks</a>
-            <p class="font-body italic text-sm text-on-surface-variant/60">Added 1 cycle ago</p>
+            <p class="update-card__date">Added 1 cycle ago</p>
           </div>
 
           <!-- Update Item 2 -->
-          <div class="group cursor-pointer">
-            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+          <div class="update-card">
+            <div class="update-card__frame">
               <img
-                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:-rotate-1"
+                class="update-card__image-tilt-left"
                 data-alt="mystical dark forest with a single white stag glowing with ethereal light in the shadows"
                 src="images/sephet-halfborn.webp" />
               <div
-                class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
+                class="update-card__ring">
               </div>
               <div
-                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                class="update-card__fade">
               </div>
             </div>
             <a href="npc.html?id=sephet"
-              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              class="update-card__title">
               Sephet Halfborn</a>
-            <p class="font-body italic text-sm text-on-surface-variant/60">Added 2 cycles ago</p>
+            <p class="update-card__date">Added 2 cycles ago</p>
           </div>
 
           <!-- Update Item 3 -->
-          <div class="group cursor-pointer">
-            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+          <div class="update-card">
+            <div class="update-card__frame">
               <img
-                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-1"
+                class="update-card__image-tilt-right"
                 data-alt="ornate rusted key lying on a pile of ancient gold coins and gems in a dark cavern"
                 src="images/tome_twice_missing.png" /></a>
-              <div class=" absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all
-                duration-700">
+              <div class="update-card__ring">
               </div>
               <div
-                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                class="update-card__fade">
               </div>
             </div>
             <a href="scriptorium.html?session=session-1"
-              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              class="update-card__title">
               A Tome Twice Missing</a>
-            <p class="font-body italic text-sm text-on-surface-variant/60">Added 6 cycles ago</p>
+            <p class="update-card__date">Added 6 cycles ago</p>
           </div>
 
           <!-- Update Item 4 -->
-          <div class="group cursor-pointer">
-            <div class="relative overflow-hidden aspect-[4/5] rounded-sm mb-4">
+          <div class="update-card">
+            <div class="update-card__frame">
               <img
-                class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 group-hover:-rotate-1"
+                class="update-card__image-tilt-left"
                 data-alt="a crystal ball reflecting a swirling nebula of stars and purple magical energy on a wooden pedestal"
                 src="images/echoes_from_void.jpg" />
               <div
-                class="absolute inset-0 ring-1 ring-inset ring-white/10 group-hover:ring-secondary/50 transition-all duration-700">
+                class="update-card__ring">
               </div>
               <div
-                class="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                class="update-card__fade">
               </div>
             </div>
             <a href="scriptorium.html"
-              class="font-headline text-lg text-on-surface group-hover:text-secondary transition-colors group-hover:translate-x-1 duration-300">
+              class="update-card__title">
               Echoes from the Void</a>
-            <p class="font-body italic text-sm text-on-surface-variant/60">Added an eon ago</p>
+            <p class="update-card__date">Added an eon ago</p>
           </div>
         </div>
       </div>
@@ -415,22 +417,22 @@
 
 
     <!-- Aesthetic Lore Snippet -->
-    <section class="py-40 bg-surface text-center relative overflow-hidden">
-      <div class="max-w-3xl mx-auto px-6 relative group">
+    <section class="epigraph">
+      <div class="epigraph__inner">
         <!-- Magical Glow behind quote -->
         <div
-          class="absolute inset-0 bg-secondary/10 blur-[80px] rounded-full scale-50 group-hover:scale-100 transition-transform duration-1000">
+          class="epigraph__halo">
         </div>
         <span
-          class="material-symbols-outlined text-secondary/10 text-[12rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none animate-pulse-slow"
+          class="epigraph__mark material-symbols-outlined"
           data-icon="format_quote" style="font-variation-settings: 'FILL' 1;">format_quote</span>
         <p
-          class="font-headline text-3xl md:text-4xl italic text-on-surface leading-relaxed relative z-10 transition-all duration-500 group-hover:text-secondary-fixed">
+          class="epigraph__quote">
           "History is not a line, but a circle drawn by a shaking hand. In the Athenaeum, we catch the ink before it
           dries."
         </p>
         <cite
-          class="block mt-12 font-label text-sm uppercase tracking-[0.5em] text-primary/60 hover:text-primary transition-colors cursor-default">—
+          class="epigraph__cite">—
           Master Sage Elara</cite>
       </div>
     </section>

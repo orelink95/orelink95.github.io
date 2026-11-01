@@ -1,63 +1,63 @@
 <!-- NavBar -->
 
 <nav
-    class="fixed top-0 left-0 right-0 z-50 bg-[#121412]/85 backdrop-blur-md shadow-[0_4px_24px_rgba(26,48,32,0.6)] transition-all ease-in-out duration-500">
-    <div class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-[#1a3020] via-[#e9c176]/30 to-[#1a3020]">
+    class="site-header">
+    <div class="site-header__glow">
     </div>
-    <div class="flex justify-between items-center w-full px-8 py-4 max-w-full mx-auto">
-        <div class="flex items-center gap-2 group cursor-pointer">
+    <div class="site-header__bar">
+        <div class="site-header__brand">
             <a href="index.html"
-                class="flex items-center text-2xl font-bold font-['Noto_Serif'] text-[#e9c176] drop-shadow-[0_0_8px_rgba(233,193,118,0.4)] transition-all duration-[800ms] group-hover:text-[#ffdea5] group-hover:drop-shadow-[0_0_16px_rgba(233,193,118,0.8)]">
+                class="site-header__logo">
                 <span>E</span>
-                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-[800ms] ease-in-out whitespace-nowrap group-hover:max-w-[120px] group-hover:opacity-100">raldom&nbsp;</span>
+                <span class="site-header__logo-word">raldom&nbsp;</span>
                 <span>A</span>
-                <span class="max-w-0 overflow-hidden opacity-0 transition-all duration-[800ms] ease-in-out whitespace-nowrap group-hover:delay-[300ms] group-hover:max-w-[120px] group-hover:opacity-100">rchive</span>
+                <span class="site-header__logo-word-late">rchive</span>
             </a>
         </div>
-        <div class="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <a class="nav-item flex items-center font-['Noto_Serif'] font-bold tracking-wide uppercase text-sm text-[#e2e3df] hover:text-[#e9c176] transition-all duration-300 group"
+        <div class="site-header__nav">
+            <a class="site-header__link nav-item"
                 href="world.html">
-                <span class="material-symbols-outlined text-xl group-hover:rotate-12 transition-transform"
+                <span class="site-header__link-icon material-symbols-outlined"
                     data-icon="public">public</span>
                 <span class="nav-label">Grand Atlas</span>
             </a>
-            <a class="nav-item flex items-center font-['Noto_Serif'] font-bold tracking-wide uppercase text-sm text-[#e2e3df] hover:text-[#e9c176] transition-all duration-300 group"
+            <a class="site-header__link nav-item"
                 href="library.html">
-                <span class="material-symbols-outlined text-xl group-hover:rotate-12 transition-transform"
+                <span class="site-header__link-icon material-symbols-outlined"
                     data-icon="library_books">library_books</span>
                 <span class="nav-label">Black Archive</span>
             </a>
-            <a class="nav-item flex items-center font-['Noto_Serif'] font-bold tracking-wide uppercase text-sm text-[#e2e3df] hover:text-[#e9c176] transition-all duration-300 group"
+            <a class="site-header__link nav-item"
                 href="scriptorium.html">
-                <span class="material-symbols-outlined text-xl group-hover:rotate-12 transition-transform"
+                <span class="site-header__link-icon material-symbols-outlined"
                     data-icon="history_edu">history_edu</span>
                 <span class="nav-label">Scriptorium</span>
             </a>
-            <a class="nav-item flex items-center font-['Noto_Serif'] font-bold tracking-wide uppercase text-sm text-[#e2e3df] hover:text-[#e9c176] transition-all duration-300 group"
+            <a class="site-header__link nav-item"
                 href="npc.html">
-                <span class="material-symbols-outlined text-xl group-hover:rotate-12 transition-transform"
+                <span class="site-header__link-icon material-symbols-outlined"
                     data-icon="groups">groups</span>
                 <span class="nav-label">Dramatis Personae</span>
             </a>
         </div>
-        <div class="flex items-center gap-4">
-            <a class="flex items-center gap-2 text-[#b3cdb6] hover:text-[#ffdea5] hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(233,193,118,0.5)] transition-all duration-300 group relative"
+        <div class="site-header__tools">
+            <a class="site-header__tool"
                 href="https://app.fantasy-calendar.com/calendars/b6fb703993bf1b80ac7a00bb78f345a9">
-                <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform"
+                <span class="site-header__tool-icon material-symbols-outlined"
                     data-icon="calendar_month">calendar_month</span>
                 <div
-                    class="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-[#121412] text-[#e2e3df] text-[10px] tracking-widest uppercase border border-[#e9c176]/30 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg shadow-black/50">
+                    class="site-header__tooltip">
                     Calendar
                 </div>
             </a>
 
 
-            <a class="flex items-center gap-2 text-[#b3cdb6] hover:text-[#ffdea5] hover:scale-105 hover:drop-shadow-[0_0_10px_rgba(233,193,118,0.5)] transition-all duration-300 group relative"
+            <a class="site-header__tool"
                 href="https://homebrewery.naturalcrit.com/share/PipSTq7aZVPn">
-                <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform"
+                <span class="site-header__tool-icon material-symbols-outlined"
                     data-icon="auto-stories">auto_stories</span>
                 <div
-                    class="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-[#121412] text-[#e2e3df] text-[10px] tracking-widest uppercase border border-[#e9c176]/30 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-lg shadow-black/50">
+                    class="site-header__tooltip">
                     Lore Book
                 </div>
             </a>

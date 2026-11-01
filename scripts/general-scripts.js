@@ -4,6 +4,18 @@ function toggleModal() {
 }
 
 
+// The library pages brighten everything with a filter on <body> (.mystical-bg).
+// A filter pins position:fixed descendants to the page instead of the screen, so a
+// pop-up opened further down the page would appear off screen. liftOutOfBody()
+// moves a pop-up just outside <body>; .is-lifted (components.css) gives it back the
+// page's font and brightening. Does nothing on pages without that filter.
+function liftOutOfBody(el) {
+    if (!el || el.parentElement === document.documentElement) return;
+    if (getComputedStyle(document.body).filter === 'none') return;
+    el.classList.add('is-lifted');
+    document.documentElement.appendChild(el);
+}
+
 // Function to fetch and inject HTML
 function loadComponent(placeholderId, componentPath) {
     const placeholder = document.getElementById(placeholderId);
@@ -30,6 +42,10 @@ function loadComponent(placeholderId, componentPath) {
             // NEW: If the library sidebar just loaded, run its highlight function!
             else if (placeholderId === "library-sidebar-placeholder") {
                 highlightLibrarySidebar();
+            }
+            // The footer's "nothing to see here" pop-up
+            else if (placeholderId === "footer-placeholder") {
+                liftOutOfBody(document.getElementById('not-see-modal'));
             }
         })
         .catch(error => console.error(error));

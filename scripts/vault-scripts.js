@@ -95,10 +95,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     search.addEventListener('input', render);
 
     // --- the opened card
-    // <body> carries a filter on the library pages, which would make the fixed
-    // modal scroll with the page: the modal lives just outside it.
+    // Kept on screen when the page is scrolled (see liftOutOfBody, general-scripts.js).
+    // The vault's own styles leave the cards unbrightened, in their printed colours.
     const modal = document.getElementById('vault-modal');
-    document.documentElement.appendChild(modal);
+    liftOutOfBody(modal);
     function openItem(id) {
         const item = store.get(id);
         if (!item || store.typeOf(item) !== 'item') return;

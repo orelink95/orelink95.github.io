@@ -3,6 +3,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const store = await Athenaeum.ready;
     const tomesData = store.all('tome').filter(t => !t.draft);
+    liftOutOfBody(document.getElementById('tome-modal'));   // stays on screen when the page is scrolled
     const grid = document.getElementById('tome-grid');
     const searchInput = document.getElementById('tome-search');
     const filtersContainer = document.getElementById('tome-filters');

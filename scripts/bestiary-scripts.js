@@ -15,6 +15,7 @@ const THREAT_ICON = { lethal: 'skull', high: 'warning', low: 'eco', friendly: 'f
 document.addEventListener("DOMContentLoaded", async () => {
     const store = await Athenaeum.ready;
     const bestiaryData = store.all('creature');
+    liftOutOfBody(document.getElementById('bestiary-modal'));   // stays on screen when the page is scrolled
     const grid = document.getElementById('bestiary-grid');
     const searchInput = document.getElementById('bestiary-search');
     const realmFilter = document.getElementById('filter-realm');

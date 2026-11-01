@@ -12,122 +12,125 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-    <link href="styles/output.css" rel="stylesheet" />
     <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/heroes.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
-    <script src="scripts/campaign-echoes.js"></script>
-    <script src="scripts/heroes-data.js"></script>
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/core/seal.js"></script>
 </head>
 
-<body class="bg-[#0a0b0a] text-[#e2e3df] font-body overflow-x-hidden archival-bg">
+<body class="page archival-bg">
     <div id="header-placeholder"></div>
 
-    <main class="pt-24 px-4 md:px-8 pb-20 min-h-screen max-w-7xl mx-auto flex flex-col items-center">
+    <main class="heroes-main">
 
-        <div class="w-full flex flex-wrap items-center gap-3 mb-8">
-            <span class="font-label text-[10px] uppercase tracking-widest text-white/40 mr-2">Related Archives:</span>
+        <div class="archive-links">
+            <span class="archive-links__label">Related Archives:</span>
 
             <a href="factions.html"
-                class="flex items-center gap-2 px-4 py-1.5 rounded border border-white/10 bg-[#0a0b0a] hover:bg-[#60a5fa]/10 hover:border-[#60a5fa]/50 text-white/70 hover:text-[#60a5fa] font-label text-[10px] uppercase tracking-widest transition-all group">
+                class="archive-link">
                 <span
-                    class="material-symbols-outlined text-[14px] group-hover:scale-110 transition-transform">swords</span>
+                    class="archive-link__icon material-symbols-outlined">swords</span>
                 Factions & Guilds
             </a>
 
             <a href="npc.html"
-                class="flex items-center gap-2 px-4 py-1.5 rounded border border-white/10 bg-[#0a0b0a] hover:bg-[#4ade80]/10 hover:border-[#4ade80]/50 text-white/70 hover:text-[#4ade80] font-label text-[10px] uppercase tracking-widest transition-all group">
+                class="archive-link archive-link--npcs">
                 <span
-                    class="material-symbols-outlined text-[14px] group-hover:scale-110 transition-transform">group</span>
+                    class="archive-link__icon material-symbols-outlined">group</span>
                 NPCs
             </a>
         </div>
 
-        <div class="text-center mb-16 relative z-10 w-full">
-            <p class="font-label text-[#e9c176] text-[10px] uppercase tracking-[0.4em] mb-4 animate-pulse-slow">Dramatis
+        <div class="heroes-hero">
+            <p class="heroes-hero__eyebrow">Dramatis
                 Personae</p>
             <h1 id="party-title"
-                class="text-4xl md:text-6xl font-headline font-bold text-white mb-6 drop-shadow-[0_0_15px_rgba(233,193,118,0.2)]">
+                class="heroes-hero__title">
                 The Heroes</h1>
-            <div class="w-34 h-px bg-gradient-to-r from-transparent via-[#e9c176]/50 to-transparent mx-auto"></div>
+            <div class="heroes-hero__rule"></div>
+            <select id="party-campaign"
+                class="party-picker hidden"
+                aria-label="Campaign"></select>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 w-full items-start">
+        <div class="heroes-layout">
 
-            <div class="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 gap-6" id="heroes-grid">
+            <div class="heroes-grid" id="heroes-grid">
             </div>
 
-            <aside class="lg:col-span-3 space-y-6">
-                <div class="bg-[#121412]/90 backdrop-blur-md rounded-xl border border-white/10 p-6 md:p-8 shadow-2xl">
+            <aside class="heroes-aside">
+                <div class="treasury">
                     <h3
-                        class="font-label text-[10px] uppercase text-[#e9c176] tracking-[0.3em] mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">savings</span> Party Treasury
+                        class="treasury__title">
+                        <span class="panel-icon material-symbols-outlined">savings</span> Party Treasury
                     </h3>
 
                     <div
-                        class="flex items-center justify-between gap-4 p-4 rounded-lg bg-black/40 border border-[#e9c176]/20 mb-4">
-                        <div class="flex items-center gap-3">
+                        class="treasury__gold">
+                        <div class="treasury__coin-row">
                             <div
-                                class="w-8 h-8 rounded-full bg-[#e9c176]/20 flex items-center justify-center border border-[#e9c176]/40">
-                                <span class="text-[#e9c176] font-bold text-xs">GP</span>
+                                class="treasury__gold-coin">
+                                <span class="treasury__gold-mark">GP</span>
                             </div>
-                            <span class="font-headline text-2xl text-white font-bold" id="gold-amt">0</span>
+                            <span class="treasury__gold-amount" id="gold-amt">0</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="flex items-center gap-3 p-3 rounded-lg bg-black/40 border border-gray-400/20">
+                    <div class="treasury__small">
+                        <div class="treasury__silver">
                             <div
-                                class="w-6 h-6 rounded-full bg-gray-400/20 flex items-center justify-center border border-gray-400/40">
-                                <span class="text-gray-300 font-bold text-[10px]">SP</span>
+                                class="treasury__silver-coin">
+                                <span class="treasury__silver-mark">SP</span>
                             </div>
-                            <span class="font-headline text-lg text-white font-bold" id="silver-amt">0</span>
+                            <span class="treasury__small-amount" id="silver-amt">0</span>
                         </div>
-                        <div class="flex items-center gap-3 p-3 rounded-lg bg-black/40 border border-orange-400/20">
+                        <div class="treasury__copper">
                             <div
-                                class="w-6 h-6 rounded-full bg-orange-400/20 flex items-center justify-center border border-orange-400/40">
-                                <span class="text-orange-300 font-bold text-[10px]">CP</span>
+                                class="treasury__copper-coin">
+                                <span class="treasury__copper-mark">CP</span>
                             </div>
-                            <span class="font-headline text-lg text-white font-bold" id="copper-amt">0</span>
+                            <span class="treasury__small-amount" id="copper-amt">0</span>
                         </div>
                     </div>
                 </div>
 
                 <div
-                    class="bg-[#121412]/90 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl overflow-hidden transition-all">
+                    class="fold-panel">
                     <button onclick="toggleSection('inv-content', 'inv-icon')"
-                        class="w-full p-6 md:px-8 md:py-6 flex items-center justify-between group hover:bg-white/5 transition-colors outline-none">
+                        class="fold-panel__toggle">
                         <h3
-                            class="font-label text-[10px] uppercase text-[#c084fc] tracking-[0.3em] flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">work</span> Shared Inventory
+                            class="inventory__title">
+                            <span class="panel-icon material-symbols-outlined">work</span> Shared Inventory
                         </h3>
                         <span id="inv-icon"
-                            class="material-symbols-outlined text-white/40 group-hover:text-white transition-transform duration-300">expand_more</span>
+                            class="fold-panel__icon material-symbols-outlined">expand_more</span>
                     </button>
-                    <div id="inv-content" class="px-6 md:px-8 pb-6 md:pb-8 hidden border-t border-white/5 pt-4">
-                        <ul id="shared-inv-list" class="space-y-3">
+                    <div id="inv-content" class="fold-panel__content hidden">
+                        <ul id="shared-inv-list" class="fold-panel__list">
                         </ul>
                     </div>
                 </div>
 
                 <div
-                    class="bg-[#121412]/90 backdrop-blur-md rounded-xl border border-white/10 shadow-2xl overflow-hidden transition-all">
+                    class="fold-panel">
                     <button onclick="toggleSection('factions-content', 'factions-icon')"
-                        class="w-full p-6 md:px-8 md:py-6 flex items-center justify-between group hover:bg-white/5 transition-colors outline-none">
+                        class="fold-panel__toggle">
                         <h3
-                            class="font-label text-[10px] uppercase text-[#60a5fa] tracking-[0.3em] flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sm">public</span> Group Factions
+                            class="allegiances__title">
+                            <span class="panel-icon material-symbols-outlined">public</span> Group Factions
                         </h3>
                         <span id="factions-icon"
-                            class="material-symbols-outlined text-white/40 group-hover:text-white transition-transform duration-300">expand_more</span>
+                            class="fold-panel__icon material-symbols-outlined">expand_more</span>
                     </button>
-                    <div id="factions-content" class="px-6 md:px-8 pb-6 md:pb-8 hidden border-t border-white/5 pt-4">
-                        <ul id="group-factions-list" class="space-y-3">
+                    <div id="factions-content" class="fold-panel__content hidden">
+                        <ul id="group-factions-list" class="fold-panel__list">
                         </ul>
                     </div>
                 </div>
@@ -138,43 +141,43 @@
     <div id="footer-placeholder"></div>
 
     <div id="password-modal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#0a0b0a]/95 backdrop-blur-md p-4">
-        <div class="max-w-sm w-full bg-[#121412] border border-white/10 shadow-2xl rounded-xl p-8 relative">
-            <button onclick="closeSecretModals()" class="absolute top-4 right-4 text-white/40 hover:text-white"><span
-                    class="material-symbols-outlined text-sm">close</span></button>
+        class="secret-gate hidden">
+        <div class="secret-gate__card">
+            <button onclick="closeSecretModals()" class="secret-gate__close"><span
+                    class="panel-icon material-symbols-outlined">close</span></button>
 
-            <div class="flex flex-col items-center text-center mb-6">
-                <span class="material-symbols-outlined text-4xl text-[#e9c176] mb-2">lock</span>
-                <h3 class="text-xl font-headline font-bold text-white" id="pwd-title">Unlock Secret</h3>
-                <p class="text-[10px] font-label uppercase tracking-widest text-white/40 mt-1">Classified File</p>
+            <div class="secret-gate__head">
+                <span class="secret-gate__lock material-symbols-outlined">lock</span>
+                <h3 class="secret-gate__title" id="pwd-title">Unlock Secret</h3>
+                <p class="secret-gate__subtitle">Classified File</p>
             </div>
 
             <input type="password" id="secret-pwd-input"
-                class="w-full bg-black/50 border border-white/20 rounded-md p-3 text-center text-white text-sm tracking-widest mb-2 outline-none focus:border-[#e9c176] transition-colors"
+                class="secret-gate__input"
                 placeholder="Enter Passphrase...">
 
-            <p id="pwd-error" class="text-error text-[10px] uppercase tracking-widest text-center hidden mb-4">Incorrect
+            <p id="pwd-error" class="secret-gate__error hidden">Incorrect
                 Passphrase</p>
 
             <button onclick="checkPassword()"
-                class="w-full mt-4 py-3 bg-[#e9c176]/10 text-[#e9c176] border border-[#e9c176]/30 rounded-md font-label text-xs uppercase tracking-widest hover:bg-[#e9c176]/20 transition-all">Decrypt</button>
+                class="secret-gate__submit">Decrypt</button>
         </div>
     </div>
 
     <div id="secret-modal"
-        class="fixed inset-0 z-[100] hidden items-center justify-center bg-[#0a0b0a]/95 backdrop-blur-md p-4 md:p-8">
+        class="secret-file hidden">
         <div
-            class="max-w-2xl w-full bg-[#121412] border border-error/30 shadow-[0_0_50px_rgba(248,113,113,0.1)] rounded-xl p-8 md:p-12 relative overflow-y-auto max-h-[90vh] custom-scrollbar">
-            <button onclick="closeSecretModals()" class="absolute top-6 right-6 text-white/40 hover:text-white"><span
+            class="secret-file__card custom-scrollbar">
+            <button onclick="closeSecretModals()" class="secret-file__close"><span
                     class="material-symbols-outlined">close</span></button>
 
-            <p class="font-label text-error text-[10px] uppercase tracking-[0.3em] mb-2 flex items-center gap-2"><span
-                    class="material-symbols-outlined text-sm">warning</span> For Your Eyes Only</p>
-            <h2 class="text-3xl md:text-4xl font-headline font-bold text-white mb-8 border-b border-white/5 pb-4"
+            <p class="secret-file__eyebrow"><span
+                    class="panel-icon material-symbols-outlined">warning</span> For Your Eyes Only</p>
+            <h2 class="secret-file__title"
                 id="secret-hero-name">Hero's Secret</h2>
 
             <div id="secret-content"
-                class="prose prose-invert prose-red font-body text-white/80 leading-relaxed text-sm md:text-base">
+                class="secret-file__text">
             </div>
         </div>
     </div>
@@ -182,152 +185,160 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
-            // Hero data still names factions (pass 2 turns these into ids)
             const store = await Athenaeum.ready;
-            const factionUrl = name => {
-                const f = store.find(name, ['faction']);
-                return f && !f.stub ? store.url(f) : 'factions.html';
-            };
-            if (typeof partyData === 'undefined') return;
+            window.heroesStore = store;
+            const campaigns = store.all('campaign').filter(c => (c.party || []).length);
+            if (!campaigns.length) return;
 
-            // 1. Populate Header & Funds
-            document.getElementById('party-title').textContent = partyData.partyName;
-            document.getElementById('gold-amt').textContent = partyData.assets.gold;
-            document.getElementById('silver-amt').textContent = partyData.assets.silver;
-            document.getElementById('copper-amt').textContent = partyData.assets.copper;
+            // Which party: ?campaign=… , else the current campaign (data/settings.json), else the first
+            const asked = new URLSearchParams(window.location.search).get('campaign');
+            const preferred = asked || store.settings.currentCampaign;
+            let campaign = campaigns.find(c => c.id === preferred) || campaigns[0];
 
-            // 2. Populate Shared Inventory (Dynamic Scriptorium Pull)
-            let dynamicLoot = [];
-
-            // Check if the scriptorium campaign data loaded successfully
-            if (typeof window.campaignData !== 'undefined') {
-                // Grab every single session from all loaded campaigns
-                const allSessions = Object.values(window.campaignData).flatMap(campaign => campaign.sessions || []);
-
-                // Extract all the 'lootObtained' arrays and remove any duplicates
-                dynamicLoot = [...new Set(allSessions.flatMap(session => session.lootObtained || []))];
+            const picker = document.getElementById('party-campaign');
+            if (campaigns.length > 1) {
+                picker.innerHTML = campaigns.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                picker.value = campaign.id;
+                picker.classList.remove('hidden');
+                picker.addEventListener('change', () => {
+                    campaign = campaigns.find(c => c.id === picker.value);
+                    history.replaceState(null, '', `?campaign=${campaign.id}`);
+                    renderParty();
+                });
             }
-
-            // Merge the dynamic loot with any permanent manual items (like the "Bag of Holding" itself)
-            const combinedInventory = [...new Set([...(partyData.sharedInventory || []), ...dynamicLoot])];
-
-            const invList = document.getElementById('shared-inv-list');
-
-            if (combinedInventory.length === 0) {
-                invList.innerHTML = `<li class="text-sm text-white/40 italic p-2">The party's vault is currently empty.</li>`;
-            } else {
-                invList.innerHTML = combinedInventory.map(item => `
-                    <li class="flex items-start gap-3 text-sm text-white/70 bg-black/20 p-2.5 rounded border border-white/5">
-                        <span class="material-symbols-outlined text-[#c084fc] text-[16px] mt-0.5">auto_awesome</span>
-                        <span>${item}</span>
-                    </li>
-                `).join('');
-            }
-
-            // 3. Render Hero Cards
-            const grid = document.getElementById('heroes-grid');
 
             const getMod = (score) => {
                 const mod = Math.floor((score - 10) / 2);
                 return mod >= 0 ? `+${mod}` : mod;
             };
 
-            grid.innerHTML = partyData.heroes.map(hero => {
+            function renderParty() {
+            // 1. Header & funds
+            document.getElementById('party-title').textContent = campaign.partyName || campaign.name;
+            const funds = campaign.funds || {};
+            document.getElementById('gold-amt').textContent = funds.gold || 0;
+            document.getElementById('silver-amt').textContent = funds.silver || 0;
+            document.getElementById('copper-amt').textContent = funds.copper || 0;
+
+            // 2. Shared inventory: the party's own items + everything found in this campaign's sessions
+            const sessions = store.all('session').filter(s => s.campaign === campaign.id);
+            const itemIds = [...new Set([...(campaign.inventory || []), ...sessions.flatMap(s => s.loot || [])])];
+            const combinedInventory = itemIds.map(id => store.get(id)).filter(Boolean);
+
+            const invList = document.getElementById('shared-inv-list');
+
+            if (combinedInventory.length === 0) {
+                invList.innerHTML = `<li class="fold-panel__empty">The party's vault is currently empty.</li>`;
+            } else {
+                // Each item opens its card in the Artifact Vault
+                invList.innerHTML = combinedInventory.map(item => `
+                    <li class="inventory-item">
+                        <span class="inventory-item__icon material-symbols-outlined">auto_awesome</span>
+                        <a href="${store.url(item)}" class="inventory-item__link">${item.name}</a>
+                    </li>
+                `).join('');
+            }
+
+            // 3. Hero cards
+            const grid = document.getElementById('heroes-grid');
+            const heroes = (campaign.party || []).map(id => store.get(id)).filter(Boolean);
+
+            grid.innerHTML = heroes.map(hero => {
                 const st = hero.stats || { ac: 10, hp: 10, speed: 30, str: 10, dex: 10, con: 10, int: 10, wis: 10, cha: 10 };
 
                 // Pulling the new data (with fallbacks just in case)
                 const level = hero.level || 1;
                 const bg = hero.background || "Unknown";
-                const factions = (hero.factions || []).map(f => {
-                    const href = factionUrl(f);
-                    return `<a href="${href}" onclick="event.stopPropagation();" class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[8px] uppercase tracking-widest text-white/60 hover:bg-[#e9c176]/10 hover:border-[#e9c176]/30 hover:text-[#e9c176] transition-colors">${f}</a>`;
+                const factions = (hero.factions || []).map(id => store.get(id)).filter(Boolean).map(f => {
+                    const href = f.stub ? 'factions.html' : store.url(f);
+                    return `<a href="${href}" onclick="event.stopPropagation();" class="hero-faction-tag">${f.name}</a>`;
                 }).join('');
 
                 return `
-                <div class="group relative w-full h-full [perspective:1000px]">
-                    <div id="card-inner-${hero.id}" class="w-full h-full transition-transform duration-700 [transform-style:preserve-3d] relative">
+                <div class="hero-card">
+                    <div id="card-inner-${hero.id}" class="hero-card__inner">
                         
-                        <div onclick="flipCard('${hero.id}')" class="w-full h-full [backface-visibility:hidden] bg-[#121412]/90 backdrop-blur-md border border-white/10 rounded-xl overflow-hidden hover:border-[#e9c176]/40 transition-all duration-500 hover:shadow-[0_10px_40px_rgba(233,193,118,0.15)] flex flex-col cursor-pointer">
+                        <div onclick="flipCard('${hero.id}')" class="hero-card__front">
                             
-                            <div class="h-1 w-full bg-gradient-to-r from-[#1a3020] via-[#e9c176]/50 to-[#1a3020]"></div>
+                            <div class="hero-card__glow"></div>
                             
-                            <div class="p-6 md:p-8 flex flex-col h-full relative z-10">
-                                <div class="flex items-center gap-5 mb-6">
-                                    <img src="${hero.avatar}" alt="${hero.name}" class="w-16 h-16 rounded-full border-2 border-[#121412] object-cover shadow-[0_0_15px_rgba(233,193,118,0.2)]">
+                            <div class="hero-card__face">
+                                <div class="hero-card__identity">
+                                    <img src="${hero.avatar || ''}" alt="${hero.name}" class="hero-card__avatar">
                                     <div>
-                                        <h2 class="text-2xl font-headline font-bold text-white group-hover:text-[#e9c176] transition-colors">${hero.name}</h2>
-                                        <p class="font-label text-[10px] uppercase tracking-[0.2em] text-[#4ade80]">Level ${level} ${hero.raceClass}</p>
+                                        <h2 class="hero-card__name">${hero.name}</h2>
+                                        <p class="hero-card__class">Level ${level} ${hero.raceClass || ''}</p>
                                     </div>
                                 </div>
 
-                                <div class="mb-6 relative">
-                                    <span class="material-symbols-outlined absolute -top-2 -left-2 text-white/5 text-4xl -z-10">format_quote</span>
-                                    <p class="font-newsreader italic text-[#e2e3df] text-sm leading-relaxed pl-4 border-l-2 border-[#1a3020]">"${hero.quote}"</p>
+                                <div class="hero-card__quote-box">
+                                    <span class="hero-card__quote-mark material-symbols-outlined">format_quote</span>
+                                    <p class="hero-card__quote">"${hero.quote || ''}"</p>
                                 </div>
 
-                                <p class="font-body text-sm text-[#8a8a8a] leading-relaxed mb-6 flex-grow">${hero.backstory}</p>
+                                <p class="hero-card__backstory">${hero.backstory || ''}</p>
 
-                                <div class="pt-4 border-t border-white/5 mt-auto flex justify-between items-center">
+                                <div class="hero-card__goal-row">
                                     <div>
-                                        <h4 class="font-label text-[9px] uppercase tracking-widest text-[#e9c176]/50 mb-1">Current Personal Goal</h4>
-                                        <p class="text-xs text-white/80 flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-[14px] text-error">target</span>
-                                            ${hero.personalGoal}
+                                        <h4 class="hero-card__label">Current Personal Goal</h4>
+                                        <p class="hero-card__goal">
+                                            <span class="hero-card__goal-icon material-symbols-outlined">target</span>
+                                            ${hero.personalGoal || ''}
                                         </p>
                                     </div>
-                                    <span class="material-symbols-outlined text-white/20 group-hover:text-[#e9c176] transition-colors" title="View Stats">autorenew</span>
+                                    <span class="hero-card__flip-icon material-symbols-outlined" title="View Stats">autorenew</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div onclick="flipCard('${hero.id}')" class="absolute top-0 left-0 w-full h-full [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#121412]/95 backdrop-blur-md border border-[#e9c176]/30 rounded-xl overflow-hidden flex flex-col cursor-pointer shadow-[0_10px_40px_rgba(233,193,118,0.15)]">
+                        <div onclick="flipCard('${hero.id}')" class="hero-card__back">
                             
-                            <div class="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(ellipse_at_center,_rgba(233,193,118,0.15)_0%,_transparent_70%)]"></div>
+                            <div class="hero-card__back-glow"></div>
                             
-                            <div class="p-6 md:p-8 flex flex-col h-full relative z-10">
+                            <div class="hero-card__face">
                                 
-                                <div class="flex justify-between items-start">
+                                <div class="hero-card__back-head">
                                     <div>
-                                        <h2 class="text-3xl font-headline font-bold text-[#e9c176] drop-shadow-md">${hero.name}</h2>
-                                        <p class="font-body text-sm italic text-[#4ade80] mb-2">Level ${level} ${hero.raceClass}</p>
+                                        <h2 class="hero-card__back-name">${hero.name}</h2>
+                                        <p class="hero-card__back-class">Level ${level} ${hero.raceClass || ''}</p>
                                     </div>
-                                    <div class="text-right">
-                                        <p class="font-label text-[8px] uppercase tracking-widest text-[#e9c176]/50 mb-1">Background</p>
-                                        <p class="font-body text-xs text-white/90">${bg}</p>
+                                    <div class="hero-card__background">
+                                        <p class="hero-card__background-label">Background</p>
+                                        <p class="hero-card__background-value">${bg}</p>
                                     </div>
                                 </div>
                                 
-                                <div class="w-full h-px bg-gradient-to-r from-[#e9c176]/30 to-transparent my-3"></div>
+                                <div class="hero-card__divider"></div>
                                 
-                                <div class="flex justify-between text-white/90 font-body text-sm px-2">
-                                    <p><strong class="text-[#e9c176] font-headline tracking-wide">Armor Class</strong> ${st.ac}</p>
-                                    <p><strong class="text-[#e9c176] font-headline tracking-wide">Hit Points</strong> ${st.hp}</p>
-                                    <p><strong class="text-[#e9c176] font-headline tracking-wide">Speed</strong> ${st.speed} ft.</p>
+                                <div class="hero-card__vitals">
+                                    <p><strong class="hero-card__vital-label">Armor Class</strong> ${st.ac}</p>
+                                    <p><strong class="hero-card__vital-label">Hit Points</strong> ${st.hp}</p>
+                                    <p><strong class="hero-card__vital-label">Speed</strong> ${st.speed} ft.</p>
                                 </div>
                                 
-                                <div class="w-full h-px bg-gradient-to-r from-[#e9c176]/30 to-transparent my-3"></div>
+                                <div class="hero-card__divider"></div>
                                 
-                                <div class="grid grid-cols-6 text-center text-white/90 font-body text-xs my-2 gap-1">
-                                    <div><strong class="text-[#e9c176] text-[10px] tracking-widest">STR</strong><br>${st.str} <br><span class="text-white/40 text-[10px]">(${getMod(st.str)})</span></div>
-                                    <div><strong class="text-[#e9c176] text-[10px] tracking-widest">DEX</strong><br>${st.dex} <br><span class="text-white/40 text-[10px]">(${getMod(st.dex)})</span></div>
-                                    <div><strong class="text-[#e9c176] text-[10px] tracking-widest">CON</strong><br>${st.con} <br><span class="text-white/40 text-[10px]">(${getMod(st.con)})</span></div>
-                                    <div><strong class="text-[#e9c176] text-[10px] tracking-widest">INT</strong><br>${st.int} <br><span class="text-white/40 text-[10px]">(${getMod(st.int)})</span></div>
-                                    <div><strong class="text-[#e9c176] text-[10px] tracking-widest">WIS</strong><br>${st.wis} <br><span class="text-white/40 text-[10px]">(${getMod(st.wis)})</span></div>
-                                    <div><strong class="text-[#e9c176] text-[10px] tracking-widest">CHA</strong><br>${st.cha} <br><span class="text-white/40 text-[10px]">(${getMod(st.cha)})</span></div>
+                                <div class="hero-card__abilities">
+                                    <div><strong class="hero-card__ability-label">STR</strong><br>${st.str} <br><span class="hero-card__ability-mod">(${getMod(st.str)})</span></div>
+                                    <div><strong class="hero-card__ability-label">DEX</strong><br>${st.dex} <br><span class="hero-card__ability-mod">(${getMod(st.dex)})</span></div>
+                                    <div><strong class="hero-card__ability-label">CON</strong><br>${st.con} <br><span class="hero-card__ability-mod">(${getMod(st.con)})</span></div>
+                                    <div><strong class="hero-card__ability-label">INT</strong><br>${st.int} <br><span class="hero-card__ability-mod">(${getMod(st.int)})</span></div>
+                                    <div><strong class="hero-card__ability-label">WIS</strong><br>${st.wis} <br><span class="hero-card__ability-mod">(${getMod(st.wis)})</span></div>
+                                    <div><strong class="hero-card__ability-label">CHA</strong><br>${st.cha} <br><span class="hero-card__ability-mod">(${getMod(st.cha)})</span></div>
                                 </div>
                                 
-                                <div class="w-full h-px bg-gradient-to-r from-[#e9c176]/30 to-transparent my-3"></div>
+                                <div class="hero-card__divider"></div>
                                 
                                 <div>
-                                    <h4 class="font-label text-[9px] uppercase tracking-widest text-[#e9c176]/50 mb-2">Factions & Allegiances</h4>
-                                    <div class="flex flex-wrap gap-2">
-                                        ${factions || '<span class="text-[10px] text-white/30 italic">None</span>'}
+                                    <h4 class="hero-card__factions-label">Factions & Allegiances</h4>
+                                    <div class="hero-card__factions">
+                                        ${factions || '<span class="hero-card__no-factions">None</span>'}
                                     </div>
                                 </div>
 
-                                <button onclick="event.stopPropagation(); promptSecret('${hero.id}')" class="absolute bottom-6 right-6 md:bottom-8 md:right-8 text-white/20 hover:text-error hover:scale-125 transition-all z-20" title="Classified File">
-                                    <span class="material-symbols-outlined text-xl">lock</span>
-                                </button>
+                                ${hero.sealedSecret ? `<button onclick="event.stopPropagation(); promptSecret('${hero.id}')" class="hero-card__lock" title="Classified File">
+                                    <span class="hero-card__lock-icon material-symbols-outlined">lock</span>
+                                </button>` : ''}
                                 
                             </div>
                         </div>
@@ -337,6 +348,31 @@
                 </div>
                 `;
             }).join('');
+
+            // 4. Party allegiances (factions, or places such as a library)
+            const factionsList = document.getElementById('group-factions-list');
+            const standings = (campaign.standings || []).map(g => ({ rec: store.get(g.faction), status: g.status || 'Unknown' })).filter(g => g.rec);
+            if (standings.length > 0) {
+                factionsList.innerHTML = standings.map(({ rec, status }) => {
+                    // Allied in green, hostile in red (see .standing__status--* in pages/heroes.css)
+                    const statusClass = 'standing__status--' + status.toLowerCase();
+
+                    const href = rec.stub ? 'factions.html' : (store.url(rec) || 'factions.html');
+
+                    return `
+                    <li>
+                        <a href="${href}" class="standing">
+                            <span class="standing__name">${rec.name}</span>
+                            <span class="standing__status ${statusClass}">${status}</span>
+                        </a>
+                    </li>
+                `}).join('');
+            } else {
+                factionsList.innerHTML = `<li class="fold-panel__empty">No known allegiances.</li>`;
+            }
+            }
+
+            renderParty();
         });
 
         // --- 3D CARD FLIP ---
@@ -352,33 +388,35 @@
         let currentSecretHeroId = null;
 
         window.promptSecret = (heroId) => {
-            const hero = partyData.heroes.find(h => h.id === heroId);
+            const hero = window.heroesStore && window.heroesStore.get(heroId);
 
-            // If the hero doesn't have a password set up, do nothing!
-            if (!hero || !hero.password) return;
+            // Only heroes with a sealed secret have a file
+            if (!hero || !hero.sealedSecret) return;
 
             currentSecretHeroId = heroId;
             document.getElementById('pwd-title').textContent = `${hero.name}'s File`;
             document.getElementById('secret-pwd-input').value = '';
             document.getElementById('pwd-error').classList.add('hidden');
 
-            document.getElementById('password-modal').classList.replace('hidden', 'flex');
+            document.getElementById('password-modal').classList.remove('hidden');
 
             // Auto-focus the input box so players can type immediately
             setTimeout(() => document.getElementById('secret-pwd-input').focus(), 100);
         };
 
-        window.checkPassword = () => {
-            const input = document.getElementById('secret-pwd-input').value.trim();
-            const hero = partyData.heroes.find(h => h.id === currentSecretHeroId);
+        window.checkPassword = async () => {
+            const input = document.getElementById('secret-pwd-input').value;
+            const store = window.heroesStore;
+            const hero = store && store.get(currentSecretHeroId);
 
-            // Check if password matches (case-insensitive so they don't get frustrated)
-            if (hero && input.toLowerCase() === hero.password.toLowerCase()) {
+            // The secret is stored encrypted: only the right password opens it (capitals don't matter)
+            const secret = hero ? await Athenaeum.unseal(hero.sealedSecret, input) : null;
+            if (secret !== null) {
                 // Success! Close password modal and open secret modal
-                document.getElementById('password-modal').classList.replace('flex', 'hidden');
+                document.getElementById('password-modal').classList.add('hidden');
                 document.getElementById('secret-hero-name').textContent = `Classified: ${hero.name}`;
-                document.getElementById('secret-content').innerHTML = hero.secret;
-                document.getElementById('secret-modal').classList.replace('hidden', 'flex');
+                document.getElementById('secret-content').innerHTML = store.md(secret);
+                document.getElementById('secret-modal').classList.remove('hidden');
             } else {
                 // Failure! Show error message
                 document.getElementById('pwd-error').classList.remove('hidden');
@@ -386,39 +424,10 @@
         };
 
         window.closeSecretModals = () => {
-            document.getElementById('password-modal').classList.replace('flex', 'hidden');
-            document.getElementById('secret-modal').classList.replace('flex', 'hidden');
+            document.getElementById('password-modal').classList.add('hidden');
+            document.getElementById('secret-modal').classList.add('hidden');
             currentSecretHeroId = null;
         };
-
-        // --- RENDER GROUP FACTIONS ---
-        Athenaeum.ready.then(store => {
-            const factionUrl = name => {
-                const f = store.find(name, ['faction']);
-                return f && !f.stub ? store.url(f) : 'factions.html';
-            };
-            const factionsList = document.getElementById('group-factions-list');
-            if (partyData.groupFactions && partyData.groupFactions.length > 0) {
-                factionsList.innerHTML = partyData.groupFactions.map(faction => {
-                    // Determine the status color
-                    let statusColor = "text-white/40"; // Neutral default
-                    if (faction.status.toLowerCase() === "allied") statusColor = "text-[#4ade80]";
-                    if (faction.status.toLowerCase() === "hostile") statusColor = "text-error";
-
-                    const href = factionUrl(faction.name);
-
-                    return `
-                    <li>
-                        <a href="${href}" class="flex items-center justify-between text-sm bg-black/20 p-2 rounded border border-white/5 hover:border-[#e9c176]/30 hover:bg-[#e9c176]/5 group transition-colors">
-                            <span class="text-white/80 group-hover:text-[#e9c176] transition-colors">${faction.name}</span>
-                            <span class="text-[9px] uppercase tracking-widest ${statusColor} font-bold">${faction.status}</span>
-                        </a>
-                    </li>
-                `}).join('');
-            } else {
-                factionsList.innerHTML = `<li class="text-sm text-white/40 italic p-2">No known allegiances.</li>`;
-            }
-        });
 
         // --- FOLDABLE UI ENGINE ---
         window.toggleSection = (contentId, iconId) => {
@@ -429,7 +438,7 @@
             content.classList.toggle('hidden');
 
             // Rotate the arrow icon 180 degrees
-            icon.classList.toggle('rotate-180');
+            icon.classList.toggle('is-open');
         };
 
         // Allow pressing the "Enter" key to submit the password

@@ -84,17 +84,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             card.className = "resident";
             card.innerHTML = `
                 <div class="resident__row">
-                    <div class="resident__portrait h-18">
+                    <div class="resident__portrait">
                         <img class="resident__image" src="${npc.image}" alt="${npc.name}"/>
                     </div>
                     <div class="resident__body">
                         <div class="resident__name-row">
-                            <h4 class="resident__name font-noto-serif">${npc.name}</h4>
+                            <h4 class="resident__name">${npc.name}</h4>
                             
                             <a href="${store.url(npc.id)}" class="resident__profile-link material-symbols-outlined" title="View Full Profile">person_search</a>
                         </div>
                         <p class="resident__role">${npc.role}</p>
-                        <p class="resident__quote font-newsreader">"${npc.quote}"</p>
+                        <p class="resident__quote">"${npc.quote}"</p>
                         <div class="resident__place">
                             <span class="resident__place-icon material-symbols-outlined">location_on</span>
                             ${npc.homePinTitle || 'Unknown Location'}

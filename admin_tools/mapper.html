@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Eraldom Archives - Precise Cartographer</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="mapper.css" rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&family=Newsreader:ital,wght@0,600;1,400&display=swap"
         rel="stylesheet">
@@ -47,67 +47,67 @@
     </style>
 </head>
 
-<body class="p-6">
+<body class="mapper">
 
-    <header class="max-w-7xl mx-auto mb-6 flex justify-between items-end border-b border-white/5 pb-6">
+    <header class="mapper__head">
         <div>
-            <h1 class="text-3xl font-headline font-bold text-[#e9c176] tracking-tight">Precise Cartographer</h1>
-            <p class="text-[10px] uppercase tracking-[0.3em] text-gray-500 mt-1">Resolution-Aware Coordinate Tool</p>
+            <h1 class="mapper__title font-headline">Precise Cartographer</h1>
+            <p class="mapper__subtitle">Resolution-Aware Coordinate Tool</p>
         </div>
 
-        <div class="flex gap-4">
-            <div class="flex flex-col">
-                <label class="text-[9px] uppercase text-gray-600 mb-1">Target Resolution (W x H)</label>
-                <div class="flex gap-2">
-                    <input type="number" id="res-w" placeholder="Width" class="input-vault w-24">
-                    <input type="number" id="res-h" placeholder="Height" class="input-vault w-24">
+        <div class="mapper__controls">
+            <div class="mapper__field">
+                <label class="mapper__label">Target Resolution (W x H)</label>
+                <div class="mapper__inputs">
+                    <input type="number" id="res-w" placeholder="Width" class="mapper__size input-vault">
+                    <input type="number" id="res-h" placeholder="Height" class="mapper__size input-vault">
                     <button onclick="updateMapBounds()"
-                        class="px-4 py-2 bg-[#e9c176] text-black text-[10px] font-bold uppercase rounded hover:bg-[#d4ae65] transition-colors">Update
+                        class="mapper__button">Update
                         Grid</button>
                 </div>
             </div>
-            <div class="border-l border-white/10 ml-2 pl-4 flex items-end">
-                <input type="file" id="map-upload" accept="image/*" class="hidden">
+            <div class="mapper__upload">
+                <input type="file" id="map-upload" accept="image/*" class="mapper__file hidden">
                 <label for="map-upload"
-                    class="px-5 py-2 border border-[#e9c176]/20 bg-[#e9c176]/5 rounded text-[10px] uppercase tracking-widest text-[#e9c176] cursor-pointer flex items-center gap-2 hover:bg-[#e9c176]/10 transition-all">
-                    <span class="material-symbols-outlined text-sm">upload_file</span> Load Image
+                    class="mapper__upload-button">
+                    <span class="mapper__upload-icon material-symbols-outlined">upload_file</span> Load Image
                 </label>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto grid grid-cols-12 gap-6">
-        <div class="col-span-9 relative">
-            <div id="map" class="rounded-lg shadow-2xl"></div>
+    <main class="mapper__layout">
+        <div class="mapper__stage">
+            <div id="map" class="mapper__map"></div>
             <div id="drop-overlay"
-                class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 rounded-lg z-[1000] pointer-events-none">
-                <span class="material-symbols-outlined text-4xl text-[#e9c176]/20 mb-2">map</span>
-                <p class="text-[#e9c176]/40 text-xs uppercase tracking-widest">Waiting for map data...</p>
+                class="mapper__overlay">
+                <span class="mapper__overlay-icon material-symbols-outlined">map</span>
+                <p class="mapper__overlay-text">Waiting for map data...</p>
             </div>
         </div>
 
-        <div class="col-span-3 flex flex-col gap-4">
-            <div class="bg-[#121412] border border-white/5 p-5 rounded-lg shadow-xl">
-                <h2 class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-4">Output Log</h2>
-                <div class="space-y-4">
+        <div class="mapper__side">
+            <div class="mapper__panel">
+                <h2 class="mapper__panel-title">Output Log</h2>
+                <div class="mapper__panel-body">
                     <div>
-                        <label class="block text-[9px] text-gray-600 uppercase mb-1">Current Point [Y, X]</label>
+                        <label class="mapper__point-label">Current Point [Y, X]</label>
                         <div id="coord-leaflet"
-                            class="bg-black/40 p-4 rounded border border-[#e9c176]/20 font-mono text-lg text-[#e9c176] text-center italic">
+                            class="mapper__point">
                             ---</div>
                     </div>
-                    <div class="p-3 bg-white/5 rounded text-[10px] text-gray-400 border-l-2 border-[#e9c176]">
-                        Les coordonnées sont basées sur le point <span class="text-white">[0,0]</span> en bas à gauche
+                    <div class="mapper__hint">
+                        Les coordonnées sont basées sur le point <span class="mapper__hint-strong">[0,0]</span> en bas à gauche
                         de votre résolution cible.
                     </div>
                 </div>
             </div>
 
-            <div class="bg-[#e9c176]/5 border border-[#e9c176]/20 p-5 rounded-lg">
-                <h2 class="text-[10px] uppercase tracking-widest text-[#e9c176] font-bold mb-2">Technical Note</h2>
-                <p class="text-[11px] text-gray-400 leading-relaxed">
-                    Si votre image fait <span class="text-white italic">2000x1000px</span> mais que votre JS attend du
-                    <span class="text-white italic">1000x500px</span>, saisissez la résolution cible manuellement pour
+            <div class="mapper__note">
+                <h2 class="mapper__note-title">Technical Note</h2>
+                <p class="mapper__note-text">
+                    Si votre image fait <span class="mapper__note-strong">2000x1000px</span> mais que votre JS attend du
+                    <span class="mapper__note-strong">1000x500px</span>, saisissez la résolution cible manuellement pour
                     conserver l'échelle de votre base de données.
                 </p>
             </div>
@@ -184,7 +184,7 @@
 
             L.popup({ closeButton: false, className: 'vault-popup' })
                 .setLatLng(e.latlng)
-                .setContent(`<div class="text-[11px] font-bold tracking-widest">${formatted} COPIED</div>`)
+                .setContent(`<div class="mapper__copied">${formatted} COPIED</div>`)
                 .openOn(map);
         });
     </script>

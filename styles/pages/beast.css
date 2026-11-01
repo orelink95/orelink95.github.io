@@ -1,0 +1,586 @@
+/* A creature of the Elder Tarot (beast.html) */
+
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #050505;
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+}
+
+.header-slot {
+    position: relative;
+    z-index: 50;
+}
+
+.beast-main {
+    position: relative;
+    z-index: 10;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 6rem 1rem;
+}
+@media (min-width: 768px) {
+    .beast-main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.breadcrumbs__link {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.breadcrumbs__link:hover {
+    color: var(--color-secondary);
+}
+
+.breadcrumbs__separator {
+    font-size: 12px;
+}
+
+.breadcrumbs__current {
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.beast-hero {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+@media (min-width: 1024px) {
+    .beast-hero {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 4rem;
+    }
+}
+
+.beast-portrait {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+@media (min-width: 1024px) {
+    .beast-portrait {
+        grid-column: span 6 / span 6;
+    }
+}
+
+.beast-portrait__corner-tl {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 4rem;
+    width: 4rem;
+    border-left-width: 1px;
+    border-top-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    pointer-events: none;
+}
+
+.beast-portrait__corner-br {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 4rem;
+    width: 4rem;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    pointer-events: none;
+}
+
+.beast-portrait__frame {
+    position: relative;
+    aspect-ratio: 4/3;
+    width: 100%;
+    overflow: hidden;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: #0a0b0a;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+}
+@media (min-width: 1024px) {
+    .beast-portrait__frame {
+        aspect-ratio: 1 / 1;
+    }
+}
+
+.beast-portrait__img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: all 700ms var(--ease);
+}
+.beast-portrait__img:hover {
+    filter: contrast(.75);
+}
+.beast-portrait__frame:hover .beast-portrait__img {
+    opacity: 1;
+    filter: saturate(1);
+}
+
+.beast-portrait__fade {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to top, rgb(0 0 0 / 0.8), transparent, transparent);
+    pointer-events: none;
+}
+
+.beast-portrait__ring {
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+    pointer-events: none;
+}
+
+.beast-portrait__tags {
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1.25rem;
+    z-index: 10;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.beast-summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+@media (min-width: 1024px) {
+    .beast-summary {
+        grid-column: span 6 / span 6;
+    }
+}
+
+.beast-summary__specimen {
+    margin-bottom: 0.5rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.beast-summary__specimen-no {
+    color: rgb(255 255 255 / 0.8);
+}
+
+.beast-summary__name {
+    margin-bottom: 2.5rem;
+    font-family: var(--font-headline);
+    font-size: 3.75rem;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: #fff;
+}
+@media (min-width: 768px) {
+    .beast-summary__name {
+        font-size: 4.5rem;
+        line-height: 1;
+    }
+}
+
+.beast-stats {
+    width: 100%;
+    max-width: 42rem;
+    padding: 2rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+    background-color: #0a0b0a;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.beast-stats__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+}
+
+.beast-stats__icon {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--color-secondary);
+}
+
+.beast-stats__title {
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--color-secondary);
+}
+
+.beast-stats__bars > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+}
+
+.beast-habitats {
+    margin-top: 2.5rem;
+}
+
+.beast-habitats__label {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.beast-habitats__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.beast-body {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+}
+@media (min-width: 1024px) {
+    .beast-body {
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: 3rem;
+    }
+}
+
+.beast-body__main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+@media (min-width: 1024px) {
+    .beast-body__main {
+        grid-column: span 8 / span 8;
+    }
+}
+
+.beast-lore {
+    padding: 2rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: var(--color-surface-container-low);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+@media (min-width: 768px) {
+    .beast-lore {
+        padding: 2.5rem;
+    }
+}
+
+.beast-lore__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.beast-lore__title {
+    font-family: var(--font-headline);
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.beast-lore__icon {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    color: rgb(255 255 255 / 0.1);
+}
+
+.beast-lore__text {
+    max-width: none;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.625;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.beast-traits {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2rem;
+}
+@media (min-width: 768px) {
+    .beast-traits {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+.beast-traits__panel {
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: var(--color-surface-container-low);
+}
+
+.beast-traits__title {
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgb(255 255 255 / 0.5);
+}
+
+.beast-traits__list > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.75rem;
+    margin-bottom: 0;
+}
+.beast-traits__list {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.beast-side {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+@media (min-width: 1024px) {
+    .beast-side {
+        grid-column: span 4 / span 4;
+    }
+}
+
+.beast-side__title {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    line-height: 2rem;
+    color: #fff;
+}
+
+.beast-drops > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1rem;
+    margin-bottom: 0;
+}
+
+.beast-scholar {
+    position: relative;
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.1);
+    background-color: var(--color-surface);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.beast-scholar__label {
+    display: block;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.beast-scholar__quote {
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.625;
+    color: rgb(255 255 255 / 0.8);
+}
+
+.beast-scholar__name {
+    text-align: right;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.beast-tag {
+    padding: 0.375rem 0.75rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.1);
+    background-color: rgb(49 46 129 / 0.8);
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.6);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+
+.beast-stat__head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.6);
+}
+
+.beast-stat__value {
+    color: var(--color-secondary);
+}
+
+.beast-stat__track {
+    height: 0.25rem;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    background-color: rgb(255 255 255 / 0.05);
+}
+
+.beast-stat__bar {
+    height: 100%;
+    background-color: var(--color-secondary);
+    box-shadow: 0 0 10px rgba(233,193,118,0.5);
+    transition: all 1000ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.beast-habitat {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.75rem;
+    border-width: 1px;
+    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--color-secondary) 80%, transparent);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.beast-habitat__icon {
+    font-size: 12px;
+    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+}
+
+.beast-trait {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.beast-trait__bullet {
+    margin-top: 0.125rem;
+    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+}
+
+.beast-drop {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.05);
+    background-color: #0a0b0a;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.beast-drop:hover {
+    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+}
+
+.beast-drop__badge {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    border-color: rgb(255 255 255 / 0.1);
+    background-color: var(--color-surface);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.beast-drop:hover .beast-drop__badge {
+    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+}
+
+.beast-drop__icon {
+    font-size: 18px;
+    color: rgb(255 255 255 / 0.5);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.beast-drop:hover .beast-drop__icon {
+    color: var(--color-secondary);
+}
+
+.beast-drop__name {
+    font-family: var(--font-headline);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.beast-drop:hover .beast-drop__name {
+    color: var(--color-secondary);
+}
+
+.beast-drop__type {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.beast-traits__title--weaknesses {
+    color: color-mix(in srgb, var(--color-error) 60%, transparent);
+}
+
+/* Hovering the image itself: both filters at once */
+.beast-portrait__frame:hover .beast-portrait__img:hover {
+    filter: contrast(.75) saturate(1);
+}

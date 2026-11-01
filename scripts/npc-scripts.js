@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 3. RENDER PORTRAIT GRID (Same visual code as before)
     function renderGrid(npcs) {
         if (npcs.length === 0) {
-            grid.innerHTML = `<p class="npc-grid__empty font-newsreader">No individuals match these archival parameters.</p>`;
+            grid.innerHTML = `<p class="npc-grid__empty">No individuals match these archival parameters.</p>`;
             return;
         }
 

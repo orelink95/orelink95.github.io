@@ -1,56 +1,63 @@
 <div id="library-sidebar-container"
-    class="fixed top-1/4 right-0 z-[100]">
+    class="library-sidebar">
 
     <button id="lib-sidebar-btn" onclick="toggleLibrarySidebar()"
-        class="absolute right-0 top-6 w-12 h-14 bg-[#050505]/90 backdrop-blur-md border-y border-l border-secondary/30 rounded-l-lg flex items-center justify-center shadow-[-5px_0_15px_rgba(0,0,0,0.5)] group hover:border-secondary/60 transition-transform duration-500 z-50">
+        class="library-sidebar__toggle">
         <span id="lib-sidebar-icon"
-            class="material-symbols-outlined text-secondary/70 group-hover:text-secondary group-hover:scale-110 transition-all drop-shadow-[0_0_5px_rgba(233,193,118,0.5)]">key_vertical</span>
+            class="library-sidebar__toggle-icon material-symbols-outlined">key_vertical</span>
     </button>
 
     <aside id="library-sidebar-content"
-        class="absolute right-0 top-0 w-64 bg-[#050505]/90 backdrop-blur-xl border-y border-l border-secondary/20 rounded-l-2xl py-8 px-4 shadow-[-20px_0_50px_rgba(26,11,46,0.6)] flex flex-col gap-6 overflow-hidden transition-all duration-500 opacity-0 pointer-events-none scale-95 translate-x-4 origin-right">
+        class="library-sidebar__panel">
 
-        <div class="absolute top-0 right-0 w-32 h-32 bg-void/60 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute bottom-0 left-0 w-32 h-32 bg-ethereal/60 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="library-sidebar__glow-void"></div>
+        <div class="library-sidebar__glow-ethereal"></div>
 
         <h3
-            class="font-headline text-secondary/80 text-[10px] uppercase tracking-[0.3em] text-center mb-2 border-b border-white/5 pb-4 relative z-10">
+            class="library-sidebar__title">
             Archival Wings</h3>
 
-        <nav id="lib-sidebar-nav" class="flex flex-col gap-2 relative z-10">
+        <nav id="lib-sidebar-nav" class="library-sidebar__nav">
             <a href="index.html"
-                class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/50 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group">
+                class="library-sidebar__link">
                 <span
-                    class="material-symbols-outlined group-hover:text-secondary transition-colors text-lg">door_front</span>
-                <span class="font-label text-xs uppercase tracking-widest">Exit Archive</span>
+                    class="library-sidebar__link-icon material-symbols-outlined">door_front</span>
+                <span class="library-sidebar__link-label">Exit Archive</span>
             </a>
 
             <a href="library.html"
-                class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/50 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group">
+                class="library-sidebar__link">
                 <span
-                    class="material-symbols-outlined group-hover:text-secondary transition-colors text-lg">account_balance</span>
-                <span class="font-label text-xs uppercase tracking-widest">Archive Hub</span>
+                    class="library-sidebar__link-icon material-symbols-outlined">account_balance</span>
+                <span class="library-sidebar__link-label">Archive Hub</span>
             </a>
 
             <a href="bestiary.html"
-                class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/50 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group">
+                class="library-sidebar__link">
                 <span
-                    class="material-symbols-outlined group-hover:text-secondary transition-colors text-lg">temp_preferences_custom</span>
-                <span class="font-label text-xs uppercase tracking-widest">Elder Tarot</span>
+                    class="library-sidebar__link-icon material-symbols-outlined">temp_preferences_custom</span>
+                <span class="library-sidebar__link-label">Elder Tarot</span>
             </a>
 
             <a href="handouts.html"
-                class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/50 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group">
+                class="library-sidebar__link">
                 <span
-                    class="material-symbols-outlined group-hover:text-secondary transition-colors text-lg">history_edu</span>
-                <span class="font-label text-xs uppercase tracking-widest">Handouts</span>
+                    class="library-sidebar__link-icon material-symbols-outlined">history_edu</span>
+                <span class="library-sidebar__link-label">Handouts</span>
             </a>
 
             <a href="tomes.html"
-                class="flex items-center gap-4 px-4 py-3 rounded-lg text-white/50 hover:text-white hover:bg-white/5 border border-transparent hover:border-white/10 transition-all group">
+                class="library-sidebar__link">
                 <span
-                    class="material-symbols-outlined group-hover:text-secondary transition-colors text-lg">menu_book</span>
-                <span class="font-label text-xs uppercase tracking-widest">Reference</span>
+                    class="library-sidebar__link-icon material-symbols-outlined">menu_book</span>
+                <span class="library-sidebar__link-label">Reference</span>
+            </a>
+
+            <a href="vault.html"
+                class="library-sidebar__link">
+                <span
+                    class="library-sidebar__link-icon material-symbols-outlined">diamond</span>
+                <span class="library-sidebar__link-label">Artifact Vault</span>
             </a>
         </nav>
     </aside>

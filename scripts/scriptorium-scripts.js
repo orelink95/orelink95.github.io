@@ -8,38 +8,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     const storyPreview = document.getElementById('story-so-far-preview');
     const campaignFilter = document.getElementById('filter-campaign');
 
-    let currentCampaignName = "";
-    window.campaignData = window.campaignData || {};
+    // Campaigns (data/campaigns.json) and their sessions (data/sessions.json, newest first)
+    const campaigns = store.all('campaign').slice().sort((a, b) => a.name.localeCompare(b.name));
+    const sessionsOf = id => store.all('session').filter(s => s.campaign === id);
+    const itemName = id => (store.get(id) || {}).name || id;
+    let current = null;   // the campaign on screen
 
     // --- WORKSPACE INITIALIZATION ---
     function initWorkspace() {
-        const campaigns = Object.keys(window.campaignData).sort();
         if (campaigns.length === 0) return;
 
         // 1. Populate the Campaign Dropdown
         if (campaignFilter) {
-            campaignFilter.innerHTML = campaigns.map(c => `<option value="${c}">${c}</option>`).join('');
+            campaignFilter.innerHTML = campaigns.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
         }
 
-        // 2. Check URL for Deep Linking (Auto-switches to the right campaign!)
+        // 2. Deep links: ?session=… opens its campaign, ?campaign=… picks one
         const urlParams = new URLSearchParams(window.location.search);
-        const targetSessionId = urlParams.get('session');
+        const linkedSession = store.get(urlParams.get('session'));
+        const wanted = (linkedSession && linkedSession.campaign) || urlParams.get('campaign');
 
-        if (targetSessionId) {
-            for (const [name, data] of Object.entries(window.campaignData)) {
-                if ((data.sessions || []).some(s => s.id === targetSessionId)) {
-                    currentCampaignName = name;
-                    break;
-                }
-            }
-        }
+        // 3. Otherwise the current campaign (data/settings.json), else the first
+        current = campaigns.find(c => c.id === wanted) || campaigns.find(c => c.id === store.settings.currentCampaign) || campaigns[0];
 
-        // 3. Fallback to default campaign if no link was provided
-        if (!currentCampaignName) {
-            currentCampaignName = campaigns.includes("Echoes from the Void") ? "Echoes from the Void" : campaigns[0];
-        }
-
-        if (campaignFilter) campaignFilter.value = currentCampaignName;
+        if (campaignFilter) campaignFilter.value = current.id;
 
         // 4. Load the selected workspace!
         loadCampaignWorkspace();
@@ -47,18 +39,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- WORKSPACE SWAPPER ---
     function loadCampaignWorkspace() {
-        const data = window.campaignData[currentCampaignName];
-        if (!data) return;
+        if (!current) return;
+        const sessions = sessionsOf(current.id);
 
         // Update the Story Preview
-        if (storyPreview) storyPreview.textContent = data.storySoFar.preview;
+        if (storyPreview) storyPreview.textContent = current.preview || '';
 
         // Update the Sidebar
-        renderQuests(data.activeQuests || []);
-        renderGlobalLoot(data.sessions || []);
+        renderQuests(current.quests || []);
+        renderGlobalLoot(sessions);
 
         // Update Arc Filter for this specific campaign
-        populateArcFilter(data.sessions || []);
+        populateArcFilter(sessions);
 
         // Render the Timeline
         applyFilters();
@@ -68,16 +60,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     function applyFilters() {
         const query = searchInput.value.toLowerCase();
         const selectedArc = arcFilter.value;
-        const data = window.campaignData[currentCampaignName];
+        if (!current) return;
 
-        if (!data) return;
-
-        const filtered = (data.sessions || []).filter(s => {
+        const filtered = sessionsOf(current.id).filter(s => {
             const matchesArc = selectedArc === "all" || s.arc === selectedArc;
-            const matchesSearch = s.title.toLowerCase().includes(query) ||
-                s.summary.toLowerCase().includes(query) ||
+            const matchesSearch = s.name.toLowerCase().includes(query) ||
+                (s.summary || '').toLowerCase().includes(query) ||
                 (s.keywords || []).some(k => k.toLowerCase().includes(query)) ||
-                (s.npcsMet || []).some(n => n.id.toLowerCase().includes(query));
+                (s.npcs || []).some(n => n.npc.toLowerCase().includes(query));
                 
             return matchesArc && matchesSearch; 
         });
@@ -88,7 +78,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Event Listeners for Filters
     if (campaignFilter) {
         campaignFilter.addEventListener('change', (e) => {
-            currentCampaignName = e.target.value;
+            current = campaigns.find(c => c.id === e.target.value);
             if (arcFilter) arcFilter.value = "all"; // Reset Arc filter on campaign swap
             if (searchInput) searchInput.value = ""; // Reset Search
             loadCampaignWorkspace();
@@ -104,41 +94,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         return { ...npc, image: npc.portrait, avatar: npc.avatar || npc.portrait };
     }
 
-    // Campaign files still name places; resolve them through names and aliases.
-    function findLocation(title) {
-        const place = store.find(title, ['poi', 'district', 'settlement', 'country', 'continent']);
-        return place ? { title: place.name, url: store.url(place) } : null;
+    // Keywords: names of NPCs, places, factions and creatures become links; glossary
+    // terms (data/lore.json) become spans that search the chronicle. Anything with a
+    // summary or a definition shows it as a tooltip.
+    const KW_TYPE = { npc: 'person', faction: 'faction', creature: 'monster', lore: 'lore' };
+    const kwKind = rec => rec.kind || KW_TYPE[store.typeOf(rec)] || 'place';
+    const tipOf = rec => rec.definition || rec.summary || '';
+    function keywordAttrs(rec) {
+        const tip = tipOf(rec) ? ` onmouseenter="showTooltip(event, '${rec.id}')"` : '';
+        if (store.typeOf(rec) === 'lore') return `onclick="event.stopPropagation(); triggerSearch('${rec.id}')"${tip}`;
+        return `onclick="event.stopPropagation()"${tip}`;
     }
+    const handoutsData = store.all('handout').filter(h => !h.draft);
 
-    function autoLinkContent(text) {
+    function autoLinkContent(text, { markdown = false } = {}) {
         if (!text) return "";
-        let linkedText = text;
+        let linkedText = markdown ? store.md(text) : text;
 
-        // NPCs, places and factions (from the data files)
-        linkedText = store.autolink(linkedText, { className: 'relative z-10', attrs: 'onclick="event.stopPropagation()"' });
+        // NPCs, places, factions, creatures and glossary terms (from the data files)
+        linkedText = store.autolink(linkedText, { className: 'keyword-link', attrs: keywordAttrs, terms: true });
 
-        if (typeof keywordLexicon !== 'undefined') {
-            Object.keys(keywordLexicon).forEach(term => {
-                const regex = new RegExp(`\\b${term}\\b(?![^<]*>)`, 'gi');
-                const entry = keywordLexicon[term];
-                const definition = (typeof entry === 'string' ? entry : entry.definition).replace(/'/g, "\\'");
-                const type = (typeof entry === 'string' ? 'lore' : entry.type) || 'lore';
-                const typeClass = `kw-${type}`;
-
-                linkedText = linkedText.replace(regex, (match) => `
-                    <span class="${typeClass} relative z-10" onmouseenter="showTooltip(event, '${term}', '${definition}', '${type}')" onclick="event.stopPropagation(); triggerSearch('${term}')">${match}</span>`);
-            });
-        }
-
-        if (typeof handoutsData !== 'undefined') {
-            const sortedHandouts = [...handoutsData].sort((a, b) => b.title.length - a.title.length);
+        if (handoutsData.length) {
+            const sortedHandouts = [...handoutsData].sort((a, b) => b.name.length - a.name.length);
             
             sortedHandouts.forEach(handout => {
-                const safeTitle = handout.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const safeTitle = handout.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                 const regex = new RegExp(`\\b${safeTitle}\\b(?![^<]*>)`, 'gi');
                 
                 linkedText = linkedText.replace(regex, (match) => `
-                    <a href="${handout.fileUrl}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="kw-object relative z-10" onmousemove="showHandoutTooltip(event, '${handout.id}')" onmouseleave="hideHandoutTooltip()" title="Click to view evidence">${match}</a>`
+                    <a href="${handout.file || '#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="keyword-link kw-object" onmousemove="showHandoutTooltip(event, '${handout.id}')" onmouseleave="hideHandoutTooltip()" title="Click to view evidence">${match}</a>`
                 );
             });
         }
@@ -146,75 +130,82 @@ document.addEventListener("DOMContentLoaded", async () => {
         return linkedText;
     };
 
+    function sessionPlaces(session) {
+        return [
+            ...(session.places || []).map(id => store.get(id)).filter(Boolean).map(p => ({ title: p.name, url: store.url(p) })),
+            ...(session.otherPlaces || []).map(title => ({ title, url: null })),
+        ];
+    }
+
     // --- TIMELINE RENDERING ---
     function renderTimeline(sessions) {
         if (sessions.length === 0) {
-            timelineContainer.innerHTML = `<p class="py-20 text-center italic text-white/20">No records match your search criteria.</p>`;
+            timelineContainer.innerHTML = `<p class="timeline__empty">No records match your search criteria.</p>`;
             return;
         }
 
         let currentArc = "";
-        let html = `<div class="absolute top-0 bottom-0 left-[23px] md:left-[31px] w-px bg-white/5"></div>`;
+        let html = `<div class="timeline__line"></div>`;
 
         sessions.forEach((session, index) => {
             if (session.arc !== currentArc) {
                 currentArc = session.arc;
                 html += `
-                    <div class="relative pl-12 md:pl-20 mb-8 mt-12 first:mt-0">
-                        <h4 class="text-[10px] font-label uppercase tracking-[0.4em] text-[#e9c176]/40 border-b border-white/5 pb-2 inline-block">${currentArc}</h4>
+                    <div class="timeline-arc">
+                        <h4 class="timeline-arc__title">${currentArc}</h4>
                     </div>
                 `;
             }
 
-            const npcTags = (session.npcsMet || []).map(entry => {
-                const data = findNPC(entry.id);
+            const npcTags = (session.npcs || []).map(entry => {
+                const data = findNPC(entry.npc);
                 if (!data) return '';
                 
                 const avatarImg = data.avatar || 'https://ui-avatars.com/api/?background=1a1c1a&color=4ade80&name=' + data.name;
 
                 return `
-                <div class="group/avatar relative z-10 hover:z-50">
-                    <a href="npc.html?id=${entry.id}" onclick="event.stopPropagation()" class="block">
-                        <img src="${avatarImg}" alt="${data.name}" class="w-10 h-10 rounded-full border-2 border-[#121412] object-cover hover:scale-110 transition-transform shadow-md">
-                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover/avatar:opacity-100 pointer-events-none transition-opacity duration-300 flex items-center justify-center whitespace-nowrap px-2.5 py-1 rounded bg-[#4ade80]/15 border border-[#4ade80]/30 text-[#4ade80] text-[9px] uppercase tracking-widest backdrop-blur-md shadow-lg">
+                <div class="npc-avatar">
+                    <a href="${store.url(entry.npc)}" onclick="event.stopPropagation()" class="npc-avatar__link">
+                        <img src="${avatarImg}" alt="${data.name}" class="npc-avatar__img">
+                        <div class="npc-avatar__tip">
                             ${data.name}
                         </div>
                     </a>
                 </div>`;
             }).join('');
 
-            const locTags = (session.locationsVisited || []).map(title => {
-                const data = findLocation(title);
-                return data ? `<a href="${data.url}" onclick="event.stopPropagation()" class="flex items-center gap-1.5 px-2 py-1 rounded bg-[#60a5fa]/10 border border-[#60a5fa]/20 text-[#60a5fa] text-[9px] uppercase tracking-widest hover:bg-[#60a5fa]/20 transition-colors relative z-10"><span class="material-symbols-outlined text-[12px]">location_on</span> ${title}</a>`
-                    : `<span onclick="event.stopPropagation(); triggerSearch('${title}')" class="flex items-center gap-1.5 px-2 py-1 rounded bg-[#60a5fa]/10 border border-[#60a5fa]/20 text-[#60a5fa] text-[9px] uppercase tracking-widest cursor-pointer hover:bg-[#60a5fa]/20 transition-colors relative z-10"><span class="material-symbols-outlined text-[12px]">location_on</span> ${title}</span>`;
+            const locTags = sessionPlaces(session).map(({ title, url }) => {
+                return url ? `<a href="${url}" onclick="event.stopPropagation()" class="place-tag"><span class="tag-icon material-symbols-outlined">location_on</span> ${title}</a>`
+                    : `<span onclick="event.stopPropagation(); triggerSearch(this.dataset.term)" data-term="${title.replace(/"/g, '&quot;')}" class="place-tag place-tag--search"><span class="tag-icon material-symbols-outlined">location_on</span> ${title}</span>`;
             }).join('');
 
-            const lootTags = (session.lootObtained || []).map(item => `
-                <span class="flex items-center gap-1 text-[9px] uppercase tracking-widest text-[#c084fc]/80"><span class="material-symbols-outlined text-[12px]">auto_awesome</span> ${item}</span>
+            const lootTags = (session.loot || []).map(itemName).map(item => `
+                <span class="loot-tag"><span class="tag-icon material-symbols-outlined">auto_awesome</span> ${item}</span>
             `).join('');
 
             const isLatest = index === 0 && searchInput.value === "" && arcFilter.value === "all";
+            const latestClass = isLatest ? 'is-latest' : '';   // the newest session is lit in gold
 
             html += `
-                <div id="${session.id}" class="relative pl-10 md:pl-16 mb-12 group animate-fade-in">
-                    <div class="absolute left-[11.5px] md:left-[19.5px] top-6 w-2.5 h-2.5 rounded-full ${isLatest ? 'bg-[#e9c176] shadow-[0_0_15px_rgba(233,193,118,0.6)]' : 'bg-white/10 group-hover:bg-white/30'} z-10 transition-all"></div>
+                <div id="${session.id}" class="timeline-entry">
+                    <div class="timeline-entry__dot ${latestClass}"></div>
                     
-                    <div onclick="openSessionFolio('${session.id}')" class="bg-[#121412] ${isLatest ? 'border-l-2 border-[#e9c176]/40' : 'border-l-2 border-transparent'} rounded-r-lg p-6 md:p-8 hover:bg-[#161816] transition-all border-t border-r border-b border-white/20 cursor-pointer shadow-lg hover:shadow-2xl">
-                        <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-4">
+                    <div onclick="openSessionFolio('${session.id}')" class="timeline-entry__card ${latestClass}">
+                        <div class="timeline-entry__head">
                             <div>
-                                <div class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/5 border border-white/20 text-[8px] font-label uppercase tracking-widest text-purple-600/70 mb-3 shadow-inner">
-                                    <span class="material-symbols-outlined text-[10px] text-purple-600">explore</span> ${currentCampaignName}
+                                <div class="timeline-entry__campaign">
+                                    <span class="timeline-entry__campaign-icon material-symbols-outlined">explore</span> ${current.name}
                                 </div>
 
-                                <p class="font-label text-[9px] uppercase tracking-[0.2em] text-white/40 mb-1">${session.dateSpan || "Unknown Date"}</p>
-                                <h3 class="text-2xl font-headline font-bold text-white group-hover:text-[#e9c176] transition-colors">${session.title}</h3>
+                                <p class="timeline-entry__date">${session.date || "Unknown Date"}</p>
+                                <h3 class="timeline-entry__title">${session.name}</h3>
                             </div>
-                           <div class="flex flex-wrap -space-x-3 pl-2">${npcTags}</div>
-                        </div> <p class="font-body text-sm text-[#8a8a8a] leading-relaxed mb-6 line-clamp-2">${autoLinkContent(session.summary)}</p>
+                           <div class="timeline-entry__npcs">${npcTags}</div>
+                        </div> <p class="timeline-entry__summary">${autoLinkContent(session.summary)}</p>
                         
-                        <div class="flex flex-wrap items-center justify-between gap-6 pt-6 border-t border-white/5">
-                            <div class="flex flex-wrap gap-4">${locTags} ${lootTags}</div>
-                            <span class="text-[9px] font-label uppercase tracking-widest text-white/20 group-hover:text-white transition-colors flex items-center gap-2">Read Folio <span class="material-symbols-outlined text-sm transition-transform group-hover:translate-x-1">arrow_forward</span></span>
+                        <div class="timeline-entry__foot">
+                            <div class="timeline-entry__tags">${locTags} ${lootTags}</div>
+                            <span class="timeline-entry__read">Read Folio <span class="timeline-entry__read-icon material-symbols-outlined">arrow_forward</span></span>
                         </div>
                     </div>
                 </div>
@@ -227,21 +218,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     function renderQuests(quests) {
         if (!questList) return;
         questList.innerHTML = quests.map(q => `
-            <div class="group/quest">
-                <div class="flex items-center gap-2 mb-1">
-                    <span class="w-1 h-1 rounded-full ${q.status === 'Primary' ? 'bg-[#e9c176]' : 'bg-white/20'}"></span>
-                    <h4 class="text-xs font-headline font-bold text-white group-hover/quest:text-[#e9c176] transition-colors">${q.title}</h4>
+            <div class="quest">
+                <div class="quest__head">
+                    <span class="quest__dot ${q.status === 'Primary' ? 'quest__dot--primary' : ''}"></span>
+                    <h4 class="quest__title">${q.title}</h4>
                 </div>
-                <p class="text-[10px] text-white/40 leading-relaxed pl-3">${q.description}</p>
+                <p class="quest__text">${q.description}</p>
             </div>
         `).join('');
     }
 
     function renderGlobalLoot(sessions) {
         if (!lootList) return;
-        const allLoot = [...new Set(sessions.flatMap(s => s.lootObtained || []))];
+        const allLoot = [...new Set(sessions.flatMap(s => s.loot || []))].map(itemName);
         lootList.innerHTML = allLoot.map(item => `
-            <span class="px-2 py-1 rounded bg-white/5 border border-white/10 text-[8px] uppercase tracking-widest text-white/40 hover:text-[#c084fc] hover:border-[#c084fc]/30 transition-all cursor-help" title="Acquired in Archive">${item}</span>
+            <span class="acquisition" title="Acquired in Archive">${item}</span>
         `).join('');
     }
 
@@ -259,16 +250,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     window.triggerSearch = (term) => {
+        const rec = store.get(term);
+        if (rec) term = rec.name;   // called with a glossary id
         if (searchInput) {
             searchInput.value = term;
-            document.getElementById('session-modal').classList.replace('flex', 'hidden');
-            document.getElementById('story-modal').classList.replace('flex', 'hidden'); 
+            document.getElementById('session-modal').classList.add('hidden');
+            document.getElementById('story-modal').classList.add('hidden');
             window.closeTooltip();
             searchInput.dispatchEvent(new Event('input'));
         }
     };
 
-    window.showTooltip = (e, term, definition, type) => {
+    window.showTooltip = (e, id) => {
+        const rec = store.get(id);
+        if (!rec) return;
+        const term = rec.name, definition = tipOf(rec), type = kwKind(rec);
         const tt = document.getElementById('keyword-tooltip');
         const title = document.getElementById('tooltip-title');
 
@@ -300,40 +296,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         const tt = document.getElementById('handout-tooltip');
         if (!tt) return;
 
-        const handout = typeof handoutsData !== 'undefined' ? handoutsData.find(h => h.id === handoutId) : null;
+        const handout = handoutsData.find(h => h.id === handoutId);
         if (!handout) return;
 
         if (tt.getAttribute('data-current-id') !== handoutId) {
             tt.setAttribute('data-current-id', handoutId);
             
             tt.innerHTML = `
-                <div class="relative bg-[#050505] border border-white/20 rounded-xl p-4 shadow-[0_20px_50px_rgba(0,0,0,0.9)] flex flex-col overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-b from-secondary/10 to-transparent pointer-events-none"></div>
+                <div class="handout-tip">
+                    <div class="handout-tip__glow"></div>
 
-                    <div class="text-center mb-3 relative z-10 flex flex-col items-center">
-                        <h3 class="font-headline text-lg font-bold text-secondary uppercase tracking-wider drop-shadow-md">${handout.title}</h3>
-                        <p class="font-label text-[9px] uppercase tracking-widest text-white/50 mt-1">${handout.category}</p>
+                    <div class="handout-tip__head">
+                        <h3 class="handout-tip__title">${handout.name}</h3>
+                        <p class="handout-tip__category">${handout.category || ''}</p>
                     </div>
 
-                    <div class="relative mb-5 shrink-0">
-                        <div class="w-full aspect-[4/3] bg-[#0a0b0a] border border-white/10 rounded-md relative overflow-hidden shadow-inner">
-                            <img src="${handout.thumbnail}" class="w-full h-full object-cover opacity-90">
-                            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/20 to-transparent pointer-events-none"></div>
+                    <div class="handout-tip__media">
+                        <div class="handout-tip__frame">
+                            <img src="${handout.thumbnail}" class="handout-tip__img">
+                            <div class="handout-tip__fade"></div>
                         </div>
 
-                        <div class="absolute -bottom-4 left-0 right-0 flex justify-center z-20 pointer-events-none">
-                            <div class="absolute top-1/2 left-4 right-4 h-px bg-secondary/30"></div>
-                            <div class="w-8 h-8 bg-[#0a0b0a] border border-secondary rounded-md flex items-center justify-center relative z-10 shadow-[0_0_15px_rgba(233,193,118,0.3)]">
-                                <span class="material-symbols-outlined text-secondary text-[16px]">${(handout.icon || 'description').toLowerCase()}</span>
+                        <div class="handout-tip__seal-row">
+                            <div class="handout-tip__seal-line"></div>
+                            <div class="handout-tip__seal">
+                                <span class="handout-tip__seal-icon material-symbols-outlined">${(handout.icon || 'description').toLowerCase()}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="relative z-10 flex-grow flex flex-col pt-2">
-                        <p class="font-newsreader text-white/80 text-xs leading-relaxed line-clamp-3 mb-3">${handout.description}</p>
-                        <div class="mt-auto pt-3 flex justify-between items-center border-t border-white/10">
-                            <span class="text-[8px] font-label uppercase tracking-widest text-white/40 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[10px]">location_on</span> ${handout.locationFound}
+                    <div class="handout-tip__body">
+                        <p class="handout-tip__text">${handout.description || ''}</p>
+                        <div class="handout-tip__foot">
+                            <span class="handout-tip__place">
+                                <span class="handout-tip__place-icon material-symbols-outlined">location_on</span> ${handout.foundAt || ''}
                             </span>
                         </div>
                     </div>
@@ -401,136 +397,130 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- MODAL LOGIC ---
     window.openStoryFolio = () => {
-        const data = window.campaignData[currentCampaignName];
-        if (!data) return;
+        if (!current) return;
 
         const modal = document.getElementById('story-modal');
         modal.innerHTML = `
-            <div class="max-w-4xl w-full bg-[#121412] rounded-xl border border-white/10 shadow-2xl flex flex-col max-h-[90vh]">
-                <div class="p-6 md:p-8 border-b border-white/5 flex justify-between items-center shrink-0">
-                    <div><p class="font-label text-[#e9c176] text-[10px] uppercase tracking-[0.3em] mb-1">Archival Summary</p><h2 class="text-2xl font-headline font-bold text-white">The Story So Far</h2></div>
-                    <button onclick="closeStoryModal()" class="text-[#a0a0a0] hover:text-white p-2 rounded-full hover:bg-white/5"><span class="material-symbols-outlined">close</span></button>
+            <div class="story-folio">
+                <div class="story-folio__head">
+                    <div><p class="story-folio__eyebrow">Archival Summary</p><h2 class="story-folio__title">The Story So Far</h2></div>
+                    <button onclick="closeStoryModal()" class="story-folio__close"><span class="material-symbols-outlined">close</span></button>
                 </div>
-                <div class="p-6 md:p-12 overflow-y-auto custom-scrollbar font-body text-base text-[#b0b0b0] leading-relaxed space-y-6">
-                    ${autoLinkContent(data.storySoFar.full)}
+                <div class="story-folio__text story-text custom-scrollbar">
+                    ${autoLinkContent(store.md(current.story, { dropCap: true }))}
                 </div>
             </div>
         `;
-        modal.classList.replace('hidden', 'flex');
+        modal.classList.remove('hidden');
     };
 
     window.openSessionFolio = (id) => {
-        const data = window.campaignData[currentCampaignName];
-        if (!data) return;
-
-        const session = (data.sessions || []).find(s => s.id === id);
-        if (!session) return;
+        const session = store.get(id);
+        if (!session || store.typeOf(session) !== 'session') return;
 
         const modal = document.getElementById('session-modal');
         const content = document.getElementById('session-modal-content');
 
         const getSentiment = (s) => {
-            if (s === 'like') return '<span class="material-symbols-outlined text-[#4ade80] text-sm" title="Positive Interaction">sentiment_satisfied</span>';
-            if (s === 'dislike') return '<span class="material-symbols-outlined text-error text-sm" title="Hostile/Negative">sentiment_dissatisfied</span>';
-            return '<span class="material-symbols-outlined text-[#60a5fa] text-sm" title="Neutral/Business">sentiment_neutral</span>';
+            if (s === 'like') return '<span class="sentiment sentiment--like material-symbols-outlined" title="Positive Interaction">sentiment_satisfied</span>';
+            if (s === 'dislike') return '<span class="sentiment sentiment--dislike material-symbols-outlined" title="Hostile/Negative">sentiment_dissatisfied</span>';
+            return '<span class="sentiment sentiment--neutral material-symbols-outlined" title="Neutral/Business">sentiment_neutral</span>';
         };
 
-        const npcCards = (session.npcsMet || []).map(entry => {
-            const npc = findNPC(entry.id);
+        const npcCards = (session.npcs || []).map(entry => {
+            const npc = findNPC(entry.npc);
             if (!npc) return '';
             return `
-            <div class="flex items-center justify-between p-2 rounded bg-white/5 border border-white/10">
-                <a href="npc.html?id=${entry.id}" class="kw-person text-xs">${npc.name}</a>
+            <div class="encounter">
+                <a href="${store.url(entry.npc)}" class="encounter__name kw-person">${npc.name}</a>
                 ${getSentiment(entry.sentiment)}
             </div>`;
         }).join('');
 
         content.innerHTML = `
-        <div class="max-w-5xl mx-auto space-y-8 pb-20">
-            <header class="text-center mb-12">
-                <div class="flex justify-center items-center gap-4 mb-4">
-                    <div class="h-px w-12 bg-secondary/30"></div>
-                    <p class="font-label text-secondary text-[10px] uppercase tracking-[0.4em]">${session.dateSpan} — ${session.region}</p>
-                    <div class="h-px w-12 bg-secondary/30"></div>
+        <div class="folio">
+            <header class="folio__head">
+                <div class="folio__date-row">
+                    <div class="folio__rule"></div>
+                    <p class="folio__date">${session.date || ''} — ${session.region || ''}</p>
+                    <div class="folio__rule"></div>
                 </div>
-                <h1 class="text-5xl md:text-7xl font-headline font-bold text-white mb-4">${session.title}</h1>
-                <p class="font-label text-[10px] uppercase tracking-[0.2em] text-white/20">${session.arc}</p>
+                <h1 class="folio__title">${session.name}</h1>
+                <p class="folio__arc">${session.arc || ''}</p>
             </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-                <div class="md:col-span-12 p-8 rounded-xl bg-white/[0.02] border border-white/10 relative overflow-hidden">
-                    <h3 class="font-label text-[10px] uppercase text-secondary tracking-widest mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">summarize</span> Summary
+            <div class="folio__grid">
+                <div class="folio-summary">
+                    <h3 class="folio-summary__title">
+                        <span class="folio-icon material-symbols-outlined">summarize</span> Summary
                     </h3>
-                    <p class="font-body text-xl text-white/90 leading-relaxed italic">${autoLinkContent(session.summary)}</p>
+                    <p class="folio-summary__text">${autoLinkContent(session.summary)}</p>
                 </div>
 
-                <div class="md:col-span-6 p-6 rounded-xl bg-white/[0.02] border border-white/5">
-                    <h3 class="font-label text-[10px] uppercase text-[#60a5fa] tracking-widest mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">location_on</span> Locations Visited
+                <div class="folio-panel">
+                    <h3 class="folio-places__title">
+                        <span class="folio-icon material-symbols-outlined">location_on</span> Locations Visited
                     </h3>
-                    <div class="flex flex-wrap gap-2">${(session.locationsVisited || []).map(loc => {
-            const locData = findLocation(loc);
-            return locData
-                ? `<a href="${locData.url}" class="kw-place text-sm">${loc}</a>`
-                : `<span class="kw-place text-sm cursor-pointer" onclick="triggerSearch('${loc}')">${loc}</span>`;
-        }).join(', ')}</div>
+                    <div class="folio-places__list">${sessionPlaces(session).map(({ title, url }) => url
+                ? `<a href="${url}" class="folio-place kw-place">${title}</a>`
+                : `<span class="folio-place folio-place--search kw-place" onclick="triggerSearch(this.dataset.term)" data-term="${title.replace(/"/g, '&quot;')}">${title}</span>`
+        ).join(', ')}</div>
                 </div>
 
-                <div class="md:col-span-6 p-6 rounded-xl bg-white/[0.02] border border-white/5">
-                    <h3 class="font-label text-[10px] uppercase text-[#4ade80] tracking-widest mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">group</span> Notable Encounters
+                <div class="folio-panel">
+                    <h3 class="folio-encounters__title">
+                        <span class="folio-icon material-symbols-outlined">group</span> Notable Encounters
                     </h3>
-                    <div class="grid grid-cols-2 gap-2">${npcCards}</div>
+                    <div class="folio-encounters__list">${npcCards}</div>
                 </div>
 
-                <div class="md:col-span-8 p-6 rounded-xl bg-white/[0.02] border border-white/5">
-                    <h3 class="font-label text-[10px] uppercase text-white/40 tracking-widest mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">verified</span> Things Accomplished
+                <div class="folio-accomplished">
+                    <h3 class="folio-accomplished__title">
+                        <span class="folio-icon material-symbols-outlined">verified</span> Things Accomplished
                     </h3>
-                    <ul class="space-y-3">
-                        ${(session.accomplished || []).map(item => `<li class="text-sm text-white/70 flex gap-3"><span class="text-secondary">→</span> <span>${autoLinkContent(item)}</span></li>`).join('')}
+                    <ul class="folio-accomplished__list">
+                        ${(session.accomplished || []).map(item => `<li class="folio-accomplished__item"><span class="folio-accomplished__arrow">→</span> <span>${autoLinkContent(item)}</span></li>`).join('')}
                     </ul>
                 </div>
 
-                <div class="md:col-span-4 p-6 rounded-xl bg-[#c084fc]/5 border border-[#c084fc]/20 shadow-inner">
-                    <h3 class="font-label text-[10px] uppercase text-[#c084fc] tracking-widest mb-4 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sm">inventory_2</span> The Vault
+                <div class="folio-vault">
+                    <h3 class="folio-vault__title">
+                        <span class="folio-icon material-symbols-outlined">inventory_2</span> The Vault
                     </h3>
-                    <div class="space-y-2">
-                        ${(session.lootObtained || []).map(item => `<div class="text-xs font-bold text-white flex items-center gap-2"><span class="material-symbols-outlined text-xs text-[#c084fc]">auto_awesome</span> ${item}</div>`).join('')}
+                    <div class="folio-list">
+                        ${(session.loot || []).map(itemName).map(item => `<div class="folio-vault__item"><span class="folio-vault__icon material-symbols-outlined">auto_awesome</span> ${item}</div>`).join('')}
                     </div>
                 </div>
 
-                <div class="md:col-span-6 p-6 rounded-xl bg-white/[0.02] border border-white/5 border-l-secondary/40 border-l-2">
-                    <h3 class="font-label text-[10px] uppercase text-secondary tracking-widest mb-4">Leads Pursued</h3>
-                    <ul class="space-y-2">
-                        ${(session.leadsPursued || []).map(item => `<li class="text-xs text-white/60 italic">${autoLinkContent(item)}</li>`).join('')}
+                <div class="folio-leads">
+                    <h3 class="folio-leads__title">Leads Pursued</h3>
+                    <ul class="folio-list">
+                        ${(session.leadsPursued || []).map(item => `<li class="folio-leads__item">${autoLinkContent(item)}</li>`).join('')}
                     </ul>
                 </div>
 
-                <div class="md:col-span-6 p-6 rounded-xl bg-white/[0.02] border border-white/5 border-l-error/40 border-l-2">
-                    <h3 class="font-label text-[10px] uppercase text-error tracking-widest mb-4">Future Leads</h3>
-                    <ul class="space-y-2">
-                        ${(session.futureLeads || []).map(item => `<li class="text-xs text-white/60">${autoLinkContent(item)}</li>`).join('')}
+                <div class="folio-future">
+                    <h3 class="folio-future__title">Future Leads</h3>
+                    <ul class="folio-list">
+                        ${(session.futureLeads || []).map(item => `<li class="folio-future__item">${autoLinkContent(item)}</li>`).join('')}
                     </ul>
                 </div>
-<div class="md:col-span-12 p-8 rounded-xl bg-[#0a0b0a] border border-white/5 mt-4 shadow-inner">
-                    <h3 class="font-label text-[10px] uppercase text-[#e9c176] tracking-widest mb-8 flex items-center gap-2 border-b border-white/5 pb-4">
-                        <span class="material-symbols-outlined text-sm">history_edu</span> Archival Transcript
+<div class="folio-transcript">
+                    <h3 class="folio-transcript__title">
+                        <span class="folio-icon material-symbols-outlined">history_edu</span> Archival Transcript
                     </h3>
-                    <div class="prose prose-invert prose-gold max-w-none font-body text-base md:text-lg leading-relaxed text-white/80 space-y-6">
-                        ${autoLinkContent(session.body)}
+                    <div class="folio-transcript__text session-text">
+                        ${autoLinkContent(session.body, { markdown: true })}
                     </div>
                 </div>
             </div>
         </div>
     `;
-        modal.classList.replace('hidden', 'flex');
+        modal.classList.remove('hidden');
     };
 
-    window.closeStoryModal = () => document.getElementById('story-modal').classList.replace('flex', 'hidden');
-    window.closeSessionModal = () => document.getElementById('session-modal').classList.replace('flex', 'hidden');
+    window.closeStoryModal = () => document.getElementById('story-modal').classList.add('hidden');
+    window.closeSessionModal = () => document.getElementById('session-modal').classList.add('hidden');
 
     const openStoryBtn = document.getElementById('open-story-btn');
     if (openStoryBtn) openStoryBtn.onclick = window.openStoryFolio;

@@ -1,0 +1,64 @@
+[
+  {
+    "id": "echoes-from-the-void",
+    "name": "Echoes from the Void",
+    "preview": "A ragged band of mercenaries, drawn together by a mysterious summons, arrived in Brightend just as the King's peace began to fracture...",
+    "story": "Summoned to the Alabaster Palace by Lord White, a ragged band of mercenaries took on what seemed to be a simple retrieval job: find a missing Runebridge scholar named Maera Voss, and secure the ancient text she was hired to translate.\n\nTheir investigation through the streets of Brightend led them to a disappearing door hidden in a wealthy alleyway. Stepping through the anomaly, the party was pulled into the Vale House—an impossible, time-displaced mansion suspended in a permanent pocket dimension. Battling animated armor, mimics, and the fiendish illusions of the mansion's defenses, they unearthed the disturbing, ancient laboratories of its long-gone masters and successfully rescued the captive scholar from a chained room.\n\nBut their salvation brought a terrifying revelation. Maera's research proved that the established history of the ancient Doleris civilization was a lie, and the timeline of the world itself had been altered. Worse still, upon escaping back to the material plane, they found her office ransacked. The highly coveted **Ninefold Commentary** had been stolen by three hooded figures.\n\n> \"Only the King and I seem to think something is happening... there is no guild, but one group has become much more present.\"\n\nNow, the party must hide Maera from those who want her silenced. Forging a tense alliance with the Grand Warden, they have been tasked to hunt down an invisible, highly-organized syndicate responsible for a string of perfect crimes—before the stolen secrets of the void can be unleashed upon Eperina.",
+    "quests": [
+      {
+        "title": "Exfiltration",
+        "description": "Help Maera escape Brightend and offer her self passage to the Athenaeum.",
+        "status": "Primary"
+      },
+      {
+        "title": "A String of Thefts",
+        "description": "Brightened has been plagued by a string of mysterious thefts, according to The Wardens.",
+        "status": "Secondary"
+      }
+    ],
+    "partyName": "Tulcuvaina",
+    "party": [
+      "nimo",
+      "gust",
+      "eli",
+      "davnis"
+    ],
+    "funds": {
+      "gold": 60,
+      "silver": 8,
+      "copper": 50
+    },
+    "standings": [
+      {
+        "faction": "alabaster-wardens",
+        "status": "Allied"
+      },
+      {
+        "faction": "oddmoss-librarium",
+        "status": "Neutral"
+      }
+    ]
+  },
+  {
+    "id": "last-sigil",
+    "name": "The Last Sigil",
+    "preview": "Two scholars are sent to survey an ancient site recently unearthed. Thought to be an ancient Doleris temple, the site is a labyrinth of strange arcane phenomena that forces the adventurers to confront their own memories",
+    "story": "Aasked to investigate old ruins in the Wolf's Cradle, Eli and Maevik are taken through the Wildlands by a group of mercenaries. Upon arrival they discover a strange underground temple inf ar worse shape than expected.\n\nTheir investigation quickly led them to realize that itself wasn't flowing properly there. After being stuck in a sort of time loop, plagued by strange dreams, the brave scholars discover what looks like a small study in a demi-plane. There they find copious work written by Doleris Scholars and a strange artifact : The Last Sigil.\n\nTaking their discovery back to the Athenaeum, they are sent to Runebridge, in search of an eminent scholar who might be able to help them decypher it all... only to find him missing. With the Dean of Runebridge particularly suspect, they decide to flee and keep on investigating, on their own.",
+    "quests": [
+      {
+        "title": "Perform the Ritual",
+        "description": "Stabilize the Last Sigil before it collapses upon itself.",
+        "status": "Primary"
+      },
+      {
+        "title": "Finding Sam",
+        "description": "Sam Eredil, a briliant researcher in mathemagics has gone missing. Thanks to some helpful students, it might possible to find him.",
+        "status": "Secondary"
+      }
+    ],
+    "party": [
+      "eli",
+      "maevik"
+    ]
+  }
+]

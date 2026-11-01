@@ -2,6 +2,10 @@
   {
     "id": "alabaster-wardens",
     "name": "The Alabaster Wardens",
+    "aliases": [
+      "The Wardens"
+    ],
+    "summary": "The elite militia tasked with protecting Brightend and enforcing the law. The most prestigious branch of Eperinian Wardens.",
     "crest": "https://ui-avatars.com/api/?background=e9c176&color=121412&font-size=0.4&name=AW",
     "status": "Allied",
     "quote": "\"Order is not a natural state. It must be enforced.\"",
@@ -85,7 +89,8 @@
   {
     "id": "crown",
     "name": "The Crown",
-    "stub": true
+    "stub": true,
+    "summary": "The ruling monarchy of Eperina, currently headed by the aging King Alaric III."
   },
   {
     "id": "merchants-guild",

@@ -136,6 +136,8 @@
         icons: null,
         thumbs: new Map(),
         menuCode: null,
+        sealed: new Map(),
+        cardSide: 'front',   // item preview: 'front' or 'sheet'   // "type:id:key" -> the {text, password} its encrypted copy was made from
     };
     if (TEST) { window.__dash = S; window.__dashboardIO = io; } // inspected by the headless tests
 
@@ -209,7 +211,51 @@
             }
         }
         S.base = serializeAll(); // normalised: an unchanged file never counts as edited
+        await checkSealed();
         rebuild();
+    }
+
+    /* Sealed fields (hero secrets): the public file holds an encrypted copy of a
+       private text, made with a private password. On load we note which copies
+       still match; on save only changed ones are re-encrypted, so unchanged
+       secrets never show up as edited files. */
+    const sealedFields = () => Object.entries(TYPES).flatMap(([type, def]) =>
+        Object.entries(def.fields).filter(([, f]) => f.kind === 'sealed').map(([key, f]) => ({ type, key, f })));
+    const sealKey = (type, id, key) => `${type}:${id}:${key}`;
+    async function checkSealed() {
+        S.sealed.clear();
+        if (!ATH.unseal) return;
+        for (const { type, key, f } of sealedFields()) {
+            for (const r of S.data[type]) {
+                const text = r[f.from], pw = r[f.password];
+                if (!r[key] || !text || !pw) continue;
+                if (await ATH.unseal(r[key], pw) === text) S.sealed.set(sealKey(type, r.id, key), JSON.stringify([text, pw]));
+            }
+        }
+    }
+    async function updateSealed() {
+        for (const { type, key, f } of sealedFields()) {
+            for (const r of S.data[type]) {
+                const text = r[f.from], pw = r[f.password], k = sealKey(type, r.id, key);
+                if (!text || !pw) {
+                    // No secret, or no password: nothing to publish. Keep an existing copy only
+                    // while the private file is missing (another computer), never otherwise.
+                    if (!text && !pw) continue;
+                    delete r[key]; S.sealed.delete(k); continue;
+                }
+                const sig = JSON.stringify([text, pw]);
+                if (r[key] && S.sealed.get(k) === sig) continue;
+                r[key] = await ATH.seal(text, pw);
+                S.sealed.set(k, sig);
+            }
+        }
+    }
+    function sealedStatus(f, rec, key) {
+        const text = rec[f.from], pw = rec[f.password];
+        if (!text) return rec[key] ? 'Encrypted copy present; its text is not on this computer (data/private.json).' : 'No secret.';
+        if (!pw) return '⚠ No password: the secret will not be published.';
+        return rec[key] && S.sealed.get(sealKey(S.view.key, rec.id, key)) === JSON.stringify([text, pw])
+            ? '✓ Encrypted and up to date.' : 'Will be encrypted when you save.';
     }
     function rebuild() {
         const datasets = {};
@@ -220,6 +266,8 @@
         S.issues = S.store.validate();
     }
     async function save() {
+        try { await updateSealed(); }
+        catch (e) { alertBox('Could not encrypt the secrets', `<p>${esc(e.message)}</p>`); return; }
         rebuild();
         if (S.issues.errors.length) { showIssues(true); return; }
         const files = dirtyFiles();
@@ -472,6 +520,11 @@
                     </div>
                 </fieldset>`;
             }
+            case 'sealed': {
+                const rec = curRecord();
+                return `<div class="fld wide"><label>${label}</label><em>${esc(rec ? sealedStatus(f, rec, key) : '')}</em>
+                    <span class="help">Written on save from “${esc((curDef().fields[f.from] || {}).label || f.from)}” and “${esc((curDef().fields[f.password] || {}).label || f.password)}”. Players see the secret only after typing the password (capitals don't matter).</span></div>`;
+            }
             case 'json':
                 return `<div class="fld wide"><label>${label} <span style="text-transform:none;letter-spacing:0">(JSON)</span></label>
                     <textarea class="mono" rows="10" data-path="${p}" data-kind="json">${esc(JSON.stringify(value ?? [], null, 2))}</textarea>${help}</div>`;
@@ -564,8 +617,58 @@
             const users = S.store.backrefs(rec.id);
             if (users.length) parts.push(`<div class="box"><h4>Used by (${users.length})</h4>${chips(users)}</div>`);
             if (S.view.key === 'poi' && rec.tavern && rec.tavern.tier && ATH.tavern) parts.push(menuPreview(rec));
+            if (S.view.key === 'item' && ATH.lootCard) parts.unshift(cardPreview(rec), foundIn(rec));
         }
         side.innerHTML = parts.join('') || `<div class="box"><h4>Links</h4><span style="color:var(--ink-faint)">Nothing points here yet.</span></div>`;
+        if (S.view.key === 'item') loadThumbs();
+    }
+
+    /* ---------- item cards: preview and where the party found them ---------- */
+    function cardPreview(rec) {
+        const item = S.store.get(rec.id) || rec;
+        const sheet = S.cardSide === 'sheet';
+        const card = sheet
+            ? ATH.lootCard.sheet(item, S.store, { autolink: false })
+            : ATH.lootCard.front(item, { tag: 'div', picture: src => `data-thumb="${esc(src)}"` });
+        return `<div class="box card-prev">
+            <div class="row" style="justify-content:space-between;align-items:center"><h4 style="margin:0">Card preview</h4>
+                <span class="seg"><button data-action="card-side" data-side="front" class="${sheet ? '' : 'on'}">Front</button><button data-action="card-side" data-side="sheet" class="${sheet ? 'on' : ''}">Opened</button></span></div>
+            <div class="card-prev__stage">${card}</div></div>`;
+    }
+    // Where an item can be found: a session's loot, or a party's own inventory
+    function foundOptions(itemId, selected) {
+        const has = (list) => (list || []).includes(itemId);
+        return S.store.all('campaign').map(c => {
+            const sessions = S.store.all('session').filter(s => s.campaign === c.id && !has(s.loot));
+            const opts = sessions.map(s => `<option value="session:${esc(s.id)}" ${selected === 'session:' + s.id ? 'selected' : ''}>${esc(s.name)}</option>`);
+            if (!has(c.inventory)) opts.push(`<option value="inventory:${esc(c.id)}" ${selected === 'inventory:' + c.id ? 'selected' : ''}>The party's own inventory</option>`);
+            return opts.length ? `<optgroup label="${esc(c.name)}">${opts.join('')}</optgroup>` : '';
+        }).join('');
+    }
+    function addFoundIn(itemId, where) {
+        const [kind, id] = where.split(':');
+        const rec = (S.data[kind === 'session' ? 'session' : 'campaign'] || []).find(r => r.id === id);
+        if (!rec) return false;
+        const key = kind === 'session' ? 'loot' : 'inventory';
+        rec[key] = [...new Set([...(rec[key] || []), itemId])];
+        return true;
+    }
+    function newestSessionOption() {
+        const camp = S.store.settings.currentCampaign || (S.store.all('campaign')[0] || {}).id;
+        const s = S.store.all('session').find(x => x.campaign === camp);
+        return s ? 'session:' + s.id : '';
+    }
+    function foundIn(rec) {
+        const holders = [
+            ...S.store.all('session').filter(s => (s.loot || []).includes(rec.id)),
+            ...S.store.all('campaign').filter(c => (c.inventory || []).includes(rec.id)),
+        ];
+        const opts = foundOptions(rec.id);
+        return `<div class="box"><h4>Found in</h4>
+            ${holders.length ? chips(holders) : '<p class="warn">Not found anywhere yet: no player sees this card.</p>'}
+            ${opts ? `<div class="found-add"><select id="found-add"><option value="">Add to a session's loot…</option>${opts}</select>
+                <button class="btn" data-action="found-add">Add</button></div>` : ''}
+            <p style="color:var(--ink-faint);font-size:10.5px;margin:8px 0 0">Items from a campaign's newest session lie face down in the Vault until a player turns them over.</p></div>`;
     }
     function menuPreview(rec) {
         const poi = S.store.get(rec.id);
@@ -617,12 +720,13 @@
     function newRecord() {
         const type = S.view.key, def = TYPES[type];
         const current = curRecord();
-        const guessParent = current ? (def.parent.includes(typeOfId(current.id)) ? current.id : current.parent) : '';
+        const guessParent = current && def.place ? ((def.parent || []).includes(typeOfId(current.id)) ? current.id : current.parent) : '';
         const dlg = modal(`<h3>New ${esc(def.label.toLowerCase())}</h3>
             <div class="form">
                 <div class="fld wide"><label>Name</label><input id="nr-name" autofocus></div>
                 <div class="fld wide"><label>Id (used in links; can be changed later with Rename id)</label><input id="nr-id"></div>
                 ${def.place && def.parent.length ? `<div class="fld wide"><label>Sits in</label>${refSelect(def.parent, guessParent, 'id="nr-parent"')}</div>` : ''}
+                ${type === 'item' ? `<div class="fld wide"><label>Found in (who can see the card)</label><select id="nr-found"><option value="">Nowhere yet</option>${foundOptions('', newestSessionOption())}</select></div>` : ''}
                 <p id="nr-err" class="issues" style="color:var(--red)"></p>
             </div>
             <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="nr-ok">Create</button></div>`);
@@ -638,6 +742,8 @@
             const rec = { id, name: name.value.trim(), ...emptyFor(def) };
             if (parent) rec.parent = parent;
             S.data[type].push(rec);
+            const found = $('#nr-found', dlg);
+            if (found && found.value) addFoundIn(id, found.value);
             closeModal();
             rebuild();
             select({ kind: 'type', key: type }, id);
@@ -811,6 +917,12 @@
         const rec = curRecord();
         switch (a) {
             case 'close-modal': closeModal(); break;
+            case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
+            case 'found-add': {
+                const where = $('#found-add') && $('#found-add').value;
+                if (where && addFoundIn(rec.id, where)) { edited(true); renderSide(); toast('Added: save to publish'); }
+                break;
+            }
             case 'collapse': {
                 if (e.target.closest('button')) return;
                 const k = t.dataset.key;

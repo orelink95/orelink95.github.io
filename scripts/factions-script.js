@@ -92,7 +92,7 @@ window.openDossier = (id) => {
                 <img src="${faction.crest}" class="dossier-head__crest">
                 <div>
                     <h1 class="dossier-head__name">${faction.name}</h1>
-                    <p class="dossier-head__quote font-newsreader">"${faction.quote}"</p>
+                    <p class="dossier-head__quote">"${faction.quote}"</p>
                 </div>
             </div>
             <div class="dossier-head__stamp-wrap">
@@ -251,7 +251,7 @@ window.openDossier = (id) => {
                 <div class="intel-note">
                     <div class="intel-note__seal"><span class="intel-note__seal-text">${item.seal}</span></div>
                     <h4 class="intel-note__title">${item.title}</h4>
-                    <p class="intel-note__text font-newsreader">"${item.content}"</p>
+                    <p class="intel-note__text">"${item.content}"</p>
                 </div>`;
             }
             if (item.type === "map") {
@@ -287,10 +287,10 @@ window.openDossier = (id) => {
             <div class="rumors__clip">
                 <span class="rumors__clip-icon material-symbols-outlined">attach_file</span>
             </div>
-            <h4 class="rumors__title font-newsreader">Unverified Field Rumors</h4>
+            <h4 class="rumors__title">Unverified Field Rumors</h4>
             <ul class="rumors__list">
                 ${faction.rumors.map(r => `
-                    <li class="rumors__item font-newsreader">
+                    <li class="rumors__item">
                         <span class="rumors__icon material-symbols-outlined">edit</span>
                         ${r}
                     </li>

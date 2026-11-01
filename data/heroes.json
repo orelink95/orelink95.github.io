@@ -1,0 +1,131 @@
+[
+  {
+    "id": "nimo",
+    "name": "Nimo",
+    "raceClass": "Mousefolk Rogue/Warlock",
+    "level": 4,
+    "background": "Sailor",
+    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Nimo",
+    "quote": "I can pick that. Probably.",
+    "backstory": "A quick-fingered resident of Brightend who negotiated the 2,000gp contract with Lord White.",
+    "personalGoal": "Find what happened to their long lost brother.",
+    "stats": {
+      "ac": 15,
+      "hp": 32,
+      "speed": 30,
+      "str": 10,
+      "dex": 16,
+      "con": 14,
+      "int": 12,
+      "wis": 10,
+      "cha": 14
+    },
+    "factions": [
+      "alabaster-wardens"
+    ],
+    "sealedSecret": {
+      "v": 1,
+      "salt": "f6xMNVGb8HyiMnhoB1Kxbg==",
+      "iv": "WnzNxOpT+uH0Mewy",
+      "data": "1d6w3RB1gA/R2ftsQtgD9BQgbbNWTY6X8hAygCxwWullM4A3qaqrCRusoW+ZdOX3Dwg6F27jVMmadgGUov2N5Lrl7BS6cpFgjbEMpjerMXoWHLP56UZ4KUIhG2gNzOK2mAHMjhszt145oZr+GVQaBE+PJHWbf+afpqehI1lxs2QxtnDIlWY0u2Awy0NZdLrJzkffBA0D8dFh9JqpVDSNx4yh5NGh53o3dHRJBdIa8V4MKyy+6ISm2WJcr/xf0mFX"
+    }
+  },
+  {
+    "id": "gust",
+    "name": "Gust",
+    "raceClass": "Shifter Monk",
+    "level": 4,
+    "background": "Mercenary",
+    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Gust",
+    "quote": "Let's just poke the ornate suit of armor and see what happens.",
+    "backstory": "A brave combatant who isn't afraid to trigger a trap or get into a fight.",
+    "personalGoal": "Avenge his family.",
+    "stats": {
+      "ac": 15,
+      "hp": 32,
+      "speed": 30,
+      "str": 10,
+      "dex": 16,
+      "con": 14,
+      "int": 12,
+      "wis": 10,
+      "cha": 14
+    },
+    "factions": [
+      "alabaster-wardens"
+    ],
+    "sealedSecret": {
+      "v": 1,
+      "salt": "HWNeYC1iEsHDBYUGYpkSdQ==",
+      "iv": "h7NtZY5Sd7B86oXz",
+      "data": "c7D1c/1lmtwr0cKOuz+ka6Dk5dyv6C+SVxviQr4o/UMs/33h"
+    }
+  },
+  {
+    "id": "eli",
+    "name": "Eli",
+    "raceClass": "Elf Warlock",
+    "level": 4,
+    "background": "Scholar",
+    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Eli",
+    "quote": "It's like Zombies were done to the cupboard.",
+    "backstory": "A perceptive researcherr with a keen eye for detecting the unseen and unraveling magical mysteries.",
+    "personalGoal": "Know more, discover all. Understand the world, and the Void beyond it.",
+    "stats": {
+      "ac": 15,
+      "hp": 32,
+      "speed": 30,
+      "str": 10,
+      "dex": 16,
+      "con": 14,
+      "int": 12,
+      "wis": 10,
+      "cha": 14
+    },
+    "factions": [
+      "alabaster-wardens"
+    ],
+    "sealedSecret": {
+      "v": 1,
+      "salt": "F7nsHKowMczDa466QnwPXQ==",
+      "iv": "s3ASp75+SGTdSrc7",
+      "data": "LqQuNOPb4AMfDQpKsMTUU5Yb/XXmlUJMxA8iqXSdAKCK+7m2pp0MwLXC"
+    }
+  },
+  {
+    "id": "davnis",
+    "name": "Davnis",
+    "raceClass": "Human Fighter",
+    "level": 6,
+    "background": "Shepherd",
+    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Davnis",
+    "quote": "Look over there! Disappearing buildings!",
+    "backstory": "A master of distraction and holder of the Alchemist's jug. Always ready to jump into a magical book first.",
+    "personalGoal": "Keep the whisky flowing.",
+    "stats": {
+      "ac": 15,
+      "hp": 32,
+      "speed": 30,
+      "str": 10,
+      "dex": 16,
+      "con": 14,
+      "int": 12,
+      "wis": 10,
+      "cha": 14
+    },
+    "factions": [
+      "alabaster-wardens"
+    ],
+    "sealedSecret": {
+      "v": 1,
+      "salt": "DjsKkKHe69bE/xtFRPZpLA==",
+      "iv": "dhlytdBWERDkvUYH",
+      "data": "bw5UFdWPrNKyNwq3XUkcK7RKOxgymOYz1XxW4rHsb631k7DMvkfCqN7VLSB0WFoIU19uF95IL1nPQdjnt61i/tefOIBMw6309pSzq742/j9429ZhDPtafKccYf6Mf2giaOTxFf6B0SbKWeBxCWPYRTpxBlS8FylEz1LOYCk="
+    }
+  },
+  {
+    "id": "maevik",
+    "name": "Maevik",
+    "avatar": "https://ui-avatars.com/api/?background=121412&color=e9c176&name=Maevik"
+  }
+]

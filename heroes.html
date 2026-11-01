@@ -223,17 +223,18 @@
             // 2. Shared inventory: the party's own items + everything found in this campaign's sessions
             const sessions = store.all('session').filter(s => s.campaign === campaign.id);
             const itemIds = [...new Set([...(campaign.inventory || []), ...sessions.flatMap(s => s.loot || [])])];
-            const combinedInventory = itemIds.map(id => store.get(id)).filter(Boolean).map(i => i.name);
+            const combinedInventory = itemIds.map(id => store.get(id)).filter(Boolean);
 
             const invList = document.getElementById('shared-inv-list');
 
             if (combinedInventory.length === 0) {
                 invList.innerHTML = `<li class="fold-panel__empty">The party's vault is currently empty.</li>`;
             } else {
+                // Each item opens its card in the Artifact Vault
                 invList.innerHTML = combinedInventory.map(item => `
                     <li class="inventory-item">
                         <span class="inventory-item__icon material-symbols-outlined">auto_awesome</span>
-                        <span>${item}</span>
+                        <a href="${store.url(item)}" class="inventory-item__link">${item.name}</a>
                     </li>
                 `).join('');
             }

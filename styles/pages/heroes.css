@@ -642,6 +642,14 @@
     color: #c084fc;
 }
 
+/* Each item opens its card in the Artifact Vault */
+.inventory-item__link {
+    transition: color 150ms var(--ease);
+}
+.inventory-item__link:hover {
+    color: #c084fc;
+}
+
 .hero-faction-tag {
     padding: 0.125rem 0.5rem;
     border-radius: 0.125rem;

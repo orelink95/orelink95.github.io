@@ -6,8 +6,8 @@
   {
     "id": "dark-shard-amulet",
     "name": "Dark Shard Amulet",
-    "description": "A heavy, aged bronze amulet featuring a swirling, trapped galaxy of indigo and green.It hums with a faint, cosmic pulse, and a drift of purple smoke sometimes reveals shifting runes.",
-    "image": "images/Dark_Shard_Amulet.png"
+    "image": "images/Dark_Shard_Amulet.png",
+    "summary": "A heavy, aged bronze amulet featuring a swirling, trapped galaxy of indigo and green.It hums with a faint, cosmic pulse, and a drift of purple smoke sometimes reveals shifting runes."
   },
   {
     "id": "book-of-city-sewer-maps",
@@ -24,8 +24,8 @@
   {
     "id": "strange-token",
     "name": "Strange Token",
-    "description": "A small wooden token circled with an exotic metal, featuring three roughly made claw marks.",
-    "image": "images/str_token.PNG"
+    "image": "images/str_token.PNG",
+    "summary": "A small wooden token circled with an exotic metal, featuring three roughly made claw marks."
   },
   {
     "id": "potion-of-healing",

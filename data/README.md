@@ -37,5 +37,6 @@ One file per type. Every record has an `id` (never renamed), a `name` and option
 - **NPCs somewhere off the map** (another plane…) have no `home`; put a line of text in `whereabouts` instead.
 - **Keywords.** Names of NPCs, places, factions and creatures become links on their own. A term with no page (a war, a lost civilisation) is a glossary term in `lore.json`; its `kind` sets the colour and its `definition` the tooltip in the scriptorium. Give an NPC, faction or place a `summary` to show a tooltip for it too.
 - **Hero secrets** are written in `private.json` (`secret` and `password`). The dashboard encrypts them into `sealedSecret` when it saves, so the live site shows a secret only to someone who types its password.
+- **Loot cards.** Every item is a card in the Artifact Vault (`vault.html`). Players see the items listed in their campaign's sessions (`loot`) and the party's own (`inventory`). Fill in `type`, `rarity` (sets the card's colour), `cost`, `weight`, `attunement`, `attunedBy`, a one-line `summary` for the front and a full `body` for the opened card. Items from the newest session lie face down until a player turns them over.
 - **Drafts.** A tome or handout with `"draft": true` stays off the site.
 - **Check your edits** with `node tools/validate.js` (broken links, unknown values, missing images and map icons).

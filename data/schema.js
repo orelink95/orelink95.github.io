@@ -82,6 +82,7 @@
             tomeTone: ['secondary', 'primary', 'error', 'void', 'ethereal', 'cyan'],
             creatureThreat: ['Lethal', 'High', 'Moderate', 'Low', 'Harmless', 'Friendly'],
             questStatus: ['Primary', 'Secondary'],
+            itemRarity: ['Common', 'Uncommon', 'Rare', 'Very rare', 'Legendary', 'Artifact', 'Varies', 'Unknown'],
             sentiment: [
                 { id: 'like',    label: 'Positive' },
                 { id: 'neutral', label: 'Neutral / business' },
@@ -330,14 +331,23 @@
                     scholarName:  { kind: 'text', label: 'Scholar name' },
                 },
             },
-            /* Something the party can find. Sessions list the items found; the
-               loot cards (coming) are drawn from these records. */
+            /* Something the party can find, shown as a loot card in the Artifact
+               Vault (vault.html). Players see the items found in their campaign's
+               sessions (session.loot) and the party's own (campaign.inventory). */
             item: {
                 label: 'Item', plural: 'Items', icon: 'diamond', group: 'Library',
                 file: 'data/items.json',
+                page: 'vault.html?item={id}',
                 fields: {
-                    description: { kind: 'text', label: 'Description', long: true },
-                    image:       { kind: 'image', label: 'Image' },
+                    image:      { kind: 'image', label: 'Picture' },
+                    type:       { kind: 'text', label: 'Type (e.g. Wondrous item, Weapon (dagger))' },
+                    rarity:     { kind: 'enum', enum: 'itemRarity', label: 'Rarity (sets the card colour)' },
+                    cost:       { kind: 'text', label: 'Cost (e.g. 50 gp)' },
+                    weight:     { kind: 'text', label: 'Weight (e.g. 1 lb.)' },
+                    attunement: { kind: 'boolean', label: 'Requires attunement' },
+                    attunedBy:  { kind: 'ref', to: ['hero'], label: 'Attuned to' },
+                    summary:    { kind: 'text', label: 'One-line description (front of the card)', long: true },
+                    body:       { kind: 'markdown', label: 'Full description (shown when the card is opened)' },
                 },
             },
 

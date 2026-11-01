@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Artifact Vault — The Athenaeum Vault</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/vault.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/vault-scripts.js"></script>
+</head>
+
+<body class="page mystical-bg">
+
+    <div id="dust-container" class="dust-layer"></div>
+    <div id="header-placeholder" class="header-slot"></div>
+    <div id="library-sidebar-placeholder"></div>
+
+    <main class="vault-main">
+
+        <div class="vault-head">
+            <div class="vault-head__intro">
+                <nav class="breadcrumbs">
+                    <a href="library.html" class="breadcrumbs__link">Library</a>
+                    <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
+                    <a href="library.html" class="breadcrumbs__link">Elder Codex</a>
+                    <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
+                    <span class="breadcrumbs__current">The Artifact Vault</span>
+                </nav>
+                <h1 class="vault-head__title">The Artifact Vault</h1>
+                <p class="vault-head__lede">Every relic the party has carried out of the dark, card by card. New finds lie face down: turn them over.</p>
+            </div>
+
+            <div class="vault-tools">
+                <label class="vault-tools__label" for="vault-search">Search the Vault</label>
+                <div class="vault-tools__field">
+                    <span class="vault-tools__icon material-symbols-outlined">search</span>
+                    <input type="text" id="vault-search" placeholder="Name, type or rarity..." class="vault-tools__input">
+                </div>
+                <select id="vault-campaign" class="vault-tools__campaign hidden" aria-label="Campaign"></select>
+            </div>
+        </div>
+
+        <div id="vault-grid" class="vault-grid"></div>
+    </main>
+
+    <!-- A card, opened: its picture and the physical card, filled in -->
+    <div id="vault-modal" class="vault-modal hidden" role="dialog" aria-modal="true" aria-labelledby="sheet-name">
+        <div class="vault-modal__veil" onclick="closeItem()"></div>
+        <div class="vault-modal__body">
+            <figure class="vault-modal__picture" id="sheet-picture"></figure>
+            <article class="item-sheet" id="sheet">
+                <h2 class="item-sheet__value item-sheet__name" id="sheet-name"></h2>
+                <p class="item-sheet__value item-sheet__type" id="sheet-type"></p>
+                <p class="item-sheet__value item-sheet__rarity" id="sheet-rarity"></p>
+                <p class="item-sheet__value item-sheet__cost" id="sheet-cost"></p>
+                <p class="item-sheet__value item-sheet__weight" id="sheet-weight"></p>
+                <span class="item-sheet__dot item-sheet__dot--required" id="sheet-required" title="Requires attunement"></span>
+                <span class="item-sheet__dot item-sheet__dot--attuned" id="sheet-attuned"></span>
+                <div class="item-sheet__text custom-scrollbar" id="sheet-text"></div>
+            </article>
+            <p class="vault-modal__note" id="sheet-note"></p>
+        </div>
+        <button class="vault-modal__close" onclick="closeItem()" aria-label="Close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
+    </script>
+</body>
+</html>

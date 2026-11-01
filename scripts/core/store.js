@@ -357,7 +357,9 @@
     ATH.createStore = createStore;
 
     /* ---------- browser loader ---------- */
-    if (typeof document !== 'undefined' && typeof fetch === 'function') {
+    // Pages load over HTTP automatically. The dashboard sets Athenaeum.manualLoad
+    // and reads the files through the linked folder instead.
+    if (typeof document !== 'undefined' && typeof fetch === 'function' && !ATH.manualLoad) {
         const script = document.currentScript;
         const base = script && script.src ? script.src.replace(/scripts\/core\/store\.js(\?.*)?$/, '') : './';
         ATH.base = base;

@@ -1,6 +1,7 @@
 # Site data
 
-> **These files are the only copy of the site's places, people and factions.** Edit them here (or in the dashboard, once it is rebuilt), then run `node tools/validate.js`.
+> **These files are the only copy of the site's places, people and factions.**
+> Edit them with the dashboard: open `admin_tools/dashboard.html` in Chrome or Edge (double-clicking the file works), link the site's root folder once, edit, then **Save** (Ctrl+S). It refuses to save while a link is broken. You can also edit the JSON by hand and check it with `node tools/validate.js`.
 
 One file per type. Every record has an `id` (never renamed), a `name` and optional `aliases`.
 `data/schema.js` declares every field; `node tools/validate.js` checks the files against it.

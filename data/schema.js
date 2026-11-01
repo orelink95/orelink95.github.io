@@ -45,7 +45,7 @@
         singletons: {
             /* The world map is the root every continent is pinned on. */
             world: {
-                label: 'World', icon: 'travel_explore',
+                label: 'World', icon: 'travel_explore', group: 'Site',
                 file: 'data/world.json',
                 page: 'world.html',
                 fields: {
@@ -58,7 +58,7 @@
             },
             /* Site-wide settings. */
             settings: {
-                label: 'Settings', icon: 'tune',
+                label: 'Settings', icon: 'tune', group: 'Site',
                 file: 'data/settings.json',
                 fields: {
                     tavernCode: { kind: 'text', label: 'Bill of fare code: every tavern menu is drawn from it, the same for everyone. Change it to change all menus.' },
@@ -91,7 +91,7 @@
         types: {
             /* ---------------------------------------------------- PLACES */
             continent: {
-                label: 'Continent', plural: 'Continents', icon: 'public',
+                label: 'Continent', plural: 'Continents', icon: 'public', group: 'Places',
                 file: 'data/continents.json',
                 page: 'continent.html?id={id}',
                 place: true, parent: [], autolink: true,
@@ -110,7 +110,7 @@
                 },
             },
             country: {
-                label: 'Country', plural: 'Countries', icon: 'flag',
+                label: 'Country', plural: 'Countries', icon: 'flag', group: 'Places',
                 file: 'data/countries.json',
                 page: 'country.html?id={id}',
                 place: true, parent: ['continent'], autolink: true,
@@ -125,7 +125,7 @@
                 },
             },
             settlement: {
-                label: 'Settlement', plural: 'Settlements', icon: 'location_city',
+                label: 'Settlement', plural: 'Settlements', icon: 'location_city', group: 'Places',
                 file: 'data/settlements.json',
                 page: 'settlement.html?id={id}',
                 place: true, parent: ['country'], autolink: true,
@@ -135,7 +135,7 @@
                 },
             },
             district: {
-                label: 'District', plural: 'Districts', icon: 'holiday_village',
+                label: 'District', plural: 'Districts', icon: 'holiday_village', group: 'Places',
                 file: 'data/districts.json',
                 page: 'settlement.html?id={parent}&district={id}',
                 place: true, parent: ['settlement'], autolink: true,
@@ -146,7 +146,7 @@
                 },
             },
             poi: {
-                label: 'Point of interest', plural: 'Points of interest', icon: 'location_on',
+                label: 'Point of interest', plural: 'Points of interest', icon: 'location_on', group: 'Places',
                 file: 'data/pois.json',
                 page: 'poi.html?id={id}',
                 place: true, parent: ['district', 'settlement', 'country'], autolink: true,
@@ -189,7 +189,7 @@
 
             /* ---------------------------------------------------- PEOPLE */
             npc: {
-                label: 'NPC', plural: 'NPCs', icon: 'group',
+                label: 'NPC', plural: 'NPCs', icon: 'group', group: 'People',
                 file: 'data/npcs.json',
                 page: 'npc.html?id={id}',
                 autolink: true,
@@ -210,7 +210,7 @@
                 },
             },
             faction: {
-                label: 'Faction', plural: 'Factions', icon: 'swords',
+                label: 'Faction', plural: 'Factions', icon: 'swords', group: 'People',
                 file: 'data/factions.json',
                 page: 'factions.html?id={id}',
                 autolink: true,
@@ -236,7 +236,7 @@
 
             /* ---------------------------------------------------- TAVERNS */
             menuItem: {
-                label: 'Menu item', plural: 'Tavern menu pool', icon: 'restaurant',
+                label: 'Menu item', plural: 'Tavern menu pool', icon: 'restaurant', group: 'Taverns',
                 file: 'data/menu-items.json',
                 fields: {
                     category:  { kind: 'enum', enum: 'menuCategory', label: 'Category', required: true },
@@ -248,7 +248,7 @@
                 },
             },
             service: {
-                label: 'Tavern service', plural: 'Tavern services', icon: 'bed',
+                label: 'Tavern service', plural: 'Tavern services', icon: 'bed', group: 'Taverns',
                 file: 'data/services.json',
                 fields: {
                     desc:      { kind: 'text', label: 'Description' },

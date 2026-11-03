@@ -45,5 +45,11 @@
     "name": "Ekelph",
     "kind": "lore",
     "definition": "An alternative script used by the Doleris. Mostly thought to have been used to encrypt messages."
+  },
+  {
+    "id": "nihilium",
+    "name": "Nihilium",
+    "kind": "object",
+    "definition": "A crystallization of Void energy that started to plague the Material Plane as a result of a botched spell at the end of the Ophrasian War."
   }
 ]

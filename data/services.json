@@ -61,5 +61,12 @@
     "desc": "For meetings best not overheard.",
     "basePrice": 500,
     "unit": "per evening"
+  },
+  {
+    "id": "tavern-storage",
+    "name": "Storage",
+    "desc": "Storing item in a locked chest",
+    "basePrice": 10,
+    "unit": "per day"
   }
 ]

@@ -25,5 +25,14 @@
       "y": 619,
       "icon": "settlement"
     }
+  },
+  {
+    "id": "twill",
+    "name": "Twill",
+    "parent": "eperina",
+    "map": {
+      "x": 1079,
+      "y": 618
+    }
   }
 ]

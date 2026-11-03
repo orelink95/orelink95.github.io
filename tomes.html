@@ -6,8 +6,11 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Tomes of Reference — The Athenaeum Vault</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
 
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
@@ -24,40 +27,42 @@
     <div id="library-sidebar-placeholder"></div>
 
     <main class="tomes-main">
-        
+
         <div class="tomes-head">
             <div class="tomes-head__intro">
                 <nav class="breadcrumbs">
                     <a href="library.html" class="breadcrumbs__link">Library</a>
                     <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                    <a href="library.html" class="breadcrumbs__link">Elder Codex</a>
+                    <a href="library.html" class="breadcrumbs__link">Black Archive</a>
                     <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
                     <span class="breadcrumbs__current">Tomes of Reference</span>
                 </nav>
                 <h1 class="tomes-head__title">Tomes of Reference</h1>
-                <p class="tomes-head__lede">The grand bibliography of historical events, forbidden art, and codified knowledge.</p>
+                <p class="tomes-head__lede">The grand bibliography of historical events, forbidden art, and codified
+                    knowledge.</p>
             </div>
-            
+
             <div class="tome-search">
                 <label class="tome-search__label">Search Library</label>
                 <div class="tome-search__field">
                     <span class="tome-search__icon material-symbols-outlined">search</span>
-                    <input type="text" id="tome-search" placeholder="Enter title or subject..." class="tome-search__input">
+                    <input type="text" id="tome-search" placeholder="Enter title or subject..."
+                        class="tome-search__input">
                 </div>
             </div>
         </div>
 
         <div class="tome-filters" id="tome-filters">
-            </div>
+        </div>
 
         <div id="tome-grid" class="tome-grid">
-            </div>
+        </div>
 
     </main>
 
     <div id="tome-modal" class="tome-modal hidden">
         <div class="tome-modal__veil" onclick="closeTomeModal()"></div>
-        
+
         <div class="tome-modal__card">
             <div class="tome-modal__head">
                 <div>
@@ -69,7 +74,7 @@
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            
+
             <div class="tome-modal__scroll custom-scrollbar">
                 <div id="modal-tome-content" class="tome-modal__text small-drop-cap"></div>
             </div>
@@ -91,4 +96,5 @@
         });
     </script>
 </body>
+
 </html>

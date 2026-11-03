@@ -20,6 +20,8 @@
     "subtitle": "Oghma's Blessing",
     "codex": "Codex Entry: 03.H",
     "body": "Aratanath Surrkerin, an ancient dragon sage is fabled to have conversed with Oghma. After their last discussion the god missioned him with the construction of the greatest trove of knowledge of the material plane - a place where all could aspire to learn.\n\nThere is only one way in and out of the Caeraotrom Athenæum: a small road coming up the mountain from the closest town. There is 150 km separating the two, with a 600m elevation gain.",
+    "image": "images/Lemerolai.jpeg",
+    "safe": true,
     "map": {
       "x": 206,
       "y": 335,

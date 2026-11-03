@@ -416,5 +416,31 @@
       "fine",
       "exotic"
     ]
+  },
+  {
+    "id": "chicken-feet",
+    "name": "chicken-feet",
+    "category": "bites",
+    "desc": "Fried chicken feet. Crunchy.",
+    "basePrice": 7,
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "breaded-skunk",
+    "name": "Breaded Skunk",
+    "category": "meals",
+    "desc": "Breaded skunk sauteed in a salty peach sauce served with a slab of pepper jack cheese",
+    "basePrice": 40,
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "pink-pegasus-pilsner",
+    "name": "Pink Pegasus Pilsner",
+    "category": "drinks",
+    "basePrice": 20,
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
   }
 ]

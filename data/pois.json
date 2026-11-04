@@ -271,5 +271,48 @@
         "laundry"
       ]
     }
+  },
+  {
+    "id": "stoat-and-cellar",
+    "name": "The Stoat and Cellar",
+    "aliases": [
+      "Stoat and Cellar"
+    ],
+    "parent": "silverbrook-district",
+    "subtitle": "Poor, but cozy",
+    "body": "A cozy tavern, if a poor one, in the scrap-built town of Silverbrook. It is owned by Rowan Larkspur, a tattooed halfling.",
+    "tavern": {
+      "tier": "poor",
+      "picks": {
+        "drinks": 2,
+        "meals": 2,
+        "bites": 2
+      },
+      "excludeTags": [
+        "fine",
+        "coastal",
+        "exotic",
+        "dwarven"
+      ],
+      "signature": [
+        {
+          "category": "drinks",
+          "name": "House Mull",
+          "desc": "A hot mulled drink, and the only reason to brave winter here.",
+          "price": 5
+        }
+      ],
+      "services": [
+        "gaming-table"
+      ],
+      "customServices": [
+        {
+          "name": "Spare Room",
+          "desc": "There are only two.",
+          "price": 10,
+          "unit": "per night"
+        }
+      ]
+    }
   }
 ]

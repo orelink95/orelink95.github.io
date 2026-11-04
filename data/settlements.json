@@ -34,5 +34,13 @@
       "x": 1079,
       "y": 618
     }
+  },
+  {
+    "id": "silverbrook",
+    "name": "Silverbrook",
+    "parent": "wildlands",
+    "subtitle": "Little Town",
+    "summary": "A little town made of scraps, lost in the wild, built on ruins.",
+    "body": "A little town made of scraps, lost in the wild and built on ruins."
   }
 ]

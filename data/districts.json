@@ -88,5 +88,17 @@
       "width": 1411,
       "height": 1080
     }
+  },
+  {
+    "id": "silverbrook-district",
+    "name": "Silverbrook",
+    "parent": "silverbrook",
+    "codex": "Little Town",
+    "body": "A little town made of scraps, lost in the wild and built on ruins.",
+    "mapImage": {
+      "src": "images/placeholder.png",
+      "width": 1000,
+      "height": 1000
+    }
   }
 ]

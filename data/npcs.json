@@ -243,5 +243,14 @@
       "thieves-guild"
     ],
     "relation": "Enemy"
+  },
+  {
+    "id": "rowan-larkspur",
+    "name": "Rowan Larkspur",
+    "role": "Owner of the Stoat and Cellar",
+    "summary": "A tattooed halfling who owns the Stoat and Cellar in Silverbrook.",
+    "home": "stoat-and-cellar",
+    "species": "Halfling",
+    "biography": "A tattooed halfling who owns the Stoat and Cellar in Silverbrook."
   }
 ]

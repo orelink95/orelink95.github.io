@@ -97,5 +97,15 @@
     "name": "Duchy of Kentaresham",
     "parent": "maltona",
     "epithet": "The Somber Realms"
+  },
+  {
+    "id": "wildlands",
+    "name": "The Wildlands",
+    "aliases": [
+      "Wildlands"
+    ],
+    "parent": "maltona",
+    "subtitle": "Belonging to no country",
+    "unlisted": true
   }
 ]

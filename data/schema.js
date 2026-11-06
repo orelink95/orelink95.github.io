@@ -25,6 +25,11 @@
    enum (options | enum: '<name of a shared enum below>')
    ref / refs (to: [types]) · map ({x, y, icon, layer}) · mapImage
    object (fields) · objects (array; fields) · json (free-form, raw)
+
+   TYPE OPTIONS
+   order  { by, desc, within }  store.all(type) returns the records sorted
+          by `by` (descending if `desc`), grouped by `within` if given;
+          records missing `by` come last. Otherwise: file order.
    sealed  text encrypted with a password ({v, salt, iv, data}); the
            dashboard writes it from a private plain-text field (`from`)
            and a private password field (`password`)
@@ -382,8 +387,12 @@
                 label: 'Session', plural: 'Sessions', icon: 'history_edu', group: 'Campaigns',
                 file: 'data/sessions.json',
                 page: 'scriptorium.html?session={id}',
+                /* Newest first everywhere (store.all('session')), whatever the
+                   order in the file: grouped by campaign, highest number first. */
+                order: { within: 'campaign', by: 'number', desc: true },
                 fields: {
                     campaign:     { kind: 'ref', to: ['campaign'], label: 'Campaign', required: true },
+                    number:       { kind: 'number', label: 'Session number (highest = latest)', required: true },
                     date:         { kind: 'text', label: 'In-world date' },
                     region:       { kind: 'text', label: 'Region' },
                     arc:          { kind: 'text', label: 'Arc' },

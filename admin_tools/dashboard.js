@@ -325,6 +325,7 @@
         if (type === 'faction') return r.stub ? 'stub' : (r.status || '');
         if (type === 'menuItem') return `${r.category || ''} · ${r.basePrice ?? '?'} cp`;
         if (type === 'service') return r.unit || '';
+        if (type === 'session') return [r.number != null ? `#${r.number}` : '', r.campaign ? nameOf(r.campaign) : ''].filter(Boolean).join(' · ');
         return r.subtitle || '';
     }
     function toast(msg) {
@@ -391,6 +392,7 @@
         const type = S.view.key;
         const q = S.search.trim().toLowerCase();
         const recs = S.data[type].filter(r => !q || [r.id, r.name, ...(r.aliases || []), subtitle(type, r)].some(v => String(v || '').toLowerCase().includes(q)));
+        if (TYPES[type].order) recs.sort(ATH.comparator(TYPES[type].order));
         $('#list-items').innerHTML = recs.map(r => {
             const bad = recordErrors(type, r.id).length;
             return `<button class="li ${r.id === S.sel ? 'active' : ''}" data-select="${esc(r.id)}">
@@ -673,6 +675,15 @@
         rec[key] = [...new Set([...(rec[key] || []), itemId])];
         return true;
     }
+    // A new session: same campaign as the session on screen (else the current
+    // campaign), numbered after that campaign's latest session
+    function nextSession() {
+        const cur = S.view.key === 'session' ? curRecord() : null;
+        const campaign = (cur && cur.campaign) || S.store.settings.currentCampaign || (S.store.all('campaign')[0] || {}).id;
+        if (!campaign) return {};
+        const nums = S.data.session.filter(s => s.campaign === campaign && typeof s.number === 'number').map(s => s.number);
+        return { campaign, number: nums.length ? Math.max(...nums) + 1 : 1 };
+    }
     function newestSessionOption() {
         const camp = S.store.settings.currentCampaign || (S.store.all('campaign')[0] || {}).id;
         const s = S.store.all('session').find(x => x.campaign === camp);
@@ -761,6 +772,7 @@
             if (err) { $('#nr-err', dlg).textContent = err; return; }
             const rec = { id, name: name.value.trim(), ...emptyFor(def) };
             if (parent) rec.parent = parent;
+            if (type === 'session') Object.assign(rec, nextSession());
             S.data[type].push(rec);
             const found = $('#nr-found', dlg);
             if (found && found.value) addFoundIn(id, found.value);

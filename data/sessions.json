@@ -3,6 +3,7 @@
     "id": "echoes-session-6",
     "name": "The Shadow Takes All",
     "campaign": "echoes-from-the-void",
+    "number": 6,
     "date": "Eksten 7, Pholawal 1693 LF",
     "region": "Brightend, Maltona",
     "arc": "Remnants of the Past",
@@ -66,6 +67,7 @@
     "id": "echoes-session-4",
     "name": "Stretched thin",
     "campaign": "echoes-from-the-void",
+    "number": 4,
     "date": "Pemtasten 6 Pholawal, 1693LF",
     "region": "Brightend, Maltona",
     "arc": "Remnants of the Past",
@@ -112,6 +114,7 @@
     "id": "echoes-session-3",
     "name": "Back in Brightend",
     "campaign": "echoes-from-the-void",
+    "number": 3,
     "date": "Pemtasten 6 Pholawal, 1693LF",
     "region": "Brightend, Maltona",
     "arc": "Remnants of the Past",
@@ -171,6 +174,7 @@
     "id": "echoes-session-2",
     "name": "Secrets of the Vale House",
     "campaign": "echoes-from-the-void",
+    "number": 2,
     "date": "???",
     "region": "The Vale House",
     "arc": "Remnants of the Past",
@@ -223,6 +227,7 @@
     "id": "echoes-session-1",
     "name": "A Tome Twice Missing",
     "campaign": "echoes-from-the-void",
+    "number": 1,
     "date": "Deftesten 3 Pholawal, 1693LF",
     "region": "Brightend, Eperina",
     "arc": "Remnants of the Past",
@@ -289,34 +294,10 @@
     "body": "The party—Nimo, Gust, Eli, and Davnis—were summoned to the Alabaster Palace to meet with Derral Sitsk, the Lord White. He was accompanied by two scholars from Runebridge: a tiefling named Aregan Olm and an owlin named Bram Sureoak.\n\nThe scholars were in a panic. Their colleague, the quirky and highly secretive Maera Voss, had vanished. She was in possession of a highly precious ancient tome, and the scholars were acting noticeably cagey about its true contents. Nimo expertly negotiated a hefty 2,000gp reward for both the scholar's safe return and the retrieval of the book.\n\nFollowing leads to the wealthy Cloud District, the party stopped at the Oddmoss Librarium. A gnome clerk named Ovan revealed that Maera had recently requested books be delivered to an empty brick wall down the street. While Davnis, Gust, and Nimo did some light book shopping, Eli cast Detect Magic near the wall, picking up trails of abjuration and conjuration magic.\n\nAfter Davnis cleverly distracted some local guards (who were already arguing about disappearing buildings), Nimo pushed against the empty space. A door infused with primal sylvan magic opened into pitch blackness.\n\n> \"The book on the desk had strange geometries that seemed to move if you looked too long...\"\n\nThey stepped into an abandoned, chaotic study. The desk was burnt in the exact shape of a book resting upon it—a tome titled **The Ninefold Commentary**, covered in an ancient Doleris alphabet variant known as Ekelph. The book itself acted as a gateway. When Davnis jumped inside, the rest followed.\n\nThey emerged on the porch of a massive, eerie mansion utterly disconnected from the material plane. Inside, they were taunted by a fiendish entity pretending to be a cat (and later a floating skull) named 'Jeff'. Amidst slamming doors, flying books, and a battle with a massive suit of sentient armor, the party realized Maera Voss was trapped somewhere deep within this impossible house."
   },
   {
-    "id": "sigil-session-4",
-    "name": "In a hole, in the ground, there lived a Sigil",
-    "campaign": "last-sigil",
-    "date": "Deftesten 28 Mystawal, 1693LF",
-    "region": "Wolf's Cradle, Maltona",
-    "arc": "Main",
-    "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
-    "otherPlaces": [
-      "Wolf's Cradle"
-    ],
-    "loot": [
-      "trauma"
-    ],
-    "accomplished": [
-      "Weird timey things and odd dreams"
-    ],
-    "leadsPursued": [
-      "Went into the hole in the ground"
-    ],
-    "futureLeads": [
-      "Figure out what the deal is with this Last Sigil thing"
-    ],
-    "body": "*Nothing yet, come back soon*"
-  },
-  {
     "id": "sigil-session-9",
     "name": "Nearing the end",
     "campaign": "last-sigil",
+    "number": 9,
     "date": "Prostaten 5 Egirawal, 1693LF",
     "region": "The Wildlands",
     "arc": "Main",
@@ -347,5 +328,31 @@
       "Silverbook"
     ],
     "body": "Parted from the Otters upon the windswept mountain slopes, the party pressed hard for the ruins of Silverbrook—a once-peaceful city wiped out during the war. Every second counted. Nearly a week had slipped away since they first claimed the Sigil, and its fracturing surface pulsed with ominous decay. They could feel the impending collapse, and finding Sam was the vital final step of their journey. <br>\n\nChoosing reckless speed over caution, they plunged down the craggy mountainside toward the valley floor. After skidding through a treacherous chute of loose basalt scree, they skidded to a halt on the precipice of a terrifying magical sinkhole: a three-hundred-foot rift bleeding the unnatural chill of the Void and violently warping local gravity. Ever the opportunist, Eli leaned over the abyss to get a phial of Void-air. Yet scientific curiosity was cut short when they spotted a man being pulled helplessly toward the gravitational maw. Refusing to abandon him—even with the clock ticking down—the party burned precious time and hauled him back from oblivion.\n<br>\nTheir rescue proved to be Jerry, an advance scout from Silverbrook. In gratitude, he guided them into the dense woodland below, only for the party to walk straight into an ambush by an Ulnorya — a hulking, ravenous aberration. The predator pushed the heroes to the brink, but through grit and cunning, they broke the beast and reached their destination. What awaited them at Silverbrook shattered their expectations: not only had life survived the unforgiving Wildlands, but the shattered ruins had been patched together, reclaimed, and reborn as a thriving settlement in its own right. \n<br><br>\nAfter being thanked for having saved Jerry, the heroes are directed to the Stoat and Cellar where they would be able to get the information they needed. After a hearty meal and an intense game of knucklebones, the party found out where they were most likely to find Sam. Using the little money they had left, they bought supplies and resumed their journey. "
+  },
+  {
+    "id": "sigil-session-4",
+    "name": "In a hole, in the ground, there lived a Sigil",
+    "campaign": "last-sigil",
+    "number": 4,
+    "date": "Deftesten 28 Mystawal, 1693LF",
+    "region": "Wolf's Cradle, Maltona",
+    "arc": "Main",
+    "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
+    "otherPlaces": [
+      "Wolf's Cradle"
+    ],
+    "loot": [
+      "trauma"
+    ],
+    "accomplished": [
+      "Weird timey things and odd dreams"
+    ],
+    "leadsPursued": [
+      "Went into the hole in the ground"
+    ],
+    "futureLeads": [
+      "Figure out what the deal is with this Last Sigil thing"
+    ],
+    "body": "*Nothing yet, come back soon*"
   }
 ]

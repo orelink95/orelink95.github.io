@@ -115,5 +115,44 @@
         "icon": "water_drop"
       }
     ]
+  },
+  {
+    "id": "ulnorya",
+    "name": "Ulnorya",
+    "arcana": "II - THE STALKER",
+    "specimenNo": "072",
+    "location": "Wildlands",
+    "image": "images/Ulnorya.webp",
+    "threat": "High",
+    "realm": "Material Plane",
+    "phylogeny": "Aberration",
+    "shortDesc": "Eight long, writhing tentacles support and propel this snarling horror's oblong body while its jagged maw reveals rows of razor teeth.",
+    "stats": [
+      {
+        "label": "Dexterity",
+        "value": 90
+      },
+      {
+        "label": "Invisibility",
+        "value": 60
+      },
+      {
+        "label": "Tentacle Strength",
+        "value": 74
+      }
+    ],
+    "tags": [
+      "Aberration",
+      "Predator"
+    ],
+    "habitats": [
+      "Forest"
+    ],
+    "drops": [
+      {
+        "name": "Teeth",
+        "type": "Alchemy ingredient"
+      }
+    ]
   }
 ]

@@ -31,6 +31,21 @@
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
     const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster' };
 
+    // Comparator for a type's `order` option (see data/schema.js)
+    function comparator(order) {
+        const num = v => (typeof v === 'number' && !Number.isNaN(v) ? v : null);
+        return (a, b) => {
+            if (order.within) {
+                const c = String(a[order.within] ?? '').localeCompare(String(b[order.within] ?? ''));
+                if (c) return c;
+            }
+            const x = num(a[order.by]), y = num(b[order.by]);
+            if (x === null || y === null) return (x === null) - (y === null);
+            return order.desc ? y - x : x - y;
+        };
+    }
+    ATH.comparator = comparator;
+
     function createStore(schema, datasets, privateData, singletonData) {
         const types = schema.types;
         const byId = new Map();
@@ -46,6 +61,7 @@
             if (list === undefined) { loadIssues.push(`[${type}] ${def.file} was not loaded`); byType[type] = []; continue; }
             if (!Array.isArray(list)) { loadIssues.push(`[${type}] ${def.file} must be a JSON array`); byType[type] = []; continue; }
             byType[type] = list.map(r => ({ ...r }));
+            if (def.order) byType[type].sort(comparator(def.order));
             for (const rec of byType[type]) {
                 typeOfRec.set(rec, type);
                 if (rec && typeof rec.id === 'string' && !byId.has(rec.id)) byId.set(rec.id, rec);
@@ -363,6 +379,13 @@
             }
 
             // Type-specific rules
+            const seenNumbers = new Map();
+            for (const s of byType.session || []) {
+                if (typeof s.number !== 'number') continue;
+                const key = `${s.campaign}#${s.number}`;
+                if (seenNumbers.has(key)) warnings.push(`[session] ${s.id}.number: ${s.number} is also used by ${seenNumbers.get(key)} in the same campaign`);
+                else seenNumbers.set(key, s.id);
+            }
             const tiers = enumValues('tavernTier');
             for (const item of byType.menuItem || []) {
                 if (tiers.indexOf(item.minTier) > tiers.indexOf(item.maxTier)) errors.push(`[menuItem] ${item.id}: minTier is above maxTier`);

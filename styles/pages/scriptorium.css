@@ -592,6 +592,10 @@
     letter-spacing: 0.1em;
     color: rgb(192 132 252 / 0.8);
 }
+a.loot-tag:hover {
+    color: #c084fc;
+    text-decoration: underline;
+}
 
 .timeline-entry {
     position: relative;
@@ -820,6 +824,9 @@
     color: rgb(255 255 255 / 0.4);
     transition: all 150ms var(--ease);
     cursor: help;
+}
+a.acquisition {
+    cursor: pointer;
 }
 .acquisition:hover {
     border-color: rgb(192 132 252 / 0.3);
@@ -1329,6 +1336,9 @@
     line-height: 1rem;
     font-weight: 700;
     color: #fff;
+}
+a.folio-vault__item:hover {
+    color: #c084fc;
 }
 
 .folio-vault__icon {

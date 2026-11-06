@@ -12,6 +12,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const campaigns = store.all('campaign').slice().sort((a, b) => a.name.localeCompare(b.name));
     const sessionsOf = id => store.all('session').filter(s => s.campaign === id);
     const itemName = id => (store.get(id) || {}).name || id;
+    // An item from a session's loot: a link to its card in the Vault when it exists
+    const itemLink = (id, cls, inner) => {
+        const href = store.get(id) ? store.url(id) : null;
+        return href ? `<a href="${href}" onclick="event.stopPropagation()" class="${cls}">${inner}</a>`
+                    : `<span class="${cls}">${inner}</span>`;
+    };
     let current = null;   // the campaign on screen
 
     // --- WORKSPACE INITIALIZATION ---
@@ -179,9 +185,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     : `<span onclick="event.stopPropagation(); triggerSearch(this.dataset.term)" data-term="${title.replace(/"/g, '&quot;')}" class="place-tag place-tag--search"><span class="tag-icon material-symbols-outlined">location_on</span> ${title}</span>`;
             }).join('');
 
-            const lootTags = (session.loot || []).map(itemName).map(item => `
-                <span class="loot-tag"><span class="tag-icon material-symbols-outlined">auto_awesome</span> ${item}</span>
-            `).join('');
+            const lootTags = (session.loot || []).map(id =>
+                itemLink(id, 'loot-tag', `<span class="tag-icon material-symbols-outlined">auto_awesome</span> ${itemName(id)}`)
+            ).join('');
 
             const isLatest = index === 0 && searchInput.value === "" && arcFilter.value === "all";
             const latestClass = isLatest ? 'is-latest' : '';   // the newest session is lit in gold
@@ -230,10 +236,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function renderGlobalLoot(sessions) {
         if (!lootList) return;
-        const allLoot = [...new Set(sessions.flatMap(s => s.loot || []))].map(itemName);
-        lootList.innerHTML = allLoot.map(item => `
-            <span class="acquisition" title="Acquired in Archive">${item}</span>
-        `).join('');
+        const allLoot = [...new Set(sessions.flatMap(s => s.loot || []))];
+        lootList.innerHTML = allLoot.map(id => itemLink(id, 'acquisition', itemName(id))).join('');
     }
 
     function populateArcFilter(sessions) {
@@ -488,7 +492,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <span class="folio-icon material-symbols-outlined">inventory_2</span> The Vault
                     </h3>
                     <div class="folio-list">
-                        ${(session.loot || []).map(itemName).map(item => `<div class="folio-vault__item"><span class="folio-vault__icon material-symbols-outlined">auto_awesome</span> ${item}</div>`).join('')}
+                        ${(session.loot || []).map(id => itemLink(id, 'folio-vault__item', `<span class="folio-vault__icon material-symbols-outlined">auto_awesome</span> ${itemName(id)}`)).join('')}
                     </div>
                 </div>
 

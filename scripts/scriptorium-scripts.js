@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // summary or a definition shows it as a tooltip.
     const KW_TYPE = { npc: 'person', faction: 'faction', creature: 'monster', lore: 'lore', item: 'object' };
     const kwKind = rec => rec.kind || KW_TYPE[store.typeOf(rec)] || 'place';
-    const tipOf = rec => rec.definition || rec.summary || '';
+    const tipOf = rec => rec.definition || rec.summary || rec.shortDesc || '';
     function keywordAttrs(rec) {
         const tip = tipOf(rec) ? ` onmouseenter="showTooltip(event, '${rec.id}')"` : '';
         if (store.typeOf(rec) === 'lore') return `onclick="event.stopPropagation(); triggerSearch('${rec.id}')"${tip}`;

@@ -73,7 +73,7 @@
     "image": "images/Tainted Velociraptor.png",
     "threat": "High",
     "phylogeny": "Aberration",
-    "shortDesc": "Its sinewy frame coils with unnatural tension, every muscle taut beneath its mottled plumage of inky black and deep indigo. Vicious talons scrape the ground with each step, and its feathers — once sleek — now jut out in ragged, uneven clumps, as though scorched by shadow. Streaks of seething violet energy pulse beneath its skin, crawling along its limbs and up its neck like veins filled with corrupted ethyria. Its eyes gleam a sickly yellow, alive with a malicious intelligence, burning with a hungry, unnatural gleam — not the mindless hunger of beasts, but something colder, calculated, and wrong. The air warps faintly around its form, and a low, almost imperceptible hum of magic seems to follow its movements — as if the creature exists partially out of phase with the world.",
+    "shortDesc": "Little is known of these creatures. While it is known that some dinosaurs still roam the land, the existence of *tainted* ones remains purely theoretical. If it were to exist, it is safe to say that there little chance for someone to survive this encounter...",
     "stats": [
       {
         "label": "Strength",
@@ -99,7 +99,7 @@
       "Ruins"
     ],
     "loreTitle": "Tainted Dinosaurs",
-    "body": "Little is known of these creatures. While it is known that some dinosaurs still roam the land, the existence of *tainted* ones remains purely theoretical. If it were to exist, it is safe to say that there little chance for someone to survive this encounter...",
+    "body": "Its sinewy frame coils with unnatural tension, every muscle taut beneath its mottled plumage of inky black and deep indigo. Vicious talons scrape the ground with each step, and its feathers — once sleek — now jut out in ragged, uneven clumps, as though scorched by shadow. Streaks of seething violet energy pulse beneath its skin, crawling along its limbs and up its neck like veins filled with corrupted ethyria. Its eyes gleam a sickly yellow, alive with a malicious intelligence, burning with a hungry, unnatural gleam — not the mindless hunger of beasts, but something colder, calculated, and wrong. The air warps faintly around its form, and a low, almost imperceptible hum of magic seems to follow its movements — as if the creature exists partially out of phase with the world.",
     "behaviors": [
       "Mindless Rage",
       "Pack Tactics",
@@ -159,6 +159,8 @@
         "type": "Trophy & Crafting",
         "icon": "humerus"
       }
-    ]
+    ],
+    "scholarQuote": "Where the Ulnorya comes from is a mystery. Many think it is a result of the Void corruption that affected the world after the War, but ancient texts mention creatures eerily similar. We shouldn't forget the horrors that roamed the world eons ago.",
+    "scholarName": "Alkalily Neir"
   }
 ]

@@ -431,6 +431,18 @@
     margin-top: 1rem;
     margin-bottom: 0;
 }
+.beast-modal__desc {
+    margin-bottom: 1.25rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.85);
+}
+.beast-modal__desc em {
+    font-style: normal;
+}
+
 .beast-modal__body {
     font-family: var(--font-body);
     font-size: 0.875rem;

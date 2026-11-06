@@ -322,12 +322,35 @@
     color: rgb(255 255 255 / 0.1);
 }
 
-.beast-lore__text {
-    max-width: none;
+/* Short description: a standfirst, set apart by italics, contrast and a rule, not by a new typeface */
+.beast-lore__lede {
+    max-width: 62ch;
+    margin-bottom: 2rem;
+    padding-left: 1.25rem;
+    border-left: 2px solid rgb(233 193 118 / 0.5);
     font-family: var(--font-body);
-    font-size: 1rem;
-    line-height: 1.625;
-    color: rgb(255 255 255 / 0.7);
+    font-size: 1.125rem;
+    line-height: 1.75;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.9);
+}
+.beast-lore__lede:has(+ [hidden]) {
+    margin-bottom: 0;   /* no lore under it */
+}
+.beast-lore__lede em {
+    font-style: normal;   /* emphasis inside italics flips back to roman */
+}
+
+/* Lore: larger, a little brighter and a readable line length for long reading */
+.beast-lore__text {
+    max-width: 70ch;
+    font-family: var(--font-body);
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: rgb(255 255 255 / 0.78);
+}
+.beast-lore__text p + p {
+    margin-top: 1em;
 }
 
 .beast-traits {

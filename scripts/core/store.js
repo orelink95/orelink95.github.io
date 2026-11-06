@@ -29,7 +29,22 @@
 
     const ID_RE = /^[a-z0-9][a-z0-9_-]*$/;
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
-    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster' };
+    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object' };
+
+    // Comparator for a type's `order` option (see data/schema.js)
+    function comparator(order) {
+        const num = v => (typeof v === 'number' && !Number.isNaN(v) ? v : null);
+        return (a, b) => {
+            if (order.within) {
+                const c = String(a[order.within] ?? '').localeCompare(String(b[order.within] ?? ''));
+                if (c) return c;
+            }
+            const x = num(a[order.by]), y = num(b[order.by]);
+            if (x === null || y === null) return (x === null) - (y === null);
+            return order.desc ? y - x : x - y;
+        };
+    }
+    ATH.comparator = comparator;
 
     // Comparator for a type's `order` option (see data/schema.js)
     function comparator(order) {
@@ -178,26 +193,30 @@
 
         /* ---------- autolink ---------- */
         let linkIndex = null;
+        // Spaces and hyphens, ' and ’ are interchangeable: "Void Air" matches "Void-air"
+        const termKey = s => s.toLowerCase().replace(/[’]/g, "'").replace(/[\s-]+/g, ' ');
+        const looseRe = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '[\\s-]+').replace(/['’]/g, "['’]");
         function buildLinkIndex() {
             const terms = new Map();
             for (const [type, def] of Object.entries(types)) {
                 if (!def.autolink) continue;
                 const typeCls = LINK_CLASS[type] || (def.place ? 'kw-place' : 'kw-lore');
                 for (const rec of byType[type]) {
+                    // An item nobody has found has no card to show yet
+                    if (type === 'item' && !(backIndex.get(rec.id) || []).length) continue;
                     // Glossary terms are coloured by their kind
                     const cls = type === 'lore' ? `kw-${rec.kind || 'lore'}` : typeCls;
                     for (const term of [rec.name, ...(rec.aliases || [])]) {
                         // Skip short terms and placeholders such as "??????".
                         if (!term || term.length < 3 || !/\p{L}/u.test(term)) continue;
-                        const key = term.toLowerCase();
+                        const key = termKey(term);
                         if (!terms.has(key)) terms.set(key, { id: rec.id, href: url(rec), cls, rec });
                     }
                 }
             }
             const sorted = [...terms.keys()].sort((a, b) => b.length - a.length);
-            const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const re = sorted.length
-                ? new RegExp(`(?<![\\p{L}\\p{N}])(${sorted.map(esc).join('|')})(?![\\p{L}\\p{N}])`, 'giu')
+                ? new RegExp(`(?<![\\p{L}\\p{N}])(${sorted.map(looseRe).join('|')})(?![\\p{L}\\p{N}])`, 'giu')
                 : null;
             return { terms, re };
         }
@@ -219,7 +238,7 @@
                 }
                 if (inAnchor || !part) return part;
                 return part.replace(linkIndex.re, match => {
-                    const t = linkIndex.terms.get(match.toLowerCase());
+                    const t = linkIndex.terms.get(termKey(match));
                     if (!t || exclude.has(t.id)) return match;
                     if (!t.href && !options.terms) return match;
                     const cls = options.className ? `${t.cls} ${options.className}` : t.cls;

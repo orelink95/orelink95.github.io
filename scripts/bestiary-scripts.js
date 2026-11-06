@@ -133,6 +133,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         document.getElementById('modal-beast-phylogeny').textContent = beast.phylogeny;
         document.getElementById('modal-beast-realm').textContent = beast.realm;
+        const desc = document.getElementById('modal-beast-desc');
+        desc.innerHTML = beast.shortDesc ? store.autolink(store.md(beast.shortDesc), { exclude: beast.id }) : '';
+        desc.hidden = !beast.shortDesc;
         document.getElementById('modal-beast-body').innerHTML = store.autolink(store.md(beast.body, { dropCap: true }), { exclude: beast.id });
         document.getElementById('modal-beast-link').href = `beast.html?id=${beast.id}`;
 

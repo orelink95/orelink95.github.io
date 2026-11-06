@@ -92,6 +92,7 @@
                         <h2 id="b-lore-title" class="beast-lore__title"></h2>
                         <span class="beast-lore__icon material-symbols-outlined">history_edu</span>
                     </div>
+                    <div id="b-desc" class="beast-lore__lede" hidden></div>
                     <div id="b-lore-body"
                         class="beast-lore__text small-drop-cap">
                     </div>
@@ -158,6 +159,15 @@
             document.getElementById('b-lore-title').textContent = beast.loreTitle || "Archival Record";
             document.getElementById('b-lore-body').innerHTML = store.autolink(store.md(beast.body, { dropCap: true }), { exclude: beast.id });
 
+            // Short description: the lede of the lore box (alone if no lore yet)
+            if (beast.shortDesc) {
+                const desc = document.getElementById('b-desc');
+                desc.innerHTML = store.autolink(store.md(beast.shortDesc), { exclude: beast.id });
+                desc.hidden = false;
+            }
+            if (!beast.body) document.getElementById('b-lore-body').hidden = true;
+            if (!beast.body && !beast.shortDesc) document.querySelector('.beast-lore').hidden = true;
+
             // Populate Tags (over the image)
             if (beast.tags) {
                 document.getElementById('b-tags').innerHTML = beast.tags.map(t =>
@@ -191,17 +201,23 @@
             const makeList = (arr) => arr ? arr.map(item => `<li class="beast-trait"><span class="beast-trait__bullet">•</span> <span>${item}</span></li>`).join('') : '';
             document.getElementById('b-behaviors').innerHTML = makeList(beast.behaviors);
             document.getElementById('b-weaknesses').innerHTML = makeList(beast.weaknesses);
+            // Hide a panel with nothing in it (and the whole row if both are empty)
+            ['b-behaviors', 'b-weaknesses'].forEach(id => {
+                const list = document.getElementById(id);
+                if (!list.children.length) list.closest('.beast-traits__panel').hidden = true;
+            });
+            if (!(beast.behaviors || []).length && !(beast.weaknesses || []).length) document.querySelector('.beast-traits').hidden = true;
 
             // Populate Loot
             if (beast.drops) {
                 document.getElementById('b-loot').innerHTML = beast.drops.map(l => `
                     <div class="beast-drop">
                         <div class="beast-drop__badge">
-                            <span class="beast-drop__icon material-symbols-outlined">${l.icon}</span>
+                            <span class="beast-drop__icon material-symbols-outlined">${l.icon || 'science'}</span>
                         </div>
                         <div>
                             <h4 class="beast-drop__name">${l.name}</h4>
-                            <p class="beast-drop__type">${l.type}</p>
+                            <p class="beast-drop__type">${l.type || ''}</p>
                         </div>
                     </div>
                 `).join('');

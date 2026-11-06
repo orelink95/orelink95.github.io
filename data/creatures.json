@@ -58,7 +58,7 @@
       {
         "name": "Bone Fragment",
         "type": "Trophy & Crafting",
-        "icon": "ac_unit"
+        "icon": "humerus"
       }
     ],
     "scholarQuote": "Such wicked skulls seem to have been made for hundreds of year. But the way to make them appears to escape common knowledge.",
@@ -130,7 +130,7 @@
     "stats": [
       {
         "label": "Dexterity",
-        "value": 90
+        "value": 80
       },
       {
         "label": "Invisibility",
@@ -139,11 +139,16 @@
       {
         "label": "Tentacle Strength",
         "value": 74
+      },
+      {
+        "label": "Cuteness",
+        "value": 2
       }
     ],
     "tags": [
       "Aberration",
-      "Predator"
+      "Predator",
+      "Wildlands"
     ],
     "habitats": [
       "Forest"
@@ -151,7 +156,8 @@
     "drops": [
       {
         "name": "Teeth",
-        "type": "Alchemy ingredient"
+        "type": "Trophy & Crafting",
+        "icon": "humerus"
       }
     ]
   }

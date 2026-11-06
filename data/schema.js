@@ -343,6 +343,7 @@
                 label: 'Item', plural: 'Items', icon: 'diamond', group: 'Library',
                 file: 'data/items.json',
                 page: 'vault.html?item={id}',
+                autolink: true,   // only items found somewhere (else the Vault link leads nowhere)
                 fields: {
                     image:      { kind: 'image', label: 'Picture' },
                     type:       { kind: 'text', label: 'Type (e.g. Wondrous item, Weapon (dagger))' },

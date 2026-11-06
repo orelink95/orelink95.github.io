@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Keywords: names of NPCs, places, factions and creatures become links; glossary
     // terms (data/lore.json) become spans that search the chronicle. Anything with a
     // summary or a definition shows it as a tooltip.
-    const KW_TYPE = { npc: 'person', faction: 'faction', creature: 'monster', lore: 'lore' };
+    const KW_TYPE = { npc: 'person', faction: 'faction', creature: 'monster', lore: 'lore', item: 'object' };
     const kwKind = rec => rec.kind || KW_TYPE[store.typeOf(rec)] || 'place';
     const tipOf = rec => rec.definition || rec.summary || '';
     function keywordAttrs(rec) {

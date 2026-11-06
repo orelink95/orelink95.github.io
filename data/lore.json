@@ -31,13 +31,13 @@
   {
     "id": "alensia",
     "name": "Alensia",
-    "kind": "lore",
+    "kind": "person",
     "definition": "Wizard creator and owner of the Vale House, apparently involved with Freyot in a way."
   },
   {
     "id": "freyot",
     "name": "Freyot",
-    "kind": "lore",
+    "kind": "person",
     "definition": "Mysterious figure brought up by the homonculi that still inhabit the Vale House."
   },
   {

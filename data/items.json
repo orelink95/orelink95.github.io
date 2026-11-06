@@ -74,5 +74,25 @@
     "weight": "Really heavy",
     "attunedBy": "maevik",
     "summary": "The horrors of the world affected you deeply"
+  },
+  {
+    "id": "ulnoryas-tooth",
+    "name": "Ulnorya's Tooth",
+    "type": "Alchemical Ingredient",
+    "rarity": "Very rare",
+    "cost": "50  GP",
+    "weight": "20 gr",
+    "summary": "A razor-sharp tooth taken from the mouth of an Ulnorya.",
+    "body": "During their travels, Maevik and Eli were ambushed by an Ulnorya near Silverbrook. After a difficult fight, on Eli's request, Maevik secured one of the creature's teeth. "
+  },
+  {
+    "id": "phial-of-void-air",
+    "name": "Phial of Void Air",
+    "type": "Wondrous Item",
+    "rarity": "Unknown",
+    "cost": "??",
+    "weight": "weightless",
+    "summary": "A phial filled with air",
+    "body": "This phial is filled with air taken from a void anomaly. Its exact contents are unknown, and whether it actually contains something is a mystery."
   }
 ]

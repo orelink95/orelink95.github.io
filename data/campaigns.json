@@ -44,7 +44,7 @@
     "id": "last-sigil",
     "name": "The Last Sigil",
     "preview": "Two scholars are sent to survey an ancient site recently unearthed. Thought to be an ancient Doleris temple, the site is a labyrinth of strange arcane phenomena that forces the adventurers to confront their own memories",
-    "story": "Aasked to investigate old ruins in the Wolf's Cradle, Eli and Maevik are taken through the Wildlands by a group of mercenaries. Upon arrival they discover a strange underground temple inf ar worse shape than expected.\n\nTheir investigation quickly led them to realize that itself wasn't flowing properly there. After being stuck in a sort of time loop, plagued by strange dreams, the brave scholars discover what looks like a small study in a demi-plane. There they find copious work written by Doleris Scholars and a strange artifact : The Last Sigil.\n\nTaking their discovery back to the Athenaeum, they are sent to Runebridge, in search of an eminent scholar who might be able to help them decypher it all... only to find him missing. With the Dean of Runebridge particularly suspect, they decide to flee and keep on investigating, on their own.",
+    "story": "Asked to investigate old ruins in the Wolf's Cradle, Eli and Maevik are taken through the Wildlands by a group of mercenaries. Upon arrival they discover a strange underground temple in far worse shape than expected.\n\nTheir investigation quickly led them to realize that itself wasn't flowing properly there. After being stuck in a sort of time loop, plagued by strange dreams, the brave scholars discover what looks like a small study in a demi-plane. There they find copious work written by Doleris Scholars and a strange artifact : The Last Sigil.\n\nTaking their discovery back to the Athenaeum, they are sent to Runebridge, in search of an eminent scholar who might be able to help them decypher it all... only to find him missing. With the Dean of Runebridge particularly suspect, they decide to flee and keep on investigating, on their own.\n\nTheir adventures took the heroes to the confines of the Dreamlands, where they obtained a powerful magic ingredient  - a crystallized memory -  that they will hopefully combine with nihilium, in a ritual ti restore the Sigil. The final ingredient, the actual know-how that they need to perform the ritual is apparently held by a missing scholar, Sam Eredil. \n\nOn their way to Sam, the heroes discovered, in the middle of the inhabited wildlands, that a settlement exists. From there, they will attempt to find Sam, before time runs out. ",
     "quests": [
       {
         "title": "Perform the Ritual",
@@ -62,6 +62,16 @@
       "eli",
       "maevik",
       "m3mu"
+    ],
+    "funds": {
+      "gold": 0,
+      "silver": 24
+    },
+    "standings": [
+      {
+        "faction": "caeraotrom-athenaeum",
+        "status": "Allied"
+      }
     ]
   }
 ]

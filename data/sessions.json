@@ -312,5 +312,40 @@
       "Figure out what the deal is with this Last Sigil thing"
     ],
     "body": "*Nothing yet, come back soon*"
+  },
+  {
+    "id": "sigil-session-9",
+    "name": "Nearing the end",
+    "campaign": "last-sigil",
+    "date": "Prostaten 5 Egirawal, 1693LF",
+    "region": "The Wildlands",
+    "arc": "Main",
+    "summary": "Racing against the decaying Sigil after parting from the Otters, the party braved a perilous descent through a basalt scree chute and arrived at a gravity-warping Void rift. After Eli captured a sample of the anomalous air in a phial, the heroes rescued a man trapped in the abyss's pull—Jerry, an advance scout from Silverbrook. Jerry guided them through the dense woods where they slew an ambushing Ulnorya aberration, finally escorting them into the unexpectedly rebuilt, thriving ruins of Silverbrook. At the local tavern, the Stoat and Cellar, the party parlayed a hearty meal and a game of knucklebones into a vital lead on Sam's whereabouts, spending their last coin on traveling supplies before setting out once more.",
+    "places": [
+      "wildlands",
+      "silverbrook"
+    ],
+    "otherPlaces": [
+      "The Wolf's Cradle"
+    ],
+    "npcs": [
+      {
+        "npc": "rowan-larkspur",
+        "sentiment": "like"
+      }
+    ],
+    "loot": [
+      "ulnoryas-tooth",
+      "phial-of-void-air"
+    ],
+    "leadsPursued": [
+      "Sam has visited Silverbrook and has been seen going to the ruined temple of Halvermere"
+    ],
+    "keywords": [
+      "Halvermere",
+      "Wildlands",
+      "Silverbook"
+    ],
+    "body": "Parted from the Otters upon the windswept mountain slopes, the party pressed hard for the ruins of Silverbrook—a once-peaceful city wiped out during the war. Every second counted. Nearly a week had slipped away since they first claimed the Sigil, and its fracturing surface pulsed with ominous decay. They could feel the impending collapse, and finding Sam was the vital final step of their journey. <br>\n\nChoosing reckless speed over caution, they plunged down the craggy mountainside toward the valley floor. After skidding through a treacherous chute of loose basalt scree, they skidded to a halt on the precipice of a terrifying magical sinkhole: a three-hundred-foot rift bleeding the unnatural chill of the Void and violently warping local gravity. Ever the opportunist, Eli leaned over the abyss to get a phial of Void-air. Yet scientific curiosity was cut short when they spotted a man being pulled helplessly toward the gravitational maw. Refusing to abandon him—even with the clock ticking down—the party burned precious time and hauled him back from oblivion.\n<br>\nTheir rescue proved to be Jerry, an advance scout from Silverbrook. In gratitude, he guided them into the dense woodland below, only for the party to walk straight into an ambush by an Ulnorya — a hulking, ravenous aberration. The predator pushed the heroes to the brink, but through grit and cunning, they broke the beast and reached their destination. What awaited them at Silverbrook shattered their expectations: not only had life survived the unforgiving Wildlands, but the shattered ruins had been patched together, reclaimed, and reborn as a thriving settlement in its own right. \n<br><br>\nAfter being thanked for having saved Jerry, the heroes are directed to the Stoat and Cellar where they would be able to get the information they needed. After a hearty meal and an intense game of knucklebones, the party found out where they were most likely to find Sam. Using the little money they had left, they bought supplies and resumed their journey. "
   }
 ]

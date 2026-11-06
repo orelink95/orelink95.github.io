@@ -22,6 +22,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/core/threat.js"></script>
     <script src="scripts/bestiary-scripts.js"></script>
 </head>
 
@@ -88,25 +89,25 @@
     <div id="bestiary-modal" class="beast-modal hidden">
         <div class="beast-modal__card">
 
+            <button onclick="closeBestiaryModal()" class="beast-modal__close" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
             <div class="beast-modal__media">
                 <div class="beast-modal__fade"></div>
                 <img id="modal-beast-img" class="beast-modal__img" src="" alt="Beast" />
             </div>
 
             <div class="beast-modal__content custom-scrollbar">
-                <button onclick="closeBestiaryModal()" class="beast-modal__close">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-
                 <p id="modal-beast-arcana" class="beast-modal__arcana"></p>
                 <h2 id="modal-beast-name" class="beast-modal__name"></h2>
                 <p id="modal-beast-location" class="beast-modal__location"></p>
 
-                <div class="beast-modal__facts">
-                    <div id="modal-beast-threat-badge" class="beast-modal__threat">
-                        <span id="modal-beast-threat-dot" class="beast-modal__threat-dot"></span>
-                        <span id="modal-beast-threat-text" class="beast-modal__threat-text"></span>
-                    </div>
+                <div id="modal-beast-facts" class="beast-modal__facts">
+                    <span class="threat-pill beast-modal__threat">
+                        <span id="modal-beast-threat-icon" class="threat-pill__icon material-symbols-outlined" aria-hidden="true"></span>
+                        <span id="modal-beast-threat-text" class="threat-pill__label"></span>
+                    </span>
                     <div class="beast-modal__divider"></div>
                     <div>
                         <p class="beast-modal__fact-label">Phylogeny</p>

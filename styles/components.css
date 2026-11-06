@@ -1615,3 +1615,45 @@
 .is-lifted .archive-modal__card {
     filter: brightness(1.4) contrast(1.1) saturate(1.3);
 }
+
+/* =====================================================================
+   CREATURE THREAT PILL  (creatureThreatPill() in scripts/core/threat.js)
+   Icon + label, coloured by a .threat--* tone class on the pill or on
+   any ancestor (which then gets --threat too, e.g. to tint a box).
+   Used by the bestiary cards, the bestiary pop-up and beast.html.
+   ===================================================================== */
+
+.threat--lethal   { --threat: var(--color-error); --threat-glow: rgb(255 82 82); }
+.threat--high     { --threat: #fb923c; }
+.threat--moderate { --threat: #60a5fa; }
+.threat--low      { --threat: #2dd4bf; }
+.threat--friendly { --threat: #4ade80; }
+
+.threat-pill {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--threat, #fff) 30%, transparent);
+    border-radius: 0.75rem;
+    background-color: rgb(0 0 0 / 0.5);
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    white-space: nowrap;
+}
+
+.threat-pill__icon {
+    font-size: 14px;
+    font-variation-settings: 'FILL' 1;
+    color: var(--threat);
+    filter: drop-shadow(0 0 8px color-mix(in srgb, var(--threat-glow, var(--threat)) 80%, transparent));
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.threat-pill__label {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--threat);
+}

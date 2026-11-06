@@ -22,6 +22,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/core/threat.js"></script>
 </head>
 
 <body class="page">
@@ -73,6 +74,7 @@
                         <span class="beast-stats__icon material-symbols-outlined">analytics</span>
                         <h3 class="beast-stats__title"> Threat
                             Assessment</h3>
+                        <span id="b-threat" class="beast-stats__threat"></span>
                     </div>
                     <div id="b-stats" class="beast-stats__bars"></div>
                 </div>
@@ -173,6 +175,11 @@
                 document.getElementById('b-tags').innerHTML = beast.tags.map(t =>
                     `<span class="beast-tag">${t}</span>`
                 ).join('');
+            }
+
+            // Threat pill, opposite the "Threat Assessment" title
+            if (beast.threat) {
+                document.getElementById('b-threat').innerHTML = creatureThreatPill(beast.threat);
             }
 
             // Populate Progress Bars (Stats)

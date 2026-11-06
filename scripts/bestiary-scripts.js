@@ -1,16 +1,7 @@
 
 
 // scripts/bestiary-scripts.js — the codex of creatures (data/creatures.json)
-// Threat level -> colour tone (see .threat--* in pages/bestiary.css)
-const threatTone = (level) => {
-    const t = (level || '').toLowerCase();
-    if (t.includes('lethal') || t.includes('extreme')) return 'lethal';
-    if (t.includes('high')) return 'high';
-    if (t.includes('harmless') || t.includes('low')) return 'low';
-    if (t.includes('friendly') || t.includes('ally')) return 'friendly';
-    return 'moderate';
-};
-const THREAT_ICON = { lethal: 'skull', high: 'warning', low: 'eco', friendly: 'favorite', moderate: 'shield' };
+// Threat tone + icon: creatureThreatTone() / creatureThreatPill() in scripts/core/threat.js
 
 document.addEventListener("DOMContentLoaded", async () => {
     const store = await Athenaeum.ready;
@@ -59,13 +50,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         grid.innerHTML = beasts.map(beast => {
-            // Threat colour and icon
-            const tone = threatTone(beast.threat);
-            const tIcon = THREAT_ICON[tone];
-            const threatClass = 'threat--' + tone;
-
             return `
-            <div class="beast-card ${threatClass}" onclick="openBestiaryModal('${beast.id}')">
+            <div class="beast-card" onclick="openBestiaryModal('${beast.id}')">
                 
                 <img src="${beast.image}" alt="${beast.name}" class="beast-card__img">
                 
@@ -84,10 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
 
                     <div class="beast-card__threat-row">
-                        <div class="beast-card__threat">
-                            <span class="beast-card__threat-icon material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">${tIcon}</span>
-                            <span class="beast-card__threat-label">${beast.threat || ''}</span>
-                        </div>
+                        ${creatureThreatPill(beast.threat, 'beast-card__threat')}
                     </div>
 
                 </div>
@@ -132,17 +115,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById('modal-beast-location').textContent = beast.location;
 
         document.getElementById('modal-beast-phylogeny').textContent = beast.phylogeny;
-        document.getElementById('modal-beast-realm').textContent = beast.realm;
+        const realm = document.getElementById('modal-beast-realm');
+        realm.textContent = beast.realm || 'Unknown';
+        realm.classList.toggle('is-unknown', !beast.realm);
         const desc = document.getElementById('modal-beast-desc');
         desc.innerHTML = beast.shortDesc ? store.autolink(store.md(beast.shortDesc), { exclude: beast.id }) : '';
         desc.hidden = !beast.shortDesc;
         document.getElementById('modal-beast-body').innerHTML = store.autolink(store.md(beast.body, { dropCap: true }), { exclude: beast.id });
         document.getElementById('modal-beast-link').href = `beast.html?id=${beast.id}`;
 
-        // Threat colours in the modal (.threat--* on the badge)
-        const badge = document.getElementById('modal-beast-threat-badge');
-        badge.className = `beast-modal__threat threat--${threatTone(beast.threat)}`;
-        document.getElementById('modal-beast-threat-text').textContent = `${beast.threat || ''}`;
+        // Threat pill: the tone class sits on the facts box, so the pill and
+        // (on phones) the box outline both take the threat colour
+        const tone = creatureThreatTone(beast.threat);
+        document.getElementById('modal-beast-facts').className = `beast-modal__facts threat--${tone}`;
+        document.getElementById('modal-beast-threat-icon').textContent = CREATURE_THREAT_ICONS[tone];
+        document.getElementById('modal-beast-threat-text').textContent = beast.threat || '';
 
         document.getElementById('bestiary-modal').classList.remove('hidden');
     };

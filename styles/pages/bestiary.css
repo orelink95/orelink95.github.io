@@ -250,6 +250,7 @@
 }
 
 .beast-modal__card {
+    position: relative; /* anchors the close button */
     display: flex;
     flex-direction: column;
     max-height: 90vh;
@@ -380,29 +381,10 @@
     background-color: rgb(0 0 0 / 0.4);
 }
 
+/* The threat pill itself is .threat-pill (components.css) */
 .beast-modal__threat {
-    display: flex;
-    align-items: center;
     gap: 0.5rem;
     padding: 0.375rem 0.75rem;
-    border-radius: 0.75rem;
-    border-width: 1px;
-    background-color: rgb(0 0 0 / 0.5);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-}
-
-.beast-modal__threat-dot {
-    height: 0.5rem;
-    width: 0.5rem;
-    border-radius: 0.75rem;
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.beast-modal__threat-text {
-    font-size: 9px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
 }
 
 .beast-modal__divider {
@@ -425,6 +407,12 @@
     line-height: 1.25rem;
     font-weight: 700;
     color: rgb(255 255 255 / 0.9);
+}
+
+.beast-modal__fact-value.is-unknown {
+    font-weight: 400;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.4);
 }
 
 .beast-modal__body > :not([hidden]) ~ :not([hidden]) {
@@ -664,32 +652,15 @@
     width: 100%;
 }
 
+/* The threat pill itself is .threat-pill (components.css) */
 .beast-card__threat {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.75rem;
-    border-width: 1px;
     background-color: rgb(0 0 0 / 0.6);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: var(--ease);
-    transition-duration: 150ms;
 }
 
-.beast-card__threat-icon {
-    font-size: 14px;
-    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.beast-card__threat-label {
+.beast-card__threat .threat-pill__label {
     font-size: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
 }
 
 .beast-card__bottom {
@@ -740,134 +711,118 @@
     color: color-mix(in srgb, var(--color-secondary) 90%, transparent);
 }
 
-/* Threat colours: .threat--lethal / --high / --moderate / --low / --friendly (card and modal) */
+/* =====================================================================
+   Beast modal — phone layout (< 768px)
+   One scrolling column: image hero, then text. The close button stays
+   pinned; the facts strip becomes a two-row grid instead of one row.
+   ===================================================================== */
 
-.threat--lethal .beast-card__threat {
-    border-color: color-mix(in srgb, var(--color-error) 30%, transparent);
-}
+@media (max-width: 767px) {
+    .beast-modal {
+        padding: 0.75rem;
+    }
 
-.threat--lethal .beast-card__threat-icon {
-    color: var(--color-error);
-    filter: drop-shadow(0 0 8px rgba(255,82,82,0.8));
-}
+    /* The card itself scrolls, so the image no longer eats half the
+       screen while the text scrolls in a small window below it. */
+    .beast-modal__card {
+        max-height: calc(100dvh - 1.5rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
 
-.threat--lethal .beast-card__threat-label {
-    color: var(--color-error);
-}
+    .beast-modal__close {
+        position: sticky;
+        top: 0.75rem;
+        align-self: flex-end;
+        margin: 0.75rem 0.75rem -3.25rem 0; /* overlap the image */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        flex-shrink: 0;
+        border-radius: 9999px;
+        border: 1px solid rgb(255 255 255 / 0.1);
+        background-color: rgb(0 0 0 / 0.6);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        color: rgb(255 255 255 / 0.7);
+        z-index: 40;
+    }
 
-.beast-modal__threat.threat--lethal {
-    border-color: color-mix(in srgb, var(--color-error) 30%, transparent);
-}
+    .beast-modal__media {
+        padding: 1.25rem 1.25rem 0;
+    }
 
-.threat--lethal .beast-modal__threat-dot {
-    background-color: var(--color-error);
-    box-shadow: 0 0 5px rgba(255,82,82,0.8);
-}
+    .beast-modal__img {
+        width: auto;
+        max-width: 100%;
+        max-height: 45vh;
+    }
 
-.threat--lethal .beast-modal__threat-text {
-    color: var(--color-error);
-}
+    .beast-modal__content {
+        flex-shrink: 0;
+        overflow: visible;
+        padding: 1.25rem 1.5rem 1.5rem;
+    }
 
-.threat--high .beast-card__threat {
-    border-color: rgb(251 146 60 / 0.3);
-}
+    .beast-modal__location {
+        margin-bottom: 1.5rem;
+    }
 
-.threat--high .beast-card__threat-icon {
-    color: #fb923c;
-    filter: drop-shadow(0 0 8px rgba(251,146,60,0.8));
-}
+    /* Facts: the threat pill straddles the box's top border like a tab,
+       so the box itself keeps a single row: Phylogeny | Known Realm */
+    .beast-modal__facts {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+        align-items: start;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding: 1.5rem 1rem 1rem;
+    }
 
-.threat--high .beast-card__threat-label {
-    color: #fb923c;
-}
+    .beast-modal__threat {
+        position: absolute;
+        top: 0;
+        left: 1rem;
+        transform: translateY(-50%);
+        background-color: #0a0b0a; /* opaque, hides the border behind it */
+        z-index: 1;
+    }
 
-.beast-modal__threat.threat--high {
-    border-color: rgb(251 146 60 / 0.3);
-}
+    /* The box's outline takes the threat colour
+       (bestiary-scripts.js puts the .threat--* tone on the box) */
+    .beast-modal__facts[class*="threat--"] {
+        border-color: color-mix(in srgb, var(--threat) 30%, transparent);
+    }
 
-.threat--high .beast-modal__threat-dot {
-    background-color: #fb923c;
-    box-shadow: 0 0 5px rgba(251,146,60,0.8);
-}
+    .beast-modal__facts > .beast-modal__divider:nth-child(2) {
+        display: none;
+    }
 
-.threat--high .beast-modal__threat-text {
-    color: #fb923c;
-}
+    .beast-modal__facts > .beast-modal__divider:nth-child(4) {
+        height: 100%;
+    }
 
-.threat--low .beast-card__threat {
-    border-color: rgb(45 212 191 / 0.3);
-}
+    .beast-modal__fact-label {
+        font-size: 10px;
+    }
 
-.threat--low .beast-card__threat-icon {
-    color: #2dd4bf;
-    filter: drop-shadow(0 0 8px rgba(45,212,191,0.8));
-}
+    .beast-modal__threat .threat-pill__label {
+        font-size: 10px;
+    }
 
-.threat--low .beast-card__threat-label {
-    color: #2dd4bf;
-}
+    .beast-modal__fact-value {
+        overflow-wrap: anywhere;
+    }
 
-.beast-modal__threat.threat--low {
-    border-color: rgb(45 212 191 / 0.3);
-}
+    .beast-modal__foot {
+        margin-top: 2rem;
+    }
 
-.threat--low .beast-modal__threat-dot {
-    background-color: #2dd4bf;
-    box-shadow: 0 0 5px rgba(45,212,191,0.8);
-}
-
-.threat--low .beast-modal__threat-text {
-    color: #2dd4bf;
-}
-
-.threat--friendly .beast-card__threat {
-    border-color: rgb(74 222 128 / 0.3);
-}
-
-.threat--friendly .beast-card__threat-icon {
-    color: #4ade80;
-    filter: drop-shadow(0 0 8px rgba(244,114,182,0.8));
-}
-
-.threat--friendly .beast-card__threat-label {
-    color: #4ade80;
-}
-
-.beast-modal__threat.threat--friendly {
-    border-color: rgb(74 222 128 / 0.3);
-}
-
-.threat--friendly .beast-modal__threat-dot {
-    background-color: #4ade80;
-    box-shadow: 0 0 5px rgba(244,114,182,0.8);
-}
-
-.threat--friendly .beast-modal__threat-text {
-    color: #4ade80;
-}
-
-.threat--moderate .beast-card__threat {
-    border-color: rgb(96 165 250 / 0.3);
-}
-
-.threat--moderate .beast-card__threat-icon {
-    color: #60a5fa;
-    filter: drop-shadow(0 0 8px rgba(96,165,250,0.8));
-}
-
-.threat--moderate .beast-card__threat-label {
-    color: #60a5fa;
-}
-
-.beast-modal__threat.threat--moderate {
-    border-color: rgb(96 165 250 / 0.3);
-}
-
-.threat--moderate .beast-modal__threat-dot {
-    background-color: #60a5fa;
-    box-shadow: 0 0 5px rgba(96,165,250,0.8);
-}
-
-.threat--moderate .beast-modal__threat-text {
-    color: #60a5fa;
+    .beast-modal__link {
+        width: 100%;
+        justify-content: center;
+    }
 }

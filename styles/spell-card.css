@@ -6,20 +6,8 @@
    looks the same at any size.
    ===================================================================== */
 
-/* Free uncial, used until Rieven Uncial is available (see below) */
+/* Free uncial, bc Rieven Uncial is not free */
 @import url("https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap");
-
-/* Rieven Uncial (Delve Fonts) is a commercial font, so it is not in the repo.
-   - local(): used if it is installed on the computer viewing the page.
-   - For every player to see it: buy the webfont licence, put the file at
-     fonts/RievenUncial.woff2 and uncomment the url() line. */
-@font-face {
-    font-family: "Rieven Uncial";
-    src: local("Rieven Uncial"), local("RievenUncial-Regular"), local("RievenUncial")
-        /* , url("../fonts/RievenUncial.woff2") format("woff2") */
-    ;
-    font-display: swap;
-}
 
 :root {
     --font-spell: "Rieven Uncial", "Uncial Antiqua", var(--font-headline), serif;
@@ -27,54 +15,20 @@
 
 
 /* ---------- One hue per school (the frame and banners) ----------
-   The symbols are images/spells/<school>-left.png and -right.png, used as
-   masks so they take the card's colours. Blood, Chaos and Void have no
-   images yet: spell-card.js shows a placeholder icon for them. */
+   The symbols are images/spells/<school>-left.png and -right.png, used as masks so they take the card's 
+   colours. Blood, Chaos and Void have no icons yet: spell-card.js uses a placeholder icon for them. */
 
-.school--abjuration {
-    --school: #3b67b0;
-}
-
-.school--conjuration {
-    --school: #c98a2c;
-}
-
-.school--divination {
-    --school: #2f8f9a;
-}
-
-.school--enchantment {
-    --school: #c75f8c;
-}
-
-.school--evocation {
-    --school: #c4482c;
-}
-
-.school--illusion {
-    --school: #7b52c0;
-}
-
-.school--necromancy {
-    --school: #3f7a4f;
-}
-
-.school--transmutation {
-    --school: #7d7d4a;
-}
-
-/* the olive of the printed cards */
-.school--blood {
-    --school: #8c1c2c;
-}
-
-.school--chaos {
-    --school: #a8329a;
-}
-
-.school--void {
-    --school: #34305e;
-}
+.school--abjuration    { --school: #3b67b0; }
+.school--conjuration   { --school: #c98a2c; }
+.school--divination    { --school: #2f8f9a; }
+.school--enchantment   { --school: #c75f8c; }
+.school--evocation     { --school: #c4482c; }
+.school--illusion      { --school: #7b52c0; }
+.school--necromancy    { --school: #3f7a4f; }
+.school--transmutation { --school: #7d7d4a; }  
+.school--blood         { --school: #8c1c2c; }
+.school--chaos         { --school: #a8329a; }
+.school--void          { --school: #34305e; }
 
 
 /* ---------- The card ----------
@@ -82,8 +36,7 @@
    .spell-card__face, inside it, is the printed card. */
 
 :where(.spell-card) {
-    --school: #7d7d4a;
-    /* no school: the printed olive (zero specificity, so a school wins) */
+    --school: #7d7d4a;   /* no school: the printed olive (zero specificity, so a school wins) */
 }
 
 .spell-card {
@@ -101,20 +54,19 @@
     cursor: pointer;
     perspective: 1200px;
     /* --card-filter: set by a page whose <body> filter changes the colours (spellbook.css) */
-    filter: var(--card-filter, ) drop-shadow(0 0 10px color-mix(in srgb, var(--school) 45%, transparent));
+    filter: var(--card-filter,) drop-shadow(0 0 10px color-mix(in srgb, var(--school) 45%, transparent));
     transition: transform 400ms var(--ease), filter 400ms var(--ease);
 }
-
 .spell-card:hover,
 .spell-card:focus-visible {
     transform: translateY(-0.5rem);
-    filter: var(--card-filter, ) drop-shadow(0 0 22px color-mix(in srgb, var(--school) 80%, transparent));
+    filter: var(--card-filter,) drop-shadow(0 0 22px color-mix(in srgb, var(--school) 80%, transparent));
     outline: none;
 }
 
 /* A face-down card (never turned over in this browser) glows a little more */
 .spell-card.is-face-down {
-    filter: var(--card-filter, ) drop-shadow(0 0 16px color-mix(in srgb, var(--school) 70%, transparent));
+    filter: var(--card-filter,) drop-shadow(0 0 16px color-mix(in srgb, var(--school) 70%, transparent));
 }
 
 /* The two faces turn together (like the loot cards) */
@@ -124,7 +76,6 @@
     transform-style: preserve-3d;
     transition: transform 800ms var(--ease);
 }
-
 .spell-card.is-face-down .spell-card__inner {
     transform: rotateY(180deg);
 }
@@ -156,11 +107,9 @@
     aspect-ratio: auto;
     cursor: default;
 }
-
 .spell-card--open .spell-card__inner {
     height: auto;
 }
-
 .spell-card--open .spell-card__face {
     height: auto;
     min-height: calc(100cqw * 1.3);
@@ -168,33 +117,23 @@
     border-width: 2.4cqw;
     border-radius: 7cqw;
 }
-
 .spell-card--open .spell-card__banner--left,
 .spell-card--open .spell-card__banner--right {
     width: 8cqw;
     height: 13cqw;
     padding-top: 1.8cqw;
 }
-
-.spell-card--open .spell-card__banner--left {
-    left: 16cqw;
-}
-
-.spell-card--open .spell-card__banner--right {
-    right: 16cqw;
-}
-
+.spell-card--open .spell-card__banner--left  { left: 16cqw; }
+.spell-card--open .spell-card__banner--right { right: 16cqw; }
 .spell-card--open .spell-card__banner--level {
     width: 15cqw;
     height: 19cqw;
     font-size: 9cqw;
 }
-
 .spell-card--open .spell-card__symbol {
     width: 5.4cqw;
     height: 5.4cqw;
 }
-
 .spell-card--open .spell-card__symbol--icon {
     width: auto;
     height: auto;
@@ -210,10 +149,9 @@
     text-align: center;
     color: var(--school-dark);
 }
-
 .spell-card--open:hover {
     transform: none;
-    filter: var(--card-filter, ) drop-shadow(0 0 30px color-mix(in srgb, var(--school) 55%, transparent));
+    filter: var(--card-filter,) drop-shadow(0 0 30px color-mix(in srgb, var(--school) 55%, transparent));
 }
 
 
@@ -256,14 +194,8 @@
     width: 12cqw;
     height: 19cqw;
 }
-
-.spell-card__banner--left {
-    left: 13cqw;
-}
-
-.spell-card__banner--right {
-    right: 13cqw;
-}
+.spell-card__banner--left  { left: 13cqw; }
+.spell-card__banner--right { right: 13cqw; }
 
 .spell-card__banner--level {
     left: 50%;
@@ -308,11 +240,9 @@
     line-height: 1.3;
     color: #3d3a36;
 }
-
 .spell-card__label--big {
     font-size: 6.6cqw;
 }
-
 .spell-card__label--end {
     text-align: right;
 }
@@ -370,7 +300,6 @@
     align-items: center;
     gap: 1cqw;
 }
-
 /* Conc. and Rit. stand a little apart from V S M */
 .spell-card__comp--apart {
     margin-left: 1.6cqw;
@@ -385,7 +314,6 @@
     border: 1px solid color-mix(in srgb, var(--school) 45%, #e9a77a);
     border-radius: 50%;
 }
-
 .spell-card__dot.is-on {
     border-color: var(--school);
     background-color: var(--school);
@@ -398,7 +326,6 @@
     column-gap: 2cqw;
     margin-top: 2.6cqw;
 }
-
 .spell-card__pair .spell-card__label {
     grid-row: 1;
 }
@@ -417,7 +344,6 @@
     font-size: 4.8cqw;
     line-height: 1.4;
 }
-
 /* In the grid: the summary, cut off if too long */
 .spell-card:not(.spell-card--open) .spell-card__details {
     display: -webkit-box;
@@ -426,7 +352,6 @@
     font-style: italic;
     color: #5b4a44;
 }
-
 /* Opened: the full description; the box (and the card) grow with it */
 .spell-card--open .spell-card__details {
     flex: 1 0 auto;
@@ -436,19 +361,15 @@
     font-size: max(15px, 2.9cqw);
     line-height: 1.6;
 }
-
 .spell-card__details p {
     margin: 0;
 }
-
-.spell-card--open .spell-card__details p+p {
+.spell-card--open .spell-card__details p + p {
     margin-top: 0.8em;
 }
-
 .spell-card--open .spell-card__details strong {
     color: var(--school-dark);
 }
-
 .spell-card--open .spell-card__details blockquote {
     margin: 0.6em 0;
     padding-left: 0.8em;
@@ -464,14 +385,12 @@
 .spell-card__m {
     position: relative;
 }
-
 .spell-card__m.has-note {
     cursor: help;
     color: var(--school-dark);
     text-decoration: underline dotted var(--school);
     text-underline-offset: 0.8cqw;
 }
-
 .spell-card__m.has-note::before {
     content: "✦";
     position: absolute;
@@ -504,28 +423,19 @@
     visibility: hidden;
     transition: opacity 150ms var(--ease);
 }
-
 .spell-card__m.has-note:hover .spell-card__note,
 .spell-card__m.has-note:focus .spell-card__note,
 .spell-card__m.has-note.is-showing .spell-card__note {
     opacity: 1;
     visibility: visible;
 }
-
 .spell-card__m:focus {
     outline: none;
 }
 
 @keyframes spell-note-glow {
-
-    0%,
-    100% {
-        opacity: 0.45;
-    }
-
-    50% {
-        opacity: 1;
-    }
+    0%, 100% { opacity: 0.45; }
+    50%      { opacity: 1; }
 }
 
 
@@ -545,14 +455,11 @@
     font-family: var(--font-body);
     color: var(--color-on-surface);
 }
-
 .spell-modal.hidden {
     display: none;
 }
-
 .spell-modal--card {
-    z-index: 110;
-    /* a card opened from a hero's spellbook sits above it */
+    z-index: 110;   /* a card opened from a hero's spellbook sits above it */
 }
 
 .spell-modal__veil {
@@ -576,7 +483,6 @@
     color: rgb(255 255 255 / 0.5);
     transition: color 150ms var(--ease);
 }
-
 .spell-modal__close:hover {
     color: #fff;
 }
@@ -619,7 +525,6 @@
     color: rgb(255 255 255 / 0.5);
     transition: color 150ms var(--ease);
 }
-
 .spell-book__link:hover {
     color: var(--color-secondary);
 }
@@ -642,7 +547,6 @@
     font-size: 1.5rem;
     color: var(--color-secondary);
 }
-
 .spell-level__title::after {
     content: "";
     flex: 1;
@@ -655,10 +559,235 @@
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1.75rem 1.25rem;
 }
-
 @media (min-width: 768px) {
     .spell-grid {
         grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
         gap: 2.5rem 2rem;
     }
+}
+
+
+/* =====================================================================
+   PHONES (under 640px) — nothing below changes a computer's display.
+   - Grids show "card tabs" (spellCard.row) instead of cards: a card is
+     too small there to read, and its M too small to tap.
+   - The pop-up (spellCard.openSpell) shows the whole card large, with a
+     Card / Description switch.
+   ===================================================================== */
+
+.spell-tabs {
+    display: none;
+}
+
+@media (max-width: 639.98px) {
+    .spell-grid {
+        display: none;
+    }
+    .spell-tabs {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* ---------- A card tab ---------- */
+
+.spell-tab {
+    --school-ink: color-mix(in srgb, var(--school) 35%, #f6e2c9);
+    --school-dark: color-mix(in srgb, var(--school) 70%, black);
+
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        "name name"
+        "meta comps";
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 4px;
+    min-height: 64px;
+    padding: 10px 12px 10px 56px;
+    overflow: hidden;
+    border: 3px solid var(--school);
+    border-radius: 14px;
+    background-color: #fdfcf9;
+    color: #3d3a36;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    /* --card-filter: as for the cards (spellbook.css) */
+    filter: var(--card-filter,) drop-shadow(0 0 8px color-mix(in srgb, var(--school) 40%, transparent));
+    transition: transform 150ms var(--ease);
+}
+.spell-tab:active {
+    transform: scale(0.98);
+}
+.spell-tab:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+/* The level, on a small pennant hanging from the top edge */
+.spell-tab__pennant {
+    position: absolute;
+    top: -3px;
+    left: 10px;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    width: 34px;
+    height: 46px;
+    padding-top: 6px;
+    background: linear-gradient(to bottom, var(--school) 45%, color-mix(in srgb, var(--school) 35%, white));
+    clip-path: polygon(0 0, 100% 0, 100% 72%, 50% 100%, 0 72%);
+    font-family: var(--font-spell);
+    font-size: 20px;
+    line-height: 1;
+    color: var(--school-ink);
+}
+
+.spell-tab__name {
+    grid-area: name;
+    overflow: hidden;
+    font-family: var(--font-spell);
+    font-size: 18px;
+    line-height: 1.15;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--school-dark);
+}
+
+.spell-tab__meta {
+    grid-area: meta;
+    overflow: hidden;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #6d625a;
+}
+
+.spell-tab__comps {
+    grid-area: comps;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--font-spell);
+    font-size: 12px;
+    line-height: 1;
+}
+
+.spell-tab__comp {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.spell-tab__dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border: 1px solid color-mix(in srgb, var(--school) 45%, #e9a77a);
+    border-radius: 50%;
+}
+.spell-tab__dot.is-on {
+    border-color: var(--school);
+    background-color: var(--school);
+}
+
+.spell-tab__flag {
+    color: var(--school-dark);
+}
+
+/* Face down: the back's line art covers the tab until it is turned over */
+.spell-tab__back {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    padding-left: 56px;
+    background-color: var(--school);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 500ms var(--ease);
+}
+.spell-tab.is-face-down .spell-tab__back {
+    opacity: 1;
+}
+.spell-tab.is-face-down .spell-tab__pennant {
+    background: var(--school-ink);
+    color: var(--school);
+}
+
+.spell-tab__back-art {
+    position: absolute;
+    inset: 0;
+    opacity: 0.55;
+    background-color: var(--school-ink);
+    -webkit-mask: var(--symbol) center / 100% auto no-repeat;
+    mask: var(--symbol) center / 100% auto no-repeat;
+}
+
+.spell-tab__back-text {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    color: #fffaf2;
+}
+.spell-tab__back-text b {
+    font-family: var(--font-spell);
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.15;
+}
+
+/* ---------- The phone pop-up: the card, then the description ---------- */
+
+.spell-zoom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+.spell-zoom[data-view="card"] .spell-zoom__desc,
+.spell-zoom[data-view="desc"] .spell-zoom__card {
+    display: none;
+}
+
+/* The card shown large: readable, and its M easy to tap */
+.spell-card--zoom {
+    width: min(92vw, 420px);
+    cursor: default;
+}
+.spell-card--zoom:hover {
+    transform: none;
+}
+.spell-card--zoom .spell-card__m.has-note::after {
+    content: "";
+    position: absolute;
+    inset: -14px -12px;   /* a finger-sized target around the M */
+}
+
+.spell-zoom__switch {
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    border-radius: 9999px;
+}
+.spell-zoom__switch button {
+    min-height: 40px;
+    padding: 0 1.25rem;
+    font-family: var(--font-label);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.6);
+}
+.spell-zoom[data-view="card"] .spell-zoom__switch [data-view="card"],
+.spell-zoom[data-view="desc"] .spell-zoom__switch [data-view="desc"] {
+    background-color: color-mix(in srgb, var(--color-secondary) 18%, transparent);
+    color: var(--color-secondary);
 }

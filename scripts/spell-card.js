@@ -16,9 +16,16 @@
                           symbols, the back's art). Default: its --symbol style.
                           The dashboard uses it, as it reads images through the
                           linked folder, not the page's URL.
+        options.zoom      true = the card shown large in the phone pop-up (not
+                          clickable, never face down)
+   Athenaeum.spellCard.row(spell, store, options) -> a compact row ("card tab")
+        shown instead of the card on phones; options.faceDown as for card()
    Athenaeum.spellCard.levels(spells, store) -> the cards grouped by level
+        (both the cards and the phone rows: CSS shows one or the other)
    Athenaeum.spellCard.levelName(level)     -> 'Cantrips', '1st level'…
-   Athenaeum.spellCard.openSpell(id, store)  -> opens a card in a pop-up
+   Athenaeum.spellCard.openSpell(id, store)  -> opens a card in a pop-up: the
+        full description on a computer; on a phone, the whole card first, with a
+        Card / Description switch
    Athenaeum.spellCard.openBook(store, campaign, hero, options)
         -> opens a hero's spellbook in a pop-up (heroes.html)
            options.link  URL of a "see it in the Spellbook" link
@@ -38,7 +45,7 @@
     const PLACEHOLDER = {
         blood: 'water_drop',
         chaos: 'cyclone',
-        void: 'blur_circular',
+        void:  'blur_circular',
     };
 
     // The path of a symbol image, from the site's root
@@ -66,6 +73,11 @@
         seen.add(id);
         try { localStorage.setItem(SEEN_KEY, JSON.stringify([...seen])); } catch (e) { /* private window */ }
     }
+
+    // Phones (under 640px, as in spell-card.css): rows instead of cards, and
+    // the pop-up shows the whole card before the description
+    const PHONE = '(max-width: 639.98px)';
+    const isPhone = () => typeof matchMedia === 'function' && matchMedia(PHONE).matches;
 
     const levelMark = level => (level === 0 ? 'C' : String(level ?? '?'));
     function levelName(level) {
@@ -103,10 +115,11 @@
             : esc(spell.summary || '');
 
         // The opened card is never face down; a grid card is until turned over once
-        const faceDown = !open && (options.faceDown ?? !isSeen(spell.id));
+        const zoom = !!options.zoom;
+        const faceDown = !open && !zoom && (options.faceDown ?? !isSeen(spell.id));
 
-        // The grid card is a button-like <article>; the opened one is a dialog's content
-        const attrs = open
+        // The grid card is a button-like <article>; the opened and zoomed ones are a dialog's content
+        const attrs = open || zoom
             ? `role="document"`
             : `data-spell="${esc(spell.id)}" tabindex="0" role="button" aria-label="${faceDown ? `New spell card: turn it over` : esc(spell.name)}"`;
 
@@ -128,7 +141,7 @@
         </article>`;
 
         return `
-        <article class="spell-card school--${school}${faceDown ? ' is-face-down' : ''}" ${attrs}>
+        <article class="spell-card school--${school}${zoom ? ' spell-card--zoom' : ''}${faceDown ? ' is-face-down' : ''}" ${attrs}>
           <div class="spell-card__inner">
           <div class="spell-card__face">${banners}
 
@@ -167,6 +180,32 @@
         </article>`;
     }
 
+    /* ---------- A card tab (phones) ----------
+       A small version of the card: frame, level pennant, name, then
+       "time · range · duration" and the components. Face down, the back's
+       line art covers it until it is turned over. */
+    function row(spell, store, options = {}) {
+        const school = schoolKey(spell.school);
+        const faceDown = options.faceDown ?? !isSeen(spell.id);
+        const comp = (letter, on, title) => `<span class="spell-tab__comp" title="${title}">${letter}<i class="spell-tab__dot${on ? ' is-on' : ''}"></i></span>`;
+        const meta = [spell.castingTime, spell.range, spell.duration].filter(Boolean).map(esc).join(' · ');
+        return `
+        <div class="spell-tab school--${school}${faceDown ? ' is-face-down' : ''}" data-spell="${esc(spell.id)}" tabindex="0" role="button"
+             aria-label="${faceDown ? 'New spell card: turn it over' : esc(spell.name)}">
+            <span class="spell-tab__pennant" title="${esc(levelName(spell.level))}">${levelMark(spell.level)}</span>
+            <span class="spell-tab__name">${esc(spell.name)}</span>
+            <span class="spell-tab__meta">${meta}</span>
+            <span class="spell-tab__comps">
+                ${comp('V', spell.verbal, 'Verbal')}${comp('S', spell.somatic, 'Somatic')}${comp('M', spell.material, 'Material')}
+                ${spell.concentration ? '<span class="spell-tab__flag" title="Concentration">Conc.</span>' : ''}${spell.ritual ? '<span class="spell-tab__flag" title="Ritual">Rit.</span>' : ''}
+            </span>
+            <span class="spell-tab__back" aria-hidden="true">
+                <span class="spell-tab__back-art" ${symbolStyle(BACK_ART)}></span>
+                <span class="spell-tab__back-text"><b>New spell</b>Tap to turn it over</span>
+            </span>
+        </div>`;
+    }
+
     /* ---------- Cards grouped by level ---------- */
     function levels(spells, store) {
         const groups = new Map();
@@ -178,6 +217,7 @@
             <section class="spell-level">
                 <h3 class="spell-level__title">${levelName(level)}</h3>
                 <div class="spell-grid">${list.map(s => card(s, store)).join('')}</div>
+                <div class="spell-tabs">${list.map(s => row(s, store)).join('')}</div>
             </section>`).join('')}</div>`;
     }
 
@@ -198,7 +238,15 @@
         document.body.appendChild(el);
         // On the library pages <body> has a filter: move the pop-up out of it
         if (typeof liftOutOfBody === 'function') liftOutOfBody(el);
-        el.addEventListener('click', e => { if (e.target.closest('[data-close]')) close(el); });
+        el.addEventListener('click', e => {
+            if (e.target.closest('[data-close]')) { close(el); return; }
+            // Phone pop-up: the switch, or a tap on the card (not on its M) shows the description
+            const zoom = el.querySelector('.spell-zoom');
+            if (!zoom) return;
+            const btn = e.target.closest('.spell-zoom__switch [data-view]');
+            if (btn) { zoom.dataset.view = btn.dataset.view; return; }
+            if (e.target.closest('.spell-card--zoom') && !e.target.closest('.spell-card__m.has-note')) zoom.dataset.view = 'desc';
+        });
         return el;
     }
 
@@ -220,7 +268,16 @@
         const spell = store.get(id);
         if (!spell || store.typeOf(spell) !== 'spell') return null;
         cardModal = cardModal || makeModal('spell-modal--card', 'Spell card');
-        cardModal.querySelector('.spell-modal__body').innerHTML = card(spell, store, { open: true });
+        cardModal.querySelector('.spell-modal__body').innerHTML = isPhone()
+            // Phone: the whole card (readable, M tappable), then the description
+            ? `<div class="spell-zoom" data-view="card">
+                    <div class="spell-zoom__card">${card(spell, store, { zoom: true })}</div>
+                    <div class="spell-zoom__desc">${card(spell, store, { open: true })}</div>
+                    <div class="spell-zoom__switch" role="tablist">
+                        <button data-view="card" role="tab">Card</button><button data-view="desc" role="tab">Description</button>
+                    </div>
+               </div>`
+            : card(spell, store, { open: true });
         markSeen(spell.id);   // opened from a link: it counts as turned over
         show(cardModal);
         return cardModal;
@@ -252,10 +309,14 @@
     // A face-down card turns over (and stays turned); a face-up one opens
     function activate(cardEl) {
         if (cardEl.classList.contains('is-face-down')) {
-            cardEl.classList.remove('is-face-down');
-            markSeen(cardEl.dataset.spell);
-            const name = cardEl.querySelector('.spell-card__name');
-            if (name) cardEl.setAttribute('aria-label', name.textContent);
+            const id = cardEl.dataset.spell;
+            markSeen(id);
+            // The card and its phone row are both on the page: turn both over
+            document.querySelectorAll(`[data-spell="${CSS.escape(id)}"]`).forEach(el => {
+                el.classList.remove('is-face-down');
+                const name = el.querySelector('.spell-card__name, .spell-tab__name');
+                if (name) el.setAttribute('aria-label', name.textContent);
+            });
             return;
         }
         if (storeReady()) openSpell(cardEl.dataset.spell, ATH.store);
@@ -286,5 +347,5 @@
         }
     });
 
-    ATH.spellCard = { known, card, levels, levelName, openSpell, openBook, close, symbolPath };
+    ATH.spellCard = { known, card, row, levels, levelName, openSpell, openBook, close, symbolPath };
 })(typeof window !== 'undefined' ? window : globalThis);

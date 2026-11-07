@@ -8,9 +8,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Serif:wght@700&display=swap"
         rel="stylesheet" />
-    <!-- the item card preview uses the site's own card styles -->
+    <!-- the item and spell card previews use the site's own card styles -->
     <link href="../styles/tokens.css" rel="stylesheet" />
     <link href="../styles/loot-card.css" rel="stylesheet" />
+    <link href="../styles/spell-card.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -492,6 +493,19 @@
             padding-top: 16px;
         }
 
+        /* consecutive checkboxes: one line of their own (groupChecks, dashboard.js) */
+        .chk-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 28px;
+            width: 100%;
+        }
+
+        .chk-row .fld.chk {
+            min-width: 0;
+            padding-top: 0;
+        }
+
         .fld.chk label {
             text-transform: none;
             letter-spacing: 0;
@@ -742,6 +756,20 @@
             max-width: 300px;
         }
 
+        /* spell card preview (cards: ../styles/spell-card.css) */
+        .card-prev .spell-card {
+            width: 210px;
+        }
+
+        .card-prev .spell-card--open {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .card-prev .spell-card:hover {
+            transform: none;
+        }
+
         :where(.card-prev) :where(h2, p, ul) {
             margin: 0;
         }
@@ -875,6 +903,7 @@
     <script src="../scripts/core/seal.js"></script>
     <script src="../scripts/tavern-menu.js"></script>
     <script src="../scripts/loot-card.js"></script>
+    <script src="../scripts/spell-card.js"></script>
 </head>
 
 <body>

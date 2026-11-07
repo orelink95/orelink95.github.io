@@ -1,0 +1,664 @@
+/* =====================================================================
+   SPELL CARDS  —  the physical spell card, rebuilt in CSS.
+   Markup: scripts/spell-card.js. Used by the Spellbook (spellbook.html)
+   and the heroes' spellbooks (heroes.html).
+   Sizes inside a card are in cqw (1% of the card's width), so a card
+   looks the same at any size.
+   ===================================================================== */
+
+/* Free uncial, used until Rieven Uncial is available (see below) */
+@import url("https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap");
+
+/* Rieven Uncial (Delve Fonts) is a commercial font, so it is not in the repo.
+   - local(): used if it is installed on the computer viewing the page.
+   - For every player to see it: buy the webfont licence, put the file at
+     fonts/RievenUncial.woff2 and uncomment the url() line. */
+@font-face {
+    font-family: "Rieven Uncial";
+    src: local("Rieven Uncial"), local("RievenUncial-Regular"), local("RievenUncial")
+        /* , url("../fonts/RievenUncial.woff2") format("woff2") */
+    ;
+    font-display: swap;
+}
+
+:root {
+    --font-spell: "Rieven Uncial", "Uncial Antiqua", var(--font-headline), serif;
+}
+
+
+/* ---------- One hue per school (the frame and banners) ----------
+   The symbols are images/spells/<school>-left.png and -right.png, used as
+   masks so they take the card's colours. Blood, Chaos and Void have no
+   images yet: spell-card.js shows a placeholder icon for them. */
+
+.school--abjuration {
+    --school: #3b67b0;
+}
+
+.school--conjuration {
+    --school: #c98a2c;
+}
+
+.school--divination {
+    --school: #2f8f9a;
+}
+
+.school--enchantment {
+    --school: #c75f8c;
+}
+
+.school--evocation {
+    --school: #c4482c;
+}
+
+.school--illusion {
+    --school: #7b52c0;
+}
+
+.school--necromancy {
+    --school: #3f7a4f;
+}
+
+.school--transmutation {
+    --school: #7d7d4a;
+}
+
+/* the olive of the printed cards */
+.school--blood {
+    --school: #8c1c2c;
+}
+
+.school--chaos {
+    --school: #a8329a;
+}
+
+.school--void {
+    --school: #34305e;
+}
+
+
+/* ---------- The card ----------
+   .spell-card is the container (its width sets the cqw unit);
+   .spell-card__face, inside it, is the printed card. */
+
+:where(.spell-card) {
+    --school: #7d7d4a;
+    /* no school: the printed olive (zero specificity, so a school wins) */
+}
+
+.spell-card {
+    /* Derived colours: light tint (symbols, level), lines (boxes, circles) */
+    --school-ink: color-mix(in srgb, var(--school) 35%, #f6e2c9);
+    --school-line: color-mix(in srgb, var(--school) 30%, #f3e4d6);
+    --school-dark: color-mix(in srgb, var(--school) 70%, black);
+
+    display: block;
+    width: 100%;
+    aspect-ratio: 198 / 340;
+    container-type: inline-size;
+    color: #3d3a36;
+    text-align: left;
+    cursor: pointer;
+    perspective: 1200px;
+    /* --card-filter: set by a page whose <body> filter changes the colours (spellbook.css) */
+    filter: var(--card-filter, ) drop-shadow(0 0 10px color-mix(in srgb, var(--school) 45%, transparent));
+    transition: transform 400ms var(--ease), filter 400ms var(--ease);
+}
+
+.spell-card:hover,
+.spell-card:focus-visible {
+    transform: translateY(-0.5rem);
+    filter: var(--card-filter, ) drop-shadow(0 0 22px color-mix(in srgb, var(--school) 80%, transparent));
+    outline: none;
+}
+
+/* A face-down card (never turned over in this browser) glows a little more */
+.spell-card.is-face-down {
+    filter: var(--card-filter, ) drop-shadow(0 0 16px color-mix(in srgb, var(--school) 70%, transparent));
+}
+
+/* The two faces turn together (like the loot cards) */
+.spell-card__inner {
+    position: relative;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 800ms var(--ease);
+}
+
+.spell-card.is-face-down .spell-card__inner {
+    transform: rotateY(180deg);
+}
+
+.spell-card__face,
+.spell-card__back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.spell-card__face {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 27cqw 9cqw 9cqw;
+    border: 3.3cqw solid var(--school);
+    border-radius: 10cqw;
+    background-color: #fdfcf9;
+}
+
+/* ---------- The opened card ----------
+   Only the name and a large description box. Wider than a grid card and
+   as tall as its text needs; its frame and banners are drawn smaller (in
+   cqw of a wider card) and its text has a minimum size, so long
+   descriptions stay readable on a phone. */
+.spell-card--open {
+    width: min(600px, 94vw);
+    aspect-ratio: auto;
+    cursor: default;
+}
+
+.spell-card--open .spell-card__inner {
+    height: auto;
+}
+
+.spell-card--open .spell-card__face {
+    height: auto;
+    min-height: calc(100cqw * 1.3);
+    padding: 20cqw 6cqw 6cqw;
+    border-width: 2.4cqw;
+    border-radius: 7cqw;
+}
+
+.spell-card--open .spell-card__banner--left,
+.spell-card--open .spell-card__banner--right {
+    width: 8cqw;
+    height: 13cqw;
+    padding-top: 1.8cqw;
+}
+
+.spell-card--open .spell-card__banner--left {
+    left: 16cqw;
+}
+
+.spell-card--open .spell-card__banner--right {
+    right: 16cqw;
+}
+
+.spell-card--open .spell-card__banner--level {
+    width: 15cqw;
+    height: 19cqw;
+    font-size: 9cqw;
+}
+
+.spell-card--open .spell-card__symbol {
+    width: 5.4cqw;
+    height: 5.4cqw;
+}
+
+.spell-card--open .spell-card__symbol--icon {
+    width: auto;
+    height: auto;
+    font-size: 5cqw;
+}
+
+.spell-card__title {
+    margin: 0 0 3cqw;
+    font-family: var(--font-spell);
+    font-size: max(22px, 6.4cqw);
+    font-weight: 400;
+    line-height: 1.15;
+    text-align: center;
+    color: var(--school-dark);
+}
+
+.spell-card--open:hover {
+    transform: none;
+    filter: var(--card-filter, ) drop-shadow(0 0 30px color-mix(in srgb, var(--school) 55%, transparent));
+}
+
+
+/* ---------- The back: the printed line art on the school's colour ----------
+   images/spells/card-back.png is only the lines (white on transparent),
+   used as a mask: the gradient below shows through them. */
+
+.spell-card__back {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: 10cqw;
+    background-color: var(--school);
+    transform: rotateY(180deg);
+}
+
+.spell-card__back-art {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 45%, color-mix(in srgb, var(--school-ink) 55%, white), var(--school-ink) 75%);
+    -webkit-mask: var(--symbol) center / 100% 100% no-repeat;
+    mask: var(--symbol) center / 100% 100% no-repeat;
+}
+
+
+/* ---------- The three banners: symbol, level, symbol ---------- */
+
+.spell-card__banner {
+    position: absolute;
+    top: -0.5cqw;
+    display: flex;
+    justify-content: center;
+    padding-top: 2.5cqw;
+    background: linear-gradient(to bottom, var(--school) 45%, color-mix(in srgb, var(--school) 35%, white));
+    clip-path: polygon(0 0, 100% 0, 100% 68%, 50% 100%, 0 68%);
+}
+
+.spell-card__banner--left,
+.spell-card__banner--right {
+    width: 12cqw;
+    height: 19cqw;
+}
+
+.spell-card__banner--left {
+    left: 13cqw;
+}
+
+.spell-card__banner--right {
+    right: 13cqw;
+}
+
+.spell-card__banner--level {
+    left: 50%;
+    width: 23cqw;
+    height: 28cqw;
+    padding-top: 1cqw;
+    transform: translateX(-50%);
+    font-family: var(--font-spell);
+    font-size: 14cqw;
+    line-height: 1.1;
+    color: var(--school-ink);
+}
+
+.spell-card__symbol {
+    display: block;
+    width: 8cqw;
+    height: 8cqw;
+    background-color: var(--school-ink);
+    -webkit-mask: var(--symbol) center / contain no-repeat;
+    mask: var(--symbol) center / contain no-repeat;
+}
+
+/* Placeholder (a Material Symbols icon) for a school without images */
+.spell-card__symbol--icon {
+    width: auto;
+    height: auto;
+    background: none;
+    -webkit-mask: none;
+    mask: none;
+    font-size: 7.5cqw;
+    line-height: 1;
+    color: var(--school-ink);
+}
+
+
+/* ---------- Fields ---------- */
+
+.spell-card__label {
+    display: block;
+    font-family: var(--font-spell);
+    font-size: 4.6cqw;
+    line-height: 1.3;
+    color: #3d3a36;
+}
+
+.spell-card__label--big {
+    font-size: 6.6cqw;
+}
+
+.spell-card__label--end {
+    text-align: right;
+}
+
+.spell-card__box {
+    display: block;
+    min-height: 9cqw;
+    padding: 1.4cqw 2.2cqw;
+    border: 1px solid var(--school-line);
+    font-family: var(--font-body);
+    font-size: 4.6cqw;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+/* The name, as the card's title; under it, one line of components:
+   V ● S ● M ○   Conc. ○   Rit. ○   then a thin rule */
+.spell-card__head {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6cqw;
+    padding-bottom: 1.8cqw;
+    border-bottom: 1px solid var(--school-line);
+}
+
+.spell-card__name {
+    font-family: var(--font-spell);
+    font-size: 8cqw;
+    line-height: 1.05;
+    text-align: center;
+    color: var(--school-dark);
+    overflow-wrap: anywhere;
+}
+
+/* A long name (over 22 letters) is set smaller, to keep room for the rest */
+.spell-card__name--long {
+    font-size: 6.4cqw;
+}
+
+.spell-card__components {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    column-gap: 2.2cqw;
+    row-gap: 0.8cqw;
+    font-family: var(--font-spell);
+    font-size: 4.2cqw;
+    line-height: 1;
+}
+
+/* A letter (or word) and its circle */
+.spell-card__comp {
+    display: inline-flex;
+    align-items: center;
+    gap: 1cqw;
+}
+
+/* Conc. and Rit. stand a little apart from V S M */
+.spell-card__comp--apart {
+    margin-left: 1.6cqw;
+}
+
+/* A circle: empty, or filled in the school's colour */
+.spell-card__dot {
+    display: block;
+    flex-shrink: 0;
+    width: 3cqw;
+    height: 3cqw;
+    border: 1px solid color-mix(in srgb, var(--school) 45%, #e9a77a);
+    border-radius: 50%;
+}
+
+.spell-card__dot.is-on {
+    border-color: var(--school);
+    background-color: var(--school);
+}
+
+/* The two-box rows (Time | Duration, Range | School) */
+.spell-card__pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 2cqw;
+    margin-top: 2.6cqw;
+}
+
+.spell-card__pair .spell-card__label {
+    grid-row: 1;
+}
+
+/* Details */
+.spell-card__details-title {
+    margin-top: 3.5cqw;
+    text-align: center;
+}
+
+.spell-card__details {
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    padding: 2.6cqw 3cqw;
+    font-size: 4.8cqw;
+    line-height: 1.4;
+}
+
+/* In the grid: the summary, cut off if too long */
+.spell-card:not(.spell-card--open) .spell-card__details {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 9;
+    font-style: italic;
+    color: #5b4a44;
+}
+
+/* Opened: the full description; the box (and the card) grow with it */
+.spell-card--open .spell-card__details {
+    flex: 1 0 auto;
+    min-height: 60cqw;
+    overflow: visible;
+    padding: 4cqw 5cqw;
+    font-size: max(15px, 2.9cqw);
+    line-height: 1.6;
+}
+
+.spell-card__details p {
+    margin: 0;
+}
+
+.spell-card--open .spell-card__details p+p {
+    margin-top: 0.8em;
+}
+
+.spell-card--open .spell-card__details strong {
+    color: var(--school-dark);
+}
+
+.spell-card--open .spell-card__details blockquote {
+    margin: 0.6em 0;
+    padding-left: 0.8em;
+    border-left: 2px solid var(--school-line);
+    font-style: italic;
+}
+
+
+/* ---------- The M of a spell with written materials ----------
+   A small star and a dotted underline say "hover me"; the tooltip shows
+   the components (on a phone: tap the M). */
+
+.spell-card__m {
+    position: relative;
+}
+
+.spell-card__m.has-note {
+    cursor: help;
+    color: var(--school-dark);
+    text-decoration: underline dotted var(--school);
+    text-underline-offset: 0.8cqw;
+}
+
+.spell-card__m.has-note::before {
+    content: "✦";
+    position: absolute;
+    top: -2.2cqw;
+    right: -2.6cqw;
+    font-size: 2.8cqw;
+    color: var(--school);
+    animation: spell-note-glow 2.4s ease-in-out infinite;
+}
+
+.spell-card__note {
+    position: absolute;
+    top: calc(100% + 2cqw);
+    right: -4cqw;
+    z-index: 5;
+    width: 48cqw;
+    padding: 2cqw 2.6cqw;
+    border: 1px solid var(--school);
+    border-radius: 1.5cqw;
+    background-color: #fffaf3;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
+    font-family: var(--font-body);
+    font-size: 4.2cqw;
+    font-style: italic;
+    line-height: 1.3;
+    text-align: left;
+    color: #3d3a36;
+    text-decoration: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 150ms var(--ease);
+}
+
+.spell-card__m.has-note:hover .spell-card__note,
+.spell-card__m.has-note:focus .spell-card__note,
+.spell-card__m.has-note.is-showing .spell-card__note {
+    opacity: 1;
+    visibility: visible;
+}
+
+.spell-card__m:focus {
+    outline: none;
+}
+
+@keyframes spell-note-glow {
+
+    0%,
+    100% {
+        opacity: 0.45;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+
+/* ---------- Pop-ups (made by spell-card.js) ----------
+   They may be moved out of <body> (see liftOutOfBody, general-scripts.js),
+   so they set their own font. */
+
+.spell-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 3rem 1rem;
+    overflow-y: auto;
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+}
+
+.spell-modal.hidden {
+    display: none;
+}
+
+.spell-modal--card {
+    z-index: 110;
+    /* a card opened from a hero's spellbook sits above it */
+}
+
+.spell-modal__veil {
+    position: fixed;
+    inset: 0;
+    background-color: rgb(10 11 10 / 0.92);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+}
+
+.spell-modal__body {
+    position: relative;
+    margin: auto;
+}
+
+.spell-modal__close {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 1;
+    color: rgb(255 255 255 / 0.5);
+    transition: color 150ms var(--ease);
+}
+
+.spell-modal__close:hover {
+    color: #fff;
+}
+
+/* A hero's spellbook (heroes.html) */
+.spell-book {
+    width: min(1100px, 100%);
+}
+
+.spell-book__head {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.spell-book__eyebrow {
+    font-family: var(--font-label);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+}
+
+.spell-book__title {
+    margin-top: 0.5rem;
+    font-family: var(--font-spell);
+    font-size: 2.25rem;
+    line-height: 1.1;
+    color: #fff;
+}
+
+.spell-book__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.5);
+    transition: color 150ms var(--ease);
+}
+
+.spell-book__link:hover {
+    color: var(--color-secondary);
+}
+
+
+/* ---------- A grid of cards, grouped by level ---------- */
+
+.spell-levels {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.spell-level__title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-spell);
+    font-size: 1.5rem;
+    color: var(--color-secondary);
+}
+
+.spell-level__title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, color-mix(in srgb, var(--color-secondary) 40%, transparent), transparent);
+}
+
+.spell-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.75rem 1.25rem;
+}
+
+@media (min-width: 768px) {
+    .spell-grid {
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 2.5rem 2rem;
+    }
+}

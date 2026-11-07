@@ -842,6 +842,29 @@
     color: var(--color-secondary);
 }
 
+/* The spellbook button (only for a hero who knows spells in this campaign) */
+.hero-card__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.hero-card__spells {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
+    border-radius: 9999px;
+    color: var(--color-secondary);
+    transition: background-color 150ms var(--ease), transform 150ms var(--ease);
+}
+.hero-card__spells:hover {
+    background-color: color-mix(in srgb, var(--color-secondary) 15%, transparent);
+    transform: scale(1.1);
+}
+
 .hero-card__back {
     position: absolute;
     left: 0;

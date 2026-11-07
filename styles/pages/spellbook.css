@@ -1,0 +1,184 @@
+/* The Book of Shadows (spellbook.html). Cards and pop-ups: styles/spell-card.css */
+
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+}
+.page *::selection,
+.page::selection {
+    background-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    color: var(--color-secondary);
+}
+
+.dust-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.header-slot {
+    position: relative;
+    z-index: 50;
+}
+
+.spellbook-main {
+    position: relative;
+    z-index: 10;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 6rem 1rem;
+}
+@media (min-width: 768px) {
+    .spellbook-main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
+
+.spellbook-head {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+@media (min-width: 768px) {
+    .spellbook-head {
+        flex-direction: row;
+        align-items: flex-end;
+    }
+}
+
+.spellbook-head__intro {
+    max-width: 42rem;
+}
+
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.breadcrumbs__link {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.breadcrumbs__link:hover {
+    color: var(--color-secondary);
+}
+
+.breadcrumbs__separator {
+    font-size: 12px;
+}
+
+.breadcrumbs__current {
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.spellbook-head__title {
+    margin-bottom: 1rem;
+    font-family: var(--font-headline);
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 700;
+    color: #fff;
+    filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+}
+@media (min-width: 768px) {
+    .spellbook-head__title {
+        font-size: 4.5rem;
+        line-height: 1;
+    }
+}
+
+.spellbook-head__lede {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.6);
+}
+@media (min-width: 768px) {
+    .spellbook-head__lede {
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+}
+
+.spellbook-pick {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    width: 100%;
+}
+@media (min-width: 768px) {
+    .spellbook-pick {
+        width: 22rem;
+    }
+}
+
+.spellbook-pick__label {
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.spellbook-pick__select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.125rem;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    background-color: rgb(0 0 0 / 0.4);
+    font-family: var(--font-label);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.8);
+    transition: border-color 150ms var(--ease), opacity 150ms var(--ease);
+}
+.spellbook-pick__select:focus {
+    border-color: var(--color-secondary);
+}
+.spellbook-pick__select:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.spellbook-pick__select option {
+    background-color: var(--color-surface-container);
+}
+
+.spellbook-empty {
+    padding: 5rem 0;
+    text-align: center;
+    font-size: 1.25rem;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.4);
+}
+
+/* The library pages brighten everything (.mystical-bg filter on body);
+   this filter undoes that, so the cards keep their printed colours. */
+#spellbook-cards {
+    --card-filter: saturate(0.769) contrast(0.909) brightness(0.714);
+}

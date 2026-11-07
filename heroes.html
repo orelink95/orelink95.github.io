@@ -15,6 +15,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/spell-card.css" rel="stylesheet" />
     <link href="styles/pages/heroes.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
@@ -23,6 +24,7 @@
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/core/seal.js"></script>
+    <script src="scripts/spell-card.js"></script>
 </head>
 
 <body class="page archival-bg">
@@ -248,6 +250,8 @@
 
                 // Pulling the new data (with fallbacks just in case)
                 const level = hero.level || 1;
+                // Spells this hero knows in THIS campaign (campaign.spellbooks)
+                const spellCount = Athenaeum.spellCard.known(store, campaign, hero).length;
                 const bg = hero.background || "Unknown";
                 const factions = (hero.factions || []).map(id => store.get(id)).filter(Boolean).map(f => {
                     const href = f.stub ? 'factions.html' : store.url(f);
@@ -286,7 +290,12 @@
                                             ${hero.personalGoal || ''}
                                         </p>
                                     </div>
-                                    <span class="hero-card__flip-icon material-symbols-outlined" title="View Stats">autorenew</span>
+                                    <div class="hero-card__actions">
+                                        ${spellCount ? `<button onclick="event.stopPropagation(); openSpellbook('${hero.id}')" class="hero-card__spells" title="Spellbook (${spellCount})">
+                                            <span class="material-symbols-outlined">auto_fix_high</span>
+                                        </button>` : ''}
+                                        <span class="hero-card__flip-icon material-symbols-outlined" title="View Stats">autorenew</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -371,6 +380,13 @@
                 factionsList.innerHTML = `<li class="fold-panel__empty">No known allegiances.</li>`;
             }
             }
+
+            // --- SPELLBOOK: the hero's spell cards in the campaign shown (scripts/spell-card.js)
+            window.openSpellbook = (heroId) => {
+                Athenaeum.spellCard.openBook(store, campaign, heroId, {
+                    link: `spellbook.html?campaign=${encodeURIComponent(campaign.id)}&hero=${encodeURIComponent(heroId)}`,
+                });
+            };
 
             renderParty();
         });

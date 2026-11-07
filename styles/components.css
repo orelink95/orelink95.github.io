@@ -1453,7 +1453,9 @@
     border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
     background-color: rgb(5 5 5 / 0.9);
     transform-origin: right;
-    transform: translateX(1rem) scale(.95);
+    /* Closed: shrunk towards the right edge. (It used to be pushed 1rem past
+       the edge, which let every library page scroll sideways.) */
+    transform: scale(.95);
     opacity: 0;
     box-shadow: -20px 0 50px rgba(26, 11, 46, 0.6);
     -webkit-backdrop-filter: blur(24px);
@@ -1623,11 +1625,26 @@
    Used by the bestiary cards, the bestiary pop-up and beast.html.
    ===================================================================== */
 
-.threat--lethal   { --threat: var(--color-error); --threat-glow: rgb(255 82 82); }
-.threat--high     { --threat: #fb923c; }
-.threat--moderate { --threat: #60a5fa; }
-.threat--low      { --threat: #2dd4bf; }
-.threat--friendly { --threat: #4ade80; }
+.threat--lethal {
+    --threat: var(--color-error);
+    --threat-glow: rgb(255 82 82);
+}
+
+.threat--high {
+    --threat: #fb923c;
+}
+
+.threat--moderate {
+    --threat: #60a5fa;
+}
+
+.threat--low {
+    --threat: #2dd4bf;
+}
+
+.threat--friendly {
+    --threat: #4ade80;
+}
 
 .threat-pill {
     display: inline-flex;

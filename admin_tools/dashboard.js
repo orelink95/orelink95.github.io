@@ -151,7 +151,7 @@
         thumbs: new Map(),
         menuCode: null,
         sealed: new Map(),
-        cardSide: 'front',   // item preview: 'front' or 'sheet'   // "type:id:key" -> the {text, password} its encrypted copy was made from
+        cardSide: 'front',   // item and spell previews: 'front', 'sheet' or (spells) 'back'   // "type:id:key" -> the {text, password} its encrypted copy was made from
     };
     if (TEST) { window.__dash = S; window.__dashboardIO = io; } // inspected by the headless tests
 
@@ -422,6 +422,30 @@
     /* =================================================================
        FORM FIELDS
        ================================================================= */
+    // Two or more checkboxes in a row (e.g. a spell's Concentration, V, S, M)
+    // share one line of their own, instead of filling the gaps between fields.
+    // pairs: [[field, html], …] in schema order
+    function groupChecks(pairs) {
+        let out = '', run = [];
+        const flush = () => {
+            out += run.length > 1 ? `<div class="chk-row">${run.join('')}</div>` : run.join('');
+            run = [];
+        };
+        for (const [f, html] of pairs) {
+            if (f.kind === 'boolean') { run.push(html); continue; }
+            flush();
+            out += html;
+        }
+        flush();
+        return out;
+    }
+    // Title of a card in a list of objects: its itemLabel field; a link (ref)
+    // shows the name it points to, not the id ("Nimo", not "nimo")
+    function cardLabel(f, item) {
+        const v = item && item[f.itemLabel];
+        const lf = f.fields && f.fields[f.itemLabel];
+        return v && lf && lf.kind === 'ref' ? nameOf(v) : v;
+    }
     function fieldHtml(f, key, value, path) {
         const p = pathAttr(path);
         const label = esc(f.label || key) + (f.required ? ' *' : '') + (f.private ? ' <span title="Saved to data/private.json, never published">🔒</span>' : '');
@@ -527,7 +551,7 @@
                     const ic = S.collapsed.has(ik);
                     return `<div class="card ${ic ? 'collapsed' : ''}">
                                 <div class="card-head" data-action="collapse" data-key="${esc(ik)}">
-                                    <b>${ic ? '▸' : '▾'} ${esc((item && item[f.itemLabel]) || `Entry ${i + 1}`)}</b>
+                                    <b>${ic ? '▸' : '▾'} ${esc(cardLabel(f, item) || `Entry ${i + 1}`)}</b>
                                     <span class="row">
                                         <button class="btn icon" data-action="move" data-dir="-1" data-path="${pathAttr([...path, i])}" title="Up">↑</button>
                                         <button class="btn icon" data-action="move" data-dir="1" data-path="${pathAttr([...path, i])}" title="Down">↓</button>
@@ -592,7 +616,7 @@
             fieldsHtml += fieldHtml({ kind: 'list', label: 'Other names (aliases; also turned into links)' }, 'aliases', rec.aliases, ['aliases']);
             if (def.place && def.parent.length) fieldsHtml += fieldHtml({ kind: 'ref', to: def.parent, label: 'Sits in', required: true }, 'parent', rec.parent, ['parent']);
         }
-        fieldsHtml += Object.entries(def.fields).map(([k, f]) => fieldHtml(f, k, rec[k], [k])).join('');
+        fieldsHtml += groupChecks(Object.entries(def.fields).map(([k, f]) => [f, fieldHtml(f, k, rec[k], [k])]));
         ed.innerHTML = `
             <div class="ed-head">
                 <div class="grow">
@@ -637,12 +661,15 @@
             const kids = S.store.children(rec.id);
             if (kids.length) parts.push(`<div class="box"><h4>Contains (${kids.length})</h4>${chips(kids)}</div>`);
             const users = S.store.backrefs(rec.id);
-            if (users.length) parts.push(`<div class="box"><h4>Used by (${users.length})</h4>${chips(users)}</div>`);
+            // (a spell's campaigns are shown in "Known by", with the hero)
+            if (users.length && S.view.key !== 'spell') parts.push(`<div class="box"><h4>Used by (${users.length})</h4>${chips(users)}</div>`);
             if (S.view.key === 'poi' && rec.tavern && rec.tavern.tier && ATH.tavern) parts.push(menuPreview(rec));
             if (S.view.key === 'item' && ATH.lootCard) parts.unshift(cardPreview(rec), foundIn(rec));
+            if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
         }
         side.innerHTML = parts.join('') || `<div class="box"><h4>Links</h4><span style="color:var(--ink-faint)">Nothing points here yet.</span></div>`;
         if (S.view.key === 'item') loadThumbs();
+        if (S.view.key === 'spell') loadSymbols();
     }
 
     /* ---------- item cards: preview and where the party found them ---------- */
@@ -657,6 +684,40 @@
                 <span class="seg"><button data-action="card-side" data-side="front" class="${sheet ? '' : 'on'}">Front</button><button data-action="card-side" data-side="sheet" class="${sheet ? 'on' : ''}">Opened</button></span></div>
             <div class="card-prev__stage">${card}</div></div>`;
     }
+
+    /* ---------- spell cards: preview and who knows them ---------- */
+    function spellPreview(rec) {
+        const spell = S.store.get(rec.id) || rec;
+        const side = S.cardSide;   // 'front' (the card), 'sheet' (opened) or 'back'
+        const open = side === 'sheet';
+        // Images (symbols, the back's art): data-symbol, turned into a --symbol
+        // style by loadSymbols() (read through the linked folder, like thumbnails)
+        const card = ATH.spellCard.card(spell, S.store, {
+            open, faceDown: side === 'back', autolink: false,
+            symbol: path => `data-symbol="${esc(path)}"`,
+        });
+        const btn = (key, label) => `<button data-action="card-side" data-side="${key}" class="${side === key ? 'on' : ''}">${label}</button>`;
+        return `<div class="box card-prev">
+            <div class="row" style="justify-content:space-between;align-items:center"><h4 style="margin:0">Card preview</h4>
+                <span class="seg">${btn('front', 'Card')}${btn('back', 'Back')}${btn('sheet', 'Opened')}</span></div>
+            <div class="card-prev__stage">${card}</div></div>`;
+    }
+    function loadSymbols() {
+        document.querySelectorAll('[data-symbol]').forEach(async el => {
+            const url = await thumbUrl(el.dataset.symbol);
+            if (url) el.style.setProperty('--symbol', `url("${url}")`);
+        });
+    }
+    // Who knows a spell: one line per hero and campaign (campaign.spellbooks)
+    function knownBy(rec) {
+        const lines = S.store.all('campaign').flatMap(c => (c.spellbooks || [])
+            .filter(b => b.hero && (b.spells || []).includes(rec.id))
+            .map(b => `<div><span class="chip" data-jump="${esc(b.hero)}">${esc(nameOf(b.hero))}</span> <small style="color:var(--ink-faint)">in</small> <span class="chip" data-jump="${esc(c.id)}">${esc(c.name)}</span></div>`));
+        return `<div class="box"><h4>Known by</h4>
+            ${lines.length ? `<div style="display:flex;flex-direction:column;gap:6px">${lines.join('')}</div>` : '<p class="warn">No hero knows it yet: no player sees this card.</p>'}
+            <p style="color:var(--ink-faint);font-size:10.5px;margin:8px 0 0">Add it to a hero in a campaign's Spellbooks.</p></div>`;
+    }
+
     // Where an item can be found: a session's loot, or a party's own inventory
     function foundOptions(itemId, selected) {
         const has = (list) => (list || []).includes(itemId);

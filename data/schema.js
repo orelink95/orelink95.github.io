@@ -5,7 +5,7 @@ Every content type the site knows about is declared here. The store (scripts/cor
 admin dashboard all read this file; nothing else describes the data.
 
 ※ RULES ※
-- Type X lives in the file named by `file`: a flat JSON array ofrecords. Nothing is nested inside another record.
+- Type X lives in the file named by `file`: a flat JSON array of records. Nothing is nested inside another record.
 - Every record has `id` (stable, never renamed), `name`, `aliases`.
 - Place types also have `parent`: the id of the place they sit in.
 - References are ids, stored once, on the record that points.
@@ -78,7 +78,8 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             tomeKind: ['Book', 'Scroll'],
             tomeTone: ['secondary', 'primary', 'error', 'void', 'ethereal', 'cyan'],
             creatureThreat: ['Lethal', 'High', 'Moderate', 'Low', 'Harmless', 'Friendly'],
-            spellSchool: ['Abjuration', 'Blood', 'Chaos', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation'],
+            /* Each school has its hue and symbols in styles/spell-card.css (.school--<name in lowercase>) */
+            spellSchool: ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation', 'Blood', 'Chaos', 'Void'],
             questStatus: ['Primary', 'Secondary'],
             itemRarity: ['Common', 'Uncommon', 'Rare', 'Very rare', 'Legendary', 'Artifact', 'Varies', 'Unknown'],
             sentiment: [
@@ -339,20 +340,28 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     scholarName: { kind: 'text', label: 'Scholar name' },
                 },
             },
+            /* A spell, shown as a card in the Spellbook (spellbook.html) and from the
+               heroes' cards (heroes.html). Who knows it: campaign.spellbooks. */
             spell: {
                 label: 'Spell', plural: 'Spellbook', icon: 'webhook', group: 'Library',
                 file: 'data/spells.json',
-                page: 'spellbook.html?spell={id}', // used by store.url() and the auto-links
+                page: 'spellbook.html?spell={id}', // opens the card, whatever campaign and hero are picked
                 autolink: true,
                 fields: {
-                    level: { kind: 'number', label: 'Level (0 = cantrip)' },
-                    school: { kind: 'enum', enum: 'spellSchool', label: 'School' },
-                    castingTime: { kind: 'text', label: 'Casting time' },
-                    range: { kind: 'text', label: 'Range' },
-                    components: { kind: 'text', label: 'Components' },
-                    duration: { kind: 'text', label: 'Duration' },
-                    summary: { kind: 'text', label: 'One-line summary', long: true },
-                    body: { kind: 'markdown', label: 'Full description' },
+                    level: { kind: 'number', label: 'Level (0 = cantrip, up to 9)', required: true },
+                    school: { kind: 'enum', enum: 'spellSchool', label: 'School (sets the card colour)', required: true },
+                    castingTime: { kind: 'text', label: 'Casting time (e.g. 1 action)' },
+                    range: { kind: 'text', label: 'Range (e.g. 60 ft)' },
+                    duration: { kind: 'text', label: 'Duration (e.g. Up to 1 minute)' },
+                    /* same order as on the card: V S M, Conc., Rit. */
+                    verbal: { kind: 'boolean', label: 'Verbal (V)' },
+                    somatic: { kind: 'boolean', label: 'Somatic (S)' },
+                    material: { kind: 'boolean', label: 'Material (M)' },
+                    concentration: { kind: 'boolean', label: 'Concentration' },
+                    ritual: { kind: 'boolean', label: 'Ritual' },
+                    materials: { kind: 'text', label: 'Material components (shown when hovering the M)', long: true },
+                    summary: { kind: 'text', label: 'One-line summary (the card in the grid)', long: true },
+                    body: { kind: 'markdown', label: 'Full description (the opened card)' },
                 },
             },
             /* Shown as a loot card in the Artifact Vault (vault.html). Players see the items found in their campaign's sessions (session.loot) and the party's own (campaign.inventory). */
@@ -405,7 +414,13 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                             status: { kind: 'enum', enum: 'factionStatus', label: 'Standing' },
                         }
                     },
-                    spells: { kind: 'refs', to: ['spell'], label: 'Spells known' }
+                    /* What each hero knows in THIS campaign (a hero can be in two campaigns) */
+                    spellbooks: {
+                        kind: 'objects', label: 'Spellbooks', itemLabel: 'hero', fields: {
+                            hero: { kind: 'ref', to: ['hero'], label: 'Hero (one of the party)' },
+                            spells: { kind: 'refs', to: ['spell'], label: 'Spells known' },
+                        }
+                    },
                 },
             },
             session: {

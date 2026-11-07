@@ -405,6 +405,19 @@
                 if (seenNumbers.has(key)) warnings.push(`[session] ${s.id}.number: ${s.number} is also used by ${seenNumbers.get(key)} in the same campaign`);
                 else seenNumbers.set(key, s.id);
             }
+            for (const s of byType.spell || []) {
+                if (typeof s.level === 'number' && !(Number.isInteger(s.level) && s.level >= 0 && s.level <= 9)) errors.push(`[spell] ${s.id}.level: must be a whole number from 0 (cantrip) to 9`);
+                if (s.materials && !s.material) warnings.push(`[spell] ${s.id}.materials: written, but "material" is not ticked, so the card hides them`);
+            }
+            for (const c of byType.campaign || []) {
+                const heroesSeen = new Set();
+                (c.spellbooks || []).forEach((b, i) => {
+                    if (!b.hero) return;
+                    if (!(c.party || []).includes(b.hero)) warnings.push(`[campaign] ${c.id}.spellbooks[${i}]: "${b.hero}" is not in this campaign's party`);
+                    if (heroesSeen.has(b.hero)) warnings.push(`[campaign] ${c.id}.spellbooks[${i}]: "${b.hero}" has two spellbooks here (only the first is shown)`);
+                    heroesSeen.add(b.hero);
+                });
+            }
             const tiers = enumValues('tavernTier');
             for (const item of byType.menuItem || []) {
                 if (tiers.indexOf(item.minTier) > tiers.indexOf(item.maxTier)) errors.push(`[menuItem] ${item.id}: minTier is above maxTier`);

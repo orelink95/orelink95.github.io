@@ -9,6 +9,7 @@ Plain CSS, no build step. Every page loads, in this order:
 | `components.css` | Pieces used on every page: header, atlas sidebar, footer, mobile orb menu. |
 | `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. |
 | `loot-card.css` | The item cards (front and opened, rarity colours), shared by the Vault and the dashboard preview. Markup: `scripts/loot-card.js`. |
+| `spell-card.css` | The spell cards (one hue per school, symbols, materials tooltip) and their pop-ups, shared by the Book of Shadows and the heroes page. Also declares the Rieven Uncial font. Markup: `scripts/spell-card.js`. |
 | `main-style.css`, `atlas-style.css`, `poi-style.css` | Older hand-written styles (lore text, keyword links, map tweaks, POI entries). |
 
 ## Conventions

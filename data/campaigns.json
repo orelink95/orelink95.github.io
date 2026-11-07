@@ -38,6 +38,28 @@
         "faction": "oddmoss-librarium",
         "status": "Neutral"
       }
+    ],
+    "spellbooks": [
+      {
+        "hero": "eli",
+        "spells": [
+          "spl-eldritch-blast"
+        ]
+      },
+      {
+        "hero": "nimo",
+        "spells": [
+          "spl-green-flame-blade",
+          "spl-booming-blade",
+          "spl-guidance",
+          "spl-spare-the-dyng",
+          "spl-vicious-mockery",
+          "spl-alarm",
+          "spl-insightful-maneuver",
+          "spl-speak-with-animals",
+          "spl-unlock-on-that"
+        ]
+      }
     ]
   },
   {
@@ -71,6 +93,14 @@
       {
         "faction": "caeraotrom-athenaeum",
         "status": "Allied"
+      }
+    ],
+    "spellbooks": [
+      {
+        "hero": "eli",
+        "spells": [
+          "spl-eldritch-blast"
+        ]
       }
     ]
   }

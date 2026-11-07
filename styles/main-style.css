@@ -192,6 +192,15 @@
 
 /* Purple */
 
+/* Teal: spells (scripts/core/store.js LINK_CLASS) */
+.kw-spell {
+    color: #4fb8c4;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px dashed rgba(79, 184, 196, 0.5);
+    position: relative;
+}
+
 /* Tooltip Styling */
 #keyword-tooltip {
     position: fixed;

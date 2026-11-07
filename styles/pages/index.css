@@ -1187,3 +1187,393 @@
 .epigraph__cite:hover {
     color: var(--color-primary);
 }
+
+
+/* =====================================================================
+   MOBILE LAYOUT (below 768px) — desktop above is untouched.
+   Order of the page on a phone: what players need first.
+     1. Compact hero (title + one button, no full-screen splash)
+     2. Upcoming sessions (compact rows)
+     3. Gateways as a 2×2 grid of tappable tiles
+     4. Latest updates as a horizontal swipe row
+     5. Short epigraph
+   Whole tiles/cards are tappable: the existing link is stretched over
+   its card with ::after, so no markup change was needed.
+   ===================================================================== */
+
+@media (max-width: 767.98px) {
+
+    main {
+        display: flex;
+        flex-direction: column;
+    }
+    .hero { order: 0; }
+    .sessions { order: 1; }
+    .gateways { order: 2; }
+    .updates { order: 3; }
+    .epigraph { order: 4; }
+
+    /* ---------- 1. Hero ---------- */
+
+    .hero {
+        min-height: 0;
+        padding: 6rem 1.25rem 2.25rem;
+    }
+    .hero__content {
+        padding: 0;
+        animation: none;
+    }
+    .hero__title {
+        margin-bottom: 0.875rem;
+        font-size: 1.875rem;
+        line-height: 1.15;
+    }
+    .hero__title br {
+        display: none;
+    }
+    .hero__title-accent {
+        display: block;
+        margin-top: 0.375rem;
+        font-size: 1.25rem;
+        line-height: 1.3;
+    }
+    .hero__lead {
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .hero__actions {
+        margin-left: 0;
+    }
+    .hero__button {
+        display: flex;
+        width: 100%;
+        min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+    }
+    .hero__scroll-hint,
+    .hero__particles {
+        display: none;
+    }
+
+    /* Shared look for the section headings */
+    .sessions__title,
+    .gateways__title,
+    .updates__title {
+        font-size: 1.375rem;
+        line-height: 1.3;
+        animation: none;
+    }
+
+    /* ---------- 2. Sessions ---------- */
+
+    .sessions {
+        width: 100%;
+        margin-bottom: 0;
+        padding: 0.5rem 1rem 1.5rem;
+    }
+    .sessions__header {
+        margin-bottom: 0.875rem;
+    }
+    .sessions__eyebrow {
+        margin-bottom: 0.25rem;
+    }
+    .sessions__rule-left,
+    .sessions__rule-right {
+        width: 2rem;
+    }
+    .sessions__grid {
+        gap: 0.5rem;
+    }
+
+    .session-card--next,
+    .session-card--scheduled,
+    .session-card--tbd {
+        padding: 0.75rem 0.875rem 0.75rem 1rem;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background-color: var(--color-surface-container-low);
+    }
+    /* No hover on touch screens: keep cards still, show the colour bar */
+    .session-card--next:hover,
+    .session-card--scheduled:hover,
+    .session-card--tbd:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    .session-card__glow {
+        display: none;
+    }
+    .session-card__bar--scheduled,
+    .session-card__bar--tbd {
+        opacity: 0.7;
+    }
+    .session-card--next {
+        border-color: color-mix(in srgb, var(--color-secondary) 35%, transparent);
+    }
+
+    .session-card__head {
+        align-items: center;
+        margin-bottom: 0.375rem;
+    }
+    .session-card__ident {
+        min-width: 0;
+        gap: 0.75rem;
+    }
+    .session-card__badge--next,
+    .session-card__badge--scheduled,
+    .session-card__badge--tbd {
+        height: 2.25rem;
+        width: 2.25rem;
+        flex-shrink: 0;
+        border-radius: 0.5rem;
+    }
+    .session-card__title--next,
+    .session-card__title--scheduled,
+    .session-card__title--tbd {
+        font-size: 1rem;
+        line-height: 1.3;
+    }
+    .session-card__number {
+        margin-top: 0;
+    }
+    .session-card__status--next,
+    .session-card__status--scheduled,
+    .session-card__status--tbd {
+        flex-shrink: 0;
+        margin-left: 0.5rem;
+        font-size: 9px;
+    }
+
+    /* Date and time on one line, aligned under the title */
+    .session-card__details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem 1.25rem;
+        padding: 0 0 0 3rem;
+        border-top-width: 0;
+    }
+    .session-card__details > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 0;
+    }
+    .session-card__line--next,
+    .session-card__line--scheduled,
+    .session-card__line--tbd {
+        gap: 0.375rem;
+        font-size: 0.875rem;
+    }
+    .session-card__line--scheduled {
+        color: rgb(255 255 255 / 0.75);
+    }
+    .session-card__line--tbd {
+        color: rgb(255 255 255 / 0.55);
+    }
+
+    /* ---------- 3. Gateways: 2×2 tiles ---------- */
+
+    .gateways {
+        width: 100%;
+        padding: 1.5rem 1rem;
+    }
+    .gateways__header {
+        margin-bottom: 1rem;
+    }
+    .gateways__title {
+        margin-bottom: 0.5rem;
+    }
+    .gateways__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.625rem;
+    }
+    .gateway,
+    .gateway-wide {
+        min-height: 0;
+        aspect-ratio: 1 / 1;
+        border-radius: 0.375rem;
+        border: 1px solid rgb(255 255 255 / 0.08);
+    }
+    /* Colour without hover, slightly dimmed so the title stays legible */
+    .gateway__image,
+    .gateway__image-settle,
+    .gateway__image-bright {
+        opacity: 0.55;
+        filter: grayscale(25%);
+        transform: none;
+    }
+    .gateway__overlay,
+    .gateway__overlay-wide {
+        padding: 0.75rem;
+        background-image: linear-gradient(to top, var(--color-surface) 5%, color-mix(in srgb, var(--color-surface) 55%, transparent) 50%, transparent);
+    }
+    .gateway__icon,
+    .gateway__icon-lg,
+    .gateway__icon-pulse {
+        margin-bottom: 0.25rem;
+        font-size: 1.625rem;
+        line-height: 1;
+    }
+    .gateway__title,
+    .gateway__title-lg {
+        margin-bottom: 0;
+        padding-right: 1.25rem;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+    .gateway__text,
+    .gateway__text-lg {
+        display: none;
+    }
+    /* The link covers the whole tile; its label is kept for screen readers */
+    .gateway__link {
+        position: static;
+        margin: 0;
+        font-size: 0;
+        letter-spacing: 0;
+    }
+    .gateway__link:hover {
+        transform: none;
+    }
+    .gateway__link::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+    }
+    .gateway__link-icon {
+        position: absolute;
+        right: 0.625rem;
+        bottom: 0.75rem;
+        font-size: 1.125rem;
+    }
+    .gateway:active,
+    .gateway-wide:active {
+        border-color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
+    }
+
+    /* ---------- 4. Latest updates: swipe row ---------- */
+
+    .updates {
+        width: 100%;
+        padding: 1.5rem 0;
+    }
+    .updates__glow {
+        display: none;
+    }
+    .updates__inner {
+        padding: 0;
+    }
+    .updates__header {
+        align-items: baseline;
+        margin: 0 1rem 0.875rem;
+        padding-bottom: 0.5rem;
+    }
+    .updates__title {
+        margin-top: 0.125rem;
+    }
+    .updates__all-link {
+        padding: 0.5rem 0;
+    }
+    .updates__grid {
+        display: flex;
+        gap: 0.75rem;
+        overflow-x: auto;
+        padding: 0 1rem 0.5rem;
+        scroll-padding-left: 1rem;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+    .updates__grid::-webkit-scrollbar {
+        display: none;
+    }
+    /* ~2.3 cards visible: the cut-off one says "swipe" */
+    .update-card {
+        position: relative;
+        flex: 0 0 40%;
+        scroll-snap-align: start;
+    }
+    .update-card__frame {
+        aspect-ratio: 3 / 4;
+        margin-bottom: 0.5rem;
+        border-radius: 0.375rem;
+    }
+    .update-card__title {
+        display: block;
+        font-size: 0.9375rem;
+        line-height: 1.3;
+    }
+    .update-card__title::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+    }
+    .update-card:hover .update-card__title {
+        transform: none;
+    }
+    .update-card__date {
+        font-size: 0.8125rem;
+    }
+
+    /* ---------- 5. Epigraph ---------- */
+
+    .epigraph {
+        padding: 2.5rem 0 3.5rem;
+    }
+    .epigraph__mark {
+        font-size: 7rem;
+    }
+    .epigraph__quote {
+        font-size: 1.25rem;
+        line-height: 1.5;
+    }
+    .epigraph__cite {
+        margin-top: 1.25rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.3em;
+    }
+}
+
+
+/* ---------- Session card link (all widths) ----------
+   An empty <a class="session-card__link"> laid over the whole card.
+   Remove the <a> and the card is no longer clickable. */
+
+.session-card__link {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    border-radius: inherit;
+}
+.session-card--next:has(.session-card__link),
+.session-card--scheduled:has(.session-card__link),
+.session-card--tbd:has(.session-card__link) {
+    cursor: pointer;
+}
+.session-card__link:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+@media (max-width: 767.98px) {
+    /* Chevron so the card reads as tappable */
+    .session-card__link::after {
+        content: "chevron_right";
+        position: absolute;
+        right: 0.625rem;
+        bottom: 0.625rem;
+        font-family: "Material Symbols Outlined";
+        font-size: 1.25rem;
+        line-height: 1;
+        color: rgb(255 255 255 / 0.35);
+    }
+    .session-card--next .session-card__link::after {
+        color: var(--color-secondary);
+    }
+    /* Feedback on tap */
+    .session-card__link:active {
+        background-color: rgb(255 255 255 / 0.04);
+    }
+}

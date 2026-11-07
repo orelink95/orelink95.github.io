@@ -280,11 +280,18 @@
     ],
     "parent": "silverbrook-district",
     "subtitle": "Poor, but cozy",
-    "body": "A cozy tavern, if a poor one, in the scrap-built town of Silverbrook. It is owned by Rowan Larkspur, a tattooed halfling.",
+    "body": "A cozy tavern, if a poor one, in the scrap-built town of Silverbrook. It is owned by Rowan Larkspur, a tattooed halfling. Like the rest of Silverbrook, it is patchwork of ruined old structures, scavenged scraps and newer furniture. Usually a lively place, it is one of the largest constructions in the city, spanning over 2 floors and is the social center of the settlement.",
+    "image": "images/stoat-and-cellar.jpg",
+    "map": {
+      "x": 2160,
+      "y": 1349,
+      "icon": "beer",
+      "layer": "locations"
+    },
     "tavern": {
       "tier": "poor",
       "picks": {
-        "drinks": 2,
+        "drinks": 3,
         "meals": 2,
         "bites": 2
       },
@@ -309,9 +316,41 @@
         {
           "name": "Spare Room",
           "desc": "There are only two.",
-          "price": 10,
+          "price": 17,
           "unit": "per night"
         }
+      ]
+    }
+  },
+  {
+    "id": "rusty-anchor",
+    "name": "The Rusty Anchor",
+    "parent": "the_docks",
+    "map": {
+      "x": 611,
+      "y": 638,
+      "icon": "beer",
+      "layer": "locations"
+    },
+    "tavern": {
+      "tier": "modest",
+      "hours": "11 am - 1 am",
+      "picks": {
+        "drinks": 3,
+        "meals": 3,
+        "bites": 2
+      },
+      "signature": [
+        {
+          "category": "drinks",
+          "name": "Mermaid's Tears",
+          "desc": "A flavorful shot meant to help you mend a broken heart. Or just forget it.",
+          "price": 10
+        }
+      ],
+      "services": [
+        "bath",
+        "room-common"
       ]
     }
   }

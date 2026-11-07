@@ -96,9 +96,9 @@
     "codex": "Little Town",
     "body": "A little town made of scraps, lost in the wild and built on ruins.",
     "mapImage": {
-      "src": "images/placeholder.png",
-      "width": 1000,
-      "height": 1000
+      "src": "images/silverbrook.png",
+      "width": 3363,
+      "height": 2941
     }
   }
 ]

@@ -249,8 +249,14 @@
     "name": "Rowan Larkspur",
     "role": "Owner of the Stoat and Cellar",
     "summary": "A tattooed halfling who owns the Stoat and Cellar in Silverbrook.",
+    "quote": "Oi ! What will it be for you ?",
+    "portrait": "images/rowan_larkspur.jpg",
+    "avatar": "images/avatars/rowan_larkspur.jpg",
     "home": "stoat-and-cellar",
     "species": "Halfling",
+    "age": "52",
+    "gender": "Male",
+    "relation": "Neutral",
     "biography": "A tattooed halfling who owns the Stoat and Cellar in Silverbrook."
   }
 ]

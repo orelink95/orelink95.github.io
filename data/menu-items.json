@@ -419,12 +419,12 @@
   },
   {
     "id": "chicken-feet",
-    "name": "chicken-feet",
+    "name": "Chicken feet",
     "category": "bites",
-    "desc": "Fried chicken feet. Crunchy.",
+    "desc": "Fried chicken feet. Crunchy. Served with sweet & spicy sauce.",
     "basePrice": 7,
     "minTier": "poor",
-    "maxTier": "comfortable"
+    "maxTier": "modest"
   },
   {
     "id": "breaded-skunk",

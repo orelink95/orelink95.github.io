@@ -106,6 +106,12 @@
     ],
     "parent": "maltona",
     "subtitle": "Belonging to no country",
-    "unlisted": true
+    "unlisted": true,
+    "map": {
+      "x": 2176,
+      "y": 765,
+      "icon": "maltona",
+      "layer": "political"
+    }
   }
 ]

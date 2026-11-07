@@ -1,0 +1,15 @@
+[
+    {
+        "id": "voidrip",
+        "name": "Void Rip",
+        "aliases": [],
+        "level": "1",
+        "school": "Void",
+        "castingTime": "1 Action",
+        "range": "60 ft",
+        "components": "V, S, M (A pinch of salt)",
+        "duration": "Instant",
+        "summary": "a brief line",
+        "body": "a much longer text"
+    }
+]

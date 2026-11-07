@@ -29,7 +29,7 @@
 
     const ID_RE = /^[a-z0-9][a-z0-9_-]*$/;
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
-    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object' };
+    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object', spell: 'kw-spell' };
 
     // Comparator for a type's `order` option (see data/schema.js)
     function comparator(order) {

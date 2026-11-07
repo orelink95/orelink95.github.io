@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Book of Shadows — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/bestiary.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/spellbook-scripts.js"></script>
+</head>
+
+<body class="page mystical-bg">
+
+    <div id="dust-container" class="dust-layer"></div>
+
+    <div id="header-placeholder" class="header-slot"></div>
+    <div id="library-sidebar-placeholder"></div>
+
+    <main class="bestiary-main">
+
+        <div class="bestiary-head">
+            <div class="bestiary-head__intro">
+                <h1 class="bestiary-head__title">
+                    The Elder Tarot</h1>
+                <p class="bestiary-head__lede">An illuminated compilation
+                    of the strange and dangerous entities haunting the known worlds.</p>
+            </div>
+
+            <div class="bestiary-search">
+                <label class="bestiary-search__label">Search
+                    Records</label>
+                <div class="bestiary-search__field">
+                    <span class="bestiary-search__icon material-symbols-outlined">search</span>
+                    <input type="text" id="bestiary-search" placeholder="Enter by name or location..."
+                        class="bestiary-search__input">
+                </div>
+            </div>
+        </div>
+
+        <div class="bestiary-filters">
+            <div class="bestiary-filters__groups">
+
+                <div>
+                    <span class="bestiary-filters__label">By
+                        Realm</span>
+                    <div id="filter-realm" class="bestiary-filters__pills">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="bestiary-filters__label">By
+                        Phylogeny</span>
+                    <div id="filter-phylogeny" class="bestiary-filters__pills">
+                    </div>
+                </div>
+
+                <div>
+                    <span class="bestiary-filters__label">By
+                        Threat</span>
+                    <div id="filter-threat" class="bestiary-filters__pills">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="bestiary-grid" class="bestiary-grid">
+        </div>
+
+    </main>
+
+    <div id="bestiary-modal" class="beast-modal hidden">
+        <div class="beast-modal__card">
+
+            <button onclick="closeBestiaryModal()" class="beast-modal__close" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+            <div class="beast-modal__media">
+                <div class="beast-modal__fade"></div>
+                <img id="modal-beast-img" class="beast-modal__img" src="" alt="Beast" />
+            </div>
+
+            <div class="beast-modal__content custom-scrollbar">
+                <p id="modal-beast-arcana" class="beast-modal__arcana"></p>
+                <h2 id="modal-beast-name" class="beast-modal__name"></h2>
+                <p id="modal-beast-location" class="beast-modal__location"></p>
+
+                <div id="modal-beast-facts" class="beast-modal__facts">
+                    <span class="threat-pill beast-modal__threat">
+                        <span id="modal-beast-threat-icon" class="threat-pill__icon material-symbols-outlined"
+                            aria-hidden="true"></span>
+                        <span id="modal-beast-threat-text" class="threat-pill__label"></span>
+                    </span>
+                    <div class="beast-modal__divider"></div>
+                    <div>
+                        <p class="beast-modal__fact-label">Phylogeny</p>
+                        <p id="modal-beast-phylogeny" class="beast-modal__fact-value"></p>
+                    </div>
+                    <div class="beast-modal__divider"></div>
+                    <div>
+                        <p class="beast-modal__fact-label">Known Realm</p>
+                        <p id="modal-beast-realm" class="beast-modal__fact-value"></p>
+                    </div>
+                </div>
+
+                <div id="modal-beast-desc" class="beast-modal__desc"></div>
+
+                <div id="modal-beast-body" class="beast-modal__body small-drop-cap">
+                </div>
+
+                <div class="beast-modal__foot">
+                    <a id="modal-beast-link" href="#" class="beast-modal__link">
+                        Study Full Record <span
+                            class="beast-modal__link-icon material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        // Override standard components for the Library aesthetic
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
+    </script>
+
+</body>
+
+</html>

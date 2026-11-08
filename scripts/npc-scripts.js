@@ -1,4 +1,6 @@
 // NPC roster (npc.html): list, filters and the NPC pop-up.
+// The list shows the NPCs of the campaign picked under the title (scripts/personae.js),
+// with the party's relation in that campaign (store.standing).
 // Below 640px the cards are laid out as a compact list (pages/npc.css),
 // below 768px the drop-downs live in a panel and the pop-up is full screen.
 
@@ -13,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let allNPCs = [];
     let currentRelation = 'all'; // State tracker for the tabs
+    let campaignId = 'all';      // Campaign shown ('all' = every campaign)
 
     // Which relation tab an NPC belongs to ('killed' only shows under "All")
     const relationGroup = relation => {
@@ -26,12 +29,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 1. BUILD THE VIEW MODEL FROM THE STORE
     const store = await Athenaeum.ready;
+    const campaigns = store.all('campaign');
     allNPCs = store.all('npc').map(npc => {
         const home = store.get(npc.home);
         const chain = home ? [...store.ancestors(home), home] : [];
         const at = type => (chain.find(p => store.typeOf(p) === type) || {}).name;
         const factions = (npc.factions || []).map(id => store.get(id)).filter(Boolean);
         return {
+            rec: npc,
             id: npc.id,
             name: npc.name || 'Unknown',
             role: npc.role || 'Unknown',
@@ -46,8 +51,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             age: npc.age || 'Unknown',
             gender: npc.gender || 'Unknown',
             affiliation: factions.length ? factions.map(f => f.name).join(', ') : 'Independent',
-            relationToParty: npc.relation || 'Unknown',
-            group: relationGroup(npc.relation || 'Unknown'),
+            // Set for the campaign shown (showCampaign below)
+            visible: true,
+            relationToParty: 'Unknown',
+            group: 'unknown',
             biography: npc.biography
                 ? store.autolink(store.md(npc.biography), { exclude: npc.id })
                 : '<p class="npc-modal__empty">No archival biography exists for this individual.</p>',
@@ -55,20 +62,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
     });
 
-    // 2. POPULATE THE DROP-DOWNS AND THE TAB COUNTS
+    // 2. THE DROP-DOWNS AND THE TAB COUNTS, for the campaign shown
     const populate = (el, key, label) => {
-        const values = [...new Set(allNPCs.map(p => p[key]))].filter(Boolean).sort();
+        const was = el.value;
+        const values = [...new Set(allNPCs.filter(p => p.visible).map(p => p[key]))].filter(Boolean).sort();
         el.innerHTML = `<option value="all">${label}</option>` +
             values.map(v => `<option value="${v}">${v}</option>`).join('');
+        el.value = values.includes(was) ? was : 'all';
     };
 
-    populate(settlementFilter, 'settlement', 'All Locations');
-    populate(affiliationFilter, 'affiliation', 'All Affiliations');
+    const count = () => {
+        const shown = allNPCs.filter(p => p.visible);
+        document.querySelectorAll('[data-count]').forEach(el => {
+            const key = el.dataset.count;
+            el.textContent = key === 'all' ? shown.length : shown.filter(p => p.group === key).length;
+        });
+    };
 
-    document.querySelectorAll('[data-count]').forEach(el => {
-        const key = el.dataset.count;
-        el.textContent = key === 'all' ? allNPCs.length : allNPCs.filter(p => p.group === key).length;
-    });
+    // Which NPCs belong to the campaign, and their relation to the party there
+    const showCampaign = id => {
+        campaignId = id;
+        allNPCs.forEach(p => {
+            p.visible = store.inCampaign(p.rec, id);
+            p.relationToParty = store.standing(p.rec, id);
+            p.group = relationGroup(p.relationToParty);
+        });
+        populate(settlementFilter, 'settlement', 'All Locations');
+        populate(affiliationFilter, 'affiliation', 'All Affiliations');
+        count();
+    };
 
     // 3. RENDER THE ROSTER
     // Each card carries both pictures: the portrait (cards) and the avatar (phone list).
@@ -144,7 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const matchSett = sett === 'all' || p.settlement === sett;
             const matchAff = aff === 'all' || p.affiliation === aff;
             const matchRel = currentRelation === 'all' || p.group === currentRelation;
-            return matchSearch && matchSett && matchAff && matchRel;
+            return p.visible && matchSearch && matchSett && matchAff && matchRel;
         });
 
         // Badge on the phone "Filters" button: how many drop-downs are set
@@ -213,6 +235,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         locEl.innerHTML = npc.homeUrl ? `<a href="${npc.homeUrl}" class="kw-place">${place}</a>` : place;
         document.getElementById('modal-npc-body').innerHTML = npc.biography;
 
+        // Campaigns, with the party's relation in each
+        const entries = store.campaignEntries(npc.rec);
+        const campaignName = id => (campaigns.find(c => c.id === id) || {}).name || id;
+        const pill = rel => {
+            const tone = rel.toLowerCase().includes('unknown') ? 'unknown' : relationGroup(rel);
+            return `<span class="npc-card__relation npc-card__relation--${tone}"><span class="npc-card__dot"></span><span class="npc-card__relation-label">${rel}</span></span>`;
+        };
+        document.getElementById('modal-npc-campaigns').innerHTML = entries.length
+            ? entries.map(e => `<li class="npc-modal__campaign">${campaignName(e.campaign)}${pill(e.value || npc.rec.relation || 'Unknown')}</li>`).join('')
+            : `<li class="npc-modal__campaign">Every campaign${pill(npc.rec.relation || 'Unknown')}</li>`;
+
         secretsBox.classList.remove('is-revealed');
         if (npc.secrets && npc.secrets.trim() !== '') {
             document.getElementById('modal-npc-secrets').innerHTML = npc.secrets;
@@ -223,7 +256,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         // The phone's back button closes the pop-up instead of leaving the page
         if (push) {
-            history.pushState({ npc: id }, '', `?id=${encodeURIComponent(id)}`);
+            const url = new URL(location.href);
+            url.searchParams.set('id', id);
+            history.pushState({ npc: id }, '', url.search);
             pushedHistory = true;
         }
 
@@ -247,9 +282,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (pushedHistory) {
             pushedHistory = false;
             history.back();
-        } else if (location.search) {
+        } else if (new URLSearchParams(location.search).has('id')) {
             // Opened from a link (npc.html?id=…): drop the id from the address
-            history.replaceState(null, '', location.pathname);
+            const url = new URL(location.href);
+            url.searchParams.delete('id');
+            history.replaceState(null, '', location.pathname + url.search);
         }
     };
 
@@ -273,6 +310,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     secretsBox.addEventListener('click', e => { if (!e.target.closest('a')) toggleSecrets(); });
     secretsBox.addEventListener('keydown', e => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleSecrets(); }
+    });
+
+    // 8. CAMPAIGN DROP-DOWN (shared with heroes.html and factions.html)
+    const P = Athenaeum.personae;
+    showCampaign(P.choose(store, { campaigns }));
+    P.picker(document.getElementById('personae-campaign'), {
+        campaigns, value: campaignId,
+        onChange: id => { showCampaign(id); apply(); }
     });
 
     // INITIALIZE

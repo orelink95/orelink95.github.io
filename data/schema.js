@@ -262,7 +262,15 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     age: { kind: 'text', label: 'Age' },
                     gender: { kind: 'text', label: 'Gender' },
                     factions: { kind: 'refs', to: ['faction'], label: 'Factions' },
-                    relation: { kind: 'enum', enum: 'relation', label: 'Relation to the party' },
+                    /* Campaigns the NPC belongs to, with the party's relation in each.
+                       None listed = the NPC is part of every campaign, with "relation" below. */
+                    campaigns: {
+                        kind: 'objects', label: 'Campaigns (none: every campaign)', itemLabel: ['campaign', 'relation'], fields: {
+                            campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign', required: true },
+                            relation: { kind: 'enum', enum: 'relation', label: 'Relation to the party in this campaign' },
+                        }
+                    },
+                    relation: { kind: 'enum', enum: 'relation', label: 'Relation to the party (only when no campaign is listed above)' },
                     biography: { kind: 'markdown', label: 'Biography' },
                     secrets: { kind: 'markdown', label: 'Secrets (DM only)', private: true },
                 },
@@ -276,7 +284,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     stub: { kind: 'boolean', label: 'Stub (named somewhere, not written up yet)' },
                     summary: { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
                     crest: { kind: 'image', label: 'Crest' },
-                    status: { kind: 'enum', enum: 'factionStatus', label: 'Standing with the party' },
+                    status: { kind: 'enum', enum: 'factionStatus', label: "Standing with the party (only when no campaign lists this faction in its standings)" },
                     quote: { kind: 'text', label: 'Motto / quote' },
                     reputation: { kind: 'number', label: 'Reputation (0-100)' },
                     reputationText: { kind: 'text', label: 'Reputation label' },
@@ -443,7 +451,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     },
                     inventory: { kind: 'refs', to: ['item'], label: 'Shared inventory (besides the loot from sessions)' },
                     standings: {
-                        kind: 'objects', label: 'Party allegiances', itemLabel: 'faction', fields: {
+                        kind: 'objects', label: 'Party allegiances: the factions of this campaign (a faction listed in no campaign is in all of them)', itemLabel: ['faction', 'status'], fields: {
                             faction: { kind: 'ref', to: ['faction', 'poi'], label: 'Faction (or place)' },
                             status: { kind: 'enum', enum: 'factionStatus', label: 'Standing' },
                         }

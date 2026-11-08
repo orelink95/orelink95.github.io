@@ -37,6 +37,14 @@
       {
         "faction": "oddmoss-librarium",
         "status": "Neutral"
+      },
+      {
+        "faction": "thieves-guild",
+        "status": "Hostile"
+      },
+      {
+        "faction": "blackwater-syndicate",
+        "status": "Neutral"
       }
     ],
     "spellbooks": [

@@ -20,6 +20,10 @@
                                                  (glossary terms too, as spans,
                                                  with {terms: true})
        store.find('The Gilded Goldfinch')     -> record by name or alias
+       store.inCampaign(npc, 'last-sigil')    -> is an NPC / faction part of it
+       store.standing(npc, 'last-sigil')      -> its relation (NPC) / status
+                                                 (faction) in that campaign
+       store.campaignEntries(npc)             -> [{campaign, value}] it is listed in
        store.validate()                       -> {errors, warnings}
        store.world / store.settings           -> data/world.json, data/settings.json
    Node tools build a store from files with Athenaeum.createStore().
@@ -94,6 +98,38 @@
 
         const resolve = x => (typeof x === 'string' ? byId.get(x) : x) || null;
         const typeOf = x => { const r = resolve(x); return r ? typeOfRec.get(r) : null; };
+
+        /* ---------- campaigns (NPCs and factions) ----------
+           An NPC lists its campaigns:        npc.campaigns     [{campaign, relation}]
+           A campaign lists its factions:     campaign.standings [{faction, status}]
+           Listed in no campaign = part of every campaign, with its own
+           npc.relation / faction.status.
+           campaignId 'all' (or none) = every campaign: the value in the current
+           campaign (settings.currentCampaign) when listed there, else the first. */
+        function campaignEntries(x) {
+            const rec = resolve(x);
+            if (!rec) return [];
+            const type = typeOfRec.get(rec);
+            if (type === 'npc') return (rec.campaigns || []).filter(e => e && e.campaign).map(e => ({ campaign: e.campaign, value: e.relation }));
+            if (type === 'faction') return (byType.campaign || []).flatMap(c => (c.standings || []).filter(s => s && s.faction === rec.id).map(s => ({ campaign: c.id, value: s.status })));
+            return [];
+        }
+        const isAll = cid => !cid || cid === 'all';
+        function inCampaign(x, cid) {
+            if (isAll(cid)) return true;
+            const list = campaignEntries(x);
+            return !list.length || list.some(e => e.campaign === cid);
+        }
+        function standing(x, cid) {
+            const rec = resolve(x);
+            if (!rec) return 'Unknown';
+            const list = campaignEntries(rec);
+            const current = (singletons.settings || {}).currentCampaign;
+            const entry = list.find(e => e.campaign === cid) ||
+                (isAll(cid) ? (list.find(e => e.campaign === current) || list[0]) : null);
+            const own = typeOfRec.get(rec) === 'npc' ? rec.relation : rec.status;
+            return (entry && entry.value) || own || 'Unknown';
+        }
 
         /* ---------- hierarchy ---------- */
         const childIndex = new Map();
@@ -427,6 +463,14 @@
                     heroesSeen.add(b.hero);
                 });
             }
+            for (const n of byType.npc || []) {
+                const seen = new Set();
+                (n.campaigns || []).forEach((e, i) => {
+                    if (!e || !e.campaign) return;
+                    if (seen.has(e.campaign)) warnings.push(`[npc] ${n.id}.campaigns[${i}]: "${e.campaign}" is listed twice (only the first counts)`);
+                    seen.add(e.campaign);
+                });
+            }
             const tiers = enumValues('tavernTier');
             for (const item of byType.menuItem || []) {
                 if (tiers.indexOf(item.minTier) > tiers.indexOf(item.maxTier)) errors.push(`[menuItem] ${item.id}: minTier is above maxTier`);
@@ -442,6 +486,7 @@
             md: (t, o) => (ATH.md ? ATH.md(t, o) : t),
             plain: t => (ATH.mdPlain ? ATH.mdPlain(t) : t),
             autolink, validate,
+            campaignEntries, inCampaign, standing,
         };
     }
 

@@ -25,6 +25,7 @@
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/core/seal.js"></script>
+    <script src="scripts/personae.js"></script>
     <script src="scripts/spell-card.js"></script>
 </head>
 
@@ -47,7 +48,7 @@
             <p class="personae-hero__eyebrow">Dramatis Personae</p>
             <h1 id="party-title" class="personae-hero__title">The Heroes</h1>
             <div class="personae-hero__rule"></div>
-            <select id="party-campaign" class="party-picker hidden" aria-label="Campaign"></select>
+            <select id="party-campaign" class="personae-picker hidden" aria-label="Campaign"></select>
         </header>
 
         <div class="heroes-layout">
@@ -179,22 +180,18 @@
             const campaigns = store.all('campaign').filter(c => (c.party || []).length);
             if (!campaigns.length) return;
 
-            // Which party: ?campaign=… , else the current campaign (data/settings.json), else the first
-            const asked = new URLSearchParams(window.location.search).get('campaign');
-            const preferred = asked || store.settings.currentCampaign;
-            let campaign = campaigns.find(c => c.id === preferred) || campaigns[0];
+            // Which party: the campaign picked in the section (scripts/personae.js).
+            // Heroes needs one party, so "All campaigns" falls back to the current one.
+            const P = Athenaeum.personae;
+            let campaign = campaigns.find(c => c.id === P.choose(store, { campaigns, allowAll: false }));
 
-            const picker = document.getElementById('party-campaign');
-            if (campaigns.length > 1) {
-                picker.innerHTML = campaigns.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-                picker.value = campaign.id;
-                picker.classList.remove('hidden');
-                picker.addEventListener('change', () => {
-                    campaign = campaigns.find(c => c.id === picker.value);
-                    history.replaceState(null, '', `?campaign=${campaign.id}`);
+            P.picker(document.getElementById('party-campaign'), {
+                campaigns, value: campaign.id, allowAll: false,
+                onChange: id => {
+                    campaign = campaigns.find(c => c.id === id);
                     renderParty();
-                });
-            }
+                }
+            });
 
             const getMod = (score) => {
                 const mod = Math.floor((score - 10) / 2);

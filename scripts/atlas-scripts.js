@@ -122,7 +122,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const taverns = pois.filter(p => p.tavern && p.tavern.tier).length;
     const people = store.all('npc').filter(n => !n.stub);
     const factions = store.all('faction').filter(f => !f.stub);
-    const hostile = factions.filter(f => /^hostile/i.test(f.status || '')).length;
+    // Standing in the current campaign (store.standing)
+    const hostile = factions.filter(f => /^hostile/i.test(store.standing(f))).length;
     const L_ = Atlas.LABELS;
 
     const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };

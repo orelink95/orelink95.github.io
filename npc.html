@@ -24,6 +24,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/personae.js"></script>
 
     <script src="scripts/npc-scripts.js"></script>
 </head>
@@ -47,6 +48,7 @@
                 <p class="personae-hero__eyebrow">Dramatis Personae</p>
                 <h1 class="personae-hero__title">The People of Eraldom</h1>
                 <div class="personae-hero__rule"></div>
+                <select id="personae-campaign" class="personae-picker hidden" aria-label="Campaign"></select>
             </header>
 
             <div class="roster-toolbar">
@@ -141,6 +143,10 @@
                     <div>
                         <p class="npc-modal__fact-label">Affiliation</p>
                         <p id="modal-npc-affiliation" class="npc-modal__fact-value"></p>
+                    </div>
+                    <div class="npc-modal__campaigns">
+                        <p class="npc-modal__fact-label">Campaigns</p>
+                        <ul id="modal-npc-campaigns" class="npc-modal__campaign-list"></ul>
                     </div>
                     <div class="npc-modal__whereabouts">
                         <p class="npc-modal__fact-label">Known Whereabouts

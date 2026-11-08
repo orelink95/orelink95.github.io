@@ -565,6 +565,31 @@
     }
 }
 
+/* Campaigns and the party's relation in each (same pills as the cards) */
+.npc-modal__campaigns {
+    grid-column: 1 / -1;
+}
+
+.npc-modal__campaign-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.npc-modal__campaign {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem 0.75rem;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--color-on-surface);
+}
+.npc-modal__campaign .npc-card__relation {
+    flex-shrink: 0;
+}
+
 .npc-modal__location {
     display: flex;
     align-items: center;

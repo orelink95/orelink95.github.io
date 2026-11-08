@@ -1030,3 +1030,11 @@
         scroll-margin-top: calc(var(--site-header-h) + 4rem);
     }
 }
+
+/* No faction in the campaign picked (scripts/personae.js) */
+.faction-tabs__empty {
+    padding: 1.5rem 1rem;
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--color-on-surface-variant);
+}

@@ -125,3 +125,40 @@
         display: none;
     }
 }
+
+/* ---------- Campaign drop-down under the title (scripts/personae.js) ---------- */
+
+.personae-picker {
+    min-height: 44px;
+    margin-top: 1.25rem;
+    padding: 0 2.25rem 0 1rem;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 0.375rem;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    background-color: rgb(0 0 0 / 0.4);
+    /* the chevron: an inline SVG in the secondary gold */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e9c176' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    font-family: var(--font-label);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.8);
+    cursor: pointer;
+    appearance: none;
+    transition: border-color 150ms var(--ease);
+}
+.personae-picker:hover,
+.personae-picker:focus {
+    border-color: var(--color-secondary);
+}
+/* 16px on phones: below that, iPhones zoom the page when it gets focus */
+@media (max-width: 767.98px) {
+    .personae-picker {
+        font-size: 1rem;
+        text-transform: none;
+        letter-spacing: normal;
+    }
+}

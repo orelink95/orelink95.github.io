@@ -1,14 +1,18 @@
 // Built from the store on load, in the shape the dossier code expects.
+// The list shows the factions of the campaign picked under the title
+// (scripts/personae.js), with the party's standing in that campaign.
 var factionsData = [];
 var factionsStore = null;
+var factionsCampaign = 'all';
 
 document.addEventListener("DOMContentLoaded", async () => {
     const store = factionsStore = await Athenaeum.ready;
     const names = ids => (ids || []).map(id => (store.get(id) || {}).name).filter(Boolean);
     // Stubs (named somewhere, not written up yet) get no dossier tab.
     factionsData = store.all('faction').filter(f => !f.stub).map(f => ({
-        id: f.id, name: f.name, crest: f.crest || 'images/placeholder.png',
-        status: f.status || 'Unknown', quote: f.quote || '',
+        rec: f, id: f.id, name: f.name, crest: f.crest || 'images/placeholder.png',
+        status: 'Unknown', visible: true, // set for the campaign shown (showCampaign)
+        quote: f.quote || '',
         reputation: f.reputation || 0, reputationText: f.reputationText || '',
         quickFacts: { base: f.base, scale: f.scale, mo: f.mo, threatLevel: f.threatLevel },
         relationships: { allies: names(f.allies), rivals: names(f.rivals) },
@@ -17,32 +21,59 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const tabsContainer = document.getElementById('faction-tabs');
 
-    // 1. Render the Slanted Tabs
-    tabsContainer.innerHTML = factionsData.map((faction, index) => {
-        // Tab tone (see .faction-tab--* in pages/factions.css)
-        let tone = "";
-        let icon = "public";
+    // 1. The factions of the campaign shown, and their standing there
+    const renderTabs = () => {
+        const shown = factionsData.filter(f => f.visible);
+        if (!shown.length) {
+            tabsContainer.innerHTML = `<p class="faction-tabs__empty">No faction on record for this campaign.</p>`;
+            return;
+        }
+        tabsContainer.innerHTML = shown.map((faction, index) => {
+            // Tab tone (see .faction-tab--* in pages/factions.css)
+            let tone = "";
+            let icon = "public";
 
-        if (faction.status.toLowerCase() === "allied") { tone = "faction-tab--allied"; icon = "handshake"; }
-        if (faction.status.toLowerCase() === "hostile") { tone = "faction-tab--hostile"; icon = "visibility"; }
+            if (faction.status.toLowerCase() === "allied") { tone = "faction-tab--allied"; icon = "handshake"; }
+            if (faction.status.toLowerCase() === "hostile") { tone = "faction-tab--hostile"; icon = "visibility"; }
 
-        return `
-        <button onclick="openDossier('${faction.id}')" id="tab-${faction.id}" class="faction-tab ${tone}">
+            return `
+            <button onclick="openDossier('${faction.id}')" id="tab-${faction.id}" class="faction-tab ${tone}">
             
-            <div class="faction-tab__card">
+                <div class="faction-tab__card">
                 
-                <div class="faction-tab__badge">
-                    <span class="faction-tab__icon material-symbols-outlined">${icon}</span>
-                </div>
+                    <div class="faction-tab__badge">
+                        <span class="faction-tab__icon material-symbols-outlined">${icon}</span>
+                    </div>
                 
-                <div class="faction-tab__text">
-                    <h3 class="faction-tab__name">${faction.name}</h3>
-                    <p class="faction-tab__status">Status: ${faction.status}</p>
+                    <div class="faction-tab__text">
+                        <h3 class="faction-tab__name">${faction.name}</h3>
+                        <p class="faction-tab__status">Status: ${faction.status}</p>
+                    </div>
                 </div>
-            </div>
-        </button>
-        `;
-    }).join('');
+            </button>
+            `;
+        }).join('');
+    };
+
+    const showCampaign = id => {
+        factionsCampaign = id;
+        factionsData.forEach(f => {
+            f.visible = store.inCampaign(f.rec, id);
+            f.status = store.standing(f.rec, id);
+        });
+        renderTabs();
+
+        // The open dossier: redrawn for this campaign, or closed if the faction is not in it
+        const openId = window.currentDossierId;
+        if (!openId) return;
+        if (factionsData.some(f => f.id === openId && f.visible)) window.openDossier(openId, { scroll: false });
+        else window.closeDossier();
+    };
+
+    const P = Athenaeum.personae;
+    const campaigns = store.all('campaign');
+    showCampaign(P.choose(store, { campaigns }));
+    P.picker(document.getElementById('personae-campaign'), { campaigns, value: factionsCampaign, onChange: showCampaign });
 
     // 2. Auto-open dossier if ID is passed in the URL query parameter
     const urlParams = new URLSearchParams(window.location.search);
@@ -65,9 +96,19 @@ const threatTone = (level) => {
     return ['low', 'moderate', 'severe', 'omega'].includes(l) ? l : 'other';
 };
 
-window.openDossier = (id) => {
+window.currentDossierId = null;
+
+window.closeDossier = () => {
+    window.currentDossierId = null;
+    document.querySelectorAll('.faction-tab').forEach(el => el.classList.remove('is-active'));
+    document.getElementById('dossier-view').classList.add('hidden');
+    document.getElementById('empty-state').classList.remove('hidden');
+};
+
+window.openDossier = (id, { scroll = true } = {}) => {
     const faction = factionsData.find(f => f.id === id);
     if (!faction) return;
+    window.currentDossierId = id;
 
     // Highlight active tab
     document.querySelectorAll('.faction-tab').forEach(el => el.classList.remove('is-active'));
@@ -198,9 +239,10 @@ window.openDossier = (id) => {
     // 4.5 Known Roster (Auto-generated Target Profiles from Almanach)
     let affiliatedNPCs = [];
 
-    // Members: NPCs whose factions list this one
-    affiliatedNPCs = factionsStore.backrefs(faction.id, 'npc', 'factions').map(npc => ({
-        id: npc.id, name: npc.name, role: npc.role || '', relationToParty: npc.relation || 'Unknown',
+    // Members: NPCs whose factions list this one, in the campaign shown, with their relation there
+    affiliatedNPCs = factionsStore.backrefs(faction.id, 'npc', 'factions')
+        .filter(npc => factionsStore.inCampaign(npc, factionsCampaign)).map(npc => ({
+        id: npc.id, name: npc.name, role: npc.role || '', relationToParty: factionsStore.standing(npc, factionsCampaign),
         image: npc.portrait || npc.avatar || 'images/placeholder.png',
         biography: factionsStore.plain(npc.biography)
     }));
@@ -303,7 +345,7 @@ window.openDossier = (id) => {
     dossierView.innerHTML = html;
 
     // Single column (phones, tablets): bring the dossier into view
-    if (window.matchMedia('(max-width: 1023.98px)').matches) {
+    if (scroll && window.matchMedia('(max-width: 1023.98px)').matches) {
         dossierView.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 

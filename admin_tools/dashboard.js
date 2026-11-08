@@ -322,7 +322,7 @@
         const def = TYPES[type];
         if (def.place && r.parent) return nameOf(r.parent);
         if (type === 'npc') return r.role || '';
-        if (type === 'faction') return r.stub ? 'stub' : (r.status || '');
+        if (type === 'faction') return r.stub ? 'stub' : S.store.standing(r);
         if (type === 'menuItem') return `${r.category || ''} · ${r.basePrice ?? '?'} cp`;
         if (type === 'service') return r.unit || '';
         if (type === 'session') return [r.number != null ? `#${r.number}` : '', r.campaign ? nameOf(r.campaign) : ''].filter(Boolean).join(' · ');

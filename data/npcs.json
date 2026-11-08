@@ -14,7 +14,12 @@
     "factions": [
       "crown"
     ],
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "Derral Sitsk was the youngest Lord White of Brightend. He distinguished himself at 29 while succesfully protecting the city of Marshes with his troops. His military accomplishments pushed him into politics.  \nAlec Teal's father, Fearn, promoted Sitsk to Lord Commander. A successful campaign to free The city-state Lemerolai got him the title of Lord White after the death of the previous holder."
   },
   {
@@ -28,7 +33,12 @@
     "species": "Dwarf",
     "age": "36",
     "gender": "Female",
-    "relation": "Ally",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Ally"
+      }
+    ],
     "biography": "Once a renowned drug dealer/adventurer, she dated Nimo. Now she changed her life and dropped her bad habits... both of them."
   },
   {
@@ -45,7 +55,12 @@
     "factions": [
       "alabaster-wardens"
     ],
-    "relation": "Ally",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Ally"
+      }
+    ],
     "biography": "Grand Warden Foll is well respect amongst his peers, but also revered by most citizens who recognize his dedication to the city. The towering Earth Genasi with granite-grey skin has spent his life in service of Brightend."
   },
   {
@@ -60,7 +75,12 @@
     "species": "Madaru",
     "age": "52",
     "gender": "Female",
-    "relation": "Ally",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Ally"
+      }
+    ],
     "biography": "An independant scholar, specialized in paleolinguistics and antique history of the Boundless Vale. She was recently asked by Runebridge to translate a magically encrypted tome recovered in a dig site"
   },
   {
@@ -74,7 +94,12 @@
     "species": "Human",
     "age": "41",
     "gender": "Male",
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "With a broad, inviting smile and striking, heterochromatic eyes , one clear blue and one green, he commands the polished bar of his prestigious inn. A prosperous figure with a thick mane of greying brown hair and a matching full beard, Merton is dressed in a rugged yet finely detailed leather apron over a rich, gold-embroidered green tunic. His hands rest casually on the dark counter, a symbol of sturdy, welcoming hospitality in his grand, candlelit establishment."
   },
   {
@@ -88,7 +113,12 @@
     "species": "Human",
     "age": "63",
     "gender": "Male",
-    "relation": "Displeased",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Displeased"
+      }
+    ],
     "biography": "This former carpenter was married to Elira Thayne, who died in her home in mysterious circumstances. He is left heartbroken."
   },
   {
@@ -105,7 +135,12 @@
     "species": "Half-Elf",
     "age": "64",
     "gender": "Male",
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "Sephet Halfborn, the Sorcerer Supreme of the City of Brightend, is a figure of awe and fear across the Kingdom of Eperina. A half-elf of striking presence, his burning-red eyes seem to flicker like embers, a testament to his mastery over fire magic. His salt-and-pepper hair, coupled with a rugged stubble, hints at his maturity and the weight of countless battles and political maneuverings. Sephet's attire is as commanding as his demeanor—a flowing, dark blue cape of the finest weave drapes over an elegant tunic, both exuding refinement and power. As Brightend’s foremost magical authority, he oversees the arcane academies, advises the monarch, and ensures that the kingdom’s magical defenses remain impenetrable."
   },
   {
@@ -120,7 +155,12 @@
     "factions": [
       "thieves-guild"
     ],
-    "relation": "Killed",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Killed"
+      }
+    ],
     "biography": "A strange man tailing and taking notes of the party's whereabouts. Killed when trying to escape."
   },
   {
@@ -136,7 +176,12 @@
     "factions": [
       "runebridge"
     ],
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "A tiefling scholar from Runebridge who, alongside Bram Sureoak, hired the party to retrieve Maera Voss and her tome."
   },
   {
@@ -152,7 +197,12 @@
     "factions": [
       "runebridge"
     ],
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "An owlin scholar from Runebridge who, alongside Aregan Olm, hired the party to retrieve Maera Voss and her tome."
   },
   {
@@ -165,7 +215,12 @@
     "species": "Gnome",
     "age": "27",
     "gender": "Non-binary",
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "A gnome clerk at the Oddmoss Librarium who informed the party of Maera Voss's book deliveries to an empty wall."
   },
   {
@@ -178,7 +233,12 @@
     "species": "Homunculus",
     "age": "Ancient",
     "gender": "Unknown",
-    "relation": "Ally",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Ally"
+      }
+    ],
     "biography": "An ancient, talking homunculus who peacefully cooks in the kitchens of the Vale House, alongside Cumin."
   },
   {
@@ -191,7 +251,12 @@
     "species": "Homunculus",
     "age": "Ancient",
     "gender": "Unknown",
-    "relation": "Ally",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Ally"
+      }
+    ],
     "biography": "An ancient, talking homunculus who peacefully cooks in the kitchens of the Vale House, alongside Coriander."
   },
   {
@@ -205,7 +270,12 @@
     "species": "Construct (Wicked Skull)",
     "age": "Unknown",
     "gender": "Unknown",
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "A chattering, animate skull encountered within the Vale House, prone to shapeshifting and elaborate tricks rather than direct combat. Jeff claimed to know the whereabouts of the missing scholar Maera Voss, describing her location only as somewhere 'no fun'."
   },
   {
@@ -222,7 +292,12 @@
     "factions": [
       "blackwater-syndicate"
     ],
-    "relation": "Ally",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Ally"
+      }
+    ],
     "biography": "Known to most simply as \"Oldebear,\" Muraed Oldaber is an important figure in the sprawling underground network of Brightend. If you need something moved without the city guard seeing, or a problem made to quietly disappear, you talk to him.  \nDespite his gruff exterior and ruthless business practices in the Fighting Pits, he operates by a strict personal code of honor and has proven to be incredibly loyal to those who earn his trust."
   },
   {
@@ -242,7 +317,12 @@
     "factions": [
       "thieves-guild"
     ],
-    "relation": "Enemy"
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Enemy"
+      }
+    ]
   },
   {
     "id": "rowan-larkspur",
@@ -256,7 +336,12 @@
     "species": "Halfling",
     "age": "52",
     "gender": "Male",
-    "relation": "Neutral",
+    "campaigns": [
+      {
+        "campaign": "last-sigil",
+        "relation": "Neutral"
+      }
+    ],
     "biography": "A tattooed halfling who owns the Stoat and Cellar in Silverbrook."
   }
 ]

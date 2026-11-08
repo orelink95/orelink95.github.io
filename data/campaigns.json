@@ -12,7 +12,7 @@
       },
       {
         "title": "A String of Thefts",
-        "description": "Brightened has been plagued by a string of mysterious thefts, according to The Wardens.",
+        "description": "Brightened has been plagued by a string of mysterious thefts, according to The Wardens.\nAll seem to be connect to a mysterious group - the Talons, operating from their secret Roost.",
         "status": "Secondary"
       }
     ],
@@ -43,7 +43,8 @@
       {
         "hero": "eli",
         "spells": [
-          "spl-eldritch-blast"
+          "spl-eldritch-blast",
+          "spl-chill-touch"
         ]
       },
       {
@@ -99,7 +100,8 @@
       {
         "hero": "eli",
         "spells": [
-          "spl-eldritch-blast"
+          "spl-eldritch-blast",
+          "spl-chill-touch"
         ]
       }
     ]

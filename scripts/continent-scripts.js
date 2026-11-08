@@ -1,25 +1,32 @@
 // =====================================================================
-// CONTINENT PAGE  —  continent.html?id=<continent id>  (default: maltona)
-// Map pins are the continent's countries; nations list, info cards,
-// notable people and epigraph all come from data/continents.json.
+// CONTINENT PAGE  —  continent.html?id=<continent id>
+// Without a valid id the player is sent to continents.html.
+// Map pins are the continent's countries; clicking one shows its lore
+// in the panel under the map. Nations list, info cards, notable people
+// and epigraph all come from data/continents.json.
+// Shared helpers: scripts/atlas-common.js.
 // =====================================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
     const store = await Athenaeum.ready;
-    const params = new URLSearchParams(window.location.search);
-    let continent = store.get(params.get('id'));
-    if (!continent || store.typeOf(continent) !== 'continent') continent = store.get('maltona') || store.all('continent')[0];
+    const continent = Atlas.requireEntry(store, 'continent');
+    if (!continent) return;   // leaving for the list page
     const $ = id => document.getElementById(id);
+    const lore = rec => rec.body ? store.autolink(store.md(rec.body, { dropCap: true }), { exclude: rec.id }) : '';
+    Atlas.glow();
 
     // -----------------------------------------------------------------
     // HEADER
     // -----------------------------------------------------------------
     document.title = `${continent.name} - The Athenaeum Vault`;
-    $('world-link').textContent = store.world.name || 'Eraldom';
-    $('world-link').href = store.url('world') || 'world.html';
-    $('crumb-continent').textContent = continent.name;
+    Atlas.breadcrumbs(store, $('atlas-breadcrumbs'), continent);
     $('continent-name').textContent = continent.name;
     $('continent-tagline').textContent = [continent.subtitle, continent.era].filter(Boolean).join(' • ');
+
+    // -----------------------------------------------------------------
+    // LORE PANEL
+    // -----------------------------------------------------------------
+    const panel = Atlas.lorePanel({ entry: continent.codex, title: continent.name, body: lore(continent) });
 
     // -----------------------------------------------------------------
     // INFO CARDS
@@ -32,10 +39,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>`).join('');
 
     // -----------------------------------------------------------------
-    // NATIONS LIST
+    // NATIONS LIST  (countries marked "unlisted" stay off the list)
     // -----------------------------------------------------------------
     const countries = store.children(continent, 'country');
-    $('nations-title').textContent = `Nations of ${continent.name}`;
+    $('nations-title').textContent = `${Atlas.LABELS.country.many} of ${continent.name}`;
     $('nations-list').innerHTML = countries.filter(c => !c.unlisted).map(c => `
         <li class="continent-nation">
             <a href="${store.url(c)}"
@@ -46,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 </div>
                 <span class="continent-nation__arrow material-symbols-outlined">arrow_forward</span>
             </a>
-        </li>`).join('') || '<li class="continent-nations__empty">No nations recorded yet.</li>';
+        </li>`).join('') || `<li class="continent-nations__empty">No ${Atlas.LABELS.country.many.toLowerCase()} recorded yet.</li>`;
 
     // -----------------------------------------------------------------
     // VERY IMPORTANT PEOPLE
@@ -91,17 +98,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     $('continent-frame').style.aspectRatio = `${img.width} / ${img.height}`;
 
-    const map = L.map('continent-map', {
-        crs: L.CRS.Simple,
-        minZoom: -2,
-        maxZoom: 1,
-        zoomControl: false,
-        attributionControl: false
-    });
-    const bounds = [[0, 0], [img.height, img.width]];
-    L.imageOverlay(img.src, bounds).addTo(map);
-    map.fitBounds(bounds);
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
+    const map = Atlas.createMap('continent-map', { minZoom: -2, maxZoom: 1 });
+    Atlas.showImage(map, img);
+    panel.onReset = () => map.closePopup();
+    map.on('click', () => panel.reset());     // click on empty map = back to the continent
 
     // Green-themed pins for the continent map
     function createFantasyIcon(iconName, isDanger = false) {
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div class="continent-pin ${tone}">
                     <div class="continent-pin__glow"></div>
                     <div class="continent-pin__disc">
-                        <img src="./images/atlas_icons/${iconName}.svg"
+                        <img src="./images/atlas_icons/${iconName}.svg" alt=""
                              class="continent-pin__icon"
                              style="filter: ${isDanger ? 'brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(-50deg)' : 'brightness(0) invert(1) sepia(1) saturate(3) hue-rotate(100deg)'};" />
                     </div>
@@ -125,15 +125,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     countries.filter(c => c.map).forEach(c => {
-        const marker = L.marker(L.latLng(c.map.y, c.map.x), { icon: createFantasyIcon(c.map.icon || 'settlement', c.danger) });
-        marker.bindPopup(`
-            <div class='map-popup'>
-                <b class='map-popup__title ${c.danger ? 'map-popup__title--danger' : ''}'>${c.shortName || c.name}</b>
-                <span class='map-popup__subtitle'>${c.subtitle || ''}</span>
-                <a href="${store.url(c)}" class="map-popup__button">
-                    Explore Region
-                </a>
-            </div>`, { className: 'fantasy-popup' });
-        marker.addTo(map);
+        const name = c.shortName || c.name;
+        Atlas.pin({
+            y: c.map.y, x: c.map.x, name,
+            icon: createFantasyIcon(c.map.icon || 'settlement', c.danger),
+            popupHtml: Atlas.popup({ title: name, subtitle: c.subtitle, danger: c.danger, url: store.url(c), cta: Atlas.cta(store, c) }),
+            onClick: () => panel.show({ entry: c.codex, title: c.loreTitle || c.name, body: lore(c) })
+        }).addTo(map);
     });
 });

@@ -28,6 +28,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/atlas-common.js"></script>
     <script src="scripts/country-scripts.js"></script>
 </head>
 
@@ -44,15 +45,8 @@
             class="region-backdrop"></div>
 
         <header class="region-header">
-            <nav
-                class="breadcrumbs">
-                <a class="breadcrumbs__link">Eraldom</a>
-                <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                <a id="dynamic-continent-name"
-                    class="breadcrumbs__link">Continent</a>
-                <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                <span id="dynamic-region-name" class="breadcrumbs__current">Region</span>
-            </nav>
+            <!-- filled by Atlas.breadcrumbs (scripts/atlas-common.js) -->
+            <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
             <h1 id="dynamic-title" class="region-header__title">Loading...
             </h1>
             <p id="dynamic-description"

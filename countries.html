@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Countries - The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/atlas-index.css" rel="stylesheet" />
+    <link href="styles/atlas-style.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/atlas-common.js"></script>
+    <script src="scripts/atlas-index-scripts.js"></script>
+</head>
+
+<!-- One of the four Atlas list pages. data-atlas-index = the type listed;
+     everything below is filled by scripts/atlas-index-scripts.js. -->
+<body class="page" data-atlas-index="country">
+    <div id="header-placeholder"></div>
+    <div id="sidebar-placeholder"></div>
+
+    <main class="landmarks-main">
+        <div class="landmarks">
+            <header class="landmarks-header">
+                <div>
+                    <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
+                    <p class="landmarks-header__eyebrow">Cartographer's Record</p>
+                    <h1 id="index-title" class="landmarks-header__title">Countries</h1>
+                    <p id="index-count" class="landmarks-header__count" aria-live="polite"></p>
+                </div>
+
+                <div id="index-filters" class="landmark-filters">
+                    <input id="index-search" type="search" class="landmark-filter landmark-filter--search"
+                        placeholder="Search by name" aria-label="Search by name" autocomplete="off" />
+                    <!-- one menu per place above this type (continent, country, settlement) -->
+                </div>
+            </header>
+
+            <div id="index-grid" class="poi-grid"></div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+</body>
+
+</html>

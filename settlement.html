@@ -28,6 +28,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/atlas-common.js"></script>
     <script src="scripts/settlement-scripts.js"></script>
 
 </head>
@@ -46,17 +47,8 @@
         </div>
 
         <header class="region-header">
-            <nav
-                class="breadcrumbs">
-                <a href="world.html" class="breadcrumbs__link">Archive</a>
-                <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                <a id="dynamic-continent-link"
-                    class="breadcrumbs__link">Continent</a>
-                <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                <a id="dynamic-country-link" class="breadcrumbs__link">Region</a>
-                <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                <span id="dynamic-settlement-name" class="breadcrumbs__current">Settlement</span>
-            </nav>
+            <!-- filled by Atlas.breadcrumbs (scripts/atlas-common.js) -->
+            <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
             <h1 id="dynamic-title" class="region-header__title">Loading...
             </h1>
             <p id="dynamic-description"
@@ -77,9 +69,14 @@
 
                 <div class="lore-panel__scroll custom-scrollbar">
                     <div class="lore-panel__head">
-                        <span id="lore-entry-id"
-                            class="lore-panel__entry">Town
-                            Charter</span>
+                        <div class="lore-panel__meta">
+                            <span id="lore-entry-id" class="lore-panel__entry">Town Charter</span>
+                            <button id="reset-lore-btn" type="button" class="lore-panel__reset hidden"
+                                title="Return to Overview">
+                                <span class="lore-panel__reset-icon material-symbols-outlined">undo</span>
+                                <span class="lore-panel__reset-label">Overview</span>
+                            </button>
+                        </div>
                         <h2 id="lore-title" class="lore-panel__title">
                             Loading...</h2>
                         <div class="lore-panel__rule"></div>
@@ -93,10 +90,12 @@
 
                 <div class="district-picker">
 
-                    <button id="district-toggle-btn"
-                        class="district-toggle hidden">
+                    <!-- shown when the settlement has more than one district -->
+                    <button id="district-toggle-btn" type="button" aria-expanded="false"
+                        aria-controls="district-nav-wrapper" class="district-toggle hidden">
                         <span class="district-toggle__icon material-symbols-outlined">map</span>
-                        Select District
+                        <span class="district-toggle__label">District:</span>
+                        <span id="district-current" class="district-toggle__current"></span>
                         <span id="district-chevron"
                             class="district-toggle__chevron material-symbols-outlined">expand_more</span>
                     </button>

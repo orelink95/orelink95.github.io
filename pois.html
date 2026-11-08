@@ -14,7 +14,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
-    <link href="styles/pages/pois.css" rel="stylesheet" />
+    <link href="styles/pages/atlas-index.css" rel="stylesheet" />
     <link href="styles/atlas-style.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
@@ -22,10 +22,13 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
-    <script src="scripts/pois-scripts.js"></script>
+    <script src="scripts/atlas-common.js"></script>
+    <script src="scripts/atlas-index-scripts.js"></script>
 </head>
 
-<body class="page">
+<!-- One of the four Atlas list pages. data-atlas-index = the type listed;
+     everything below is filled by scripts/atlas-index-scripts.js. -->
+<body class="page" data-atlas-index="poi">
     <div id="header-placeholder"></div>
     <div id="sidebar-placeholder"></div>
 
@@ -33,83 +36,23 @@
         <div class="landmarks">
             <header class="landmarks-header">
                 <div>
-                    <p class="landmarks-header__eyebrow">Cartographer's Record
-                    </p>
-                    <h2 class="landmarks-header__title">Enchanted
-                        Landmarks</h2>
+                    <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
+                    <p class="landmarks-header__eyebrow">Enchanted Landmarks</p>
+                    <h1 id="index-title" class="landmarks-header__title">Points of Interest</h1>
+                    <p id="index-count" class="landmarks-header__count" aria-live="polite"></p>
                 </div>
 
-                <div class="landmark-filters">
-                    <select id="filter-continent"
-                        class="landmark-filter">
-                        <option value="all">All Continents</option>
-                    </select>
-                    <select id="filter-country"
-                        class="landmark-filter">
-                        <option value="all">All Regions</option>
-                    </select>
-                    <select id="filter-settlement"
-                        class="landmark-filter">
-                        <option value="all">All Settlements</option>
-                    </select>
+                <div id="index-filters" class="landmark-filters">
+                    <input id="index-search" type="search" class="landmark-filter landmark-filter--search"
+                        placeholder="Search by name" aria-label="Search by name" autocomplete="off" />
+                    <!-- one menu per place above this type (continent, country, settlement) -->
                 </div>
             </header>
 
-            <div id="poi-grid" class="poi-grid">
-            </div>
+            <div id="index-grid" class="poi-grid"></div>
         </div>
     </main>
 
-    <div id="poi-modal"
-        class="poi-modal hidden">
-        <div
-            class="poi-modal__card">
-
-            <div class="poi-modal__media">
-                <img id="modal-img" class="poi-modal__img" src="" />
-                <div class="poi-modal__fade-side">
-                </div>
-                <div class="poi-modal__fade-bottom"></div>
-            </div>
-
-            <div class="poi-modal__content custom-scrollbar">
-                <button onclick="closePOIModal()"
-                    class="poi-modal__close">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-                <p id="modal-uid" class="poi-modal__uid"></p>
-                <h2 id="modal-title" class="poi-modal__title"></h2>
-                <div id="modal-body" class="poi-modal__body lore">
-                </div>
-
-                <div class="poi-modal__link-row">
-                    <a id="modal-page-link" href="#"
-                        class="poi-modal__link">
-                        Open the Full Entry
-                    </a>
-                </div>
-
-                <div id="modal-npc-section" class="poi-modal__residents hidden">
-                    <h3
-                        class="poi-modal__section-title">
-                        Known Residents & Associated Contacts</h3>
-                    <div id="modal-npcs" class="poi-modal__npcs">
-                    </div>
-                </div>
-
-                <div class="poi-modal__footer">
-                    <div>
-                        <p class="poi-modal__fact-label">Location</p>
-                        <p id="modal-location" class="poi-modal__location"></p>
-                    </div>
-                    <div>
-                        <p class="poi-modal__fact-label">Archive ID</p>
-                        <p id="modal-threat" class="poi-modal__record">POI Record</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <div id="footer-placeholder"></div>
 </body>
 

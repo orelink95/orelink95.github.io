@@ -16,6 +16,7 @@
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
     <link href="styles/spell-card.css" rel="stylesheet" />
+    <link href="styles/personae.css" rel="stylesheet" />
     <link href="styles/pages/heroes.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
@@ -30,37 +31,24 @@
 <body class="page archival-bg">
     <div id="header-placeholder"></div>
 
+    <!-- Section tabs: same block in npc.html, heroes.html and factions.html -->
+    <nav class="personae-tabs" aria-label="Dramatis Personae">
+        <a href="npc.html" class="personae-tab">
+            <span class="personae-tab__icon material-symbols-outlined">group</span>NPCs</a>
+        <a href="heroes.html" class="personae-tab is-active" aria-current="page">
+            <span class="personae-tab__icon material-symbols-outlined">local_fire_department</span>Heroes</a>
+        <a href="factions.html" class="personae-tab">
+            <span class="personae-tab__icon material-symbols-outlined">swords</span>Factions</a>
+    </nav>
+
     <main class="heroes-main">
 
-        <div class="archive-links">
-            <span class="archive-links__label">Related Archives:</span>
-
-            <a href="factions.html"
-                class="archive-link">
-                <span
-                    class="archive-link__icon material-symbols-outlined">swords</span>
-                Factions & Guilds
-            </a>
-
-            <a href="npc.html"
-                class="archive-link archive-link--npcs">
-                <span
-                    class="archive-link__icon material-symbols-outlined">group</span>
-                NPCs
-            </a>
-        </div>
-
-        <div class="heroes-hero">
-            <p class="heroes-hero__eyebrow">Dramatis
-                Personae</p>
-            <h1 id="party-title"
-                class="heroes-hero__title">
-                The Heroes</h1>
-            <div class="heroes-hero__rule"></div>
-            <select id="party-campaign"
-                class="party-picker hidden"
-                aria-label="Campaign"></select>
-        </div>
+        <header class="personae-hero">
+            <p class="personae-hero__eyebrow">Dramatis Personae</p>
+            <h1 id="party-title" class="personae-hero__title">The Heroes</h1>
+            <div class="personae-hero__rule"></div>
+            <select id="party-campaign" class="party-picker hidden" aria-label="Campaign"></select>
+        </header>
 
         <div class="heroes-layout">
 
@@ -183,7 +171,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
         document.addEventListener("DOMContentLoaded", async () => {

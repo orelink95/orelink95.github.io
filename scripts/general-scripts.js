@@ -61,6 +61,10 @@ function highlightActiveLink() {
     // If the URL ends in a slash (like on a live server root), default to index.html
     if (currentFileName === "") currentFileName = "index.html";
 
+    // Pages that live under another page's header entry
+    const SECTION_OF = { 'heroes.html': 'npc.html', 'factions.html': 'npc.html' };
+    currentFileName = SECTION_OF[currentFileName] || currentFileName;
+
     // 2. Find all the navigation links inside the header
     const navLinks = document.querySelectorAll("#header-placeholder a.nav-item");
 
@@ -117,7 +121,7 @@ const MOBILE_NAV = [
         pages: ['world.html', 'continent.html', 'country.html', 'settlement.html', 'pois.html', 'poi.html'],
         sub: [
             { name: 'Continents', url: 'continent.html', icon: 'map' },
-            { name: 'Kingdoms', url: 'country.html', icon: 'fort' },
+            { name: 'Countries', url: 'country.html', icon: 'fort' },
             { name: 'Settlements', url: 'settlement.html', icon: 'home_work' },
             { name: 'Points of Interest', url: 'pois.html', icon: 'location_on', alias: ['poi.html'] }
         ]
@@ -134,7 +138,16 @@ const MOBILE_NAV = [
         ]
     },
     { name: 'Story', url: 'scriptorium.html', icon: 'book', tone: 'gold', pages: ['scriptorium.html'], sub: [] },
-    { name: 'NPCs', url: 'npc.html', icon: 'group', tone: 'blue', pages: ['npc.html'], sub: [] }
+    {
+        name: 'Dramatis Personae', url: 'npc.html', icon: 'groups', tone: 'blue',
+        pages: ['npc.html', 'heroes.html', 'factions.html'],
+        // Same three entries as the tab bar of npc.html, heroes.html and factions.html
+        sub: [
+            { name: 'NPCs', url: 'npc.html', icon: 'group' },
+            { name: 'Heroes', url: 'heroes.html', icon: 'local_fire_department' },
+            { name: 'Factions', url: 'factions.html', icon: 'swords' }
+        ]
+    }
 ];
 
 function createMobileOrbMenu() {

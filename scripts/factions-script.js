@@ -302,6 +302,11 @@ window.openDossier = (id) => {
     // Inject the completed HTML!
     dossierView.innerHTML = html;
 
+    // Single column (phones, tablets): bring the dossier into view
+    if (window.matchMedia('(max-width: 1023.98px)').matches) {
+        dossierView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     // Trigger the reputation bar animation
     setTimeout(() => {
         const repBar = document.getElementById('f-rep-bar-dynamic');

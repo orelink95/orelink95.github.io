@@ -7,10 +7,11 @@ Plain CSS, no build step. Every page loads, in this order:
 | `tokens.css` | Colours (`--color-*`), fonts (`--font-headline`, `--font-body`, `--font-label`) and the shared easing (`--ease`). Change a colour here and it changes everywhere. |
 | `base.css` | Browser reset, form defaults, the `.hidden` helper and the shared `@keyframes` (pulse, float, glow…). |
 | `components.css` | Pieces used on every page: header, atlas sidebar, footer, mobile orb menu. |
-| `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. |
+| `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. One exception: `pages/atlas-index.css` serves the four Atlas list pages (see below). |
 | `loot-card.css` | The item cards (front and opened, rarity colours), shared by the Vault and the dashboard preview. Markup: `scripts/loot-card.js`. |
 | `spell-card.css` | The spell cards (one hue per school, symbols, materials tooltip) and their pop-ups, shared by the Book of Shadows and the heroes page. Also declares the Rieven Uncial font. Markup: `scripts/spell-card.js`. |
-| `main-style.css`, `atlas-style.css`, `poi-style.css` | Older hand-written styles (lore text, keyword links, map tweaks, POI entries). |
+| `atlas-style.css` | Shared by the Atlas pages: Leaflet popups, the small country/settlement pins, the popup button and "Read the lore" link, list-card flip, and the narrow-screen layout (map first, lore panel under it). Loaded after the page stylesheet, so it wins on equal selectors. |
+| `main-style.css`, `poi-style.css` | Older hand-written styles (lore text, keyword links, POI entries). |
 
 ## Conventions
 
@@ -24,3 +25,21 @@ Plain CSS, no build step. Every page loads, in this order:
 
 Every page uses these files directly: there is no Tailwind, npm or compile step any more. Edit a `.css` file, reload the page.
 The library pages share `components.css` (library header, footer and wings sidebar) like the atlas pages do.
+
+## The Atlas
+
+| Page | Stylesheets (besides `tokens`, `base`, `components`, `main-style`) | Script |
+|---|---|---|
+| `world.html` | `pages/world.css`, `atlas-style.css` | `atlas-scripts.js` |
+| `continent.html?id=…` | `pages/continent.css`, `atlas-style.css` | `continent-scripts.js` |
+| `country.html?id=…` | `pages/country.css`, `atlas-style.css` | `country-scripts.js` |
+| `settlement.html?id=…[&district=…]` | `pages/settlement.css`, `atlas-style.css` | `settlement-scripts.js` |
+| `poi.html?id=…` | `pages/poi.css`, `poi-style.css` | `poi-scripts.js` |
+| `continents.html`, `countries.html`, `settlements.html`, `pois.html` (lists) | `pages/atlas-index.css`, `atlas-style.css` | `atlas-index-scripts.js` |
+
+Every Atlas page also loads `scripts/atlas-common.js`: names shown to players (`Atlas.LABELS`), breadcrumbs, map set-up, pins, popups and the lore panel. An entry page opened without a valid `?id=` goes to its list page.
+
+- **Renaming a kind of place** (e.g. "Countries"): change `Atlas.LABELS` in `scripts/atlas-common.js`, then the two hard-coded copies of the menu: `components/sidebar.html` and `MOBILE_NAV` in `scripts/general-scripts.js`.
+- **The lore panel** (`.lore-panel*`) is styled in each map page's own stylesheet; `pages/continent.css` has a shorter version that sits under the map.
+- **Breadcrumbs** (`.breadcrumbs*`) are filled by the script into `<nav id="atlas-breadcrumbs">`; each page stylesheet holds their look.
+- **List cards** reuse the `.poi-card` / `.poi-pill` classes for every type, not only points of interest.

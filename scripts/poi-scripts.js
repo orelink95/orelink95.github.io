@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <p class="poi-eyebrow">Ledger Missing</p>
                 <h2>No landmark by that name</h2>
                 <p>${id ? `“${id}” is not in the archive.` : 'No landmark id was given.'}</p>
-                <a href="pois.html" class="poi-link">Back to the landmarks</a>
+                <a href="pois.html" class="poi-link">Back to the Points of Interest</a>
             </div>`;
         return;
     }
@@ -35,10 +35,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('poi-eyebrow').textContent = tavern ? 'Tavern & Lodging' : poi.danger ? 'Danger Zone' : poi.featured ? 'Featured Landmark' : 'Landmark';
     $('poi-title').textContent = poi.name;
     $('poi-subtitle').textContent = poi.subtitle || '';
-    const crumbs = store.ancestors(poi).filter(p => store.typeOf(p) !== 'continent').reverse();
-    $('poi-location').innerHTML = crumbs.length
-        ? crumbs.map(p => `<a class="poi-link" href="${store.url(p)}">${p.shortName || p.name}</a>`).join('')
-        : 'Unknown';
+    // Where it is: Eraldom › continent › country › settlement › this POI
+    // (district names are shown with the settlement's map, not here)
+    Atlas.breadcrumbs(store, $('atlas-breadcrumbs'), poi);
 
     // Lore
     $('poi-body-title').textContent = tavern ? 'The Establishment' : 'Archive Entry';

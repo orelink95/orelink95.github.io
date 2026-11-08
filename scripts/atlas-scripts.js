@@ -1,233 +1,139 @@
-// Magic Glow Spotlight Effect for Lore Cards
-document.addEventListener("DOMContentLoaded", async () => {
-    const loreCards = document.querySelectorAll('.lore-card');
-
-    loreCards.forEach(card => {
-        card.addEventListener('mousemove', e => {
-            // Get the size and position of the card
-            const rect = card.getBoundingClientRect();
-            // Calculate mouse position relative to the card
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Send these coordinates to CSS as custom variables
-            card.style.setProperty('--mouse-x', `${x}px`);
-            card.style.setProperty('--mouse-y', `${y}px`);
-        });
-    });
-});
-
 // =====================================================================
-// ATLAS INTERACTIVITY SCRIPT
-// This file controls the Leaflet map, custom markers, and layer toggles.
+// WORLD ATLAS  —  world.html
+// The world map (data/world.json), one pin per continent
+// (data/continents.json), the lore panel, the layer buttons and the
+// figures under the map. Shared helpers: scripts/atlas-common.js.
 // =====================================================================
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // -----------------------------------------------------------------
-    // 1. MAP INITIALIZATION & SETUP
-    // -----------------------------------------------------------------
-
-    // Grab the HTML container for the map. If it doesn't exist on this page, stop running.
     const mapElement = document.getElementById('world-map');
     if (!mapElement) return;
+
     const store = await Athenaeum.ready;
     const world = store.world;
-
-    // Create the Leaflet map instance. 
-    // L.CRS.Simple tells Leaflet this is a flat image, not a real globe with GPS coordinates.
-    const map = L.map('world-map', {
-        crs: L.CRS.Simple,
-        minZoom: -1,         // How far out the user can zoom
-        maxZoom: 2,          // How far in the user can zoom
-        zoomControl: false,  // We disable the default top-left zoom buttons to move them later
-        attributionControl: false // Removes the "Leaflet" watermark at the bottom right
-    });
-
-    // Map image and its pixel size come from data/world.json
-    const imgWidth = world.mapImage.width;
-    const imgHeight = world.mapImage.height;
-
-    // Define the corners of the map [Bottom-Left [Y, X], Top-Right [Y, X]]
-    const bounds = [[0, 0], [imgHeight, imgWidth]];
-
-    // Load the initial background image (Cartographic layer by default)
-    // We save this into a variable ('mapOverlay') so we can swap the URL later when buttons are clicked!
-    const mapOverlay = L.imageOverlay(world.mapImage.src, bounds).addTo(map);
-
-    // Force the map to center itself perfectly within the bounds we just set
-    map.fitBounds(bounds);
-
-    // Add the zoom in/out buttons back to the map, but push them to the bottom right
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-
+    Atlas.glow();
+    Atlas.breadcrumbs(store, document.getElementById('atlas-breadcrumbs'));
 
     // -----------------------------------------------------------------
-    // 2. CUSTOM FANTASY ICONS
+    // 1. MAP
     // -----------------------------------------------------------------
-    // Parameter:
-    // - isDanger: A true/false flag. If true, the pin turns red. If false (default), it stays gold.
+    const map = Atlas.createMap('world-map', { minZoom: -1, maxZoom: 2 });
+    Atlas.showImage(map, world.mapImage);
+
+    // Gold pins (red when dangerous): see .atlas-pin in pages/world.css
     function createFantasyIcon(iconName, isDanger = false) {
-
-        // Ternary operators (? :) check if isDanger is true. If true, use red 'error' colors. Otherwise, use gold 'secondary' colors.
-        // Red pins for dangerous places (see .atlas-pin--danger in pages/world.css)
         const tone = isDanger ? 'atlas-pin--danger' : '';
-
         return L.divIcon({
             className: 'map-pin-shell', // no Leaflet white square behind the pin
             html: `
                 <div class="atlas-pin ${tone}">
                     <div class="atlas-pin__glow"></div>
-                    
                     <div class="atlas-pin__disc">
-                        <img src="./images/atlas_icons/${iconName}.svg" class="atlas-pin__icon" style="filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(10deg);" />
+                        <img src="./images/atlas_icons/${iconName}.svg" alt="" class="atlas-pin__icon" style="filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(10deg);" />
                     </div>
                 </div>
             `,
-            iconSize: [40, 40],       // The physical width/height of the HTML block
-            iconAnchor: [20, 20],     // The exact pixel that points to the coordinate 
-            popupAnchor: [0, -20]     // Where the popup bubble should spawn relative to the anchor (0px left, 16px up)
+            iconSize: [40, 40],
+            iconAnchor: [20, 20],
+            popupAnchor: [0, -20]
         });
     }
 
-    // Custom CSS class applied to the popups --> atlas-style.css
-    const popupOptions = { className: 'fantasy-popup' };
-
-
     // -----------------------------------------------------------------
-    // 3. CREATE LAYER GROUPS 
+    // 2. LORE PANEL
     // -----------------------------------------------------------------
-
-    const cartographicLayer = L.layerGroup().addTo(map); // Added to map immediately on load
-    const politicalLayer = L.layerGroup();               // Hidden by default
-    const relicLayer = L.layerGroup();                   // Hidden by default
-
-
-    // -----------------------------------------------------------------
-    // 4. THE MASTER REGISTRY & LORE PANEL FUNC 
-    // -----------------------------------------------------------------
-
-    // World lore and continent pins come from data/world.json and data/continents.json
-
-    // Keep the default lore here for the overview/reset
-    const defaultLore = {
+    const panel = Atlas.lorePanel({
         entry: world.codex || '',
         title: world.loreTitle || world.name,
         body: store.autolink(store.md(world.body, { dropCap: true }))
-    };
-
-    // Updated Lore Panel Function
-    function updateLorePanel(data) {
-        document.getElementById('lore-entry-id').textContent = data.entry;
-        document.getElementById('lore-title').textContent = data.title;
-        document.getElementById('lore-body').innerHTML = data.body;
-
-        const resetBtn = document.getElementById('reset-lore-btn');
-        if (resetBtn) {
-            // Hide reset button if we are looking at the default view
-            if (data.title === defaultLore.title) resetBtn.classList.add('hidden');
-            else resetBtn.classList.remove('hidden');
-        }
-    }
-
-    updateLorePanel(defaultLore);
+    });
+    panel.onReset = () => map.closePopup();
+    map.on('click', () => panel.reset());     // click on empty map = back to the overview
 
     // -----------------------------------------------------------------
-    // 5. AUTOMATED MARKER GENERATION
+    // 3. CONTINENT PINS, SORTED INTO LAYERS
     // -----------------------------------------------------------------
-    // Continents pinned on the world map, in the shape the markers code expects
-    const allMarkersData = store.all('continent').filter(c => c.map).map(c => ({
-        id: c.id, title: c.name, subtitle: c.subtitle || '', entry: c.codex || '',
-        body: store.autolink(store.md(c.body, { dropCap: true }), { exclude: c.id }),
-        icon: c.map.icon, layer: c.map.layer || 'cartographic', isDanger: !!c.danger,
-        y: c.map.y, x: c.map.x, url: c.mapImage ? store.url(c) : null
-    }));
-
-    allMarkersData.forEach(data => {
-        const marker = L.marker(L.latLng(data.y, data.x), {
-            icon: createFantasyIcon(data.icon, data.isDanger)
+    // Each continent's map.layer says which layer button shows it.
+    const layers = {};   // layer name -> L.layerGroup
+    store.all('continent').filter(c => c.map).forEach(c => {
+        const view = {
+            entry: c.codex || '',
+            title: c.name,
+            body: store.autolink(store.md(c.body, { dropCap: true }), { exclude: c.id })
+        };
+        const marker = Atlas.pin({
+            y: c.map.y, x: c.map.x, name: c.name,
+            icon: createFantasyIcon(c.map.icon, !!c.danger),
+            // Every continent has a page, with or without a map of its own
+            popupHtml: Atlas.popup({ title: c.name, subtitle: c.subtitle, danger: c.danger, url: store.url(c), cta: Atlas.cta(store, c) }),
+            onClick: () => panel.show(view)
         });
-
-        // Set popup style based on danger
-        const colorClass = data.isDanger ? 'map-popup__title--danger' : '';
-        marker.bindPopup(`
-            <div class='map-popup'>
-                <b class='map-popup__title ${colorClass}'>${data.title}</b>
-                <span class='map-popup__subtitle'>${data.subtitle}</span>
-                ${data.url ? `<a href="${data.url}" class="map-popup__link">Explore the continent</a>` : ''}
-            </div>
-        `, popupOptions);
-
-        // Click event to update lore panel using the data directly from the registry
-        marker.on('click', () => updateLorePanel(data));
-
-        // Add to correct layer
-        if (data.layer === 'cartographic') marker.addTo(cartographicLayer);
-        else if (data.layer === 'political') marker.addTo(politicalLayer);
-        else if (data.layer === 'relic') marker.addTo(relicLayer);
+        const layer = c.map.layer || 'cartographic';
+        (layers[layer] = layers[layer] || L.layerGroup()).addLayer(marker);
     });
 
-    // Reset logic for clicking empty map
-    map.on('click', () => updateLorePanel(defaultLore));
+    // -----------------------------------------------------------------
+    // 4. LAYER BUTTONS
+    // -----------------------------------------------------------------
+    // One button per layer that has at least one pin. With a single layer
+    // the buttons are hidden: there is nothing to switch to.
+    // (Values of the mapLayer list in data/schema.js.)
+    const LAYER_NAMES = {
+        cartographic: 'Landmass', political: 'Political', relic: 'Relic',
+        locations: 'Locations', events: 'Events', hazards: 'Hazards'
+    };
+    const order = Object.keys(LAYER_NAMES);
+    const used = Object.keys(layers).sort((a, b) => order.indexOf(a) - order.indexOf(b));
+    const first = used[0];
+    if (first) layers[first].addTo(map);
 
-    // Reset logic for the Undo button
-    const resetLoreBtn = document.getElementById('reset-lore-btn');
-    if (resetLoreBtn) {
-        resetLoreBtn.addEventListener('click', () => {
-            updateLorePanel(defaultLore);
-            map.closePopup();
+    const scroller = document.getElementById('atlas-layers-scroller');
+    const holder = document.getElementById('atlas-layers');
+    if (used.length > 1) {
+        holder.innerHTML = used.map(name => `
+            <button type="button" data-layer="${name}" aria-pressed="${name === first}"
+                class="atlas-layer layer-btn${name === first ? ' is-active' : ''}">
+                ${LAYER_NAMES[name] || name}
+            </button>`).join('');
+        holder.querySelectorAll('.layer-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const selected = button.dataset.layer;
+                used.forEach(name => map.removeLayer(layers[name]));
+                map.addLayer(layers[selected]);
+                map.closePopup();
+                panel.reset();
+                holder.querySelectorAll('.layer-btn').forEach(btn => {
+                    btn.classList.toggle('is-active', btn === button);
+                    btn.setAttribute('aria-pressed', btn === button);
+                });
+            });
         });
+    } else if (scroller) {
+        scroller.classList.add('hidden');
     }
 
-
-
-
-
     // -----------------------------------------------------------------
-    // 6. LAYER TOGGLE BUTTON LOGIC
+    // 5. FIGURES UNDER THE MAP (counted from the data)
     // -----------------------------------------------------------------
+    const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+    const settlements = store.all('settlement');
+    const countriesWithTowns = new Set(settlements.map(s => (store.ancestors(s).find(p => store.typeOf(p) === 'country') || {}).id).filter(Boolean));
+    const pois = store.all('poi');
+    const taverns = pois.filter(p => p.tavern && p.tavern.tier).length;
+    const people = store.all('npc').filter(n => !n.stub);
+    const factions = store.all('faction').filter(f => !f.stub);
+    const hostile = factions.filter(f => /^hostile/i.test(f.status || '')).length;
+    const L_ = Atlas.LABELS;
 
-    // This object acts as a dictionary. It links the button's data-layer attribute 
-    // to its corresponding marker folder and map background image.
-    const mapData = {
-        cartographic: {
-            markers: cartographicLayer,
-            image: world.mapImage.src
-        },
-        political: {
-            markers: politicalLayer,
-            image: './images/placeholder_text.png'
-        },
-        relic: {
-            markers: relicLayer,
-            image: world.mapImage.src
-        }
-    };
-
-    // Find all the buttons with the 'layer-btn' class
-    const layerButtons = document.querySelectorAll('.layer-btn');
-
-    // Loop through each button and give it a click listener
-    layerButtons.forEach(button => {
-        button.addEventListener('click', () => {
-
-            // Get the name of the layer from the button the user just clicked (e.g., 'political')
-            const selectedLayer = button.getAttribute('data-layer');
-
-            // A. Swap the background map image to match the selected layer
-            mapOverlay.setUrl(mapData[selectedLayer].image);
-
-            // B. Hide ALL marker layers to give us a blank slate
-            // Object.values(mapData) loops through cartographic, political, and relic data
-            Object.values(mapData).forEach(data => map.removeLayer(data.markers));
-
-            // C. Add ONLY the markers for the button that was clicked
-            map.addLayer(mapData[selectedLayer].markers);
-
-            // D. Update the visual styling of the HTML buttons
-            layerButtons.forEach(btn => btn.classList.remove('is-active'));
-            button.classList.add('is-active');
-        });
-    });
+    const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+    set('stat-settlements-label', `Known ${L_.settlement.many}`);
+    set('stat-settlements', settlements.length);
+    set('stat-settlements-note', `Across ${plural(countriesWithTowns.size, L_.country.one.toLowerCase(), L_.country.many.toLowerCase())}`);
+    set('stat-pois-label', L_.poi.many);
+    set('stat-pois', pois.length);
+    set('stat-pois-note', taverns ? `Including ${plural(taverns, 'tavern', 'taverns')}` : 'Landmarks on record');
+    set('stat-people', people.length);
+    set('stat-people-note', 'Recorded in the Almanach');
+    set('stat-factions', factions.length);
+    set('stat-factions-note', hostile ? `${hostile} ${hostile === 1 ? 'is' : 'are'} hostile to the party` : 'None hostile to the party');
 });
-
-

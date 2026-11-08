@@ -539,3 +539,121 @@
 .map-popup__title.map-popup__title--danger {
     color: var(--color-error);
 }
+
+
+/* ---------- Lore panel under the map (continent text, or the nation whose pin was clicked) ---------- */
+
+.lore-panel {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    border-width: 1px;
+    border-color: color-mix(in srgb, var(--color-outline-variant) 20%, transparent);
+    background-color: var(--color-surface-container-low);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    scroll-margin-top: 6rem;   /* "Read the lore" stops below the fixed header */
+}
+
+.lore-panel__glow {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 500ms var(--ease);
+    pointer-events: none;
+}
+.lore-panel:hover .lore-panel__glow {
+    opacity: 1;
+}
+
+.lore-panel__watermark {
+    position: absolute;
+    bottom: -2.5rem;
+    right: -2.5rem;
+    z-index: 0;
+    font-size: 12rem;
+    color: color-mix(in srgb, var(--color-primary) 5%, transparent);
+    transform: rotate(12deg);
+    pointer-events: none;
+    user-select: none;
+}
+
+.lore-panel__scroll {
+    position: relative;
+    z-index: 10;
+    max-height: 28rem;
+    overflow-y: auto;
+    margin-right: -1rem;
+    padding-right: 1rem;
+}
+
+.lore-panel__head {
+    margin-bottom: 1.5rem;
+}
+
+.lore-panel__meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.lore-panel__entry {
+    display: block;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-primary);
+}
+
+.lore-panel__reset {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--color-on-surface-variant);
+    transition: all 300ms var(--ease);
+}
+.lore-panel__reset:hover {
+    color: var(--color-primary);
+    transform: translateX(-0.25rem);
+}
+
+.lore-panel__reset-icon {
+    font-size: 16px;
+}
+
+.lore-panel__reset-label {
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.lore-panel__title {
+    margin-bottom: 1rem;
+    font-family: var(--font-headline);
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--color-primary);
+}
+
+.lore-panel__rule {
+    height: 1px;
+    width: 4rem;
+    background-image: linear-gradient(to right, var(--color-primary), color-mix(in srgb, var(--color-primary) 50%, transparent), transparent);
+}
+
+.lore-panel__body > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 1.5rem;
+    margin-bottom: 0;
+}
+.lore-panel__body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.625;
+    color: var(--color-on-surface-variant);
+}

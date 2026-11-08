@@ -1,4 +1,6 @@
-/* Landmark list (pois.html) */
+/* Atlas list pages: continents.html, countries.html, settlements.html, pois.html
+   Cards and filters are built by scripts/atlas-index-scripts.js.
+   (Card flip rules: styles/atlas-style.css) */
 
 .page {
     overflow-x: hidden;
@@ -117,226 +119,8 @@
     }
 }
 
-.poi-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-    background-color: color-mix(in srgb, var(--color-surface) 95%, transparent);
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-}
-@media (min-width: 768px) {
-    .poi-modal {
-        padding: 2rem;
-    }
-}
 
-.poi-modal__card {
-    display: flex;
-    flex-direction: column;
-    max-height: 90vh;
-    width: 100%;
-    max-width: 64rem;
-    overflow: hidden;
-    border-radius: 0.25rem;
-    border-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
-    background-color: var(--color-surface-container);
-    box-shadow: 0 0 100px rgba(26,48,32,0.8);
-}
-@media (min-width: 768px) {
-    .poi-modal__card {
-        flex-direction: row;
-    }
-}
-
-.poi-modal__media {
-    position: relative;
-    flex-shrink: 0;
-    height: 16rem;
-}
-@media (min-width: 768px) {
-    .poi-modal__media {
-        height: auto;
-        width: 50%;
-    }
-}
-
-.poi-modal__img {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-.poi-modal__fade-side {
-    position: absolute;
-    inset: 0;
-    display: none;
-    background-image: linear-gradient(to right, transparent, var(--color-surface-container));
-}
-@media (min-width: 768px) {
-    .poi-modal__fade-side {
-        display: block;
-    }
-}
-
-.poi-modal__fade-bottom {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(to top, var(--color-surface-container), transparent);
-}
-@media (min-width: 768px) {
-    .poi-modal__fade-bottom {
-        display: none;
-    }
-}
-
-.poi-modal__content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
-    padding: 2rem;
-    text-align: left;
-}
-@media (min-width: 768px) {
-    .poi-modal__content {
-        width: 50%;
-        padding: 3rem;
-    }
-}
-
-.poi-modal__close {
-    position: absolute;
-    right: 1.5rem;
-    top: 1.5rem;
-    z-index: 10;
-    color: var(--color-on-surface-variant);
-}
-.poi-modal__close:hover {
-    color: var(--color-secondary);
-}
-
-.poi-modal__uid {
-    margin-bottom: 1rem;
-    font-family: var(--font-label);
-    font-size: 0.75rem;
-    line-height: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.4em;
-    color: var(--color-secondary);
-}
-
-.poi-modal__title {
-    margin-bottom: 1.5rem;
-    font-family: var(--font-headline);
-    font-size: 2.25rem;
-    line-height: 2.5rem;
-    font-weight: 700;
-    color: var(--color-on-surface);
-}
-
-.poi-modal__body {
-    margin-bottom: 2rem;
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    line-height: 1.625;
-    color: var(--color-on-surface-variant);
-}
-.poi-modal__body > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 1.5rem;
-    margin-bottom: 0;
-}
-
-.poi-modal__link-row {
-    margin-bottom: 2rem;
-}
-
-.poi-modal__link {
-    display: inline-block;
-    padding: 0.5rem 1.5rem;
-    border-radius: 0.125rem;
-    border-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
-    font-family: var(--font-label);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-secondary);
-    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    transition: all 300ms var(--ease);
-}
-.poi-modal__link:hover {
-    background-color: var(--color-secondary);
-    color: #000;
-}
-
-.poi-modal__residents {
-    margin-bottom: 2rem;
-}
-
-.poi-modal__section-title {
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
-    border-bottom-width: 1px;
-    border-color: rgb(255 255 255 / 0.05);
-    font-family: var(--font-label);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-outline);
-}
-
-.poi-modal__npcs {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 0.75rem;
-}
-
-.poi-modal__footer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    margin-top: auto;
-    padding-top: 2rem;
-    border-top-width: 1px;
-    border-color: rgb(255 255 255 / 0.05);
-}
-
-.poi-modal__fact-label {
-    margin-bottom: 0.25rem;
-    font-family: var(--font-label);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-outline);
-}
-
-.poi-modal__location {
-    font-family: var(--font-headline);
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    color: var(--color-on-surface);
-}
-
-.poi-modal__record {
-    font-family: var(--font-headline);
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    color: var(--color-secondary);
-}
-
-
-/* Modal: shown by removing .hidden */
-
-.poi-modal {
-    display: flex;
-}
-
-/* Landmark cards (built in pois-scripts.js) */
+/* Cards */
 
 .poi-grid__empty {
     grid-column: 1 / -1;
@@ -478,76 +262,6 @@
     color: #000;
 }
 
-.poi-modal__empty {
-    font-style: italic;
-    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
-}
-
-.resident-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
-    border-radius: 0.125rem;
-    border-width: 1px;
-    border-color: rgb(255 255 255 / 0.05);
-    background-color: rgb(0 0 0 / 0.2);
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: var(--ease);
-    transition-duration: 150ms;
-}
-.resident-row:hover {
-    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
-}
-
-.resident-row__img {
-    height: 3rem;
-    width: 3rem;
-    object-fit: cover;
-    border-radius: 0.125rem;
-    opacity: 0.8;
-    filter: grayscale(100%);
-    transition: all 500ms var(--ease);
-}
-.resident-row:hover .resident-row__img {
-    opacity: 1;
-    filter: grayscale(0);
-}
-
-.resident-row__info {
-    flex-grow: 1;
-}
-
-.resident-row__head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-}
-
-.resident-row__name {
-    font-family: var(--font-headline);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    font-weight: 700;
-    color: var(--color-secondary);
-}
-
-.resident-row__link {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    color: var(--color-on-surface-variant);
-}
-.resident-row__link:hover {
-    color: var(--color-primary);
-}
-
-.resident-row__role {
-    font-family: var(--font-label);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
-}
 
 /* Status pill on a card: --danger, --featured or --safe */
 
@@ -619,4 +333,86 @@
 
 .poi-pill--safe .poi-pill__label {
     color: var(--color-secondary);
+}
+
+
+/* ---------- Added with the shared list pages ---------- */
+
+.landmarks-header .breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
+}
+.breadcrumbs__link:hover {
+    color: var(--color-secondary);
+}
+.breadcrumbs__separator {
+    font-size: 12px;
+}
+.breadcrumbs__current {
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.landmarks-header__count {
+    margin-top: 0.75rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
+}
+
+.landmark-filter--search {
+    flex: 1 1 14rem;
+    min-width: 14rem;
+    cursor: text;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    font-size: 0.8125rem;
+}
+.landmark-filter--search::placeholder {
+    color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
+}
+
+.landmark-filter:focus-visible {
+    outline-color: var(--color-secondary);
+}
+
+/* Cards are links: keyboard focus ring, no link colour */
+.poi-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    border-radius: 0.25rem;
+}
+.poi-card:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 4px;
+}
+
+/* The back's "Open the entry" is a label (the whole card is the link) */
+.poi-card__button {
+    display: inline-block;
+}
+
+/* Touch screens: the card does not turn over, so the front shows the subtitle too */
+.poi-card__hint {
+    display: none;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    color: color-mix(in srgb, var(--color-on-surface) 70%, transparent);
+}
+@media (hover: none) {
+    .poi-card__hint {
+        display: block;
+    }
 }

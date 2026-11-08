@@ -27,190 +27,119 @@
     margin-right: auto;
 }
 
-.roster-header {
+/* ---------- Toolbar: relation tabs, filters, search ----------
+   Phone: search + filters button on one row, relation tabs under it,
+   the two drop-downs in a panel that slides up from the bottom.
+   From 768px: one row, the drop-downs inline. */
+
+.roster-toolbar {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    margin-bottom: 3rem;
-}
-
-.roster-header__top {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-@media (min-width: 1280px) {
-    .roster-header__top {
-        flex-direction: row;
-        align-items: flex-end;
-        justify-content: space-between;
-    }
-}
-
-.roster-header__intro {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.roster-header__eyebrow {
-    margin-bottom: 0.5rem;
-    font-family: var(--font-label);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    color: var(--color-secondary);
-}
-
-.roster-header__title {
-    font-family: var(--font-headline);
-    font-size: 2.25rem;
-    font-weight: 700;
-    line-height: 1.25;
-    color: var(--color-on-surface);
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
 }
 @media (min-width: 768px) {
-    .roster-header__title {
-        font-size: 3rem;
-        line-height: 1;
+    .roster-toolbar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgb(255 255 255 / 0.05);
     }
 }
 
-.archive-links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.75rem;
-    margin-top: 0.5rem;
-}
-
-.archive-links__label {
-    margin-right: 0.5rem;
-    font-family: var(--font-label);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
-}
-
-.archive-link {
+.roster-toolbar__end {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.375rem 1rem;
-    border-radius: 0.125rem;
-    border-width: 1px;
-    border-color: rgb(255 255 255 / 0.1);
-    background-color: #0a0b0a;
-    font-family: var(--font-label);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-on-surface-variant);
-    transition: all 150ms var(--ease);
+    order: -1;
 }
-.archive-link:hover {
-    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
-    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
-    color: var(--color-secondary);
-}
-
-.archive-link__icon {
-    font-size: 14px;
-    transition: transform 150ms var(--ease);
-}
-.archive-link:hover .archive-link__icon {
-    transform: scale(1.1);
+@media (min-width: 768px) {
+    .roster-toolbar__end {
+        order: 0;
+        gap: 0.75rem;
+    }
 }
 
 .roster-search {
     position: relative;
-    width: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+@media (min-width: 768px) {
+    .roster-search {
+        width: 18rem;
+    }
 }
 @media (min-width: 1280px) {
     .roster-search {
-        width: 24rem;
+        width: 22rem;
     }
 }
 
 .roster-search__icon {
     position: absolute;
-    left: 1rem;
+    left: 0.875rem;
     top: 50%;
-    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    font-size: 20px;
+    color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
     transform: translateY(-50%);
+    pointer-events: none;
 }
 
 .roster-search__input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 3rem;
-    border-radius: 0.25rem;
-    border-width: 1px;
-    border-color: rgb(255 255 255 / 0.1);
+    height: 44px;
+    padding: 0 1rem 0 2.75rem;
+    border-radius: 0.375rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
     outline: 2px solid transparent;
     outline-offset: 2px;
     background-color: rgb(10 11 10 / 0.8);
     font-family: var(--font-body);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
+    /* 16px: below that, iPhones zoom the page when the field gets focus */
+    font-size: 1rem;
     color: var(--color-on-surface);
-    box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-    transition: all 150ms var(--ease);
+    transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
 }
 .roster-search__input::placeholder {
-    color: color-mix(in srgb, var(--color-on-surface) 30%, transparent);
+    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
 }
 .roster-search__input:focus {
     border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
     background-color: #0a0b0a;
 }
 
-.roster-filters {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1.5rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-color: rgb(255 255 255 / 0.05);
-}
-@media (min-width: 768px) {
-    .roster-filters {
-        flex-direction: row;
-        align-items: center;
-    }
-}
+/* Relation tabs (npc-scripts.js colours the active one: .relation-tab--<relation>) */
 
 .relation-tabs {
     display: flex;
-    width: 100%;
+    gap: 0.5rem;
     overflow-x: auto;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    border-width: 1px;
-    border-color: rgb(255 255 255 / 0.1);
-    background-color: #0a0b0a;
+    scrollbar-width: none;
 }
-@media (min-width: 768px) {
-    .relation-tabs {
-        width: auto;
-    }
+.relation-tabs::-webkit-scrollbar {
+    display: none;
 }
 
 .relation-tab {
+    display: inline-flex;
     flex-shrink: 0;
-    padding: 0.5rem 1.25rem;
-    border-radius: 0.375rem;
-    border-width: 1px;
-    border-color: transparent;
+    align-items: center;
+    gap: 0.4rem;
+    height: 36px;
+    padding: 0 0.9rem;
+    border-radius: 18px;
+    border: 1px solid var(--color-outline-variant);
+    background-color: var(--color-surface-container-low);
     font-family: var(--font-label);
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     color: var(--color-on-surface-variant);
     transition: all 150ms var(--ease);
 }
@@ -218,80 +147,221 @@
     color: #fff;
 }
 
-.roster-filters__selects {
+.relation-tab__count {
+    font-weight: 400;
+    color: var(--color-outline);
+}
+.relation-tab.is-active .relation-tab__count {
+    color: inherit;
+    opacity: 0.8;
+}
+
+/* Filters button (phones only) */
+
+.filters-toggle {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
+    flex-shrink: 0;
     align-items: center;
-    gap: 0.75rem;
-    width: 100%;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 0.375rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background-color: var(--color-surface-container);
+    color: var(--color-secondary);
+}
+.filters-toggle[aria-expanded="true"] {
+    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
 }
 @media (min-width: 768px) {
-    .roster-filters__selects {
-        width: auto;
+    .filters-toggle {
+        display: none;
     }
 }
 
-.roster-filters__label {
-    display: none;
-    margin-right: 0.5rem;
+.filters-toggle__count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background-color: var(--color-secondary);
     font-family: var(--font-label);
-    font-size: 9px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    color: var(--color-on-secondary);
 }
-@media (min-width: 768px) {
-    .roster-filters__label {
+
+/* Location / affiliation */
+
+.roster-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.roster-filters__head,
+.roster-filters__foot,
+.filter-select__label {
+    display: none;
+}
+
+.filters-backdrop {
+    display: none;
+}
+
+/* Phone: the panel from the bottom */
+@media (max-width: 767.98px) {
+    .roster-filters {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 90;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
+        border-top: 1px solid color-mix(in srgb, var(--color-secondary) 30%, transparent);
+        border-radius: 1rem 1rem 0 0;
+        background-color: var(--color-surface-container);
+        box-shadow: 0 -20px 60px rgb(0 0 0 / 0.6);
+        transform: translateY(105%);
+        visibility: hidden;
+        transition: transform 250ms var(--ease), visibility 0s linear 250ms;
+    }
+    .roster-filters.is-open {
+        transform: translateY(0);
+        visibility: visible;
+        transition: transform 250ms var(--ease);
+    }
+
+    .filters-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 89;
         display: block;
+        background-color: rgb(0 0 0 / 0.6);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 250ms var(--ease);
+    }
+    .filters-backdrop.is-open {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .roster-filters__head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .roster-filters__heading {
+        font-family: var(--font-headline);
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--color-on-surface);
+    }
+
+    .roster-filters__close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        margin-right: -0.5rem;
+        color: var(--color-on-surface-variant);
+    }
+
+    .filter-select__label {
+        display: block;
+        margin-bottom: 0.375rem;
+        font-family: var(--font-label);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-outline);
+    }
+
+    .roster-filters__foot {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.25rem;
+    }
+
+    .roster-filters__reset,
+    .roster-filters__done {
+        flex: 1;
+        height: 44px;
+        border-radius: 0.375rem;
+        font-family: var(--font-label);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+    .roster-filters__reset {
+        border: 1px solid var(--color-outline-variant);
+        color: var(--color-on-surface-variant);
+    }
+    .roster-filters__done {
+        border: 1px solid var(--color-secondary);
+        background-color: color-mix(in srgb, var(--color-secondary) 15%, transparent);
+        color: var(--color-secondary);
     }
 }
 
 .filter-select {
     position: relative;
-    flex-grow: 1;
-}
-@media (min-width: 768px) {
-    .filter-select {
-        flex-grow: 0;
-    }
+    display: block;
 }
 
 .filter-select__input {
     width: 100%;
-    padding: 0.625rem 2.5rem 0.625rem 1rem;
-    border-radius: 0.75rem;
-    border-width: 1px;
-    border-color: rgb(255 255 255 / 0.1);
+    height: 44px;
+    padding: 0 2.5rem 0 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
     outline: 2px solid transparent;
     outline-offset: 2px;
     background-color: var(--color-surface-container-high);
     font-family: var(--font-label);
-    font-size: 10px;
+    font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--color-on-surface);
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: var(--ease);
-    transition-duration: 150ms;
     cursor: pointer;
     appearance: none;
+    transition: border-color 150ms var(--ease);
 }
-.filter-select:hover .filter-select__input {
+.filter-select:hover .filter-select__input,
+.filter-select__input:focus {
     border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+}
+@media (max-width: 767.98px) {
+    .filter-select__input {
+        font-size: 1rem;
+        text-transform: none;
+        letter-spacing: normal;
+    }
 }
 
 .filter-select__chevron {
     position: absolute;
     right: 0.75rem;
-    top: 50%;
-    font-size: 14px;
+    bottom: 22px;
+    font-size: 16px;
     color: var(--color-secondary);
-    transform: translateY(-50%);
-    transition: transform 150ms var(--ease);
+    transform: translateY(50%);
     pointer-events: none;
-}
-.filter-select:hover .filter-select__chevron {
-    transform: translateY(1px);
 }
 
 .npc-grid {
@@ -647,14 +717,6 @@
     color: var(--color-error);
 }
 
-/* "Player Heroes" link */
-
-.archive-link--heroes:hover {
-    border-color: color-mix(in srgb, var(--color-primary) 50%, transparent);
-    background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
-    color: var(--color-primary);
-}
-
 /* Modal: shown by removing .hidden */
 
 .npc-modal {
@@ -879,4 +941,239 @@
 
 .npc-card__relation--killed {
     border-color: rgb(69 10 10 / 0.3);
+}
+
+/* =====================================================================
+   PHONES
+   ===================================================================== */
+
+/* The card is a <button>: keep the portrait-card look */
+.npc-card {
+    display: block;
+    padding: 0;
+    background-color: var(--color-surface-container-lowest);
+    text-align: left;
+}
+.npc-card:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+/* Small avatar: only shown in the phone list */
+.npc-card__avatar {
+    display: none;
+}
+
+/* Touch screens have no hover: show the portraits in colour */
+@media (hover: none) {
+    .npc-card__img {
+        filter: none;
+        opacity: 0.9;
+    }
+    .npc-card__location {
+        color: var(--color-on-surface-variant);
+    }
+}
+
+/* ---------- Below 640px: compact list ----------
+   avatar | name / role / faction | relation */
+@media (max-width: 639.98px) {
+    .npc-grid {
+        gap: 0;
+    }
+
+    .npc-card {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr) auto;
+        grid-template-areas:
+            "avatar caption relation"
+            "avatar place   relation";
+        align-items: center;
+        column-gap: 0.75rem;
+        aspect-ratio: auto;
+        min-height: 72px;
+        padding: 0.625rem 0;
+        border: 0;
+        border-bottom: 1px solid rgb(255 255 255 / 0.06);
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+    }
+    .npc-card:hover {
+        border-color: rgb(255 255 255 / 0.06);
+        box-shadow: none;
+    }
+
+    .npc-card__img,
+    .npc-card__shade,
+    .npc-card__location {
+        display: none;
+    }
+
+    .npc-card__avatar {
+        display: block;
+        grid-area: avatar;
+        width: 52px;
+        height: 52px;
+        border-radius: 0.25rem;
+        border: 1px solid color-mix(in srgb, var(--color-secondary) 30%, transparent);
+        object-fit: cover;
+    }
+
+    /* The badge row melts into the grid: faction under the name, relation on the right */
+    .npc-card__badges {
+        display: contents;
+    }
+
+    .npc-card__place {
+        grid-area: place;
+        align-self: start;
+        max-width: none;
+        padding: 0;
+        border: 0;
+        background: none;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        font-family: var(--font-label);
+        font-size: 11px;
+        text-transform: none;
+        letter-spacing: normal;
+        color: var(--color-outline);
+    }
+
+    .npc-card__relation {
+        grid-area: relation;
+    }
+
+    /* Name first, then role */
+    .npc-card__caption {
+        position: static;
+        grid-area: caption;
+        align-self: end;
+        display: flex;
+        flex-direction: column-reverse;
+        min-width: 0;
+        padding: 0;
+        transform: none;
+    }
+
+    .npc-card__name {
+        overflow: hidden;
+        font-size: 1rem;
+        line-height: 1.375rem;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .npc-card__role {
+        margin: 0.125rem 0 0;
+        overflow: hidden;
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .npc-grid__empty {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+}
+
+/* ---------- NPC pop-up below 768px: a full-screen page ---------- */
+@media (max-width: 767.98px) {
+    .npc-modal {
+        padding: 0;
+        background-color: var(--color-surface);
+    }
+
+    .npc-modal__card {
+        height: 100%;
+        max-height: none;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .npc-modal__portrait {
+        height: 18rem;
+    }
+
+    .npc-modal__content {
+        overflow: visible;
+        padding: 0.5rem 1.25rem calc(2.5rem + env(safe-area-inset-bottom));
+    }
+
+    .npc-modal__name {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+    }
+
+    .npc-modal__role {
+        letter-spacing: 0.25em;
+    }
+
+    /* Stays on screen while the page scrolls */
+    .npc-modal__close {
+        position: fixed;
+        top: calc(0.75rem + env(safe-area-inset-top));
+        right: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 22px;
+        border: 1px solid rgb(255 255 255 / 0.15);
+        background-color: rgb(10 11 10 / 0.75);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        color: var(--color-on-surface);
+    }
+}
+
+/* From 768px the close button sits in the content column, top right */
+@media (min-width: 768px) {
+    .npc-modal__card {
+        position: relative;
+    }
+    .npc-modal__close {
+        right: 1.5rem;
+        top: 1.5rem;
+    }
+}
+
+/* No page scrolling behind an open pop-up (npc-scripts.js) */
+html.has-modal-open {
+    overflow: hidden;
+}
+
+/* ---------- Classified secrets: hover, tap or keyboard ---------- */
+.npc-secrets {
+    cursor: pointer;
+}
+.npc-secrets:focus-visible {
+    outline: 2px solid var(--color-error);
+    outline-offset: 2px;
+}
+.npc-secrets.is-revealed .npc-secrets__text {
+    filter: none;
+    user-select: text;
+}
+.npc-secrets.is-revealed .npc-secrets__veil {
+    opacity: 0;
+}
+
+.npc-secrets__hint--touch {
+    display: none;
+}
+@media (hover: none) {
+    .npc-secrets__hint--hover {
+        display: none;
+    }
+    .npc-secrets__hint--touch {
+        display: inline;
+    }
 }

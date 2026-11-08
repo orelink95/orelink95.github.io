@@ -21,3 +21,33 @@
         padding-right: 2rem;
     }
 }
+
+/* Breadcrumbs above the entry, same look as the other Atlas pages */
+.breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
+}
+
+.breadcrumbs__link {
+    transition: color 150ms var(--ease);
+}
+.breadcrumbs__link:hover {
+    color: var(--color-secondary);
+}
+
+.breadcrumbs__separator {
+    font-size: 12px;
+}
+
+.breadcrumbs__current {
+    font-weight: 700;
+    color: var(--color-secondary);
+}

@@ -113,6 +113,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 fields: {
                     ...PLACE_FIELDS,
                     era: { kind: 'text', label: 'Era shown on the map (e.g. Year 1466 LF)' },
+                    image: { kind: 'image', label: 'Card image (Continents list; the map is used if empty)' },
                     map: { kind: 'map', label: 'Pin on the world map' },
                     mapImage: { kind: 'mapImage', label: 'Continent map' },
                     facts: {
@@ -135,7 +136,8 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     ...PLACE_FIELDS,
                     shortName: { kind: 'text', label: 'Short name (map labels)' },
                     epithet: { kind: 'text', label: 'Epithet (nations list)' },
-                    unlisted: { kind: 'boolean', label: 'Hide from the nations list' },
+                    unlisted: { kind: 'boolean', label: 'Hide from the country list of the continent page and from the Countries page (the map pin stays)' },
+                    image: { kind: 'image', label: 'Card image (Countries list; the map is used if empty)' },
                     loreTitle: { kind: 'text', label: 'Lore heading' },
                     map: { kind: 'map', label: 'Pin on the continent map' },
                     mapImage: { kind: 'mapImage', label: 'Country map' },
@@ -149,6 +151,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 fields: {
                     ...PLACE_FIELDS,
                     map: { kind: 'map', label: 'Pin on the country map' },
+                    image: { kind: 'image', label: 'Card image (Settlements list; the first district map is used if empty)' },
                 },
             },
             district: {

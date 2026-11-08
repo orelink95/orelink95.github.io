@@ -1,0 +1,127 @@
+/* =====================================================================
+   DRAMATIS PERSONAE — what the three pages of the section share:
+   npc.html, heroes.html, factions.html.
+   - .personae-hero : the centred page title (eyebrow, title, gold rule)
+   - .personae-tabs : the NPCs · Heroes · Factions tab bar under it
+   The tab bar is written out in each of the three pages: keep them in step
+   (and in step with MOBILE_NAV in scripts/general-scripts.js).
+   ===================================================================== */
+
+:root {
+    /* Height of the fixed site header (components.css), so the tab bar
+       can stick right under it */
+    --site-header-h: 4rem;
+}
+
+/* ---------- Page title ---------- */
+
+.personae-hero {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+@media (min-width: 768px) {
+    .personae-hero {
+        margin-bottom: 2.5rem;
+    }
+}
+
+.personae-hero__eyebrow {
+    margin-bottom: 0.75rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: var(--color-secondary);
+    animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.personae-hero__title {
+    margin-bottom: 1.25rem;
+    font-family: var(--font-headline);
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+    font-weight: 700;
+    color: #fff;
+    filter: drop-shadow(0 0 15px rgba(233, 193, 118, 0.2));
+}
+@media (min-width: 768px) {
+    .personae-hero__title {
+        margin-bottom: 1.5rem;
+        font-size: 3.75rem;
+        line-height: 1;
+    }
+}
+
+.personae-hero__rule {
+    height: 1px;
+    background-image: linear-gradient(to right, transparent, color-mix(in srgb, var(--color-secondary) 50%, transparent), transparent);
+}
+
+/* ---------- Section tabs ----------
+   A full-width bar right under the fixed site header; it stays there
+   while the page scrolls. */
+
+.personae-tabs {
+    position: sticky;
+    top: var(--site-header-h);
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--site-header-h);
+    padding: 0 0.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+    background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+}
+
+/* The pages' <main> pad their top for the fixed header: the tab bar already clears it */
+.personae-tabs ~ main {
+    padding-top: 2rem;
+}
+@media (min-width: 768px) {
+    .personae-tabs ~ main {
+        padding-top: 3rem;
+    }
+}
+
+.personae-tab {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    max-width: 13rem;
+    min-height: 48px;
+    margin-bottom: -1px;
+    padding: 0 0.75rem;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-on-surface-variant);
+    transition: color 150ms var(--ease), border-color 150ms var(--ease);
+}
+.personae-tab:hover {
+    color: #fff;
+}
+.personae-tab.is-active {
+    border-bottom-color: var(--color-secondary);
+    color: var(--color-secondary);
+}
+
+.personae-tab__icon {
+    font-size: 18px;
+}
+/* Icons only from tablet width: on a phone the three labels need the room */
+@media (max-width: 639.98px) {
+    .personae-tab__icon {
+        display: none;
+    }
+}

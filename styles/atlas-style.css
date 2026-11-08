@@ -51,7 +51,14 @@
     transform-style: preserve-3d;
 }
 
-.poi-card:hover .poi-card-inner {
+/* The card turns over on mouse hover or keyboard focus. On touch screens it
+   stays face up: a tap opens the entry (the card is a link). */
+@media (hover: hover) {
+    .poi-card:hover .poi-card-inner {
+        transform: rotateY(180deg);
+    }
+}
+.poi-card:focus-visible .poi-card-inner {
     transform: rotateY(180deg);
 }
 
@@ -67,4 +74,122 @@
 .glass-panel {
     background: rgba(30, 32, 30, 0.85);
     backdrop-filter: blur(12px);
+}
+
+/* =========================================
+   SHARED BY THE ATLAS MAP PAGES
+   (world, continent, country, settlement; built by scripts/atlas-common.js)
+   ========================================= */
+
+/* Small white pin of the country and settlement maps (Atlas.regionIcon) */
+.region-pin {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-radius: 50%;
+}
+
+.region-pin__shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 60%);
+    pointer-events: none;
+}
+
+.region-pin__icon {
+    display: block;
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+    object-fit: contain;
+    filter: brightness(0) invert(1) sepia(1) saturate(0);
+}
+
+.region-pin__icon--danger {
+    filter: brightness(0) invert(1) sepia(1) saturate(4) hue-rotate(-50deg);
+}
+
+/* Pins reached with Tab */
+.map-pin-shell:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 4px;
+    border-radius: 50%;
+}
+
+/* Popup button: same on every map */
+.map-popup__button {
+    display: inline-block;
+    margin-top: 0.75rem;
+    padding: 0.375rem 1rem;
+    border-radius: 0.125rem;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-secondary);
+    transition: all 150ms var(--ease);
+}
+.map-popup__button:hover {
+    border-color: var(--color-secondary);
+    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+}
+
+/* "Read the lore": only where the lore panel is under the map */
+.map-popup__lore {
+    display: none;
+    margin: 0.5rem auto 0;
+    font-family: var(--font-label);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-decoration: underline;
+    color: var(--color-on-surface-variant);
+}
+
+.lore-panel__empty {
+    font-style: italic;
+    opacity: 0.6;
+}
+
+/* Narrow screens: map first, lore panel under it at its natural height */
+@media (max-width: 1023px) {
+    .map-popup__lore {
+        display: block;
+    }
+
+    .atlas-grid > .atlas-map-column,
+    .region-grid > .region-map-column,
+    .settlement-grid > .settlement-map-column {
+        order: -1;
+    }
+
+    .atlas-grid > .lore-panel,
+    .region-grid > .lore-panel,
+    .settlement-grid > .lore-panel {
+        height: auto;
+        scroll-margin-top: 6rem;   /* stops below the fixed header */
+    }
+
+    .atlas-grid > .lore-panel .lore-panel__scroll,
+    .region-grid > .lore-panel .lore-panel__scroll,
+    .settlement-grid > .lore-panel .lore-panel__scroll {
+        height: auto;
+        max-height: 70vh;
+    }
+}
+
+/* Long breadcrumb trails wrap on narrow screens */
+.breadcrumbs {
+    flex-wrap: wrap;
+}
+
+/* Popup subtitle always on its own line */
+.map-popup__subtitle {
+    display: block;
 }

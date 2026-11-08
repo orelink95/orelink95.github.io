@@ -48,9 +48,9 @@
     "castingTime": "1 Action",
     "range": "Touch",
     "duration": "Up to a minute",
-    "concentration": true,
     "verbal": true,
     "somatic": true,
+    "concentration": true,
     "summary": "You touch a willing creature and choose a skill. Until the spell ends, the creature adds 1d4 to any ability check using the chosen skill.",
     "body": "You touch a willing creature and choose a skill. Until the spell ends, the creature adds 1d4 to any ability check using the chosen skill.\n\n\nSwish swoosh"
   },
@@ -128,5 +128,18 @@
     "verbal": true,
     "summary": "By uttering a swift curse (\"Unluck on that!\"), you bring misfortune to the target's attempt; the affected creature has disadvantage on the roll. (...)",
     "body": "You can take this reaction when a creature within range makes an attack roll, saving throw, or ability check.\n\nBy uttering a swift curse (\"Unluck on that!\"), you bring misfortune to the target's attempt; the affected creature has disadvantage on the roll.\n\n**At Higher Levels.** When you cast this spell using a spell slot of 2nd level or higher, the range of the spell increases by 5 feet for each slot level above 1st."
+  },
+  {
+    "id": "spl-chill-touch",
+    "name": "Chill touch",
+    "level": 0,
+    "school": "Necromancy",
+    "castingTime": "1 Action",
+    "range": "Touch",
+    "duration": "Instant",
+    "verbal": true,
+    "somatic": true,
+    "summary": "Channeling the chill of the grave, make a melee spell attack against a target within reach. On a hit, the target takes 1d10 Necrotic damage, and it can't regain Hit Points until the end of your next turn.(...)",
+    "body": "Channeling the chill of the grave, make a melee spell attack against a target within reach. On a hit, the target takes 1d10 Necrotic damage, and it can't regain Hit Points until the end of your next turn.\n\n**Cantrip Upgrade.** The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10)."
   }
 ]

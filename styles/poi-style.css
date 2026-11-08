@@ -225,6 +225,5 @@
 .poi-grid--single { grid-template-columns: 1fr !important; max-width: 900px; }
 .poi-root.is-danger .poi-eyebrow { color: #ffb4ab; }
 .poi-root.is-danger .poi-hero { border-color: rgba(255, 180, 171, 0.25); }
-.poi-crumbs a + a::before { content: ' · '; color: var(--poi-outline); }
 
 .poi-root [hidden] { display: none !important; }

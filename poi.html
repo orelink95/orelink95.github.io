@@ -22,6 +22,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/atlas-common.js"></script>
     <script src="scripts/tavern-menu.js"></script>
     <script src="scripts/poi-scripts.js"></script>
 </head>
@@ -32,6 +33,9 @@
 
     <main class="poi-main">
         <div id="poi-root" class="poi-root">
+
+            <!-- Eraldom › continent › country › settlement › POI: Atlas.breadcrumbs (scripts/atlas-common.js) -->
+            <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
 
             <!-- HERO -->
             <header class="poi-hero">
@@ -44,10 +48,6 @@
                     <p id="poi-subtitle" class="poi-subtitle"></p>
 
                     <dl class="poi-facts">
-                        <div>
-                            <dt>Location</dt>
-                            <dd id="poi-location" class="poi-crumbs"></dd>
-                        </div>
                         <div id="poi-tier-fact" hidden>
                             <dt>Standing</dt>
                             <dd id="poi-tier"></dd>

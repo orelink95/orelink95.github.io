@@ -29,6 +29,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/atlas-common.js"></script>
     <script src="scripts/continent-scripts.js"></script>
 </head>
 
@@ -43,12 +44,8 @@
     <div id="sidebar-placeholder"></div>
 
     <main class="continent-main">
-        <nav
-            class="breadcrumbs">
-            <a id="world-link" class="breadcrumbs__link" href="world.html">Eraldom</a>
-            <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-            <span id="crumb-continent" class="breadcrumbs__current"></span>
-        </nav>
+        <!-- filled by Atlas.breadcrumbs (scripts/atlas-common.js) -->
+        <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
         <div class="continent-grid">
             <div class="continent-main-column">
                 <div class="continent-map-card">
@@ -66,6 +63,29 @@
                                 <p id="continent-tagline" class="continent-map-card__tagline"></p>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <!-- Lore: the continent's text, or the nation whose pin was clicked -->
+                <div class="lore-panel lore-card">
+                    <div class="lore-panel__glow"
+                        style="background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(179,205,182, 0.08), transparent 40%);">
+                    </div>
+                    <span class="lore-panel__watermark material-symbols-outlined"
+                        style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+                    <div class="lore-panel__scroll custom-scrollbar">
+                        <div class="lore-panel__head">
+                            <div class="lore-panel__meta">
+                                <span id="lore-entry-id" class="lore-panel__entry"></span>
+                                <button id="reset-lore-btn" type="button" class="lore-panel__reset hidden"
+                                    title="Return to Overview">
+                                    <span class="lore-panel__reset-icon material-symbols-outlined">undo</span>
+                                    <span class="lore-panel__reset-label">Overview</span>
+                                </button>
+                            </div>
+                            <h2 id="lore-title" class="lore-panel__title"></h2>
+                            <div class="lore-panel__rule"></div>
+                        </div>
+                        <div id="lore-body" class="lore-panel__body lore"></div>
                     </div>
                 </div>
                 <div id="continent-facts" class="continent-facts"></div>

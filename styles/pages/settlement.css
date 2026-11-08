@@ -626,3 +626,90 @@
 .map-popup__title.map-popup__title--danger {
     color: var(--color-error);
 }
+
+
+/* ---------- Lore panel: Overview button, district part of the overview ---------- */
+
+.lore-panel__meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.lore-panel__reset {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--color-on-surface-variant);
+    transition: all 300ms var(--ease);
+}
+.lore-panel__reset:hover {
+    color: var(--color-secondary);
+    transform: translateX(-0.25rem);
+}
+
+.lore-panel__reset-icon {
+    font-size: 16px;
+}
+
+.lore-panel__reset-label {
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* "District" heading inside the settlement overview */
+.lore-panel__subhead {
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 20%, transparent);
+    font-family: var(--font-headline);
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+/* ---------- District picker: name of the district on show ---------- */
+
+.district-toggle__label {
+    opacity: 0.6;
+}
+
+.district-toggle__current {
+    font-weight: 700;
+}
+
+.district-btn[aria-current="true"] {
+    pointer-events: none;
+}
+
+/* ---------- Settlement without a district map ---------- */
+
+.map-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 2rem;
+    text-align: center;
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+}
+
+/* ---------- Resident cards can be used with the keyboard ---------- */
+
+.resident:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: 2px;
+}
+
+.residents__empty {
+    padding: 1.5rem;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
+}
+.resident--static { cursor: default; }

@@ -27,6 +27,7 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/atlas-common.js"></script>
     <script src="scripts/atlas-scripts.js"></script>
 </head>
 
@@ -46,30 +47,14 @@
 
         <header class="atlas-header">
             <div>
-                <nav
-                    class="breadcrumbs">
-                    <span class="breadcrumbs__link">Archive</span>
-                    <span class="breadcrumbs__separator material-symbols-outlined">chevron_right</span>
-                    <span class="breadcrumbs__current">World</span>
-                </nav>
+                <!-- filled by Atlas.breadcrumbs (scripts/atlas-common.js) -->
+                <nav id="atlas-breadcrumbs" class="breadcrumbs"></nav>
                 <h1 class="atlas-header__title">The Known Realms</h1>
             </div>
 
-            <div class="atlas-layers-scroller custom-scrollbar">
-                <div class="atlas-layers">
-                    <button data-layer="cartographic"
-                        class="layer-btn atlas-layer is-active">
-                        Landmass
-                    </button>
-                    <button data-layer="political"
-                        class="atlas-layer layer-btn">
-                        Political
-                    </button>
-                    <button data-layer="relic"
-                        class="atlas-layer layer-btn">
-                        Relic
-                    </button>
-                </div>
+            <!-- one button per map layer that has pins; hidden when there is only one -->
+            <div id="atlas-layers-scroller" class="atlas-layers-scroller custom-scrollbar">
+                <div id="atlas-layers" class="atlas-layers"></div>
             </div>
         </header>
 
@@ -140,32 +125,28 @@
             </div>
         </div>
 
+        <!-- figures counted from the data by scripts/atlas-scripts.js -->
         <div class="atlas-stats">
-            <div class="atlas-stat--settlements">
-                <div class="atlas-stat__label">Known
-                    Settlements</div>
-                <div class="atlas-stat__value--primary">827</div>
-                <div class="atlas-stat__note">+4 new settlements this month
-                </div>
-            </div>
-            <div class="atlas-stat--conflicts">
-                <div class="atlas-stat__label">Active
-                    Factions</div>
-                <div class="atlas-stat__value--secondary">48</div>
-                <div class="atlas-stat__note">3 currently at war</div>
-            </div>
-            <div class="atlas-stat--runes">
-                <div class="atlas-stat__label">Known
-                    Languages</div>
-                <div class="atlas-stat__value--tertiary">14</div>
-                <div class="atlas-stat__note">Includes Elder Runes</div>
-            </div>
-            <div class="atlas-stat--archived">
-                <div class="atlas-stat__label">Archived
-                    Relics</div>
-                <div class="atlas-stat__value--neutral">302</div>
-                <div class="atlas-stat__note">Security Clearance Level 4</div>
-            </div>
+            <a href="settlements.html" class="atlas-stat--settlements">
+                <div id="stat-settlements-label" class="atlas-stat__label">Known Settlements</div>
+                <div id="stat-settlements" class="atlas-stat__value--primary">–</div>
+                <div id="stat-settlements-note" class="atlas-stat__note"></div>
+            </a>
+            <a href="pois.html" class="atlas-stat--runes">
+                <div id="stat-pois-label" class="atlas-stat__label">Points of Interest</div>
+                <div id="stat-pois" class="atlas-stat__value--tertiary">–</div>
+                <div id="stat-pois-note" class="atlas-stat__note"></div>
+            </a>
+            <a href="npc.html" class="atlas-stat--archived">
+                <div class="atlas-stat__label">Known People</div>
+                <div id="stat-people" class="atlas-stat__value--neutral">–</div>
+                <div id="stat-people-note" class="atlas-stat__note"></div>
+            </a>
+            <a href="factions.html" class="atlas-stat--conflicts">
+                <div class="atlas-stat__label">Known Factions</div>
+                <div id="stat-factions" class="atlas-stat__value--secondary">–</div>
+                <div id="stat-factions-note" class="atlas-stat__note"></div>
+            </a>
         </div>
     </main>
     <div id="footer-placeholder"></div>

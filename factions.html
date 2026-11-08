@@ -15,6 +15,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/personae.css" rel="stylesheet" />
     <link href="styles/pages/factions.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
     <script src="scripts/general-scripts.js"></script>
@@ -27,36 +28,22 @@
 <body class="page archival-bg">
     <div id="header-placeholder"></div>
 
-
+    <!-- Section tabs: same block in npc.html, heroes.html and factions.html -->
+    <nav class="personae-tabs" aria-label="Dramatis Personae">
+        <a href="npc.html" class="personae-tab">
+            <span class="personae-tab__icon material-symbols-outlined">group</span>NPCs</a>
+        <a href="heroes.html" class="personae-tab">
+            <span class="personae-tab__icon material-symbols-outlined">local_fire_department</span>Heroes</a>
+        <a href="factions.html" class="personae-tab is-active" aria-current="page">
+            <span class="personae-tab__icon material-symbols-outlined">swords</span>Factions</a>
+    </nav>
 
     <main class="factions-main">
-        <div class="archive-links">
-            <span class="archive-links__label">Related Archives:</span>
-
-            <a href="npc.html"
-                class="archive-link">
-                <span
-                    class="archive-link__icon material-symbols-outlined">group</span>
-                NPCs
-            </a>
-
-            <a href="heroes.html"
-                class="archive-link archive-link--heroes">
-                <span
-                    class="archive-link__icon material-symbols-outlined">local_fire_department</span>
-                Heroes
-            </a>
-        </div>
-
-        <div class="factions-hero">
-            <p class="factions-hero__eyebrow">World
-                Powers
-            </p>
-            <h1
-                class="factions-hero__title">
-                Factions & Guilds</h1>
-            <div class="factions-hero__rule"></div>
-        </div>
+        <header class="personae-hero">
+            <p class="personae-hero__eyebrow">Dramatis Personae</p>
+            <h1 class="personae-hero__title">Factions &amp; Guilds</h1>
+            <div class="personae-hero__rule"></div>
+        </header>
 
         <div class="factions-layout">
 
@@ -79,7 +66,6 @@
     </main>
 
     <div id="footer-placeholder"></div>
-
 
 </body>
 

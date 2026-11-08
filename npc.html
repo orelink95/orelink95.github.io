@@ -14,6 +14,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/personae.css" rel="stylesheet" />
     <link href="styles/pages/npc.css" rel="stylesheet" />
     <link href="styles/atlas-style.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
@@ -30,91 +31,80 @@
 <body class="page">
     <div id="header-placeholder"></div>
 
+    <!-- Section tabs: same block in npc.html, heroes.html and factions.html -->
+    <nav class="personae-tabs" aria-label="Dramatis Personae">
+        <a href="npc.html" class="personae-tab is-active" aria-current="page">
+            <span class="personae-tab__icon material-symbols-outlined">group</span>NPCs</a>
+        <a href="heroes.html" class="personae-tab">
+            <span class="personae-tab__icon material-symbols-outlined">local_fire_department</span>Heroes</a>
+        <a href="factions.html" class="personae-tab">
+            <span class="personae-tab__icon material-symbols-outlined">swords</span>Factions</a>
+    </nav>
+
     <main class="roster-main archival-bg">
         <div class="roster">
-            <header class="roster-header">
-                <div class="roster-header__top">
-                    <div class="roster-header__intro">
-                        <div>
-                            <p class="roster-header__eyebrow">The Archival
-                                Roster</p>
-                            <h2 class="roster-header__title">
-                                Dramatis Personae</h2>
+            <header class="personae-hero">
+                <p class="personae-hero__eyebrow">Dramatis Personae</p>
+                <h1 class="personae-hero__title">The People of Eraldom</h1>
+                <div class="personae-hero__rule"></div>
+            </header>
+
+            <div class="roster-toolbar">
+                <div class="relation-tabs custom-scrollbar" id="relation-tabs">
+                    <button type="button" data-rel="all" class="rel-tab relation-tab is-active relation-tab--all">All<span class="relation-tab__count" data-count="all"></span></button>
+                    <button type="button" data-rel="ally" class="rel-tab relation-tab">Allies<span class="relation-tab__count" data-count="ally"></span></button>
+                    <button type="button" data-rel="neutral" class="rel-tab relation-tab">Neutral<span class="relation-tab__count" data-count="neutral"></span></button>
+                    <button type="button" data-rel="hostile" class="rel-tab relation-tab">Hostile<span class="relation-tab__count" data-count="hostile"></span></button>
+                </div>
+
+                <div class="roster-toolbar__end">
+                    <!-- Location / affiliation: inline from 768px, a panel from the bottom on phones -->
+                    <div class="filters-backdrop" id="filters-backdrop"></div>
+                    <div class="roster-filters" id="roster-filters" role="group" aria-label="Filters">
+                        <div class="roster-filters__head">
+                            <h2 class="roster-filters__heading">Filters</h2>
+                            <button type="button" class="roster-filters__close" id="filters-close" aria-label="Close filters">
+                                <span class="material-symbols-outlined">close</span>
+                            </button>
                         </div>
 
-                        <div class="archive-links">
-                            <span
-                                class="archive-links__label">Related
-                                Archives:</span>
+                        <label class="filter-select">
+                            <span class="filter-select__label">Location</span>
+                            <select id="filter-settlement" class="filter-select__input">
+                                <option value="all">All Locations</option>
+                            </select>
+                            <span class="filter-select__chevron material-symbols-outlined">expand_more</span>
+                        </label>
 
-                            <a href="factions.html"
-                                class="archive-link">
-                                <span
-                                    class="archive-link__icon material-symbols-outlined">swords</span>
-                                Factions & Guilds
-                            </a>
+                        <label class="filter-select">
+                            <span class="filter-select__label">Affiliation</span>
+                            <select id="filter-affiliation" class="filter-select__input">
+                                <option value="all">All Affiliations</option>
+                            </select>
+                            <span class="filter-select__chevron material-symbols-outlined">expand_more</span>
+                        </label>
 
-                            <a href="heroes.html"
-                                class="archive-link archive-link--heroes">
-                                <span
-                                    class="archive-link__icon material-symbols-outlined">local_fire_department</span>
-                                Player Heroes
-                            </a>
+                        <div class="roster-filters__foot">
+                            <button type="button" class="roster-filters__reset" id="filters-reset">Reset</button>
+                            <button type="button" class="roster-filters__done" id="filters-done">Done</button>
                         </div>
                     </div>
 
                     <div class="roster-search">
-                        <span
-                            class="roster-search__icon material-symbols-outlined">search</span>
-                        <input type="text" id="search-input" placeholder="Search by name, role, or faction..."
-                            class="roster-search__input">
+                        <span class="roster-search__icon material-symbols-outlined">search</span>
+                        <input type="search" id="search-input" placeholder="Search name, role, faction…"
+                            aria-label="Search the roster" class="roster-search__input">
                     </div>
+
+                    <button type="button" class="filters-toggle" id="filters-toggle"
+                        aria-controls="roster-filters" aria-expanded="false" aria-label="Filters">
+                        <span class="material-symbols-outlined">tune</span>
+                        <span class="filters-toggle__count hidden" id="filters-count"></span>
+                    </button>
                 </div>
+            </div>
 
-                <div
-                    class="roster-filters">
-
-                    <div class="relation-tabs custom-scrollbar"
-                        id="relation-tabs">
-                        <button data-rel="all"
-                            class="rel-tab relation-tab is-active relation-tab--all">Any
-                            Relation</button>
-                        <button data-rel="ally"
-                            class="relation-tab rel-tab">Allies</button>
-                        <button data-rel="neutral"
-                            class="relation-tab rel-tab">Neutral</button>
-                        <button data-rel="hostile"
-                            class="relation-tab rel-tab">Hostiles</button>
-                    </div>
-
-                    <div class="roster-filters__selects">
-                        <span
-                            class="roster-filters__label">Filter
-                            By:</span>
-
-                        <div class="filter-select">
-                            <select id="filter-settlement"
-                                class="filter-select__input">
-                                <option value="all">All Locations</option>
-                            </select>
-                            <span
-                                class="filter-select__chevron material-symbols-outlined">expand_more</span>
-                        </div>
-
-                        <div class="filter-select">
-                            <select id="filter-affiliation"
-                                class="filter-select__input">
-                                <option value="all">All Affiliations</option>
-                            </select>
-                            <span
-                                class="filter-select__chevron material-symbols-outlined">expand_more</span>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <div id="npc-grid"
-                class="npc-grid">
+            <div id="npc-grid" class="npc-grid">
             </div>
         </div>
     </main>
@@ -122,7 +112,10 @@
     <div id="npc-modal"
         class="npc-modal hidden">
         <div
-            class="npc-modal__card">
+            class="npc-modal__card" role="dialog" aria-modal="true" aria-labelledby="modal-npc-name">
+            <button type="button" onclick="closeNPCModal()" class="npc-modal__close" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
 
             <div class="npc-modal__portrait">
                 <img id="modal-npc-img" class="npc-modal__img" src="" alt="Character Portrait" />
@@ -132,11 +125,6 @@
             </div>
 
             <div class="npc-modal__content custom-scrollbar">
-                <button onclick="closeNPCModal()"
-                    class="npc-modal__close">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
-
                 <p id="modal-npc-role" class="npc-modal__role"></p>
                 <h2 id="modal-npc-name" class="npc-modal__name"></h2>
                 <p id="modal-npc-quote" class="npc-modal__quote">""</p>
@@ -169,7 +157,7 @@
                     class="npc-modal__body">
                 </div>
 
-                <div class="npc-secrets">
+                <div class="npc-secrets" id="npc-secrets" tabindex="0" role="button" aria-label="Reveal classified secrets">
                     <h3
                         class="npc-secrets__title">
                         <span class="npc-secrets__icon material-symbols-outlined">lock</span> Classified Secrets
@@ -181,9 +169,7 @@
 
                     <div
                         class="npc-secrets__veil">
-                        <span
-                            class="npc-secrets__badge">Hover
-                            to Decrypt</span>
+                        <span class="npc-secrets__badge"><span class="npc-secrets__hint--hover">Hover</span><span class="npc-secrets__hint--touch">Tap</span> to Decrypt</span>
                     </div>
                 </div>
 

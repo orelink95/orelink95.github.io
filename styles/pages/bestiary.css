@@ -63,6 +63,36 @@
     max-width: 42rem;
 }
 
+.breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.4);
+}
+
+.breadcrumbs__link {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: var(--ease);
+    transition-duration: 150ms;
+}
+.breadcrumbs__link:hover {
+    color: var(--color-secondary);
+}
+
+.breadcrumbs__separator {
+    font-size: 12px;
+}
+
+.breadcrumbs__current {
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
 .bestiary-head__title {
     margin-bottom: 1rem;
     font-family: var(--font-headline);

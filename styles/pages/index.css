@@ -560,10 +560,46 @@
     grid-template-columns: repeat(1, minmax(0, 1fr));
     gap: 1.5rem;
 }
+/* Columns follow the number of cards (data-count, set by scripts/upcoming-sessions.js) */
 @media (min-width: 768px) {
     .sessions__grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    .sessions__grid[data-count="1"] {
+        grid-template-columns: minmax(0, 28rem);
+        justify-content: center;
+    }
+    .sessions__grid[data-count="2"],
+    .sessions__grid[data-count="4"] {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .sessions__grid[data-count="0"] {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+/* Four in a row only when there is room for the titles; 2 × 2 below */
+@media (min-width: 1600px) {
+    .sessions__grid[data-count="4"] {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+.session-card__status--next,
+.session-card__status--scheduled,
+.session-card__status--tbd {
+    white-space: nowrap;
+}
+/* Reserve the height of one row while the cards load, so the page doesn't jump */
+.sessions__grid:not([data-count]) {
+    min-height: 11rem;
+}
+.sessions__empty {
+    margin: 0;
+    padding: 1.5rem;
+    border: 1px dashed rgb(255 255 255 / 0.12);
+    border-radius: 0.5rem;
+    text-align: center;
+    font-style: italic;
+    color: rgb(255 255 255 / 0.5);
 }
 
 .session-card--next {
@@ -1536,6 +1572,158 @@
     }
 }
 
+
+/* ---------- Session cards drawn from data/schedule.json ----------
+   Countdown, "Add to calendar", and the postponed / cancelled cards
+   (a tbd card recoloured by a modifier class). */
+
+.session-card__status-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.375rem;
+    flex-shrink: 0;
+}
+.session-card__countdown {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--color-secondary);
+    white-space: nowrap;
+}
+
+/* Above the link laid over the card, so it gets the click. The details
+   block must not be a stacking context (z-index: auto) for that to work. */
+.session-card__details:has(.session-card__ics) {
+    z-index: auto;
+}
+.session-card__ics {
+    position: relative;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin-top: 0.75rem;
+    padding: 0.3rem 0.625rem;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 0.25rem;
+    background: rgb(255 255 255 / 0.04);
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.6);
+    cursor: pointer;
+    transition: color 150ms var(--ease), border-color 150ms var(--ease), background-color 150ms var(--ease);
+}
+.session-card__ics .material-symbols-outlined {
+    font-size: 16px;
+}
+.session-card__ics:hover,
+.session-card__ics:focus-visible {
+    color: var(--color-secondary);
+    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    background: color-mix(in srgb, var(--color-secondary) 8%, transparent);
+    outline: none;
+}
+
+.session-card__line--struck > span:last-child {
+    text-decoration: line-through;
+    text-decoration-color: rgb(255 255 255 / 0.35);
+}
+.session-card__line--notice {
+    font-style: italic;
+}
+
+/* Postponed: amber */
+.session-card--postponed:hover {
+    border-color: rgb(251 191 36 / 0.45);
+    box-shadow: 0 10px 40px rgba(251,191,36,0.08);
+}
+.session-card--postponed .session-card__bar--tbd {
+    background-image: linear-gradient(to bottom, rgb(251 191 36 / 0.55), transparent);
+}
+.session-card--postponed:hover .session-card__badge--tbd {
+    border-color: rgb(251 191 36 / 0.6);
+}
+.session-card--postponed .session-card__badge-icon--tbd,
+.session-card--postponed:hover .session-card__title--tbd {
+    color: #fbbf24;
+}
+.session-card--postponed .session-card__status--tbd {
+    border-color: rgb(251 191 36 / 0.35);
+    background-color: rgb(251 191 36 / 0.08);
+    color: #fbbf24;
+}
+.session-card--postponed .session-card__line--notice {
+    color: rgb(251 191 36 / 0.85);
+}
+
+/* Cancelled: red, dimmed, title struck through */
+.session-card--cancelled {
+    opacity: 0.7;
+}
+.session-card--cancelled:hover {
+    opacity: 1;
+    border-color: rgb(248 113 113 / 0.4);
+    box-shadow: 0 10px 40px rgba(248,113,113,0.06);
+}
+.session-card--cancelled .session-card__bar--tbd {
+    background-image: linear-gradient(to bottom, rgb(248 113 113 / 0.5), transparent);
+}
+.session-card--cancelled:hover .session-card__badge--tbd {
+    border-color: rgb(248 113 113 / 0.55);
+}
+.session-card--cancelled .session-card__badge-icon--tbd,
+.session-card--cancelled:hover .session-card__title--tbd {
+    color: #f87171;
+}
+.session-card--cancelled .session-card__title--tbd {
+    text-decoration: line-through;
+    text-decoration-color: rgb(248 113 113 / 0.6);
+}
+.session-card--cancelled .session-card__status--tbd {
+    border-color: rgb(248 113 113 / 0.35);
+    background-color: rgb(248 113 113 / 0.08);
+    color: #f87171;
+}
+.session-card--cancelled .session-card__line--notice {
+    color: rgb(248 113 113 / 0.85);
+}
+
+@media (max-width: 767.98px) {
+    /* Countdown under the pill, smaller; the calendar button joins the
+       date/time row, icon only, clear of the tap chevron */
+    .session-card__status-wrap {
+        gap: 0.25rem;
+    }
+    .session-card__countdown {
+        font-size: 0.6875rem;
+    }
+    .session-card__ics {
+        margin-top: 0;
+        padding: 0.125rem 0.375rem;
+    }
+    .session-card__ics-label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+    .session-card__details {
+        padding-right: 2rem;
+    }
+    .session-card--postponed,
+    .session-card--cancelled {
+        background-color: var(--color-surface-container-low);
+    }
+    .session-card--postponed .session-card__bar--tbd,
+    .session-card--cancelled .session-card__bar--tbd {
+        opacity: 0.7;
+    }
+}
 
 /* ---------- Session card link (all widths) ----------
    An empty <a class="session-card__link"> laid over the whole card.

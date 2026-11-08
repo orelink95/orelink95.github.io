@@ -1,0 +1,23 @@
+{
+  "sessions": [
+    {
+      "campaign": "last-sigil",
+      "number": 10,
+      "date": "2026-11-04",
+      "time": "14:00"
+    },
+    {
+      "campaign": "last-sigil",
+      "number": 11,
+      "date": "2026-11-18",
+      "time": "14:00"
+    },
+    {
+      "campaign": "echoes-from-the-void",
+      "number": 7,
+      "date": "2026-12-05",
+      "time": "11:00",
+      "status": "tentative"
+    }
+  ]
+}

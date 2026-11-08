@@ -53,8 +53,9 @@
     text-align: left;
     cursor: pointer;
     perspective: 1200px;
-    /* --card-filter: set by a page whose <body> filter changes the colours (spellbook.css) */
-    filter: var(--card-filter,) drop-shadow(0 0 10px color-mix(in srgb, var(--school) 45%, transparent));
+    /* --card-filter: set by a page whose <body> filter changes the colours (spellbook.css)
+       --card-dim: set on the cards not hovered in a hero's spellbook (see .spell-book) */
+    filter: var(--card-filter,) var(--card-dim,) drop-shadow(0 0 10px color-mix(in srgb, var(--school) 45%, transparent));
     transition: transform 400ms var(--ease), filter 400ms var(--ease);
 }
 .spell-card:hover,
@@ -66,7 +67,7 @@
 
 /* A face-down card (never turned over in this browser) glows a little more */
 .spell-card.is-face-down {
-    filter: var(--card-filter,) drop-shadow(0 0 16px color-mix(in srgb, var(--school) 70%, transparent));
+    filter: var(--card-filter,) var(--card-dim,) drop-shadow(0 0 16px color-mix(in srgb, var(--school) 70%, transparent));
 }
 
 /* The two faces turn together (like the loot cards) */
@@ -488,8 +489,32 @@
 }
 
 /* A hero's spellbook (heroes.html) */
+/* The pop-up's body takes its width from its content; the book sets it
+   instead, otherwise its grid shrinks to a single column. 880px = 3 cards. */
+.spell-modal--book .spell-modal__body {
+    width: min(880px, 100%);
+}
+
 .spell-book {
-    width: min(1100px, 100%);
+    width: 100%;
+}
+
+/* A hero's cards: 2 per row on a tablet, 3 on a computer
+   (phones get the list: see the end of this file) */
+.spell-book .spell-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem 2rem;
+}
+@media (min-width: 900px) {
+    .spell-book .spell-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Hovering a card fades the others (all levels), so it stands out.
+   Browsers without :has() simply skip this. */
+.spell-book:has(.spell-card:hover) .spell-card:not(:hover) {
+    --card-dim: grayscale(0.85) brightness(0.7);
 }
 
 .spell-book__head {

@@ -439,12 +439,20 @@
         flush();
         return out;
     }
-    // Title of a card in a list of objects: its itemLabel field; a link (ref)
-    // shows the name it points to, not the id ("Nimo", not "nimo")
+    // Title of a card in a list of objects: its itemLabel field (or several,
+    // joined with ·); a link (ref) shows the name it points to, not the id
+    // ("Nimo", not "nimo"), a number reads "#3", a date reads in full
     function cardLabel(f, item) {
-        const v = item && item[f.itemLabel];
-        const lf = f.fields && f.fields[f.itemLabel];
-        return v && lf && lf.kind === 'ref' ? nameOf(v) : v;
+        const keys = Array.isArray(f.itemLabel) ? f.itemLabel : [f.itemLabel];
+        return keys.map(k => {
+            const v = item && item[k];
+            const lf = f.fields && f.fields[k];
+            if (v === undefined || v === null || v === '' || !lf) return v;
+            if (lf.kind === 'ref') return nameOf(v);
+            if (lf.kind === 'number') return '#' + v;
+            if (lf.kind === 'date' && ATH.upcoming) return ATH.upcoming.formatDate(v) || v;
+            return v;
+        }).filter(v => v !== undefined && v !== null && v !== '').join(' · ');
     }
     function fieldHtml(f, key, value, path) {
         const p = pathAttr(path);
@@ -459,6 +467,9 @@
                     : `<div class="fld"><label>${label}</label><input data-path="${p}" data-kind="text" value="${esc(value)}">${help}</div>`;
             case 'number':
                 return `<div class="fld"><label>${label}</label><input type="number" data-path="${p}" data-kind="number" value="${value ?? ''}">${help}</div>`;
+            case 'date':
+            case 'time':
+                return `<div class="fld"><label>${label}</label><input type="${f.kind}" data-path="${p}" data-kind="text" value="${esc(value)}">${help}</div>`;
             case 'boolean':
                 return `<div class="fld chk"><input type="checkbox" id="cb-${esc(ck)}" data-path="${p}" data-kind="boolean" ${value ? 'checked' : ''}><label for="cb-${esc(ck)}">${label}</label></div>`;
             case 'enum':
@@ -655,6 +666,7 @@
         const parts = [];
         const errs = isSingle() ? singleErrors(S.view.key) : recordErrors(S.view.key, rec.id);
         if (errs.length) parts.push(`<div class="box"><h4>To fix</h4><ul class="issues" style="margin:0;padding-left:16px">${errs.map(e => `<li>${esc(e.replace(/^\[[^\]]+\] /, ''))}</li>`).join('')}</ul></div>`);
+        if (isSingle() && S.view.key === 'schedule' && ATH.upcoming) parts.push(schedulePreview(rec));
         if (!isSingle()) {
             const crumbs = S.store.ancestors(rec.id);
             if (crumbs.length) parts.push(`<div class="box"><h4>Sits in</h4>${chips(crumbs)}</div>`);
@@ -670,6 +682,84 @@
         side.innerHTML = parts.join('') || `<div class="box"><h4>Links</h4><span style="color:var(--ink-faint)">Nothing points here yet.</span></div>`;
         if (S.view.key === 'item') loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
+    }
+
+    /* ---------- upcoming sessions (homepage): preview and tools ---------- */
+    const STATUS_COLOURS = { next: 'var(--gold)', scheduled: '#4ade80', tbd: '#c084fc', postponed: '#fbbf24', cancelled: '#f87171' };
+    function schedulePreview(rec) {
+        const list = ATH.upcoming.resolve(rec.sessions || [], { campaigns: S.data.campaign });
+        const past = list.filter(s => s.past).length;
+        const rows = list.map(s => `
+            <li style="margin-bottom:8px;${s.past ? 'opacity:.45;text-decoration:line-through' : ''}">
+                <span style="color:${s.past ? 'var(--ink-faint)' : STATUS_COLOURS[s.variant]};font-size:9.5px;text-transform:uppercase;letter-spacing:.1em">${s.past ? 'Hidden: date passed' : esc(s.label)}${s.countdown ? ` · ${esc(s.countdown)}` : ''}</span><br>
+                <b>${esc(s.title)}</b>${s.number !== null ? ` · Session ${s.number}` : ''}<br>
+                <span style="color:var(--ink-dim)">${esc(s.dateText)}${s.timeText ? ` · ${esc(s.timeText)}` : ''}${s.where ? ` · ${esc(s.where)}` : ''}</span>
+                ${s.notice ? `<br><i style="color:var(--ink-dim)">${esc(s.notice)}</i>` : ''}
+            </li>`).join('');
+        return `<div class="box"><h4>On the homepage</h4>
+            ${list.length ? `<ol style="margin:0;padding-left:18px">${rows}</ol>` : '<p style="color:var(--ink-faint);margin:0">No session planned: the homepage says the calendar is empty.</p>'}
+            <div class="row" style="gap:6px;flex-wrap:wrap;margin-top:10px">
+                <button class="btn" data-action="schedule-add">+ Add a session</button>
+                ${list.length > 1 ? '<button class="btn" data-action="schedule-sort">Sort by date</button>' : ''}
+                ${past ? `<button class="btn" data-action="schedule-prune">Remove past (${past})</button>` : ''}
+            </div>
+            <p style="color:var(--ink-faint);font-size:10.5px;margin:8px 0 0">The first confirmed card still to come is “Up Next”, with a countdown; a session not confirmed, or with no date, is “TBD”. Confirmed sessions get an “Add to calendar” button. Reorder with ↑ ↓.</p></div>`;
+    }
+    function scheduleAdd() {
+        const rec = S.singles.schedule = S.singles.schedule || {};
+        const entries = rec.sessions = Array.isArray(rec.sessions) ? rec.sessions : [];
+        const lastCampaign = (entries[entries.length - 1] || {}).campaign || S.store.settings.currentCampaign || '';
+        const dlg = modal(`<h3>Add an upcoming session</h3>
+            <div class="form">
+                <div class="fld wide"><label>Campaign</label>${refSelect(['campaign'], lastCampaign, 'id="up-campaign"')}</div>
+                <div class="fld"><label>Session number</label><input type="number" id="up-number"></div>
+                <div class="fld"><label>Date</label><input type="date" id="up-date"></div>
+                <div class="fld"><label>Time</label><input type="time" id="up-time"></div>
+                <div class="fld chk"><input type="checkbox" id="up-tbd"><label for="up-tbd">Not confirmed yet (TBD)</label></div>
+                <p style="color:var(--ink-faint);font-size:10.5px;margin:0;width:100%">Prefilled from the campaign's latest session and its last planned dates. Edit anything afterwards.</p>
+            </div>
+            <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="up-ok">Add</button></div>`);
+        const fill = () => {
+            const g = ATH.upcoming.suggest(entries, $('#up-campaign', dlg).value, S.data.session);
+            $('#up-number', dlg).value = g.number ?? '';
+            $('#up-date', dlg).value = g.date || '';
+            $('#up-time', dlg).value = g.time || '';
+        };
+        $('#up-campaign', dlg).addEventListener('change', fill);
+        fill();
+        $('#up-ok', dlg).addEventListener('click', () => {
+            const num = $('#up-number', dlg).value;
+            const entry = {
+                campaign: $('#up-campaign', dlg).value || undefined,
+                number: num === '' ? undefined : Number(num),
+                date: $('#up-date', dlg).value || undefined,
+                time: $('#up-time', dlg).value || undefined,
+                status: $('#up-tbd', dlg).checked ? 'tentative' : undefined,
+            };
+            Object.keys(entry).forEach(k => entry[k] === undefined && delete entry[k]);
+            entries.push(entry);
+            closeModal();
+            edited(true);
+            toast('Added: save to publish');
+        });
+    }
+    function scheduleSort() {
+        const arr = (S.singles.schedule || {}).sessions || [];
+        // Dated sessions first, by date then time; undated ones keep their order at the end
+        const key = e => (ATH.upcoming.parseDate(e.date) ? `0${e.date}T${e.time || '99:99'}` : '1');
+        const sorted = arr.map((e, i) => [e, i]).sort((a, b) => key(a[0]).localeCompare(key(b[0])) || a[1] - b[1]).map(([e]) => e);
+        if (sorted.every((e, i) => e === arr[i])) { toast('Already in date order'); return; }
+        arr.splice(0, arr.length, ...sorted);
+        edited(true);
+    }
+    function schedulePrune() {
+        const rec = S.singles.schedule || {};
+        const list = ATH.upcoming.resolve(rec.sessions || [], { campaigns: S.data.campaign });
+        const n = list.filter(s => s.past).length;
+        rec.sessions = (rec.sessions || []).filter((e, i) => !list[i].past);
+        S.collapsed.clear();
+        edited(true);
+        toast(`Removed ${n} past session${n === 1 ? '' : 's'}: save to publish`);
     }
 
     /* ---------- item cards: preview and where the party found them ---------- */
@@ -1024,6 +1114,7 @@
             }
             case 'md-preview': S.previews.has(t.dataset.key) ? S.previews.delete(t.dataset.key) : S.previews.add(t.dataset.key); renderEditor(); break;
             case 'list-add': {
+                if (isSingle() && S.view.key === 'schedule' && path.join('.') === 'sessions' && ATH.upcoming) { scheduleAdd(); break; }
                 const arr = getAt(rec, path);
                 const item = t.dataset.object ? {} : '';
                 if (Array.isArray(arr)) arr.push(item); else setAt(rec, path, [item]);
@@ -1050,6 +1141,9 @@
             case 'pick-image': pickImage(path); break;
             case 'read-size': readSize(path); break;
             case 'move-record': moveRecord(Number(t.dataset.dir)); break;
+            case 'schedule-add': scheduleAdd(); break;
+            case 'schedule-sort': scheduleSort(); break;
+            case 'schedule-prune': schedulePrune(); break;
             case 'rename': renameRecord(); break;
             case 'delete': deleteRecord(); break;
         }

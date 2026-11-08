@@ -17,6 +17,7 @@ admin dashboard all read this file; nothing else describes the data.
 
 ※ FIELD KINDS ※
 text · markdown · number · boolean · image · url · list (of strings)
+date (YYYY-MM-DD) · time (HH:MM, 24 h)
 enum (options | enum: '<name of a shared enum below>')
 ref / refs (to: [types]) · map ({x, y, icon, layer}) · mapImage
 object (fields) · objects (array; fields) · json (free-form, raw)
@@ -65,6 +66,30 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Campaign shown first (scriptorium, heroes)' },
                 },
             },
+            /* The "Upcoming Sessions" cards of the homepage (scripts/upcoming-sessions.js). */
+            schedule: {
+                label: 'Upcoming sessions', icon: 'event_upcoming', group: 'Site',
+                file: 'data/schedule.json',
+                page: 'index.html',
+                fields: {
+                    length: { kind: 'number', label: 'Length of a session in hours (“Add to calendar” events; empty = 4)' },
+                    sessions: {
+                        kind: 'objects', label: 'Sessions, in the order of the homepage (a date that has passed is hidden on its own)',
+                        itemLabel: ['campaign', 'title', 'number', 'date'],
+                        fields: {
+                            campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign' },
+                            number: { kind: 'number', label: 'Session number (empty = not shown)' },
+                            date: { kind: 'date', label: 'Date (empty = “to be announced”)' },
+                            time: { kind: 'time', label: 'Time' },
+                            status: { kind: 'enum', enum: 'sessionStatus', label: 'Status (— = confirmed)' },
+                            title: { kind: 'text', label: 'Title (instead of the campaign name: one-shot…)' },
+                            where: { kind: 'text', label: 'Where (optional extra line: “At Max’s”, “Online”…)' },
+                            link: { kind: 'text', label: 'Card link (empty = the campaign in the scriptorium)' },
+                            notice: { kind: 'text', label: 'Message on the card (reason, new date…)' },
+                        },
+                    },
+                },
+            },
         },
 
         /* Value lists shared by several fields. */
@@ -81,6 +106,12 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             /* Each school has its hue and symbols in styles/spell-card.css (.school--<name in lowercase>) */
             spellSchool: ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation', 'Blood', 'Chaos', 'Void'],
             questStatus: ['Primary', 'Secondary'],
+            /* Homepage session cards; no status = confirmed */
+            sessionStatus: [
+                { id: 'tentative', label: 'Not confirmed yet (purple TBD card)' },
+                { id: 'postponed', label: 'Postponed (amber, date struck through)' },
+                { id: 'cancelled', label: 'Cancelled (red, dimmed)' },
+            ],
             itemRarity: ['Common', 'Uncommon', 'Rare', 'Very rare', 'Legendary', 'Artifact', 'Varies', 'Unknown'],
             sentiment: [
                 { id: 'like', label: 'Positive' },

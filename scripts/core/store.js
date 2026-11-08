@@ -263,6 +263,15 @@
                 case 'text': case 'markdown': case 'image': case 'url':
                     if (typeof v !== 'string') error(`${where}: expected text`);
                     break;
+                case 'date': {
+                    const m = typeof v === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+                    const d = m && new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+                    if (!m || d.getUTCMonth() !== +m[2] - 1 || d.getUTCDate() !== +m[3]) error(`${where}: expected a date written YYYY-MM-DD`);
+                    break;
+                }
+                case 'time':
+                    if (typeof v !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) error(`${where}: expected a time written HH:MM (24 h)`);
+                    break;
                 case 'number':
                     if (typeof v !== 'number' || Number.isNaN(v)) error(`${where}: expected a number`);
                     break;

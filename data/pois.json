@@ -306,8 +306,7 @@
     "map": {
       "x": 2160,
       "y": 1349,
-      "icon": "beer",
-      "layer": "locations"
+      "icon": "beer"
     },
     "tavern": {
       "tier": "poor",
@@ -350,8 +349,7 @@
     "map": {
       "x": 611,
       "y": 638,
-      "icon": "beer",
-      "layer": "locations"
+      "icon": "beer"
     },
     "tavern": {
       "tier": "modest",

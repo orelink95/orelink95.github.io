@@ -350,6 +350,7 @@
                 case 'map':
                     if (typeof v !== 'object' || typeof v.x !== 'number' || typeof v.y !== 'number') error(`${where}: needs numeric x and y`);
                     if (v.layer && !enumValues('mapLayer').includes(v.layer)) error(`${where}.layer: unknown layer "${v.layer}"`);
+                    else if (v.layer && !f.layers) warn(`${where}.layer: only the world map has layers, so it is ignored here`);
                     break;
                 case 'mapImage':
                     if (typeof v !== 'object' || !v.src || typeof v.width !== 'number' || typeof v.height !== 'number') error(`${where}: needs src, width and height`);

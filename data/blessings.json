@@ -36,7 +36,7 @@
   {
     "id": "blessing-silence",
     "name": "Silence",
-    "text": "Nothing happens. The silence feels deliberate."
+    "text": "Nothing happens. The silence feels deliberate and gives you peace."
   },
   {
     "id": "blessing-a-cold-touch",
@@ -60,11 +60,23 @@
     "id": "blessing-the-road-ahead",
     "name": "The road ahead",
     "text": "You dream that night of a road, a crossroads, and a lantern left burning.",
-    "effect": "The DM gives you a small hint about your current quest."
+    "effect": "You gain a small hint about your current quest."
   },
   {
     "id": "blessing-peace",
     "name": "Peace",
     "text": "Old aches you had forgotten about are, for once, gone."
+  },
+  {
+    "id": "gift-of-the-verb",
+    "name": "Gift of the Verb",
+    "aliases": [
+      "Gift of Oghma"
+    ],
+    "text": "The inner light of Oghma fills you, giving you confidence and focus.",
+    "effect": "You gain a +2 to charisma for social encounters that requires you to convince someone for 24 hours.",
+    "deities": [
+      "oghma"
+    ]
   }
 ]

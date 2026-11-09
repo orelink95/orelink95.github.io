@@ -56,7 +56,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             parts.push(`<h3 class="lore-panel__subhead">${dist.rec.name}</h3>`);
             parts.push(lore(dist.rec, !settlement.body));
         }
-        return { entry: settlement.codex || 'Town Charter', title: settlement.name, body: parts.join('') };
+        // Caption: the selected district's own, else the settlement's
+        const entry = (dist && dist.rec.codex) || settlement.codex || 'Town Charter';
+        return { entry, title: settlement.name, body: parts.join('') };
     }
 
     // -----------------------------------------------------------------

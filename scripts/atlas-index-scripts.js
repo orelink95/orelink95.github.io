@@ -65,8 +65,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (type === 'continent') where = rec.subtitle || '';
         else if (type === 'country') where = (at('continent') || {}).name || '';
         else if (type === 'settlement') where = (at('country') || {}).name || '';
+        // Settlements without real districts have one wrapper district with the
+        // settlement's own name: drop duplicates so it reads "Deercrest", not "Deercrest, Deercrest"
         else where = [district && (district.shortName || district.name), (at('settlement') || at('country') || {}).name]
-            .filter(Boolean).join(', ');
+            .filter((v, i, a) => v && a.indexOf(v) === i).join(', ');
 
         // Status pill
         let pill = null;

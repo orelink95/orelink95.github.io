@@ -14,6 +14,7 @@ admin dashboard all read this file; nothing else describes the data.
 - Long text is Markdown. Presentation (drop caps, colours) belongs to
     the page templates, not the data.
 - Fields marked `private: true` are never written to the public files: they live in data/private.json (git-ignored) and only the local copy sees them.
+- The order of the fields here is the order of the keys in the JSON files: add new fields at the end of a type to keep the files' diffs small.
 
 ※ FIELD KINDS ※
 text · markdown · number · boolean · image · url · list (of strings)
@@ -21,6 +22,21 @@ date (YYYY-MM-DD) · time (HH:MM, 24 h)
 enum (options | enum: '<name of a shared enum below>')
 ref / refs (to: [types]) · map ({x, y, icon, layer}) · mapImage
 object (fields) · objects (array; fields) · json (free-form, raw)
+
+※ DASHBOARD ONLY (the site and the validator ignore these) ※
+label     short name of the field (keep it under ~30 characters)
+help      the explanation, shown under the field
+section   the card the field sits in; a type lists its cards, in order, in `sections`
+          (no section = the first card)
+width     'quarter' | 'third' | 'half' | 'full' (default: set by the kind)
+showIf    { key, is: [values] } | { key, set: true } | { key, empty: true } — shown only when the
+          sibling field `key` has one of these values / has a value / has none. Hidden fields keep their value.
+lines     list: one item per line in a text box, instead of tags
+color     text: adds a colour picker            icon  text: Material Symbols name, previewed
+focus     text: a CSS position ("50% 30%") set with two sliders
+range     number: [min, max] adds a slider       choices  number: [[value, label], …] as a menu
+layers    map: offers the world map's layer (continents only)
+noPin     help shown instead of the pin when the parent has no map of its own
 
 ※ TYPE OPTIONS ※
 order  { by, desc, within }  store.all(type) returns the records sorted by `by` (descending if `desc`), grouped by `within` if given;
@@ -31,13 +47,15 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
 (function (root) {
     const ATH = root.Athenaeum = root.Athenaeum || {};
 
+    const TOOLTIP_HELP = 'Hover text when the name appears in a session transcript.';
     const PLACE_FIELDS = {
-        subtitle: { kind: 'text', label: 'Subtitle' },
-        codex: { kind: 'text', label: 'Codex entry' },
-        summary: { kind: 'text', label: 'One-line summary', long: true },
-        body: { kind: 'markdown', label: 'Lore' },
-        danger: { kind: 'boolean', label: 'Dangerous place' },
+        subtitle: { kind: 'text', label: 'Subtitle', help: 'Under the name: map pop-ups, list cards and the page header.' },
+        codex: { kind: 'text', label: 'Lore panel caption', section: 'Lore', help: 'Small capitals above the lore title (empty = “Codex Entry”).' },
+        summary: { kind: 'text', label: 'One-line summary', long: true, help: TOOLTIP_HELP },
+        body: { kind: 'markdown', label: 'Lore', section: 'Lore' },
+        danger: { kind: 'boolean', label: 'Dangerous place', help: 'Red pin and a “Danger” tag.' },
     };
+    const PIN_HELP = 'Settlements have no map of their own (their maps are their districts’): put the place in a district to pin it.';
 
     ATH.schema = {
         version: 1,
@@ -49,12 +67,13 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'World', icon: 'travel_explore', group: 'Site',
                 file: 'data/world.json',
                 page: 'world.html',
+                sections: ['Essentials', 'Lore', 'Map'],
                 fields: {
                     name: { kind: 'text', label: 'Name', required: true },
-                    codex: { kind: 'text', label: 'Codex entry' },
-                    loreTitle: { kind: 'text', label: 'Lore heading' },
-                    body: { kind: 'markdown', label: 'Lore (shown when no pin is selected)' },
-                    mapImage: { kind: 'mapImage', label: 'World map', required: true },
+                    codex: { kind: 'text', label: 'Lore panel caption', section: 'Lore', help: 'Small capitals above the lore title (empty = “Codex Entry”).' },
+                    loreTitle: { kind: 'text', label: 'Lore title', section: 'Lore', help: 'Empty = the name.' },
+                    body: { kind: 'markdown', label: 'Lore', section: 'Lore', help: 'Shown when no pin is selected.' },
+                    mapImage: { kind: 'mapImage', label: 'World map', required: true, section: 'Map' },
                 },
             },
             /* Site-wide settings. */
@@ -62,8 +81,8 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'Settings', icon: 'tune', group: 'Site',
                 file: 'data/settings.json',
                 fields: {
-                    tavernCode: { kind: 'text', label: 'Market code: tavern menus, shop wares, rumours and blessings are drawn from it, the same for everyone. Change it to change them all.' },
-                    currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Campaign shown first (scriptorium, heroes)' },
+                    tavernCode: { kind: 'text', label: 'Market code', help: 'Tavern menus, shop wares, the order of rumours and the blessings are drawn from it, the same for every player. Change it to change them all.' },
+                    currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Current campaign', help: 'What every campaign drop-down opens on (NPCs, Heroes, Factions, Pantheon, boards, scriptorium) and which Elder gods are sealed by default. In the dashboard: the ✓ of rumour lists and the campaign of new rumours and notices.' },
                 },
             },
             /* The "Upcoming Sessions" cards of the homepage (scripts/upcoming-sessions.js). */
@@ -71,21 +90,22 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'Upcoming sessions', icon: 'event_upcoming', group: 'Site',
                 file: 'data/schedule.json',
                 page: 'index.html',
+                sections: ['Homepage cards'],
                 fields: {
-                    length: { kind: 'number', label: 'Length of a session in hours (“Add to calendar” events; empty = 4)' },
+                    length: { kind: 'number', label: 'Session length (hours)', help: 'For the “Add to calendar” events. Empty = 4.' },
                     sessions: {
-                        kind: 'objects', label: 'Sessions, in the order of the homepage (a date that has passed is hidden on its own)',
+                        kind: 'objects', label: 'Sessions', help: 'In the order of the homepage. A date that has passed is hidden on its own.',
                         itemLabel: ['campaign', 'title', 'number', 'date'],
                         fields: {
                             campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign' },
-                            number: { kind: 'number', label: 'Session number (empty = not shown)' },
-                            date: { kind: 'date', label: 'Date (empty = “to be announced”)' },
+                            number: { kind: 'number', label: 'Session number', help: 'Empty = not shown.' },
+                            date: { kind: 'date', label: 'Date', help: 'Empty = “to be announced”.' },
                             time: { kind: 'time', label: 'Time' },
-                            status: { kind: 'enum', enum: 'sessionStatus', label: 'Status (— = confirmed)' },
-                            title: { kind: 'text', label: 'Title (instead of the campaign name: one-shot…)' },
-                            where: { kind: 'text', label: 'Where (optional extra line: “At Max’s”, “Online”…)' },
-                            link: { kind: 'text', label: 'Card link (empty = the campaign in the scriptorium)' },
-                            notice: { kind: 'text', label: 'Message on the card (reason, new date…)' },
+                            status: { kind: 'enum', enum: 'sessionStatus', label: 'Status', help: '— = confirmed.' },
+                            title: { kind: 'text', label: 'Title', help: 'Instead of the campaign name (one-shot…).' },
+                            where: { kind: 'text', label: 'Where', help: 'Optional extra line: “At Max’s”, “Online”…' },
+                            link: { kind: 'text', label: 'Card link', help: 'Empty = the campaign in the scriptorium.' },
+                            notice: { kind: 'text', label: 'Message on the card', help: 'Reason, new date…', width: 'full' },
                         },
                     },
                 },
@@ -106,6 +126,13 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             /* Each school has its hue and symbols in styles/spell-card.css (.school--<name in lowercase>) */
             spellSchool: ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation', 'Blood', 'Chaos', 'Void'],
             questStatus: ['Primary', 'Secondary'],
+            /* Faction evidence cards (factions-script.js) and their tags (.tag--<tone> in pages/factions.css) */
+            intelKind: [
+                { id: 'note', label: 'Sealed note' },
+                { id: 'map', label: 'Map' },
+                { id: 'target', label: 'Target profile' },
+            ],
+            tagTone: ['gold', 'blue', 'green', 'red', 'ally', 'hostile', 'killed'],
             /* Homepage session cards; no status = confirmed */
             sessionStatus: [
                 { id: 'tentative', label: 'Not confirmed yet (purple TBD card)' },
@@ -265,21 +292,23 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/continents.json',
                 page: 'continent.html?id={id}',
                 place: true, parent: [], autolink: true,
+                sections: ['Essentials', 'Lore', 'Map', 'On the page'],
                 fields: {
                     ...PLACE_FIELDS,
-                    era: { kind: 'text', label: 'Era shown on the map (e.g. Year 1466 LF)' },
-                    image: { kind: 'image', label: 'Card image (Continents list; the map is used if empty)' },
-                    map: { kind: 'map', label: 'Pin on the world map' },
-                    mapImage: { kind: 'mapImage', label: 'Continent map' },
+                    subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: world map pop-up, Continents list, page header.' },
+                    era: { kind: 'text', label: 'Era', help: 'Next to the subtitle in the header (e.g. Year 1466 LF).' },
+                    image: { kind: 'image', label: 'Card image', help: 'Continents list. Empty = the map.' },
+                    map: { kind: 'map', label: 'Pin on the world map', section: 'Map', layers: true },
+                    mapImage: { kind: 'mapImage', label: 'Continent map', section: 'Map' },
                     facts: {
-                        kind: 'objects', label: 'Info cards under the map', itemLabel: 'title', fields: {
+                        kind: 'objects', label: 'Info cards under the map', itemLabel: 'title', section: 'On the page', fields: {
                             title: { kind: 'text', label: 'Title' },
                             text: { kind: 'text', label: 'Text', long: true },
                         }
                     },
-                    notables: { kind: 'refs', to: ['npc'], label: 'Very important people' },
-                    epigraph: { kind: 'text', label: 'Epigraph', long: true },
-                    epigraphSource: { kind: 'text', label: 'Epigraph source' },
+                    notables: { kind: 'refs', to: ['npc'], label: 'Very important people', section: 'On the page' },
+                    epigraph: { kind: 'text', label: 'Epigraph', long: true, section: 'On the page' },
+                    epigraphSource: { kind: 'text', label: 'Epigraph source', section: 'On the page' },
                 },
             },
             country: {
@@ -287,15 +316,17 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/countries.json',
                 page: 'country.html?id={id}',
                 place: true, parent: ['continent'], autolink: true,
+                sections: ['Essentials', 'Lore', 'Map'],
                 fields: {
                     ...PLACE_FIELDS,
-                    shortName: { kind: 'text', label: 'Short name (map labels)' },
-                    epithet: { kind: 'text', label: 'Epithet (nations list)' },
-                    unlisted: { kind: 'boolean', label: 'Hide from the country list of the continent page and from the Countries page (the map pin stays)' },
-                    image: { kind: 'image', label: 'Card image (Countries list; the map is used if empty)' },
-                    loreTitle: { kind: 'text', label: 'Lore heading' },
-                    map: { kind: 'map', label: 'Pin on the continent map' },
-                    mapImage: { kind: 'mapImage', label: 'Country map' },
+                    summary: { ...PLACE_FIELDS.summary, help: 'The line under the page title (else the subtitle). ' + TOOLTIP_HELP },
+                    shortName: { kind: 'text', label: 'Short name', help: 'Map labels.' },
+                    epithet: { kind: 'text', label: 'Epithet', help: 'Nations list of the continent page, Countries list.' },
+                    unlisted: { kind: 'boolean', label: 'Unlisted', help: 'Left out of the continent’s nations and the Countries page; the map pin stays.' },
+                    image: { kind: 'image', label: 'Card image', help: 'Countries list. Empty = the map.' },
+                    loreTitle: { kind: 'text', label: 'Lore title', section: 'Lore', help: 'Empty = the name.' },
+                    map: { kind: 'map', label: 'Pin on the continent map', section: 'Map' },
+                    mapImage: { kind: 'mapImage', label: 'Country map', section: 'Map' },
                 },
             },
             settlement: {
@@ -303,10 +334,13 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/settlements.json',
                 page: 'settlement.html?id={id}',
                 place: true, parent: ['country'], autolink: true,
+                sections: ['Essentials', 'Lore', 'Map'],
                 fields: {
                     ...PLACE_FIELDS,
-                    map: { kind: 'map', label: 'Pin on the country map' },
-                    image: { kind: 'image', label: 'Card image (Settlements list; the first district map is used if empty)' },
+                    codex: { ...PLACE_FIELDS.codex, help: 'Small capitals above the lore title (empty = “Town Charter”). A selected district shows its own.' },
+                    summary: { ...PLACE_FIELDS.summary, help: 'The line under the page title. ' + TOOLTIP_HELP },
+                    map: { kind: 'map', label: 'Pin on the country map', section: 'Map', help: 'The settlement’s own maps are its districts’.' },
+                    image: { kind: 'image', label: 'Card image', help: 'Settlements list. Empty = the first district map.' },
                 },
             },
             district: {
@@ -314,10 +348,13 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/districts.json',
                 page: 'settlement.html?id={parent}&district={id}',
                 place: true, parent: ['settlement'], autolink: true,
+                sections: ['Essentials', 'Lore', 'Map'],
                 fields: {
-                    shortName: { kind: 'text', label: 'Short name (district tabs)' },
-                    ...PLACE_FIELDS,
-                    mapImage: { kind: 'mapImage', label: 'District map' },
+                    shortName: { kind: 'text', label: 'Short name', help: 'The district buttons of the settlement page.' },
+                    codex: { ...PLACE_FIELDS.codex, help: 'Small capitals above the lore title when the district is selected (empty = the settlement’s).' },
+                    summary: PLACE_FIELDS.summary,
+                    body: { ...PLACE_FIELDS.body, help: 'Shown under the settlement’s lore, with the district’s name as heading.' },
+                    mapImage: { kind: 'mapImage', label: 'District map', section: 'Map' },
                 },
             },
             poi: {
@@ -325,93 +362,97 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/pois.json',
                 page: 'poi.html?id={id}',
                 place: true, parent: ['district', 'settlement', 'country'], autolink: true,
+                sections: ['Essentials', 'Lore', 'Map', 'Tavern', 'Shop', 'Temple'],
                 fields: {
                     ...PLACE_FIELDS,
-                    image: { kind: 'image', label: 'Image' },
-                    featured: { kind: 'boolean', label: 'Featured landmark' },
-                    safe: { kind: 'boolean', label: 'Safe haven' },
-                    map: { kind: 'map', label: 'Pin on the parent map' },
+                    subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: page header, map pop-up, POIs list.' },
+                    codex: { ...PLACE_FIELDS.codex, help: 'Small capitals above the lore panel when its pin is clicked on a map.' },
+                    danger: { ...PLACE_FIELDS.danger, help: 'Red pin, red page and a “Danger” tag.' },
+                    image: { kind: 'image', label: 'Picture', help: 'Page header and POIs list card.' },
+                    featured: { kind: 'boolean', label: 'Featured landmark', help: '“Featured” tag in the POIs list.' },
+                    safe: { kind: 'boolean', label: 'Safe haven', help: '“Safe” tag in the POIs list.' },
+                    map: { kind: 'map', label: 'Pin on the parent map', section: 'Map', noPin: PIN_HELP },
                     tavern: {
-                        kind: 'object', label: 'Tavern', optional: true,
-                        help: 'Fill this in to give the POI a tavern page with a seeded menu.',
+                        kind: 'object', label: 'Tavern', optional: true, section: 'Tavern',
+                        help: 'Gives the page a Fare tab (seeded menu and services), plus Rumours and Games tabs when they apply.',
                         fields: {
-                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Quality tier', required: true },
-                            keepers: { kind: 'refs', to: ['npc'], label: 'Innkeeper(s), shown on the Fare tab (any NPC; the people of the POI are listed apart)' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Quality tier', required: true, help: 'Sets the prices and what the pool may serve.' },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Behind the bar', help: 'Shown on the Fare tab. Any NPC; the people who live here are listed apart.' },
                             hours: { kind: 'text', label: 'Opening hours' },
                             picks: {
-                                kind: 'object', label: 'Random picks per category', fields: {
+                                kind: 'object', label: 'Random dishes per category', help: 'Drawn from the tavern menu pool with the market code. Empty = none.', fields: {
                                     drinks: { kind: 'number', label: 'Drinks' },
                                     meals: { kind: 'number', label: 'Hearty fare' },
                                     bites: { kind: 'number', label: 'Small plates' },
                                 }
                             },
-                            includeTags: { kind: 'list', label: 'Only pool items with one of these tags' },
-                            excludeTags: { kind: 'list', label: 'Never pool items with these tags' },
+                            includeTags: { kind: 'list', label: 'Only pool items tagged', help: 'Empty = any tag.' },
+                            excludeTags: { kind: 'list', label: 'Never pool items tagged' },
                             signature: {
-                                kind: 'objects', label: 'Signature items (always served)', itemLabel: 'name', fields: {
+                                kind: 'objects', label: 'Signature items', help: 'Always on the menu. Price in cp, fixed (not scaled by the tier).', itemLabel: 'name', fields: {
                                     category: { kind: 'enum', enum: 'menuCategory', label: 'Category' },
                                     name: { kind: 'text', label: 'Name' },
                                     desc: { kind: 'text', label: 'Description' },
-                                    price: { kind: 'number', label: 'Price (cp, as written)' },
+                                    price: { kind: 'number', label: 'Price (cp)' },
                                 }
                             },
                             services: { kind: 'refs', to: ['service'], label: 'Services from the catalogue' },
                             customServices: {
-                                kind: 'objects', label: 'House-only services', itemLabel: 'name', fields: {
+                                kind: 'objects', label: 'House-only services', help: 'Price in cp, fixed (not scaled by the tier).', itemLabel: 'name', fields: {
                                     name: { kind: 'text', label: 'Name' },
                                     desc: { kind: 'text', label: 'Description' },
-                                    price: { kind: 'number', label: 'Price (cp, as written)' },
+                                    price: { kind: 'number', label: 'Price (cp)' },
                                     unit: { kind: 'text', label: 'Unit' },
                                 }
                             },
-                            rumourDraws: { kind: 'number', label: 'Rumours a player can hear per market code (empty = 3; 0 = no Rumours tab)' },
-                            games: { kind: 'list', enum: 'tavernGame', label: 'Gaming table: games played here (adds a Games tab, against the regulars)' },
+                            rumourDraws: { kind: 'number', label: 'Rumours per player', help: 'How many a player can hear per market code. Empty = 3; 0 = no Rumours tab.' },
+                            games: { kind: 'list', enum: 'tavernGame', label: 'Gaming table', help: 'Adds a Games tab: played against the regulars.' },
                         },
                     },
                     /* A POI can be a tavern AND a shop AND a temple: each block adds its tab to the page. */
                     shop: {
-                        kind: 'object', label: 'Shop', optional: true,
-                        help: 'Fill this in to give the POI a Wares tab, drawn from the shop goods pool by the market code.',
+                        kind: 'object', label: 'Shop', optional: true, section: 'Shop',
+                        help: 'Gives the page a Wares tab, drawn from the shop goods pool with the market code.',
                         fields: {
-                            kind: { kind: 'enum', enum: 'shopKind', label: 'Kind of shop (sets the shelves)', required: true },
-                            keepers: { kind: 'refs', to: ['npc'], label: 'Shopkeeper(s), shown on the Wares tab (any NPC; the people of the POI are listed apart)' },
-                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Quality tier (empty = the tavern’s, else Modest)' },
-                            hours: { kind: 'text', label: 'Opening hours (empty = the tavern’s)' },
-                            picks: { kind: 'number', label: 'Random goods per shelf (empty = 5)' },
-                            categories: { kind: 'list', enum: 'shopCategory', label: 'Shelves, instead of the kind’s (none ticked: the kind’s)' },
-                            markup: { kind: 'number', label: 'Price level in % (empty = 100; 80 = cheap, 130 = gouging)' },
-                            includeTags: { kind: 'list', label: 'Only pool goods with one of these tags' },
-                            excludeTags: { kind: 'list', label: 'Never pool goods with these tags' },
+                            kind: { kind: 'enum', enum: 'shopKind', label: 'Kind of shop', required: true, help: 'Sets the shelves.' },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Shopkeepers', help: 'Shown on the Wares tab. Any NPC; the people who live here are listed apart.' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Quality tier', help: 'Empty = the tavern’s, else Modest.' },
+                            hours: { kind: 'text', label: 'Opening hours', help: 'Empty = the tavern’s.' },
+                            picks: { kind: 'number', label: 'Goods per shelf', help: 'Random picks. Empty = 5.' },
+                            categories: { kind: 'list', enum: 'shopCategory', label: 'Shelves', help: 'Instead of the kind’s. None ticked = the kind’s.' },
+                            markup: { kind: 'number', label: 'Price level (%)', help: 'Empty = 100; 80 = cheap, 130 = gouging.' },
+                            includeTags: { kind: 'list', label: 'Only pool goods tagged', help: 'Empty = any tag.' },
+                            excludeTags: { kind: 'list', label: 'Never pool goods tagged' },
                             signature: {
-                                kind: 'objects', label: 'Signature wares (always in stock)', itemLabel: 'name', fields: {
+                                kind: 'objects', label: 'Signature wares', help: 'Always in stock. Price in cp, fixed (not scaled by the tier).', itemLabel: 'name', fields: {
                                     category: { kind: 'enum', enum: 'shopCategory', label: 'Shelf' },
                                     name: { kind: 'text', label: 'Name' },
                                     desc: { kind: 'text', label: 'Description' },
-                                    price: { kind: 'number', label: 'Price (cp, as written)' },
+                                    price: { kind: 'number', label: 'Price (cp)' },
                                     unit: { kind: 'text', label: 'Unit' },
                                 }
                             },
                         },
                     },
                     temple: {
-                        kind: 'object', label: 'Temple / shrine', optional: true,
-                        help: 'Fill this in to give the POI a Shrine tab: services, offerings and a prayer that draws a blessing.',
+                        kind: 'object', label: 'Temple / shrine', optional: true, section: 'Temple',
+                        help: 'Gives the page a Shrine tab: services, offerings and a prayer that draws a blessing.',
                         fields: {
                             deities: { kind: 'refs', to: ['deity'], label: 'Deities worshipped here' },
-                            keepers: { kind: 'refs', to: ['npc'], label: 'Priest(s) in charge, shown on the Shrine tab (any NPC; the people of the POI are listed apart)' },
-                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Wealth of the temple (prices; empty = Modest)' },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Tending the altar', help: 'Shown on the Shrine tab. Any NPC; the people who live here are listed apart.' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Wealth', help: 'Sets the prices. Empty = Modest.' },
                             hours: { kind: 'text', label: 'Hours of worship' },
                             services: { kind: 'refs', to: ['templeService'], label: 'Services from the catalogue' },
                             customServices: {
-                                kind: 'objects', label: 'Services of this temple only', itemLabel: 'name', fields: {
+                                kind: 'objects', label: 'This temple’s own services', help: 'Price in cp, fixed (not scaled by the wealth). No price = “Donation”.', itemLabel: 'name', fields: {
                                     category: { kind: 'enum', enum: 'templeCategory', label: 'Kind' },
                                     name: { kind: 'text', label: 'Name' },
                                     desc: { kind: 'text', label: 'Description' },
-                                    price: { kind: 'number', label: 'Price (cp, as written; empty = a donation)' },
+                                    price: { kind: 'number', label: 'Price (cp)' },
                                     unit: { kind: 'text', label: 'Unit' },
                                 }
                             },
-                            noPrayer: { kind: 'boolean', label: 'No prayer button (no blessing drawn here)' },
+                            noPrayer: { kind: 'boolean', label: 'No prayer button', help: 'No blessing is drawn here.' },
                         },
                     },
                 },
@@ -423,29 +464,30 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/npcs.json',
                 page: 'npc.html?id={id}',
                 autolink: true,
+                sections: ['Identity', 'Where & ties', 'Campaigns', 'Biography', 'DM only'],
                 fields: {
                     role: { kind: 'text', label: 'Role / title' },
-                    summary: { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
-                    quote: { kind: 'text', label: 'Quote' },
-                    portrait: { kind: 'image', label: 'Portrait' },
-                    avatar: { kind: 'image', label: 'Avatar (small)' },
-                    home: { kind: 'ref', to: ['poi', 'district', 'settlement', 'country'], label: 'Where they are found' },
-                    whereabouts: { kind: 'text', label: 'Whereabouts, when not a place on the site (e.g. another plane)' },
-                    species: { kind: 'text', label: 'Species' },
-                    age: { kind: 'text', label: 'Age' },
-                    gender: { kind: 'text', label: 'Gender' },
-                    factions: { kind: 'refs', to: ['faction'], label: 'Factions' },
+                    summary: { kind: 'text', label: 'One-line summary', long: true, help: TOOLTIP_HELP },
+                    quote: { kind: 'text', label: 'Quote', width: 'full' },
+                    portrait: { kind: 'image', label: 'Portrait', help: 'The NPC’s card and page.' },
+                    avatar: { kind: 'image', label: 'Avatar', help: 'Small round picture: lists, POI pages. Empty = the portrait.' },
+                    home: { kind: 'ref', to: ['poi', 'district', 'settlement', 'country'], label: 'Where they are found', section: 'Where & ties' },
+                    whereabouts: { kind: 'text', label: 'Whereabouts', section: 'Where & ties', help: 'When not a place on the site (another plane…).' },
+                    species: { kind: 'text', label: 'Species', width: 'third' },
+                    age: { kind: 'text', label: 'Age', width: 'third' },
+                    gender: { kind: 'text', label: 'Gender', width: 'third' },
+                    factions: { kind: 'refs', to: ['faction'], label: 'Factions', section: 'Where & ties' },
                     /* Campaigns the NPC belongs to, with the party's relation in each.
                        None listed = the NPC is part of every campaign, with "relation" below. */
                     campaigns: {
-                        kind: 'objects', label: 'Campaigns (none: every campaign)', itemLabel: ['campaign', 'relation'], fields: {
+                        kind: 'objects', label: 'Campaigns', section: 'Campaigns', help: 'None listed = part of every campaign.', itemLabel: ['campaign', 'relation'], fields: {
                             campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign', required: true },
-                            relation: { kind: 'enum', enum: 'relation', label: 'Relation to the party in this campaign' },
+                            relation: { kind: 'enum', enum: 'relation', label: 'Relation to the party' },
                         }
                     },
-                    relation: { kind: 'enum', enum: 'relation', label: 'Relation to the party (only when no campaign is listed above)' },
-                    biography: { kind: 'markdown', label: 'Biography' },
-                    secrets: { kind: 'markdown', label: 'Secrets (DM only)', private: true },
+                    relation: { kind: 'enum', enum: 'relation', label: 'Default relation', section: 'Campaigns', help: 'Used when no campaign is listed above, or a listed one sets no relation.' },
+                    biography: { kind: 'markdown', label: 'Biography', section: 'Biography' },
+                    secrets: { kind: 'markdown', label: 'Secrets', private: true, section: 'DM only' },
                 },
             },
             faction: {
@@ -453,24 +495,41 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/factions.json',
                 page: 'factions.html?id={id}',
                 autolink: true,
+                sections: ['Essentials', 'Dossier', 'Relations', 'Intelligence', 'Field evidence'],
                 fields: {
-                    stub: { kind: 'boolean', label: 'Stub (named somewhere, not written up yet)' },
-                    summary: { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
+                    stub: { kind: 'boolean', label: 'Stub', help: 'Named somewhere, not written up yet: no dossier tab.' },
+                    summary: { kind: 'text', label: 'One-line summary', long: true, help: TOOLTIP_HELP },
                     crest: { kind: 'image', label: 'Crest' },
-                    status: { kind: 'enum', enum: 'factionStatus', label: "Standing with the party (only when no campaign lists this faction in its standings)" },
-                    quote: { kind: 'text', label: 'Motto / quote' },
-                    reputation: { kind: 'number', label: 'Reputation (0-100)' },
-                    reputationText: { kind: 'text', label: 'Reputation label' },
-                    base: { kind: 'text', label: 'Base of operations' },
-                    scale: { kind: 'text', label: 'Scale of influence' },
-                    mo: { kind: 'text', label: 'Modus operandi' },
-                    threatLevel: { kind: 'enum', enum: 'threatLevel', label: 'Threat level' },
-                    allies: { kind: 'refs', to: ['faction'], label: 'Allies' },
-                    rivals: { kind: 'refs', to: ['faction'], label: 'Rivals' },
-                    assets: { kind: 'list', label: 'Known assets' },
-                    directives: { kind: 'list', label: 'Active directives' },
-                    rumors: { kind: 'list', label: 'Unverified rumours' },
-                    intel: { kind: 'json', label: 'Field evidence cards' },
+                    status: { kind: 'enum', enum: 'factionStatus', label: 'Default standing', section: 'Relations', help: 'Used when no campaign lists this faction in its allegiances, or a listed one sets no standing.' },
+                    quote: { kind: 'text', label: 'Motto / quote', width: 'full' },
+                    reputation: { kind: 'number', label: 'Reputation', section: 'Dossier', range: [0, 100], help: 'The bar of the dossier (0–100).' },
+                    reputationText: { kind: 'text', label: 'Reputation label', section: 'Dossier' },
+                    base: { kind: 'text', label: 'Base of operations', section: 'Dossier' },
+                    scale: { kind: 'text', label: 'Scale of influence', section: 'Dossier' },
+                    mo: { kind: 'text', label: 'Modus operandi', section: 'Dossier' },
+                    threatLevel: { kind: 'enum', enum: 'threatLevel', label: 'Threat level', section: 'Dossier' },
+                    allies: { kind: 'refs', to: ['faction'], label: 'Allies', section: 'Relations' },
+                    rivals: { kind: 'refs', to: ['faction'], label: 'Rivals', section: 'Relations' },
+                    assets: { kind: 'list', label: 'Known assets', lines: true, section: 'Intelligence' },
+                    directives: { kind: 'list', label: 'Active directives', lines: true, section: 'Intelligence' },
+                    rumors: { kind: 'list', label: 'Unverified rumours', lines: true, section: 'Intelligence' },
+                    intel: {
+                        kind: 'objects', label: 'Evidence cards', section: 'Field evidence', itemLabel: ['type', 'title', 'name'], fields: {
+                            type: { kind: 'enum', enum: 'intelKind', label: 'Kind', required: true },
+                            seal: { kind: 'text', label: 'Seal letters', showIf: { key: 'type', is: ['note'] }, width: 'third' },
+                            title: { kind: 'text', label: 'Title', showIf: { key: 'type', is: ['note', 'map'] } },
+                            content: { kind: 'text', label: 'Text', long: true, showIf: { key: 'type', is: ['note'] } },
+                            name: { kind: 'text', label: 'Name', showIf: { key: 'type', is: ['target'] } },
+                            image: { kind: 'image', label: 'Picture', showIf: { key: 'type', is: ['map', 'target'] } },
+                            description: { kind: 'text', label: 'Description', long: true, showIf: { key: 'type', is: ['target'] } },
+                            tags: {
+                                kind: 'objects', label: 'Tags', itemLabel: 'text', showIf: { key: 'type', is: ['target'] }, fields: {
+                                    text: { kind: 'text', label: 'Text' },
+                                    tone: { kind: 'enum', enum: 'tagTone', label: 'Colour' },
+                                }
+                            },
+                        }
+                    },
                 },
             },
 
@@ -481,41 +540,43 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/lore.json',
                 autolink: true,
                 fields: {
-                    kind: { kind: 'enum', enum: 'loreKind', label: 'Kind (keyword colour)', required: true },
-                    definition: { kind: 'text', label: 'Definition (tooltip)', long: true },
+                    kind: { kind: 'enum', enum: 'loreKind', label: 'Kind', required: true, help: 'Sets the keyword’s colour.' },
+                    definition: { kind: 'text', label: 'Definition', long: true, help: TOOLTIP_HELP },
                 },
             },
             tome: {
                 label: 'Tome', plural: 'Tomes', icon: 'menu_book', group: 'Library',
                 file: 'data/tomes.json',
                 page: 'tomes.html?id={id}',
+                sections: ['Essentials', 'Look', 'Text'],
                 fields: {
-                    draft: { kind: 'boolean', label: 'Draft (not shown on the site)' },
+                    draft: { kind: 'boolean', label: 'Draft', help: 'Not shown on the site.' },
                     author: { kind: 'text', label: 'Author' },
                     kind: { kind: 'enum', enum: 'tomeKind', label: 'Book or scroll', required: true },
-                    category: { kind: 'text', label: 'Category (shelf filter)' },
-                    spineText: { kind: 'text', label: 'Spine text' },
-                    cover: { kind: 'image', label: 'Cover image (books)' },
-                    cleanCover: { kind: 'boolean', label: 'Clean cover: show the image alone, no title over it' },
-                    tone: { kind: 'enum', enum: 'tomeTone', label: 'Colour (books without a cover, scrolls)' },
-                    icon: { kind: 'text', label: 'Seal icon (scrolls; Material Symbols name)' },
-                    iconColor: { kind: 'text', label: 'Seal icon colour (scrolls; CSS colour)' },
-                    body: { kind: 'markdown', label: 'Text' },
+                    category: { kind: 'text', label: 'Category', help: 'The shelf filter.' },
+                    spineText: { kind: 'text', label: 'Spine text', section: 'Look', showIf: { key: 'kind', is: ['Book'] } },
+                    cover: { kind: 'image', label: 'Cover image', section: 'Look', showIf: { key: 'kind', is: ['Book'] } },
+                    cleanCover: { kind: 'boolean', label: 'Clean cover', section: 'Look', help: 'The image alone, no title over it.', showIf: { key: 'cover', set: true } },
+                    tone: { kind: 'enum', enum: 'tomeTone', label: 'Colour', section: 'Look', help: 'Scrolls, and books without a cover.' },
+                    icon: { kind: 'text', label: 'Seal icon', section: 'Look', icon: true, showIf: { key: 'kind', is: ['Scroll'] }, help: 'Material Symbols name. Empty = history_edu.' },
+                    iconColor: { kind: 'text', label: 'Seal icon colour', section: 'Look', color: true, showIf: { key: 'kind', is: ['Scroll'] }, help: 'Empty = the colour above.' },
+                    body: { kind: 'markdown', label: 'Text', section: 'Text' },
                 },
             },
             handout: {
                 label: 'Handout', plural: 'Handouts', icon: 'contract', group: 'Library',
                 file: 'data/handouts.json',
                 page: 'handouts.html',
+                sections: ['Essentials', 'Picture & file'],
                 fields: {
-                    draft: { kind: 'boolean', label: 'Draft (not shown on the site)' },
+                    draft: { kind: 'boolean', label: 'Draft', help: 'Not shown on the site.' },
                     campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign' },
-                    category: { kind: 'text', label: 'Category (filter)' },
-                    icon: { kind: 'text', label: 'Icon (Material Symbols name)' },
+                    category: { kind: 'text', label: 'Category', help: 'The filter of the Handouts page.' },
+                    icon: { kind: 'text', label: 'Icon', icon: true, section: 'Picture & file', help: 'Material Symbols name.' },
                     foundAt: { kind: 'text', label: 'Where it was found' },
                     description: { kind: 'text', label: 'Description', long: true },
-                    thumbnail: { kind: 'image', label: 'Card image' },
-                    file: { kind: 'url', label: 'File to open (image or link)' },
+                    thumbnail: { kind: 'image', label: 'Card image', section: 'Picture & file' },
+                    file: { kind: 'url', label: 'File to open', section: 'Picture & file', help: 'An image in the site’s folders, or a link.' },
                 },
             },
             creature: {
@@ -523,36 +584,37 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/creatures.json',
                 page: 'beast.html?id={id}',
                 autolink: true,
+                sections: ['Essentials', 'Stats', 'Lore', 'Field notes'],
                 fields: {
-                    arcana: { kind: 'text', label: 'Arcana (e.g. I · THE GUARDIAN)' },
+                    arcana: { kind: 'text', label: 'Arcana', help: 'e.g. I · THE GUARDIAN' },
                     specimenNo: { kind: 'text', label: 'Specimen number' },
                     location: { kind: 'text', label: 'Where it was met' },
                     image: { kind: 'image', label: 'Image' },
-                    threat: { kind: 'enum', enum: 'creatureThreat', label: 'Threat level' },
+                    threat: { kind: 'enum', enum: 'creatureThreat', label: 'Threat level', section: 'Stats' },
                     realm: { kind: 'text', label: 'Realm' },
                     phylogeny: { kind: 'text', label: 'Phylogeny' },
-                    shortDesc: { kind: 'text', label: 'Short description', long: true },
+                    shortDesc: { kind: 'text', label: 'Short description', long: true, help: 'Bestiary card. Also the ' + TOOLTIP_HELP.toLowerCase() },
                     stats: {
-                        kind: 'objects', label: 'Stat bars (0-100)', itemLabel: 'label', fields: {
+                        kind: 'objects', label: 'Stat bars', section: 'Stats', itemLabel: 'label', fields: {
                             label: { kind: 'text', label: 'Stat' },
-                            value: { kind: 'number', label: 'Value (0-100)' },
+                            value: { kind: 'number', label: 'Value (0–100)', range: [0, 100] },
                         }
                     },
                     tags: { kind: 'list', label: 'Tags' },
                     habitats: { kind: 'list', label: 'Habitats' },
-                    loreTitle: { kind: 'text', label: 'Lore heading' },
-                    body: { kind: 'markdown', label: 'Lore' },
-                    behaviors: { kind: 'list', label: 'Behaviours' },
-                    weaknesses: { kind: 'list', label: 'Weaknesses' },
+                    loreTitle: { kind: 'text', label: 'Lore title', section: 'Lore' },
+                    body: { kind: 'markdown', label: 'Lore', section: 'Lore' },
+                    behaviors: { kind: 'list', label: 'Behaviours', lines: true, section: 'Field notes' },
+                    weaknesses: { kind: 'list', label: 'Weaknesses', lines: true, section: 'Field notes' },
                     drops: {
-                        kind: 'objects', label: 'Harvestable parts', itemLabel: 'name', fields: {
+                        kind: 'objects', label: 'Harvestable parts', itemLabel: 'name', section: 'Field notes', fields: {
                             name: { kind: 'text', label: 'Name' },
                             type: { kind: 'text', label: 'Type' },
-                            icon: { kind: 'text', label: 'Icon (Material Symbols name)' },
+                            icon: { kind: 'text', label: 'Icon', icon: true },
                         }
                     },
-                    scholarQuote: { kind: 'text', label: 'Scholar quote', long: true },
-                    scholarName: { kind: 'text', label: 'Scholar name' },
+                    scholarQuote: { kind: 'text', label: 'Scholar quote', long: true, section: 'Lore' },
+                    scholarName: { kind: 'text', label: 'Scholar name', section: 'Lore' },
                 },
             },
             /* A spell, shown as a card in the Spellbook (spellbook.html) and from the
@@ -562,21 +624,22 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/spells.json',
                 page: 'spellbook.html?spell={id}', // opens the card, whatever campaign and hero are picked
                 autolink: true,
+                sections: ['Card', 'Description'],
                 fields: {
-                    level: { kind: 'number', label: 'Level (0 = cantrip, up to 9)', required: true },
-                    school: { kind: 'enum', enum: 'spellSchool', label: 'School (sets the card colour)', required: true },
-                    castingTime: { kind: 'text', label: 'Casting time (e.g. 1 action)' },
-                    range: { kind: 'text', label: 'Range (e.g. 60 ft)' },
-                    duration: { kind: 'text', label: 'Duration (e.g. Up to 1 minute)' },
+                    level: { kind: 'number', label: 'Level', required: true, choices: [[0, 'Cantrip (C)'], [1, '1st'], [2, '2nd'], [3, '3rd'], [4, '4th'], [5, '5th'], [6, '6th'], [7, '7th'], [8, '8th'], [9, '9th']] },
+                    school: { kind: 'enum', enum: 'spellSchool', label: 'School', required: true, help: 'Sets the card’s colour and symbols.' },
+                    castingTime: { kind: 'text', label: 'Casting time', help: 'e.g. 1 action', width: 'third' },
+                    range: { kind: 'text', label: 'Range', help: 'e.g. 60 ft', width: 'third' },
+                    duration: { kind: 'text', label: 'Duration', help: 'e.g. Up to 1 minute', width: 'third' },
                     /* same order as on the card: V S M, Conc., Rit. */
                     verbal: { kind: 'boolean', label: 'Verbal (V)' },
                     somatic: { kind: 'boolean', label: 'Somatic (S)' },
                     material: { kind: 'boolean', label: 'Material (M)' },
                     concentration: { kind: 'boolean', label: 'Concentration' },
                     ritual: { kind: 'boolean', label: 'Ritual' },
-                    materials: { kind: 'text', label: 'Material components (shown when hovering the M)', long: true },
-                    summary: { kind: 'text', label: 'One-line summary (the card in the grid)', long: true },
-                    body: { kind: 'markdown', label: 'Full description (the opened card)' },
+                    materials: { kind: 'text', label: 'Material components', long: true, help: 'Shown when hovering the M.', showIf: { key: 'material', set: true } },
+                    summary: { kind: 'text', label: 'One-line summary', long: true, help: 'The card in the grid.' },
+                    body: { kind: 'markdown', label: 'Full description', section: 'Description', help: 'The opened card.' },
                 },
             },
             /* Shown as a loot card in the Artifact Vault (vault.html). Players see the items found in their campaign's sessions (session.loot) and the party's own (campaign.inventory). */
@@ -585,16 +648,17 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/items.json',
                 page: 'vault.html?item={id}',
                 autolink: true,   // only items found somewhere (else the Vault link leads nowhere)
+                sections: ['Card', 'Description'],
                 fields: {
                     image: { kind: 'image', label: 'Picture' },
-                    type: { kind: 'text', label: 'Type (e.g. Wondrous item, Weapon (dagger))' },
-                    rarity: { kind: 'enum', enum: 'itemRarity', label: 'Rarity (sets the card colour)' },
-                    cost: { kind: 'text', label: 'Cost (e.g. 50 gp)' },
-                    weight: { kind: 'text', label: 'Weight (e.g. 1 lb.)' },
+                    type: { kind: 'text', label: 'Type', help: 'e.g. Wondrous item, Weapon (dagger)' },
+                    rarity: { kind: 'enum', enum: 'itemRarity', label: 'Rarity', help: 'Sets the card’s colour.' },
+                    cost: { kind: 'text', label: 'Cost', help: 'e.g. 50 gp', width: 'third' },
+                    weight: { kind: 'text', label: 'Weight', help: 'e.g. 1 lb.', width: 'third' },
                     attunement: { kind: 'boolean', label: 'Requires attunement' },
                     attunedBy: { kind: 'ref', to: ['hero'], label: 'Attuned to' },
-                    summary: { kind: 'text', label: 'One-line description (front of the card)', long: true },
-                    body: { kind: 'markdown', label: 'Full description (shown when the card is opened)' },
+                    summary: { kind: 'text', label: 'One-line description', long: true, help: 'Front of the card.' },
+                    body: { kind: 'markdown', label: 'Full description', section: 'Description', help: 'The opened card.' },
                 },
             },
 
@@ -603,36 +667,37 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'Campaign', plural: 'Campaigns', icon: 'auto_stories', group: 'Campaigns',
                 file: 'data/campaigns.json',
                 page: 'scriptorium.html?campaign={id}',
+                sections: ['Story', 'Quests', 'Party', 'Allegiances', 'Spellbooks'],
                 fields: {
-                    preview: { kind: 'text', label: 'Story so far: teaser', long: true },
+                    preview: { kind: 'text', label: 'Teaser', long: true, help: 'The short “Story so far” of the scriptorium.' },
                     story: { kind: 'markdown', label: 'Story so far' },
                     quests: {
-                        kind: 'objects', label: 'Active quests', itemLabel: 'title', fields: {
+                        kind: 'objects', label: 'Active quests', itemLabel: 'title', section: 'Quests', fields: {
                             title: { kind: 'text', label: 'Title' },
                             description: { kind: 'text', label: 'Description', long: true },
                             status: { kind: 'enum', enum: 'questStatus', label: 'Status' },
                         }
                     },
-                    partyName: { kind: 'text', label: 'Party name' },
-                    party: { kind: 'refs', to: ['hero'], label: 'Heroes' },
+                    partyName: { kind: 'text', label: 'Party name', section: 'Party', help: 'Empty = the campaign’s name.' },
+                    party: { kind: 'refs', to: ['hero'], label: 'Heroes', section: 'Party' },
                     funds: {
-                        kind: 'object', label: 'Party funds', fields: {
+                        kind: 'object', label: 'Party funds', section: 'Party', fields: {
                             gold: { kind: 'number', label: 'Gold' },
                             silver: { kind: 'number', label: 'Silver' },
                             copper: { kind: 'number', label: 'Copper' },
                         }
                     },
-                    inventory: { kind: 'refs', to: ['item'], label: 'Shared inventory (besides the loot from sessions)' },
+                    inventory: { kind: 'refs', to: ['item'], label: 'Shared inventory', section: 'Party', help: 'Besides the loot of the sessions.' },
                     standings: {
-                        kind: 'objects', label: 'Party allegiances: the factions of this campaign (a faction listed in no campaign is in all of them)', itemLabel: ['faction', 'status'], fields: {
+                        kind: 'objects', label: 'Factions of this campaign', section: 'Allegiances', help: 'A faction listed in no campaign is part of all of them. Shown on the Heroes page.', itemLabel: ['faction', 'status'], fields: {
                             faction: { kind: 'ref', to: ['faction', 'poi'], label: 'Faction (or place)' },
                             status: { kind: 'enum', enum: 'factionStatus', label: 'Standing' },
                         }
                     },
                     /* What each hero knows in THIS campaign (a hero can be in two campaigns) */
                     spellbooks: {
-                        kind: 'objects', label: 'Spellbooks', itemLabel: 'hero', fields: {
-                            hero: { kind: 'ref', to: ['hero'], label: 'Hero (one of the party)' },
+                        kind: 'objects', label: 'Spellbooks', itemLabel: 'hero', section: 'Spellbooks', help: 'What each hero knows in this campaign.', fields: {
+                            hero: { kind: 'ref', to: ['hero'], label: 'Hero', help: 'One of the party.' },
                             spells: { kind: 'refs', to: ['spell'], label: 'Spells known' },
                         }
                     },
@@ -644,43 +709,45 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 page: 'scriptorium.html?session={id}',
                 /* Newest first everywhere (store.all('session')), whatever the order in the file: grouped by campaign, highest number first. */
                 order: { within: 'campaign', by: 'number', desc: true },
+                sections: ['Overview', 'Transcript', 'People & places', 'Loot & leads'],
                 fields: {
                     campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign', required: true },
-                    number: { kind: 'number', label: 'Session number (highest = latest)', required: true },
+                    number: { kind: 'number', label: 'Session number', required: true, help: 'Sets the order (highest = latest); not shown.' },
                     date: { kind: 'text', label: 'In-world date' },
                     region: { kind: 'text', label: 'Region' },
                     arc: { kind: 'text', label: 'Arc' },
                     summary: { kind: 'text', label: 'Summary', long: true },
-                    places: { kind: 'refs', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Places visited' },
-                    otherPlaces: { kind: 'list', label: 'Places visited that have no page' },
+                    places: { kind: 'refs', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Places visited', section: 'People & places' },
+                    otherPlaces: { kind: 'list', label: 'Places with no page', section: 'People & places' },
                     npcs: {
-                        kind: 'objects', label: 'NPCs met', itemLabel: 'npc', fields: {
+                        kind: 'objects', label: 'NPCs met', itemLabel: 'npc', section: 'People & places', fields: {
                             npc: { kind: 'ref', to: ['npc'], label: 'NPC' },
                             sentiment: { kind: 'enum', enum: 'sentiment', label: 'How it went' },
                         }
                     },
-                    loot: { kind: 'refs', to: ['item'], label: 'Loot obtained' },
-                    accomplished: { kind: 'list', label: 'Things accomplished' },
-                    leadsPursued: { kind: 'list', label: 'Leads pursued' },
-                    futureLeads: { kind: 'list', label: 'Future leads' },
+                    loot: { kind: 'refs', to: ['item'], label: 'Loot obtained', section: 'Loot & leads' },
+                    accomplished: { kind: 'list', label: 'Things accomplished', lines: true, section: 'Loot & leads' },
+                    leadsPursued: { kind: 'list', label: 'Leads pursued', lines: true, section: 'Loot & leads' },
+                    futureLeads: { kind: 'list', label: 'Future leads', lines: true, section: 'Loot & leads' },
                     keywords: { kind: 'list', label: 'Search keywords' },
-                    body: { kind: 'markdown', label: 'Transcript' },
+                    body: { kind: 'markdown', label: 'Transcript', section: 'Transcript' },
                 },
             },
             hero: {
                 label: 'Hero', plural: 'Heroes', icon: 'local_fire_department', group: 'Campaigns',
                 file: 'data/heroes.json',
                 page: 'heroes.html',
+                sections: ['Identity', 'Backstory', 'Statistics', 'Secret'],
                 fields: {
                     raceClass: { kind: 'text', label: 'Race and class' },
                     level: { kind: 'number', label: 'Level' },
                     background: { kind: 'text', label: 'Background' },
                     avatar: { kind: 'image', label: 'Avatar' },
-                    quote: { kind: 'text', label: 'Quote' },
-                    backstory: { kind: 'text', label: 'Backstory', long: true },
-                    personalGoal: { kind: 'text', label: 'Personal goal' },
+                    quote: { kind: 'text', label: 'Quote', width: 'full' },
+                    backstory: { kind: 'text', label: 'Backstory', long: true, section: 'Backstory' },
+                    personalGoal: { kind: 'text', label: 'Personal goal', section: 'Backstory', width: 'full' },
                     stats: {
-                        kind: 'object', label: 'Statistics', fields: {
+                        kind: 'object', label: 'Statistics', section: 'Statistics', fields: {
                             ac: { kind: 'number', label: 'Armour class' },
                             hp: { kind: 'number', label: 'Hit points' },
                             speed: { kind: 'number', label: 'Speed (ft.)' },
@@ -693,9 +760,9 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                         }
                     },
                     factions: { kind: 'refs', to: ['faction'], label: 'Factions' },
-                    secret: { kind: 'markdown', label: 'Secret (revealed by the password)', private: true },
-                    password: { kind: 'text', label: 'Password for the secret', private: true },
-                    sealedSecret: { kind: 'sealed', from: 'secret', password: 'password', label: 'Encrypted secret (written by the dashboard)' },
+                    secret: { kind: 'markdown', label: 'Secret', private: true, section: 'Secret', help: 'Revealed on the Heroes page to whoever types the password.' },
+                    password: { kind: 'text', label: 'Password', private: true, section: 'Secret', help: 'Capitals don’t matter.' },
+                    sealedSecret: { kind: 'sealed', from: 'secret', password: 'password', label: 'Published copy', section: 'Secret' },
                 },
             },
 
@@ -707,20 +774,20 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/menu-items.json',
                 fields: {
                     category: { kind: 'enum', enum: 'menuCategory', label: 'Category', required: true },
-                    desc: { kind: 'text', label: 'Description' },
-                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true },
-                    minTier: { kind: 'enum', enum: 'tavernTier', label: 'Cheapest tavern that serves it', required: true },
-                    maxTier: { kind: 'enum', enum: 'tavernTier', label: 'Finest tavern that serves it', required: true },
-                    tags: { kind: 'list', label: 'Tags' },
+                    desc: { kind: 'text', label: 'Description', width: 'full' },
+                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true, help: '× the tavern’s tier.' },
+                    minTier: { kind: 'enum', enum: 'tavernTier', label: 'From tier', required: true, help: 'The cheapest tavern that serves it.' },
+                    maxTier: { kind: 'enum', enum: 'tavernTier', label: 'Up to tier', required: true, help: 'The finest tavern that serves it.' },
+                    tags: { kind: 'list', label: 'Tags', help: 'Taverns can require or exclude tags.' },
                 },
             },
             service: {
                 label: 'Tavern service', plural: 'Tavern services', icon: 'bed', group: 'Markets',
                 file: 'data/services.json',
                 fields: {
-                    desc: { kind: 'text', label: 'Description' },
-                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true },
-                    unit: { kind: 'text', label: 'Unit (per night, each…)' },
+                    desc: { kind: 'text', label: 'Description', width: 'full' },
+                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true, help: '× the tavern’s tier.' },
+                    unit: { kind: 'text', label: 'Unit', help: 'per night, each…' },
                 },
             },
             /* The shared shop pool: a shop shows N seeded goods per shelf, among those its
@@ -730,12 +797,12 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/shop-goods.json',
                 fields: {
                     category: { kind: 'enum', enum: 'shopCategory', label: 'Shelf', required: true },
-                    desc: { kind: 'text', label: 'Description' },
-                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true },
-                    unit: { kind: 'text', label: 'Unit (each, 50 ft, 20 arrows…)' },
-                    minTier: { kind: 'enum', enum: 'tavernTier', label: 'Cheapest shop that stocks it', required: true },
-                    maxTier: { kind: 'enum', enum: 'tavernTier', label: 'Finest shop that stocks it', required: true },
-                    tags: { kind: 'list', label: 'Tags (illicit = only fences sell it)' },
+                    desc: { kind: 'text', label: 'Description', width: 'full' },
+                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true, help: '× the shop’s tier and price level.' },
+                    unit: { kind: 'text', label: 'Unit', help: 'each, 50 ft, 20 arrows…' },
+                    minTier: { kind: 'enum', enum: 'tavernTier', label: 'From tier', required: true, help: 'The cheapest shop that stocks it.' },
+                    maxTier: { kind: 'enum', enum: 'tavernTier', label: 'Up to tier', required: true, help: 'The finest shop that stocks it.' },
+                    tags: { kind: 'list', label: 'Tags', help: 'illicit = only fences sell it.' },
                 },
             },
 
@@ -748,23 +815,25 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/deities.json',
                 page: 'deity.html?id={id}',
                 autolink: true,   // sealed Elder gods excepted (store.revealed)
+                sections: ['Essentials', 'Card', 'Lore', 'Artifact'],
                 fields: {
-                    tier: { kind: 'enum', enum: 'deityTier', label: 'Tier (the section of the Pantheon and the frame of the card)' },
-                    epithet: { kind: 'text', label: 'Epithet (The Lady of Ashes…)' },
-                    summary: { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
-                    domains: { kind: 'list', label: 'Domains / portfolio (the card shows the first three)' },
+                    tier: { kind: 'enum', enum: 'deityTier', label: 'Tier', help: 'The section of the Pantheon and the card’s frame.' },
+                    epithet: { kind: 'text', label: 'Epithet', help: 'The Lady of Ashes…' },
+                    summary: { kind: 'text', label: 'One-line summary', long: true, help: TOOLTIP_HELP },
+                    domains: { kind: 'list', label: 'Domains / portfolio', help: 'The card shows the first three.' },
                     alignment: { kind: 'text', label: 'Alignment' },
-                    portrait: { kind: 'image', label: 'Portrait (full body, upright 2:3)' },
-                    portraitFocus: { kind: 'text', label: 'Portrait framing on the card (CSS position, e.g. 50% 20%; empty = 50% 30%)' },
-                    symbol: { kind: 'image', label: 'Holy symbol (image with a transparent background, shown in the medallion)' },
-                    symbolText: { kind: 'text', label: 'Holy symbol (description)' },
-                    icon: { kind: 'text', label: 'Icon when there is no symbol image (Material Symbols name)' },
-                    colour: { kind: 'text', label: 'Colour of the god: gems and glow of the card (CSS colour, e.g. #e9c176)' },
-                    worshippers: { kind: 'text', label: 'Typical worshippers', long: true },
-                    body: { kind: 'markdown', label: 'Lore' },
-                    artifact: { kind: 'ref', to: ['item'], label: 'Artifact (an item: a legend on this page; in the Vault only once a party finds it)' },
-                    artifactLegend: { kind: 'markdown', label: 'The artifact as the stories tell it' },
-                    revealedIn: { kind: 'refs', to: ['campaign'], label: 'Elder gods only: campaigns where the party has learned of it (none = sealed everywhere)' },
+                    portrait: { kind: 'image', label: 'Portrait', section: 'Card', help: 'Full body, upright 2:3.' },
+                    portraitFocus: { kind: 'text', label: 'Portrait framing', section: 'Card', focus: true, help: 'The point the zoom centres on (left → right, top → bottom). Empty = 50% 30%.' },
+                    portraitZoom: { kind: 'number', label: 'Portrait zoom (%)', section: 'Card', range: [100, 300], help: 'The portrait fills the window exactly: zoom in to frame it. Empty = 100 (whole portrait).' },
+                    symbol: { kind: 'image', label: 'Holy symbol', section: 'Card', help: 'A transparent PNG, shown in the medallion.' },
+                    symbolText: { kind: 'text', label: 'Holy symbol (description)', section: 'Lore' },
+                    icon: { kind: 'text', label: 'Medallion icon', icon: true, section: 'Card', help: 'When there is no symbol image (Material Symbols name).', showIf: { key: 'symbol', empty: true } },
+                    colour: { kind: 'text', label: 'Colour', color: true, section: 'Card', help: 'The card’s gems and glow.' },
+                    worshippers: { kind: 'text', label: 'Typical worshippers', long: true, section: 'Lore' },
+                    body: { kind: 'markdown', label: 'Lore', section: 'Lore' },
+                    artifact: { kind: 'ref', to: ['item'], label: 'Artifact', section: 'Artifact', help: 'An item: told as a legend on this page; in the Vault only once a party finds it.' },
+                    artifactLegend: { kind: 'markdown', label: 'The artifact’s legend', section: 'Artifact', showIf: { key: 'artifact', set: true } },
+                    revealedIn: { kind: 'refs', to: ['campaign'], label: 'Revealed in', help: 'Campaigns where the party has learned of this Elder god. None = sealed everywhere.', showIf: { key: 'tier', is: ['elder'] } },
                 },
             },
             templeService: {
@@ -772,9 +841,9 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/temple-services.json',
                 fields: {
                     category: { kind: 'enum', enum: 'templeCategory', label: 'Kind', required: true },
-                    desc: { kind: 'text', label: 'Description' },
-                    basePrice: { kind: 'number', label: 'Base price (cp; x the temple’s tier)', required: true },
-                    unit: { kind: 'text', label: 'Unit (per casting, each…)' },
+                    desc: { kind: 'text', label: 'Description', width: 'full' },
+                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true, help: '× the temple’s wealth.' },
+                    unit: { kind: 'text', label: 'Unit', help: 'per casting, each…' },
                 },
             },
             /* What "Pray" at a temple can grant: drawn once per market code, per browser. */
@@ -782,9 +851,9 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'Blessing', plural: 'Blessings', icon: 'volunteer_activism', group: 'Faith',
                 file: 'data/blessings.json',
                 fields: {
-                    text: { kind: 'text', label: 'What the worshipper feels or sees (shown to the player)', long: true, required: true },
-                    effect: { kind: 'text', label: 'Effect in play (optional; shown under the text)' },
-                    deities: { kind: 'refs', to: ['deity'], label: 'Only at the temples of these deities (none: any temple)' },
+                    text: { kind: 'text', label: 'What the worshipper feels or sees', long: true, required: true, help: 'Shown to the player.' },
+                    effect: { kind: 'text', label: 'Effect in play', width: 'full', help: 'Optional; shown under the text.' },
+                    deities: { kind: 'refs', to: ['deity'], label: 'Only at the temples of', help: 'None = any temple.' },
                 },
             },
 
@@ -794,30 +863,32 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             rumour: {
                 label: 'Rumour', plural: 'Rumours', icon: 'record_voice_over', group: 'Town life',
                 file: 'data/rumours.json',
+                sections: ['Rumour', 'DM only'],
                 fields: {
-                    where: { kind: 'ref', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Heard in the taverns of', required: true },
-                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns (none: every campaign)' },
-                    text: { kind: 'text', label: 'The rumour, as the players hear it', long: true, required: true },
-                    source: { kind: 'text', label: 'Who tells it (a drunk sailor, the barmaid…)' },
-                    truth: { kind: 'enum', enum: 'rumourTruth', label: 'Truth (DM only)', private: true },
-                    note: { kind: 'text', label: 'DM note', long: true, private: true },
+                    where: { kind: 'ref', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Heard in the taverns of', required: true, help: 'A tavern, or any place above it (all its taverns).' },
+                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns', help: 'None = every campaign.' },
+                    text: { kind: 'text', label: 'The rumour', long: true, required: true, help: 'As the players hear it.' },
+                    source: { kind: 'text', label: 'Who tells it', help: 'A drunk sailor, the barmaid…' },
+                    truth: { kind: 'enum', enum: 'rumourTruth', label: 'Truth', private: true, section: 'DM only' },
+                    note: { kind: 'text', label: 'DM note', long: true, private: true, section: 'DM only' },
                 },
             },
             /* A post on a notice board: the settlement's (town board) or a POI's. */
             notice: {
                 label: 'Notice', plural: 'Notice boards', icon: 'push_pin', group: 'Town life',
                 file: 'data/notices.json',
+                sections: ['Notice', 'Text'],
                 fields: {
                     where: { kind: 'ref', to: ['settlement', 'poi'], label: 'Pinned on the board of', required: true },
-                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns (none: every campaign)' },
-                    kind: { kind: 'enum', enum: 'noticeKind', label: 'Kind', required: true },
-                    status: { kind: 'enum', enum: 'noticeStatus', label: 'Status (empty = open)' },
-                    body: { kind: 'markdown', label: 'Text of the notice' },
+                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns', help: 'None = every campaign.' },
+                    kind: { kind: 'enum', enum: 'noticeKind', label: 'Kind', required: true, help: 'Sets the look.' },
+                    status: { kind: 'enum', enum: 'noticeStatus', label: 'Status', help: 'Empty = open. Taken or done: stamped, moved to the end.' },
+                    body: { kind: 'markdown', label: 'Text of the notice', section: 'Text' },
                     reward: { kind: 'text', label: 'Reward / pay' },
                     issuer: { kind: 'ref', to: ['npc', 'faction', 'poi', 'deity'], label: 'Posted by' },
-                    issuerText: { kind: 'text', label: 'Posted by (when not on the site, or a signature)' },
-                    posted: { kind: 'text', label: 'Posted on (in-world date)' },
-                    image: { kind: 'image', label: 'Picture (wanted posters…)' },
+                    issuerText: { kind: 'text', label: 'Signature', help: 'When the poster is not on the site, or as a signature.' },
+                    posted: { kind: 'text', label: 'Posted on', help: 'In-world date.' },
+                    image: { kind: 'image', label: 'Picture', help: 'Wanted posters…' },
                 },
             },
         },

@@ -16,8 +16,7 @@
     "map": {
       "x": 2637,
       "y": 998,
-      "icon": "eperina",
-      "layer": "locations"
+      "icon": "eperina"
     },
     "mapImage": {
       "src": "images/eperina_map.png",
@@ -35,8 +34,7 @@
     "map": {
       "x": 2068,
       "y": 1622,
-      "icon": "northlands",
-      "layer": "locations"
+      "icon": "northlands"
     }
   },
   {
@@ -57,8 +55,7 @@
     "map": {
       "x": 2056,
       "y": 950,
-      "icon": "lemerolai",
-      "layer": "locations"
+      "icon": "lemerolai"
     },
     "mapImage": {
       "src": "images/lemerolai_map.png",
@@ -75,8 +72,7 @@
     "map": {
       "x": 1845,
       "y": 1012,
-      "icon": "wolf-teeth-emp",
-      "layer": "locations"
+      "icon": "wolf-teeth-emp"
     }
   },
   {
@@ -88,8 +84,7 @@
     "map": {
       "x": 396,
       "y": 643,
-      "icon": "beliene",
-      "layer": "locations"
+      "icon": "beliene"
     }
   },
   {
@@ -110,8 +105,7 @@
     "map": {
       "x": 2176,
       "y": 765,
-      "icon": "maltona",
-      "layer": "political"
+      "icon": "maltona"
     }
   }
 ]

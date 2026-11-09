@@ -93,6 +93,14 @@
     font-family: 'Noto Serif', serif;
     font-size: 1.05rem;
 }
+/* several roles with their own hours (bar, shop, worship): one line each */
+.poi-hours-line { display: block; }
+.poi-hours-line b {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--poi-ink-dim);
+    margin-right: 0.4rem;
+}
 
 @media (min-width: 900px) {
     .poi-hero { grid-template-columns: 1.1fr 1fr; }

@@ -528,7 +528,14 @@
         const key = tierOf(d);
         const pic = options.picture || srcAttr;
         const colour = d.colour && (typeof CSS === 'undefined' || CSS.supports('color', d.colour)) ? d.colour : '';
-        const focus = d.portraitFocus ? `object-position: ${esc(d.portraitFocus)}` : '';
+        // Framing: the window is 2:3 like the portraits, so nothing is cropped until the
+        // portrait is zoomed (portraitZoom, %); the zoom is centred on portraitFocus.
+        const zoom = typeof d.portraitZoom === 'number' && d.portraitZoom > 100 ? d.portraitZoom / 100 : 1;
+        const at = d.portraitFocus || '50% 30%';
+        const focus = [
+            d.portraitFocus ? `object-position: ${esc(at)}` : '',
+            zoom > 1 ? `transform: scale(${zoom}); transform-origin: ${esc(at)}` : '',
+        ].filter(Boolean).join('; ');
         const domains = (d.domains || []).slice(0, 3);
         return shell(key, d, options, {
             style: colour ? `--deity: ${esc(colour)}` : '',

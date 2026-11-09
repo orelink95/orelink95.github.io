@@ -4,7 +4,40 @@
     "name": "Arawan",
     "tier": "great",
     "epithet": "The Everlasting",
+    "summary": "Arawan, the Everlasting is the First-Born of the Great Pantheon.",
+    "domains": [
+      "Life",
+      "Creation",
+      "Order",
+      "Dragon",
+      "Mercy",
+      "Serpent"
+    ],
     "portrait": "images/Arawan.png",
-    "symbol": "images/Eraldom Gods Symbols/Arawan Symbol.png"
+    "symbol": "images/Eraldom Gods Symbols/Arawan Symbol.png",
+    "symbolText": "A wingless dragon ouroboros",
+    "colour": "#ae00ff",
+    "worshippers": "Dragons, Dragonborns, Kobolds, Lawmakers, Healers, Artisans",
+    "body": "Arawan, the Everlasting is the First-Born of the Great Pantheon — a radiant amethyst dragon whose breath shaped the first laws of creation and whose scales shimmer with the memory of the world’s birth. Serpent of Mercy, Father of Order, The Everlasting coils around the foundation of reality, watching over life with wisdom, restraint, and boundless compassion.\n\nHe is said to have sung the first breath into the material plane by giving birth to the first great dragons. His presence fosters fertility, healing, and growth. New civilizations, verdant fields, and firstborn children are often dedicated to him. As the divine architect of cosmic law, Arawan judges with both firmness and compassion. He represents just rule, sacred covenants, and restorative justice. His followers believe law must serve mercy, not crush it.\n\nArawan represents two primal forces — the majestic order of dragons and the wisdom of serpents. His coils encircle the Inner Planes in myths, guarding them from chaos. He’s revered both as a celestial guardian and a guide of sacred mysteries."
+  },
+  {
+    "id": "oghma",
+    "name": "Oghma",
+    "tier": "great",
+    "epithet": "The All-knowing",
+    "domains": [
+      "Knowledge",
+      "Justice",
+      "Speech",
+      "Craft",
+      "Prophecy"
+    ],
+    "portrait": "images/Oghma.png",
+    "portraitFocus": "44% -20%",
+    "portraitZoom": 117,
+    "symbol": "images/Eraldom Gods Symbols/Oghma Symbol.png",
+    "symbolText": "A Golden Key in a Triangle",
+    "colour": "#fffb8f",
+    "body": "Oghma, the All-Knowing, is revered as the divine patron of scholars, artisans, and sages. Also known as the \"Whisperer of Truths\", Oghma governs the realms of knowledge, eloquence, and craftsmanship, blessing those who pursue understanding and creation. Temples dedicated to Oghma often double as libraries or workshops, called Scriptoriums, where his followers catalog discoveries, refine their crafts, and promote free speech. His followers also set up Lodges of Candor for those who seek arbitrations."
   }
 ]

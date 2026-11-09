@@ -53,8 +53,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const fact = (key, html) => { $(`poi-${key}`).innerHTML = html; $(`poi-${key}-fact`).hidden = false; };
     if (tavern || shop) fact('tier', esc(M.tierFor(store, poi, shop).label));
-    const hours = (tavern && tavern.hours) || (shop && shop.hours) || (temple && temple.hours);
-    if (hours) fact('hours', esc(hours));
+    // Hours of each role. A shop with none keeps the tavern's; when the roles differ, one line each.
+    const hoursOf = [
+        ['Bar', tavern && tavern.hours],
+        ['Shop', shop && (shop.hours || (tavern && tavern.hours))],
+        ['Worship', temple && temple.hours],
+    ].filter(([, h]) => h);
+    const distinct = [...new Set(hoursOf.map(([, h]) => h))];
+    if (distinct.length === 1) fact('hours', esc(distinct[0]));
+    else if (distinct.length > 1) fact('hours', hoursOf
+        .filter(([, h], i) => hoursOf.findIndex(([, x]) => x === h) === i)
+        .map(([role, h]) => `<span class="poi-hours-line"><b>${role}</b> ${esc(h)}</span>`).join(''));
     // Sealed Elder gods (not revealed in the reader's campaign) are not named here
     const deities = temple ? M.deitiesOf(store, poi).filter(d => store.revealed(d)) : [];
     if (deities.length) fact('deities', deities.map(d => `<a class="poi-link" href="${store.url(d)}">${esc(d.name)}</a>`).join(', '));

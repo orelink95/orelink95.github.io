@@ -34,10 +34,12 @@
         poi: 'pois.html',
     };
 
-    // Button label for a record: taverns get their own.
+    // Button label for a record: taverns, shops and temples get their own.
     function cta(store, rec) {
         const type = store.typeOf(rec);
         if (type === 'poi' && rec.tavern && rec.tavern.tier) return 'Enter the tavern';
+        if (type === 'poi' && rec.shop && rec.shop.kind) return 'Enter the shop';
+        if (type === 'poi' && rec.temple) return 'Enter the temple';
         return (LABELS[type] || LABELS.poi).cta;
     }
 

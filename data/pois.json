@@ -54,6 +54,26 @@
       "x": 119,
       "y": 342,
       "icon": "pay-money"
+    },
+    "shop": {
+      "kind": "confectioner",
+      "keepers": [
+        "hammer_nim"
+      ],
+      "tier": "comfortable",
+      "categories": [
+        "sweets"
+      ],
+      "markup": 105,
+      "signature": [
+        {
+          "category": "provisions",
+          "name": "Ham's Special Candy Cane",
+          "desc": "A rock hard candy cane that will survive many licks.",
+          "price": 35,
+          "unit": "1"
+        }
+      ]
     }
   },
   {
@@ -112,6 +132,9 @@
     },
     "tavern": {
       "tier": "wealthy",
+      "keepers": [
+        "mertonlensher"
+      ],
       "hours": "Noon until the last candle",
       "picks": {
         "drinks": 4,
@@ -138,9 +161,7 @@
       ],
       "services": [
         "room-private",
-        "room-suite",
         "bath",
-        "stabling",
         "messenger",
         "private-hall"
       ]
@@ -351,6 +372,9 @@
       "services": [
         "bath",
         "room-common"
+      ],
+      "games": [
+        "knucklebones"
       ]
     }
   }

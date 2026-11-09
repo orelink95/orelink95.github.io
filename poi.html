@@ -17,6 +17,8 @@
     <link href="styles/pages/poi.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
     <link href="styles/poi-style.css" rel="stylesheet" />
+    <link href="styles/notice-board.css" rel="stylesheet" />
+    <link href="styles/games.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
     <script src="data/schema.js"></script>
@@ -24,6 +26,12 @@
     <script src="scripts/core/store.js"></script>
     <script src="scripts/atlas-common.js"></script>
     <script src="scripts/tavern-menu.js"></script>
+    <script src="scripts/market.js"></script>
+    <script src="scripts/notice-board.js"></script>
+    <script src="scripts/personae.js"></script>
+    <script src="scripts/games/table.js"></script>
+    <script src="scripts/games/liars-dice.js"></script>
+    <script src="scripts/games/knucklebones.js"></script>
     <script src="scripts/poi-scripts.js"></script>
 </head>
 
@@ -56,12 +64,21 @@
                             <dt>Hours</dt>
                             <dd id="poi-hours"></dd>
                         </div>
+                        <div id="poi-deities-fact" hidden>
+                            <dt>Devoted to</dt>
+                            <dd id="poi-deities"></dd>
+                        </div>
+                        <!-- rumours and notices follow the campaign (shared with Dramatis Personae) -->
+                        <div id="poi-campaign-fact" hidden>
+                            <dt><label for="poi-campaign">Campaign</label></dt>
+                            <dd><select id="poi-campaign" class="poi-select hidden"></select></dd>
+                        </div>
                     </dl>
                 </div>
             </header>
 
             <div id="poi-grid" class="poi-grid">
-                <!-- LEFT: lore, residents, services -->
+                <!-- LEFT: lore and the people found here -->
                 <div class="poi-col">
                     <section class="poi-panel">
                         <h3 id="poi-body-title" class="poi-panel-title">Archive Entry</h3>
@@ -73,18 +90,63 @@
                         <div id="poi-people" class="poi-staff"></div>
                     </section>
 
+                    <!-- the tavern's services (rooms, baths, gaming table…), apart from the bill of fare -->
                     <section id="poi-services-section" class="poi-panel" hidden>
                         <h3 class="poi-panel-title">Services</h3>
                         <ul id="poi-services" class="poi-services"></ul>
                     </section>
                 </div>
 
-                <!-- RIGHT: the bill of fare (taverns only) -->
-                <section id="poi-menu-card" class="poi-menu-card" aria-labelledby="poi-folio" hidden>
-                    <p class="poi-eyebrow poi-center">Today at the Bar</p>
-                    <h3 id="poi-folio" class="poi-menu-heading"></h3>
-                    <div class="poi-rule"></div>
-                    <div id="poi-menu" class="poi-menu"></div>
+                <!-- RIGHT (first on phones): one tab per role of the place
+                     Fare (tavern) · Wares (shop) · Shrine (temple) · Rumours · Games (tavern) · Board (notices) -->
+                <section id="poi-ledger" class="poi-menu-card poi-ledger" hidden>
+                    <div id="poi-tabs" class="poi-tabs" role="tablist" aria-label="What this place offers"></div>
+
+                    <div id="tab-fare" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">Today at the Bar</p>
+                        <h3 id="poi-folio" class="poi-menu-heading"></h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-tavern-keepers" class="poi-keepers" hidden></div>
+                        <div id="poi-menu" class="poi-menu"></div>
+                    </div>
+
+                    <div id="tab-wares" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p id="poi-shop-kind" class="poi-eyebrow poi-center">On the Shelves Today</p>
+                        <h3 id="poi-ledger-label" class="poi-menu-heading"></h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-shop-keepers" class="poi-keepers" hidden></div>
+                        <div id="poi-wares" class="poi-menu"></div>
+                    </div>
+
+                    <div id="tab-shrine" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">At the Altar</p>
+                        <h3 id="poi-shrine-heading" class="poi-menu-heading">Rites &amp; Offerings</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-temple-keepers" class="poi-keepers" hidden></div>
+                        <div id="poi-prayer" class="poi-prayer"></div>
+                        <div id="poi-rites" class="poi-menu"></div>
+                    </div>
+
+                    <div id="tab-rumours" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">Overheard</p>
+                        <h3 class="poi-menu-heading">Word Around the Hearth</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-rumours" class="poi-rumours"></div>
+                    </div>
+
+                    <div id="tab-games" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">The Gaming Table</p>
+                        <h3 class="poi-menu-heading">Games of Chance</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-games" class="gt"></div>
+                    </div>
+
+                    <div id="tab-board" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">Pinned by the Door</p>
+                        <h3 class="poi-menu-heading">Notice Board</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-board" class="notice-board"></div>
+                    </div>
                 </section>
             </div>
         </div>

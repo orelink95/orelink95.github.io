@@ -23,12 +23,17 @@
 
     <link href="styles/atlas-style.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
+    <link href="styles/notice-board.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/atlas-common.js"></script>
+    <script src="scripts/tavern-menu.js"></script>
+    <script src="scripts/market.js"></script>
+    <script src="scripts/notice-board.js"></script>
+    <script src="scripts/personae.js"></script>
     <script src="scripts/settlement-scripts.js"></script>
 
 </head>
@@ -149,6 +154,21 @@
 
         </div>
 
+        <!-- TOWN BOARD: notices whose `where` is this settlement (scripts/notice-board.js) -->
+        <section id="town-board-section" class="town-board" aria-labelledby="town-board-title" hidden>
+            <div class="town-board__head">
+                <div>
+                    <h3 id="town-board-title" class="town-board__title">Town Board</h3>
+                    <p class="town-board__subtitle">Jobs, bounties and proclamations nailed up in the square.</p>
+                </div>
+                <label id="town-board-campaign-wrap" class="town-board__campaign" hidden>
+                    <span>Campaign</span>
+                    <select id="town-board-campaign" class="hidden"></select>
+                </label>
+            </div>
+            <div id="town-board" class="notice-board"></div>
+            <p id="town-board-elsewhere" class="town-board__elsewhere" hidden></p>
+        </section>
 
     </main>
     <div id="footer-placeholder"></div>

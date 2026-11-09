@@ -1,0 +1,154 @@
+[
+  {
+    "id": "prayer-of-mending",
+    "name": "Prayer of mending",
+    "category": "healing",
+    "desc": "Minor wounds closed by a priest's touch (a cure wounds of the lowest rank).",
+    "basePrice": 1000,
+    "unit": "per casting"
+  },
+  {
+    "id": "cure-wounds",
+    "name": "Cure wounds",
+    "category": "healing",
+    "desc": "1st-level spell: wounds knit while you watch.",
+    "basePrice": 5000,
+    "unit": "per casting"
+  },
+  {
+    "id": "healing-word",
+    "name": "Healing word",
+    "category": "healing",
+    "desc": "1st-level spell, spoken from across the room.",
+    "basePrice": 5000,
+    "unit": "per casting"
+  },
+  {
+    "id": "lesser-restoration",
+    "name": "Lesser restoration",
+    "category": "restoration",
+    "desc": "2nd-level spell: ends a disease, blindness, deafness, paralysis or poison.",
+    "basePrice": 20000,
+    "unit": "per casting"
+  },
+  {
+    "id": "remove-curse",
+    "name": "Remove curse",
+    "category": "restoration",
+    "desc": "3rd-level spell: lifts a curse on a creature or breaks an item's hold.",
+    "basePrice": 30000,
+    "unit": "per casting"
+  },
+  {
+    "id": "greater-restoration",
+    "name": "Greater restoration",
+    "category": "restoration",
+    "desc": "5th-level spell (+100 gp of diamond dust): ends charm, petrification, a curse, or a reduced score.",
+    "basePrice": 300000,
+    "unit": "per casting"
+  },
+  {
+    "id": "raise-dead",
+    "name": "Raise dead",
+    "category": "restoration",
+    "desc": "5th-level spell (+ a diamond worth 500 gp, consumed). The body must be fresh and the soul willing.",
+    "basePrice": 300000,
+    "unit": "per casting"
+  },
+  {
+    "id": "augury",
+    "name": "Augury",
+    "category": "divination",
+    "desc": "2nd-level spell: weal, woe, both or nothing, for a plan in the next half hour.",
+    "basePrice": 20000,
+    "unit": "per casting"
+  },
+  {
+    "id": "divination",
+    "name": "Divination",
+    "category": "divination",
+    "desc": "4th-level spell (+25 gp of incense): one question, one truthful answer.",
+    "basePrice": 200000,
+    "unit": "per casting"
+  },
+  {
+    "id": "blessing-of-the-faithful",
+    "name": "Blessing of the faithful",
+    "category": "rites",
+    "desc": "A short rite before a journey or a battle.",
+    "basePrice": 500,
+    "unit": "each"
+  },
+  {
+    "id": "funeral-rites",
+    "name": "Funeral rites",
+    "category": "rites",
+    "desc": "Prayers, a pyre or a grave, and a name remembered.",
+    "basePrice": 1000,
+    "unit": "each"
+  },
+  {
+    "id": "wedding",
+    "name": "Wedding",
+    "category": "rites",
+    "desc": "Vows before the gods and the gossips.",
+    "basePrice": 5000,
+    "unit": "each"
+  },
+  {
+    "id": "naming-of-a-child",
+    "name": "Naming of a child",
+    "category": "rites",
+    "desc": "Water, salt and a name.",
+    "basePrice": 200,
+    "unit": "each"
+  },
+  {
+    "id": "sanctuary-for-the-night",
+    "name": "Sanctuary for the night",
+    "category": "rites",
+    "desc": "A pallet in the cloister; donations welcome.",
+    "basePrice": 0,
+    "unit": "per night"
+  },
+  {
+    "id": "candle",
+    "name": "Candle",
+    "category": "offerings",
+    "desc": "Lit at the altar for a wish or a memory.",
+    "basePrice": 1,
+    "unit": "each"
+  },
+  {
+    "id": "incense",
+    "name": "Incense",
+    "category": "offerings",
+    "desc": "Sweet smoke rises with your prayer.",
+    "basePrice": 10,
+    "unit": "stick"
+  },
+  {
+    "id": "holy-symbol-wooden",
+    "name": "Holy symbol, wooden",
+    "category": "offerings",
+    "desc": "Carved by the acolytes.",
+    "basePrice": 100,
+    "unit": "each"
+  },
+  {
+    "id": "holy-symbol-silver",
+    "name": "Holy symbol, silver",
+    "category": "offerings",
+    "desc": "An amulet or emblem fit for a cleric's focus.",
+    "basePrice": 2500,
+    "unit": "each"
+  },
+  {
+    "id": "temple-holy-water",
+    "name": "Holy water",
+    "category": "offerings",
+    "desc": "Blessed at dawn, sealed with wax.",
+    "basePrice": 2500,
+    "unit": "flask"
+  }
+]

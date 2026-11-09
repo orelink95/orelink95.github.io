@@ -33,22 +33,7 @@
 
     const ID_RE = /^[a-z0-9][a-z0-9_-]*$/;
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
-    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object', spell: 'kw-spell' };
-
-    // Comparator for a type's `order` option (see data/schema.js)
-    function comparator(order) {
-        const num = v => (typeof v === 'number' && !Number.isNaN(v) ? v : null);
-        return (a, b) => {
-            if (order.within) {
-                const c = String(a[order.within] ?? '').localeCompare(String(b[order.within] ?? ''));
-                if (c) return c;
-            }
-            const x = num(a[order.by]), y = num(b[order.by]);
-            if (x === null || y === null) return (x === null) - (y === null);
-            return order.desc ? y - x : x - y;
-        };
-    }
-    ATH.comparator = comparator;
+    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object', spell: 'kw-spell', deity: 'kw-deity' };
 
     // Comparator for a type's `order` option (see data/schema.js)
     function comparator(order) {
@@ -315,7 +300,9 @@
                     if (typeof v !== 'boolean') error(`${where}: expected true/false`);
                     break;
                 case 'list':
-                    if (!Array.isArray(v) || v.some(s => typeof s !== 'string')) error(`${where}: expected a list of text`);
+                    if (!Array.isArray(v) || v.some(s => typeof s !== 'string')) { error(`${where}: expected a list of text`); break; }
+                    // A list with `enum`: a set of ids from that enum (ticked boxes in the dashboard)
+                    if (f.enum) v.filter(s => !enumValues(f.enum).includes(s)).forEach(s => error(`${where}: "${s}" is not one of ${enumValues(f.enum).join(', ')}`));
                     break;
                 case 'enum': {
                     const allowed = f.enum ? enumValues(f.enum) : f.options;
@@ -472,8 +459,16 @@
                 });
             }
             const tiers = enumValues('tavernTier');
-            for (const item of byType.menuItem || []) {
-                if (tiers.indexOf(item.minTier) > tiers.indexOf(item.maxTier)) errors.push(`[menuItem] ${item.id}: minTier is above maxTier`);
+            for (const type of ['menuItem', 'shopGood']) {
+                for (const item of byType[type] || []) {
+                    if (tiers.indexOf(item.minTier) > tiers.indexOf(item.maxTier)) errors.push(`[${type}] ${item.id}: minTier is above maxTier`);
+                }
+            }
+            for (const r of byType.rumour || []) {
+                const w = resolve(r.where);
+                if (!w) continue;
+                const taverns = (typeOfRec.get(w) === 'poi' ? [w] : descendants(w, 'poi')).filter(p => p.tavern && p.tavern.tier);
+                if (!taverns.length) warnings.push(`[rumour] ${r.id}.where: no tavern at or under "${r.where}", so no one hears it`);
             }
             return { errors, warnings };
         }

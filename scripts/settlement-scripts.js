@@ -7,6 +7,9 @@
 //     The chosen district is written into the address (reload / share keep it).
 //   - Residents: NPCs whose home is the settlement, the district or one of
 //     the district's points of interest. A card centres its home on the map.
+//   - Town board: notices pinned on the settlement (data/notices.json), for the
+//     campaign of the drop-down (shared with Dramatis Personae), plus links to
+//     the POIs of the settlement that have a board of their own.
 // Shared helpers: scripts/atlas-common.js.
 // =====================================================================
 
@@ -219,4 +222,36 @@ document.addEventListener("DOMContentLoaded", async () => {
             || districts[0];
     }
     loadDistrict(start, { updateUrl: !!wanted });
+
+    // -----------------------------------------------------------------
+    // 7. TOWN BOARD (hidden when nothing is pinned here or in its POIs)
+    // -----------------------------------------------------------------
+    const M = Athenaeum.market;
+    if (!M || !Athenaeum.noticeBoard) return;
+    const own = M.notices(store, settlement.id, 'all');
+    const under = M.boardsUnder(store, settlement.id, 'all');
+    if (!own.length && !under.length) return;
+
+    let campaign = 'all';
+    const withCampaigns = M.campaignsWith(store, [...own, ...under.flatMap(b => M.notices(store, b.poi.id, 'all'))]);
+    if (Athenaeum.personae && withCampaigns.campaigns.length) {
+        const campaigns = store.all('campaign');
+        campaign = Athenaeum.personae.choose(store, { campaigns });
+        Athenaeum.personae.picker($('town-board-campaign'), {
+            campaigns, value: campaign,
+            onChange: value => { campaign = value; renderBoard(); },
+        });
+        $('town-board-campaign-wrap').hidden = $('town-board-campaign').classList.contains('hidden');
+    }
+    function renderBoard() {
+        $('town-board').innerHTML = Athenaeum.noticeBoard.render(store, M.notices(store, settlement.id, campaign),
+            { empty: 'The town board is bare for now.' });
+        const elsewhere = M.boardsUnder(store, settlement.id, campaign);
+        const line = $('town-board-elsewhere');
+        line.hidden = !elsewhere.length;
+        line.innerHTML = elsewhere.length ? `<span class="material-symbols-outlined" aria-hidden="true">push_pin</span> Also pinned at ` +
+            elsewhere.map(b => `<a href="${store.url(b.poi)}#board">${b.poi.name}</a>${b.count ? ` <small>(${b.count} open)</small>` : ''}`).join(', ') : '';
+    }
+    renderBoard();
+    $('town-board-section').hidden = false;
 });

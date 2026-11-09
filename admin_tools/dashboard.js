@@ -325,6 +325,12 @@
         if (type === 'faction') return r.stub ? 'stub' : S.store.standing(r);
         if (type === 'menuItem') return `${r.category || ''} · ${r.basePrice ?? '?'} cp`;
         if (type === 'service') return r.unit || '';
+        if (type === 'shopGood') return `${r.category || ''} · ${r.basePrice ?? '?'} cp${r.tags && r.tags.includes('illicit') ? ' · illicit' : ''}`;
+        if (type === 'templeService') return `${r.category || ''} · ${r.basePrice ?? '?'} cp`;
+        if (type === 'blessing') return (r.deities || []).length ? r.deities.map(nameOf).join(', ') : 'any temple';
+        if (type === 'deity') return r.epithet || (r.domains || []).join(', ');
+        if (type === 'rumour') return [r.where ? nameOf(r.where) : '?', r.truth ? (S.store.enumOptions('rumourTruth').find(o => o.id === r.truth) || {}).label : ''].filter(Boolean).join(' · ');
+        if (type === 'notice') return [r.where ? nameOf(r.where) : '?', (S.store.enumOptions('noticeStatus').find(o => o.id === (r.status || 'open')) || {}).label.split(' (')[0]].join(' · ');
         if (type === 'session') return [r.number != null ? `#${r.number}` : '', r.campaign ? nameOf(r.campaign) : ''].filter(Boolean).join(' · ');
         return r.subtitle || '';
     }
@@ -364,7 +370,7 @@
        NAV & LIST
        ================================================================= */
     // Menu colour of each group. A group added to the schema takes one of the spare colours.
-    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Taverns: '#f0a35e' };
+    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5' };
     const SPARE_COLOURS = ['#4fd1c5', '#f48fb1', '#d4d86a'];
     function renderNav() {
         const entries = [
@@ -496,6 +502,11 @@
                 </div>${help}</div>`;
             case 'list': {
                 const arr = Array.isArray(value) ? value : [];
+                // A list with `enum` (tavern games, shop shelves): one checkbox per option
+                if (f.enum) return `<div class="fld wide"><label>${label}</label><div class="enum-set" data-set>
+                    ${enumOpts(f).map(o => `<label class="enum-set__opt"><input type="checkbox" data-path="${p}" data-kind="enum-set" value="${esc(o.id)}" ${arr.includes(o.id) ? 'checked' : ''}> ${esc(o.label)}</label>`).join('')}
+                    ${arr.filter(v => !enumOpts(f).some(o => o.id === v)).map(v => `<span class="warn">${esc(v)} (not in the list)</span>`).join('')}
+                </div>${help}</div>`;
                 return `<div class="fld wide"><label>${label}</label><div class="rows">
                     ${arr.map((v, i) => `<div class="row"><input data-path="${pathAttr([...path, i])}" data-kind="text" value="${esc(v)}">
                         <button class="btn icon" data-action="remove" data-path="${pathAttr([...path, i])}" title="Remove">✕</button></div>`).join('')}
@@ -675,7 +686,10 @@
             const users = S.store.backrefs(rec.id);
             // (a spell's campaigns are shown in "Known by", with the hero)
             if (users.length && S.view.key !== 'spell') parts.push(`<div class="box"><h4>Used by (${users.length})</h4>${chips(users)}</div>`);
-            if (S.view.key === 'poi' && rec.tavern && rec.tavern.tier && ATH.tavern) parts.push(menuPreview(rec));
+            if (S.view.key === 'poi' && ATH.market) parts.push(...marketPreview(rec));
+            if (S.view.key === 'settlement' && ATH.market) parts.push(...townPreview(rec));
+            if (S.view.key === 'rumour' && ATH.market) parts.unshift(rumourPlaces(rec));
+            if (S.view.key === 'notice' && ATH.noticeBoard) parts.unshift(noticePreview(rec));
             if (S.view.key === 'item' && ATH.lootCard) parts.unshift(cardPreview(rec), foundIn(rec));
             if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
         }
@@ -852,16 +866,101 @@
                 <button class="btn" data-action="found-add">Add</button></div>` : ''}
             <p style="color:var(--ink-faint);font-size:10.5px;margin:8px 0 0">Items from a campaign's newest session lie face down in the Vault until a player turns them over.</p></div>`;
     }
-    function menuPreview(rec) {
+    /* ---------- taverns, shops, temples, rumours, boards (scripts/market.js) ---------- */
+    const marketCode = () => S.menuCode ?? (S.store.settings.tavernCode || '');
+    const codeInput = () => `<input id="menu-code" placeholder="Try a code (not saved)" value="${esc(S.menuCode ?? '')}" style="margin-bottom:6px">`;
+    const hint = text => `<p style="color:var(--ink-faint);font-size:10.5px;margin:8px 0 0">${text}</p>`;
+    const priceRows = cats => cats.map(c => `<h5>${esc(c.label)}</h5>${c.items.map(i => `<div><span>${i.signature ? '✦ ' : ''}${esc(i.name)}</span><span>${esc(i.priceLabel)}</span></div>`).join('')}`).join('');
+    const truthLabel = r => r.truth ? `<span class="truth truth--${esc(r.truth)}">${esc((S.store.enumOptions('rumourTruth').find(o => o.id === r.truth) || {}).label)}</span>` : '<span class="truth">truth not set</span>';
+    const addHere = (type, where, label) => `<button class="btn" data-action="add-here" data-type="${type}" data-where="${esc(where)}" style="margin-top:8px;max-width:100%;white-space:normal;text-align:left">+ ${label}</button>`;
+
+    // Rumours in the order this tavern hands them out with the code. ✓ = heard by a player
+    // of the current campaign (Settings), who gets the first ones that belong to it.
+    function rumourList(poi, code) {
+        const list = ATH.market.rumourOrder(S.store, poi, code);
+        const limit = ATH.market.drawLimit(poi);
+        const cid = S.store.settings.currentCampaign;
+        if (!list.length) return '<p class="warn" style="margin:4px 0">No rumour is heard here yet.</p>';
+        let n = 0;
+        return `<ol class="mkt-list">${list.map(r => {
+            const heard = ATH.market.inCampaign(r, cid) && n++ < limit;
+            return `<li class="${heard ? 'in' : 'out'}" data-jump="${esc(r.id)}" title="${esc(r.text)}">
+            <span>${heard ? '✓' : '·'} ${esc(r.name)}</span>${truthLabel(r)}
+            <small>${esc(nameOf(r.where))}${(r.campaigns || []).length ? ' · ' + esc(r.campaigns.map(nameOf).join(', ')) : ''}</small></li>`;
+        }).join('')}</ol>
+            ${hint(`In the order this tavern tells them. A player hears the first ${limit} that belong to their campaign (✓ = ${cid ? esc(nameOf(cid)) : 'any campaign'}).`)}`;
+    }
+    function noticeList(placeId) {
+        const list = ATH.market.notices(S.store, placeId, 'all');
+        if (!list.length) return '<p style="color:var(--ink-faint);margin:4px 0">Nothing pinned here.</p>';
+        return `<ul class="mkt-list">${list.map(n => `<li class="${(n.status || 'open') === 'open' ? 'in' : 'out'}" data-jump="${esc(n.id)}">
+            <span>${esc(n.name)}</span><span class="truth">${esc(n.status || 'open')}</span>
+            <small>${esc((S.store.enumOptions('noticeKind').find(k => k.id === n.kind) || {}).label || '')}${(n.campaigns || []).length ? ' · ' + esc(n.campaigns.map(nameOf).join(', ')) : ''}</small></li>`).join('')}</ul>`;
+    }
+
+    // POI: one box per role (tavern, shop, temple) and its board
+    function marketPreview(rec) {
         const poi = S.store.get(rec.id);
-        if (!poi || !poi.tavern) return '';
-        const code = S.menuCode ?? (S.store.settings.tavernCode || '');
-        const menu = ATH.tavern.buildMenu(S.store, poi, code);
-        return `<div class="box menu-prev"><h4>Menu preview</h4>
-            <input id="menu-code" placeholder="Try a code (not saved)" value="${esc(S.menuCode ?? '')}" style="margin-bottom:6px">
-            <div style="color:var(--ink-faint);font-size:10.5px;display:block">${esc(ATH.tavern.folioLabel(code, rec.id))}</div>
-            ${menu.map(c => `<h5>${esc(c.label)}</h5>${c.items.map(i => `<div><span>${i.signature ? '✦ ' : ''}${esc(i.name)}</span><span>${esc(i.priceLabel)}</span></div>`).join('')}`).join('')}
-            <p style="color:var(--ink-faint);font-size:10.5px;margin:8px 0 0">The live code is in Settings.</p></div>`;
+        if (!poi) return [];
+        const code = marketCode(), M = ATH.market, out = [];
+        const tavern = poi.tavern && poi.tavern.tier, shop = poi.shop && poi.shop.kind, temple = poi.temple;
+        if (tavern || shop) out.push(`<div class="box menu-prev"><h4>Market code</h4>${codeInput()}${hint('Menus, wares and the rumour order below use this code. The live code is in Settings.')}</div>`);
+        if (tavern) {
+            out.push(`<div class="box menu-prev"><h4>Menu preview</h4>
+                <div style="color:var(--ink-faint);font-size:10.5px;display:block">${esc(ATH.tavern.folioLabel(code, rec.id))}</div>
+                ${priceRows(ATH.tavern.buildMenu(S.store, poi, code))}</div>`);
+            out.push(`<div class="box mkt-prev"><h4>Rumours heard here</h4>${rumourList(poi, code)}${addHere('rumour', rec.id, 'Rumour for this tavern only')}
+                ${poi.parent ? addHere('rumour', (S.store.ancestors(poi).find(p => S.store.typeOf(p) === 'settlement') || {}).id || poi.parent, 'Rumour for the whole settlement') : ''}</div>`);
+        }
+        if (shop) {
+            const wares = M.buildWares(S.store, poi, code);
+            out.push(`<div class="box menu-prev"><h4>Wares preview · ${esc(M.shopKind(S.store, poi.shop).label)} · ${esc(M.tierFor(S.store, poi, poi.shop).label)}</h4>
+                ${wares.length ? priceRows(wares) : '<p class="warn">No goods match: check the shelves, tier and tags.</p>'}
+                ${hint('Shelves: ' + esc(M.shelvesOf(S.store, poi.shop).map(c => c.label).join(', ')))}</div>`);
+        }
+        if (temple) {
+            const rites = M.buildRites(S.store, poi);
+            const blessings = M.blessingsFor(S.store, poi);
+            out.push(`<div class="box menu-prev"><h4>Shrine preview</h4>
+                ${rites.length ? priceRows(rites) : '<p style="color:var(--ink-faint)">No services listed.</p>'}
+                ${temple.noPrayer ? hint('No prayer button.') : blessings.length ? hint(`“Pray” draws one of ${blessings.length} blessing${blessings.length === 1 ? '' : 's'} (once per code, per player).`) : '<p class="warn">No blessing fits these deities: no prayer button.</p>'}</div>`);
+        }
+        out.push(`<div class="box mkt-prev"><h4>Notice board</h4>${noticeList(rec.id)}${addHere('notice', rec.id, 'Notice on this board')}</div>`);
+        return out;
+    }
+    // Settlement: its town board, and the rumours heard in all its taverns
+    function townPreview(rec) {
+        const own = S.store.all('rumour').filter(r => r.where === rec.id);
+        const taverns = S.store.descendants(rec.id, 'poi').filter(p => p.tavern && p.tavern.tier);
+        return [
+            `<div class="box mkt-prev"><h4>Town board</h4>${noticeList(rec.id)}${addHere('notice', rec.id, 'Notice on the town board')}</div>`,
+            `<div class="box mkt-prev"><h4>Rumours of the whole settlement (${own.length})</h4>
+                ${own.length ? `<ul class="mkt-list">${own.map(r => `<li class="in" data-jump="${esc(r.id)}" title="${esc(r.text)}"><span>${esc(r.name)}</span>${truthLabel(r)}</li>`).join('')}</ul>` : ''}
+                ${taverns.length ? hint('Heard in: ' + taverns.map(t => esc(t.name)).join(', ')) : '<p class="warn">No tavern in this settlement: no one hears them.</p>'}
+                ${addHere('rumour', rec.id, 'Rumour for the whole settlement')}</div>`,
+        ];
+    }
+    // Rumour: the taverns where it is heard, and whether a player gets it with the code
+    function rumourPlaces(rec) {
+        const r = S.store.get(rec.id), w = r && S.store.get(r.where);
+        if (!w) return '<div class="box"><h4>Heard in</h4><p class="warn">Choose where it is heard.</p></div>';
+        const code = marketCode();
+        const taverns = (S.store.typeOf(w) === 'poi' ? [w] : S.store.descendants(w, 'poi')).filter(p => p.tavern && p.tavern.tier);
+        const rows = taverns.map(t => {
+            const cid = S.store.settings.currentCampaign;
+            const mine = ATH.market.rumourOrder(S.store, t, code).filter(x => ATH.market.inCampaign(x, cid) || x.id === r.id);
+            const i = mine.findIndex(x => x.id === r.id), limit = ATH.market.drawLimit(t);
+            return `<li class="${i >= 0 && i < limit ? 'in' : 'out'}" data-jump="${esc(t.id)}"><span>${esc(t.name)}</span>
+                <span class="truth">${i < 0 ? '—' : i < limit ? `drawn #${i + 1}` : `#${i + 1}, not drawn`}</span></li>`;
+        }).join('');
+        return `<div class="box mkt-prev"><h4>Heard in (with this code)</h4>${codeInput()}
+            ${taverns.length ? `<ul class="mkt-list">${rows}</ul>` : '<p class="warn">No tavern there: no one hears it.</p>'}
+            ${hint(`Each tavern tells rumours in its own seeded order; a player of ${esc(nameOf(S.store.settings.currentCampaign) || 'the campaign')} hears the first few (the tavern’s “Rumours a player can hear”).`)}</div>`;
+    }
+    function noticePreview(rec) {
+        const n = S.store.get(rec.id);
+        if (!n) return '';
+        return `<div class="box notice-prev"><h4>Preview</h4><div class="notice-board" style="padding:14px 10px">${ATH.noticeBoard.render(S.store, [n])}</div></div>`;
     }
     async function thumbUrl(src) {
         if (!src) return '';
@@ -899,7 +998,7 @@
         return o;
     }
 
-    function newRecord() {
+    function newRecord(preset = {}) {
         const type = S.view.key, def = TYPES[type];
         const current = curRecord();
         const guessParent = current && def.place ? ((def.parent || []).includes(typeOfId(current.id)) ? current.id : current.parent) : '';
@@ -908,6 +1007,7 @@
                 <div class="fld wide"><label>Name</label><input id="nr-name" autofocus></div>
                 <div class="fld wide"><label>Id (used in links; can be changed later with Rename id)</label><input id="nr-id"></div>
                 ${def.place && def.parent.length ? `<div class="fld wide"><label>Sits in</label>${refSelect(def.parent, guessParent, 'id="nr-parent"')}</div>` : ''}
+                ${def.fields.where ? `<div class="fld wide"><label>${esc(def.fields.where.label)}</label>${refSelect(def.fields.where.to, preset.where || '', 'id="nr-where"')}</div>` : ''}
                 ${type === 'item' ? `<div class="fld wide"><label>Found in (who can see the card)</label><select id="nr-found"><option value="">Nowhere yet</option>${foundOptions('', newestSessionOption())}</select></div>` : ''}
                 <p id="nr-err" class="issues" style="color:var(--red)"></p>
             </div>
@@ -923,6 +1023,10 @@
             if (err) { $('#nr-err', dlg).textContent = err; return; }
             const rec = { id, name: name.value.trim(), ...emptyFor(def) };
             if (parent) rec.parent = parent;
+            const whereSel = $('#nr-where', dlg);
+            if (whereSel && whereSel.value) rec.where = whereSel.value;
+            if (type === 'notice') { rec.kind = 'job'; rec.status = 'open'; }
+            if ((type === 'rumour' || type === 'notice') && S.store.settings.currentCampaign) rec.campaigns = [S.store.settings.currentCampaign];
             if (type === 'session') Object.assign(rec, nextSession());
             S.data[type].push(rec);
             const found = $('#nr-found', dlg);
@@ -1059,6 +1163,7 @@
         if (kind === 'boolean') return el.checked;
         if (kind === 'number') return el.value === '' ? undefined : Number(el.value);
         if (kind === 'enum' || kind === 'ref') return el.value || undefined;
+        if (kind === 'enum-set') return [...el.closest('[data-set]').querySelectorAll('input:checked')].map(i => i.value);
         if (kind === 'json') {
             try { const v = JSON.parse(el.value); el.classList.remove('invalid'); return v; }
             catch (e) { el.classList.add('invalid'); return Symbol.for('invalid'); }
@@ -1101,6 +1206,13 @@
         switch (a) {
             case 'close-modal': closeModal(); break;
             case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
+            case 'add-here': {
+                // "+ Rumour / + Notice" from a POI or settlement: open the new-record dialog on that type
+                S.search = ''; $('#search').value = '';
+                select({ kind: 'type', key: t.dataset.type }, null);
+                newRecord({ where: t.dataset.where });
+                break;
+            }
             case 'found-add': {
                 const where = $('#found-add') && $('#found-add').value;
                 if (where && addFoundIn(rec.id, where)) { edited(true); renderSide(); toast('Added: save to publish'); }
@@ -1148,7 +1260,7 @@
             case 'delete': deleteRecord(); break;
         }
     });
-    $('#new-btn').addEventListener('click', newRecord);
+    $('#new-btn').addEventListener('click', () => newRecord());
     $('#save-btn').addEventListener('click', save);
     $('#issues-pill').addEventListener('click', () => showIssues(false));
     $('#collapse-btn').addEventListener('click', () => { $('#app').classList.toggle('list-collapsed'); rememberUI(); });

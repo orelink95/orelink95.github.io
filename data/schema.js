@@ -62,7 +62,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'Settings', icon: 'tune', group: 'Site',
                 file: 'data/settings.json',
                 fields: {
-                    tavernCode: { kind: 'text', label: 'Bill of fare code: every tavern menu is drawn from it, the same for everyone. Change it to change all menus.' },
+                    tavernCode: { kind: 'text', label: 'Market code: tavern menus, shop wares, rumours and blessings are drawn from it, the same for everyone. Change it to change them all.' },
                     currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Campaign shown first (scriptorium, heroes)' },
                 },
             },
@@ -131,6 +131,122 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'comfortable', label: 'Comfortable', mult: 1.5 },
                 { id: 'wealthy', label: 'Wealthy', mult: 2.5 },
                 { id: 'aristocratic', label: 'Aristocratic', mult: 4 },
+            ],
+            /* The games of a tavern's gaming table (poi.tavern.games). Each id is a game
+               in scripts/games/ (register one there to add a game). */
+            tavernGame: [
+                { id: 'liars-dice', label: 'Liar’s Dice' },
+                { id: 'knucklebones', label: 'Knucklebones' },
+            ],
+            /* Shops (poi.shop). Goods are sorted in these shelves, in this order. */
+            shopCategory: [
+                { id: 'gear', label: 'Adventuring Gear' },
+                { id: 'provisions', label: 'Provisions' },
+                { id: 'bread', label: 'Breads' },
+                { id: 'pastries', label: 'Pastries & Cakes' },
+                { id: 'sweets', label: 'Sweets & Confections' },
+                { id: 'produce', label: 'Fruit & Vegetables' },
+                { id: 'meat', label: 'Meat & Charcuterie' },
+                { id: 'fish', label: 'Fish & Seafood' },
+                { id: 'dairy', label: 'Cheese, Eggs & Dairy' },
+                { id: 'pantry', label: 'Spices, Teas & Pantry' },
+                { id: 'drink', label: 'Wine, Ale & Spirits' },
+                { id: 'clothing', label: 'Clothing & Packs' },
+                { id: 'fabrics', label: 'Cloth & Haberdashery' },
+                { id: 'footwear', label: 'Boots & Leatherwork' },
+                { id: 'jewellery', label: 'Jewellery & Trinkets' },
+                { id: 'perfumes', label: 'Perfumes & Toiletries' },
+                { id: 'tools', label: 'Tools & Kits' },
+                { id: 'weapons', label: 'Weapons' },
+                { id: 'ammunition', label: 'Ammunition' },
+                { id: 'armour', label: 'Armour & Shields' },
+                { id: 'remedies', label: 'Remedies & Potions' },
+                { id: 'alchemy', label: 'Alchemical Goods' },
+                { id: 'arcane', label: 'Arcane Supplies' },
+                { id: 'books', label: 'Books, Maps & Paper' },
+                { id: 'household', label: 'Pottery & Household' },
+                { id: 'candles', label: 'Candles & Lamps' },
+                { id: 'flowers', label: 'Flowers, Plants & Seeds' },
+                { id: 'toys', label: 'Toys & Games' },
+                { id: 'instruments', label: 'Musical Instruments' },
+                { id: 'tobacco', label: 'Pipeweed & Snuff' },
+                { id: 'pets', label: 'Pets & Small Beasts' },
+                { id: 'curios', label: 'Curios & Antiques' },
+                { id: 'funerary', label: 'Funerary Goods' },
+                { id: 'mounts', label: 'Mounts & Tack' },
+                { id: 'services', label: 'Trades & Services' },
+            ],
+            /* What a kind of shop sells: its shelves (shopCategory) and the pool tags it leaves
+               out (exclude). A shop's own excludeTags are added; a tag in its includeTags is
+               let back in. shelfTags narrows one shelf to goods with one of the tags: the
+               services shelf of a barber shows only goods tagged barber. */
+            shopKind: [
+                { id: 'general', label: 'General Store', categories: ['gear', 'provisions', 'clothing', 'tools', 'ammunition', 'household', 'candles'], exclude: ['illicit'] },
+                { id: 'market', label: 'Market Stall', categories: ['produce', 'bread', 'meat', 'fish', 'sweets', 'flowers'], exclude: ['illicit'] },
+                /* food */
+                { id: 'bakery', label: 'Bakery', categories: ['bread', 'pastries'], exclude: ['illicit'] },
+                { id: 'patisserie', label: 'Pastry Shop', categories: ['pastries', 'sweets'], exclude: ['illicit'] },
+                { id: 'confectioner', label: 'Sweet Shop', categories: ['sweets'], exclude: ['illicit'] },
+                { id: 'grocer', label: 'Grocer', categories: ['produce', 'dairy', 'pantry', 'provisions'], exclude: ['illicit'] },
+                { id: 'butcher', label: 'Butcher', categories: ['meat'], exclude: ['illicit'] },
+                { id: 'fishmonger', label: 'Fishmonger', categories: ['fish'], exclude: ['illicit'] },
+                { id: 'cheesemonger', label: 'Cheesemonger', categories: ['dairy', 'drink'], exclude: ['illicit'] },
+                { id: 'spicer', label: 'Spice & Tea Merchant', categories: ['pantry'], exclude: ['illicit'] },
+                { id: 'vintner', label: 'Wine & Spirits Merchant', categories: ['drink'], exclude: ['illicit'] },
+                /* clothes and finery */
+                { id: 'outfitter', label: 'Tailor & Outfitter', categories: ['clothing', 'fabrics', 'services'], shelfTags: { services: ['tailor'] }, exclude: ['illicit'] },
+                { id: 'draper', label: 'Draper & Haberdasher', categories: ['fabrics'], exclude: ['illicit'] },
+                { id: 'cobbler', label: 'Cobbler & Leatherworker', categories: ['footwear', 'services'], shelfTags: { services: ['cobbler'] }, exclude: ['illicit'] },
+                { id: 'jeweller', label: 'Jeweller', categories: ['jewellery', 'services'], shelfTags: { services: ['jeweller'] }, exclude: ['illicit'] },
+                { id: 'perfumer', label: 'Perfumer', categories: ['perfumes'], exclude: ['illicit'] },
+                { id: 'barber', label: 'Barber-Surgeon', categories: ['services', 'perfumes'], shelfTags: { services: ['barber'] }, exclude: ['illicit'] },
+                /* arms and gear */
+                { id: 'smith', label: 'Smithy & Armoury', categories: ['weapons', 'ammunition', 'armour', 'tools', 'services'], shelfTags: { services: ['smith'] }, exclude: ['illicit'] },
+                { id: 'bowyer', label: 'Bowyer & Fletcher', categories: ['weapons', 'ammunition'], shelfTags: { weapons: ['bow'] }, exclude: ['illicit'] },
+                { id: 'stable', label: 'Stable & Saddler', categories: ['mounts', 'provisions', 'services'], shelfTags: { services: ['stable'] }, exclude: ['illicit'] },
+                /* craft and home */
+                { id: 'potter', label: 'Potter & Housewares', categories: ['household'], exclude: ['illicit'] },
+                { id: 'chandler', label: 'Chandler', categories: ['candles', 'gear'], exclude: ['illicit'] },
+                { id: 'florist', label: 'Florist & Seedsman', categories: ['flowers'], exclude: ['illicit'] },
+                { id: 'toymaker', label: 'Toymaker', categories: ['toys'], exclude: ['illicit'] },
+                { id: 'luthier', label: 'Instrument Maker', categories: ['instruments', 'services'], shelfTags: { services: ['luthier'] }, exclude: ['illicit'] },
+                { id: 'tobacconist', label: 'Tobacconist', categories: ['tobacco'], exclude: ['illicit'] },
+                { id: 'menagerie', label: 'Pet Shop & Menagerie', categories: ['pets'], exclude: ['illicit'] },
+                /* learning and magic */
+                { id: 'alchemist', label: 'Alchemist & Apothecary', categories: ['remedies', 'alchemy'], exclude: ['illicit'] },
+                { id: 'arcane', label: 'Arcane Emporium', categories: ['arcane', 'books', 'remedies'], exclude: ['illicit'] },
+                { id: 'scribe', label: 'Scribe & Bookseller', categories: ['books', 'arcane', 'services'], shelfTags: { services: ['scribe'] }, exclude: ['illicit'] },
+                { id: 'curios', label: 'Curiosity Shop & Antiques', categories: ['curios', 'jewellery', 'books'], exclude: ['illicit'] },
+                /* the rest */
+                { id: 'undertaker', label: 'Undertaker', categories: ['funerary', 'services'], shelfTags: { services: ['undertaker'] }, exclude: ['illicit'] },
+                { id: 'fence', label: 'Fence', categories: ['gear', 'tools', 'weapons', 'alchemy', 'jewellery', 'curios'] },
+            ],
+            /* Temples (poi.temple): kinds of service, in this order */
+            templeCategory: [
+                { id: 'healing', label: 'Healing' },
+                { id: 'restoration', label: 'Restoration' },
+                { id: 'divination', label: 'Divination' },
+                { id: 'rites', label: 'Rites & Ceremonies' },
+                { id: 'offerings', label: 'Offerings' },
+            ],
+            /* Rumours: DM only (data/private.json) */
+            rumourTruth: [
+                { id: 'true', label: 'True' },
+                { id: 'partly', label: 'Partly true' },
+                { id: 'false', label: 'False' },
+            ],
+            /* Notice board posts */
+            noticeKind: [
+                { id: 'job', label: 'Job' },
+                { id: 'bounty', label: 'Bounty' },
+                { id: 'wanted', label: 'Wanted' },
+                { id: 'announcement', label: 'Announcement' },
+                { id: 'personal', label: 'Personal' },
+            ],
+            noticeStatus: [
+                { id: 'open', label: 'Open' },
+                { id: 'taken', label: 'Taken (by the party or someone else)' },
+                { id: 'done', label: 'Done / closed' },
             ],
         },
 
@@ -209,9 +325,10 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     map: { kind: 'map', label: 'Pin on the parent map' },
                     tavern: {
                         kind: 'object', label: 'Tavern', optional: true,
-                        help: 'Fill this in to give the POI a tavern page with a seeded menu. Staff = NPCs whose home is this POI.',
+                        help: 'Fill this in to give the POI a tavern page with a seeded menu.',
                         fields: {
                             tier: { kind: 'enum', enum: 'tavernTier', label: 'Quality tier', required: true },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Innkeeper(s), shown on the Fare tab (any NPC; the people of the POI are listed apart)' },
                             hours: { kind: 'text', label: 'Opening hours' },
                             picks: {
                                 kind: 'object', label: 'Random picks per category', fields: {
@@ -239,6 +356,54 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                                     unit: { kind: 'text', label: 'Unit' },
                                 }
                             },
+                            rumourDraws: { kind: 'number', label: 'Rumours a player can hear per market code (empty = 3; 0 = no Rumours tab)' },
+                            games: { kind: 'list', enum: 'tavernGame', label: 'Gaming table: games played here (adds a Games tab, against the regulars)' },
+                        },
+                    },
+                    /* A POI can be a tavern AND a shop AND a temple: each block adds its tab to the page. */
+                    shop: {
+                        kind: 'object', label: 'Shop', optional: true,
+                        help: 'Fill this in to give the POI a Wares tab, drawn from the shop goods pool by the market code.',
+                        fields: {
+                            kind: { kind: 'enum', enum: 'shopKind', label: 'Kind of shop (sets the shelves)', required: true },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Shopkeeper(s), shown on the Wares tab (any NPC; the people of the POI are listed apart)' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Quality tier (empty = the tavern’s, else Modest)' },
+                            hours: { kind: 'text', label: 'Opening hours (empty = the tavern’s)' },
+                            picks: { kind: 'number', label: 'Random goods per shelf (empty = 5)' },
+                            categories: { kind: 'list', enum: 'shopCategory', label: 'Shelves, instead of the kind’s (none ticked: the kind’s)' },
+                            markup: { kind: 'number', label: 'Price level in % (empty = 100; 80 = cheap, 130 = gouging)' },
+                            includeTags: { kind: 'list', label: 'Only pool goods with one of these tags' },
+                            excludeTags: { kind: 'list', label: 'Never pool goods with these tags' },
+                            signature: {
+                                kind: 'objects', label: 'Signature wares (always in stock)', itemLabel: 'name', fields: {
+                                    category: { kind: 'enum', enum: 'shopCategory', label: 'Shelf' },
+                                    name: { kind: 'text', label: 'Name' },
+                                    desc: { kind: 'text', label: 'Description' },
+                                    price: { kind: 'number', label: 'Price (cp, as written)' },
+                                    unit: { kind: 'text', label: 'Unit' },
+                                }
+                            },
+                        },
+                    },
+                    temple: {
+                        kind: 'object', label: 'Temple / shrine', optional: true,
+                        help: 'Fill this in to give the POI a Shrine tab: services, offerings and a prayer that draws a blessing.',
+                        fields: {
+                            deities: { kind: 'refs', to: ['deity'], label: 'Deities worshipped here' },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Priest(s) in charge, shown on the Shrine tab (any NPC; the people of the POI are listed apart)' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Wealth of the temple (prices; empty = Modest)' },
+                            hours: { kind: 'text', label: 'Hours of worship' },
+                            services: { kind: 'refs', to: ['templeService'], label: 'Services from the catalogue' },
+                            customServices: {
+                                kind: 'objects', label: 'Services of this temple only', itemLabel: 'name', fields: {
+                                    category: { kind: 'enum', enum: 'templeCategory', label: 'Kind' },
+                                    name: { kind: 'text', label: 'Name' },
+                                    desc: { kind: 'text', label: 'Description' },
+                                    price: { kind: 'number', label: 'Price (cp, as written; empty = a donation)' },
+                                    unit: { kind: 'text', label: 'Unit' },
+                                }
+                            },
+                            noPrayer: { kind: 'boolean', label: 'No prayer button (no blessing drawn here)' },
                         },
                     },
                 },
@@ -526,9 +691,11 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 },
             },
 
-            /*-------------------------------------======= TAVERNS =======-------------------------------------*/
+            /*-------------------------------------======= MARKETS =======-------------------------------------*/
+            /* Taverns, shops and temples are POIs with a tavern / shop / temple block.
+               These are the shared pools and catalogues they draw from. */
             menuItem: {
-                label: 'Menu item', plural: 'Tavern menu pool', icon: 'restaurant', group: 'Taverns',
+                label: 'Menu item', plural: 'Tavern menu pool', icon: 'restaurant', group: 'Markets',
                 file: 'data/menu-items.json',
                 fields: {
                     category: { kind: 'enum', enum: 'menuCategory', label: 'Category', required: true },
@@ -540,12 +707,100 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 },
             },
             service: {
-                label: 'Tavern service', plural: 'Tavern services', icon: 'bed', group: 'Taverns',
+                label: 'Tavern service', plural: 'Tavern services', icon: 'bed', group: 'Markets',
                 file: 'data/services.json',
                 fields: {
                     desc: { kind: 'text', label: 'Description' },
                     basePrice: { kind: 'number', label: 'Base price (cp)', required: true },
                     unit: { kind: 'text', label: 'Unit (per night, each…)' },
+                },
+            },
+            /* The shared shop pool: a shop shows N seeded goods per shelf, among those its
+               kind, tier and tags allow (price = basePrice x tier multiplier x markup). */
+            shopGood: {
+                label: 'Shop good', plural: 'Shop goods pool', icon: 'storefront', group: 'Markets',
+                file: 'data/shop-goods.json',
+                fields: {
+                    category: { kind: 'enum', enum: 'shopCategory', label: 'Shelf', required: true },
+                    desc: { kind: 'text', label: 'Description' },
+                    basePrice: { kind: 'number', label: 'Base price (cp)', required: true },
+                    unit: { kind: 'text', label: 'Unit (each, 50 ft, 20 arrows…)' },
+                    minTier: { kind: 'enum', enum: 'tavernTier', label: 'Cheapest shop that stocks it', required: true },
+                    maxTier: { kind: 'enum', enum: 'tavernTier', label: 'Finest shop that stocks it', required: true },
+                    tags: { kind: 'list', label: 'Tags (illicit = only fences sell it)' },
+                },
+            },
+
+            /*-------------------------------------======= FAITH =======-------------------------------------*/
+            deity: {
+                label: 'Deity', plural: 'Pantheon', icon: 'brightness_7', group: 'Faith',
+                file: 'data/deities.json',
+                page: 'pantheon.html?id={id}',
+                autolink: true,
+                fields: {
+                    epithet: { kind: 'text', label: 'Epithet (The Lady of Ashes…)' },
+                    summary: { kind: 'text', label: 'One-line summary (card and keyword tooltips)', long: true },
+                    domains: { kind: 'list', label: 'Domains / portfolio' },
+                    alignment: { kind: 'text', label: 'Alignment' },
+                    symbol: { kind: 'image', label: 'Holy symbol (image)' },
+                    symbolText: { kind: 'text', label: 'Holy symbol (description)' },
+                    icon: { kind: 'text', label: 'Icon when there is no image (Material Symbols name)' },
+                    colour: { kind: 'text', label: 'Colour of the card (CSS colour, e.g. #e9c176)' },
+                    worshippers: { kind: 'text', label: 'Typical worshippers', long: true },
+                    body: { kind: 'markdown', label: 'Lore' },
+                },
+            },
+            templeService: {
+                label: 'Temple service', plural: 'Temple services', icon: 'healing', group: 'Faith',
+                file: 'data/temple-services.json',
+                fields: {
+                    category: { kind: 'enum', enum: 'templeCategory', label: 'Kind', required: true },
+                    desc: { kind: 'text', label: 'Description' },
+                    basePrice: { kind: 'number', label: 'Base price (cp; x the temple’s tier)', required: true },
+                    unit: { kind: 'text', label: 'Unit (per casting, each…)' },
+                },
+            },
+            /* What "Pray" at a temple can grant: drawn once per market code, per browser. */
+            blessing: {
+                label: 'Blessing', plural: 'Blessings', icon: 'volunteer_activism', group: 'Faith',
+                file: 'data/blessings.json',
+                fields: {
+                    text: { kind: 'text', label: 'What the worshipper feels or sees (shown to the player)', long: true, required: true },
+                    effect: { kind: 'text', label: 'Effect in play (optional; shown under the text)' },
+                    deities: { kind: 'refs', to: ['deity'], label: 'Only at the temples of these deities (none: any temple)' },
+                },
+            },
+
+            /*-------------------------------------======= TOWN LIFE =======-------------------------------------*/
+            /* Heard in every tavern at or under `where`: a settlement's rumour is heard in
+               all its taverns, a POI's only there. Players draw them by buying a round. */
+            rumour: {
+                label: 'Rumour', plural: 'Rumours', icon: 'record_voice_over', group: 'Town life',
+                file: 'data/rumours.json',
+                fields: {
+                    where: { kind: 'ref', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Heard in the taverns of', required: true },
+                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns (none: every campaign)' },
+                    text: { kind: 'text', label: 'The rumour, as the players hear it', long: true, required: true },
+                    source: { kind: 'text', label: 'Who tells it (a drunk sailor, the barmaid…)' },
+                    truth: { kind: 'enum', enum: 'rumourTruth', label: 'Truth (DM only)', private: true },
+                    note: { kind: 'text', label: 'DM note', long: true, private: true },
+                },
+            },
+            /* A post on a notice board: the settlement's (town board) or a POI's. */
+            notice: {
+                label: 'Notice', plural: 'Notice boards', icon: 'push_pin', group: 'Town life',
+                file: 'data/notices.json',
+                fields: {
+                    where: { kind: 'ref', to: ['settlement', 'poi'], label: 'Pinned on the board of', required: true },
+                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns (none: every campaign)' },
+                    kind: { kind: 'enum', enum: 'noticeKind', label: 'Kind', required: true },
+                    status: { kind: 'enum', enum: 'noticeStatus', label: 'Status (empty = open)' },
+                    body: { kind: 'markdown', label: 'Text of the notice' },
+                    reward: { kind: 'text', label: 'Reward / pay' },
+                    issuer: { kind: 'ref', to: ['npc', 'faction', 'poi', 'deity'], label: 'Posted by' },
+                    issuerText: { kind: 'text', label: 'Posted by (when not on the site, or a signature)' },
+                    posted: { kind: 'text', label: 'Posted on (in-world date)' },
+                    image: { kind: 'image', label: 'Picture (wanted posters…)' },
                 },
             },
         },

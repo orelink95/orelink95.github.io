@@ -9,6 +9,8 @@ Plain CSS, no build step. Every page loads, in this order:
 | `components.css` | Pieces used on every page: header, atlas sidebar, footer, mobile orb menu. |
 | `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. One exception: `pages/atlas-index.css` serves the four Atlas list pages (see below). |
 | `loot-card.css` | The item cards (front and opened, rarity colours), shared by the Vault and the dashboard preview. Markup: `scripts/loot-card.js`. |
+| `games.css` | The gaming table of a tavern (Games tab): bone dice, the game picker, Liar's Dice (`.ld-*`) and Knucklebones (`.kb-*`). Scripts: `scripts/games/`. |
+| `notice-board.css` | The cork board and its pinned notes, shared by the settlement Town Board, the POI Board tab and the dashboard preview. Markup: `scripts/notice-board.js`. |
 | `spell-card.css` | The spell cards (one hue per school, symbols, materials tooltip) and their pop-ups, shared by the Book of Shadows and the heroes page. Also declares the Rieven Uncial font. Markup: `scripts/spell-card.js`. |
 | `atlas-style.css` | Shared by the Atlas pages: Leaflet popups, the small country/settlement pins, the popup button and "Read the lore" link, list-card flip, and the narrow-screen layout (map first, lore panel under it). Loaded after the page stylesheet, so it wins on equal selectors. |
 | `main-style.css`, `poi-style.css` | Older hand-written styles (lore text, keyword links, POI entries). |
@@ -33,8 +35,8 @@ The library pages share `components.css` (library header, footer and wings sideb
 | `world.html` | `pages/world.css`, `atlas-style.css` | `atlas-scripts.js` |
 | `continent.html?id=…` | `pages/continent.css`, `atlas-style.css` | `continent-scripts.js` |
 | `country.html?id=…` | `pages/country.css`, `atlas-style.css` | `country-scripts.js` |
-| `settlement.html?id=…[&district=…]` | `pages/settlement.css`, `atlas-style.css` | `settlement-scripts.js` |
-| `poi.html?id=…` | `pages/poi.css`, `poi-style.css` | `poi-scripts.js` |
+| `settlement.html?id=…[&district=…]` | `pages/settlement.css`, `atlas-style.css`, `notice-board.css` | `settlement-scripts.js` (town board: `market.js`, `notice-board.js`) |
+| `poi.html?id=…` | `pages/poi.css`, `poi-style.css`, `notice-board.css`, `games.css` | `poi-scripts.js` (with `tavern-menu.js`, `market.js`, `notice-board.js`, `personae.js`, `games/*.js`) |
 | `continents.html`, `countries.html`, `settlements.html`, `pois.html` (lists) | `pages/atlas-index.css`, `atlas-style.css` | `atlas-index-scripts.js` |
 
 Every Atlas page also loads `scripts/atlas-common.js`: names shown to players (`Atlas.LABELS`), breadcrumbs, map set-up, pins, popups and the lore panel. An entry page opened without a valid `?id=` goes to its list page.

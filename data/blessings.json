@@ -1,0 +1,70 @@
+[
+  {
+    "id": "blessing-warmth",
+    "name": "Warmth",
+    "text": "A warmth spreads from your chest to your fingertips, as if someone had laid a cloak on your shoulders.",
+    "effect": "Once before your next long rest, add 1d4 to one saving throw."
+  },
+  {
+    "id": "blessing-steady-hand",
+    "name": "Steady hand",
+    "text": "The candle flame stops flickering the moment you look at it.",
+    "effect": "Once before your next long rest, add 1d4 to one attack roll."
+  },
+  {
+    "id": "blessing-a-name-in-the-smoke",
+    "name": "A name in the smoke",
+    "text": "The incense smoke curls into a shape you almost recognise, then is gone."
+  },
+  {
+    "id": "blessing-quiet-mind",
+    "name": "Quiet mind",
+    "text": "For a moment the noise of the world falls away, and you hear only your own breath.",
+    "effect": "Advantage on your next Wisdom (Insight) check today."
+  },
+  {
+    "id": "blessing-guiding-light",
+    "name": "Guiding light",
+    "text": "A shaft of light falls across the floor and points, briefly, towards the door."
+  },
+  {
+    "id": "blessing-second-wind",
+    "name": "Second wind",
+    "text": "You stand up lighter than you knelt down.",
+    "effect": "Regain 1d6 hit points the next time you finish a short rest."
+  },
+  {
+    "id": "blessing-silence",
+    "name": "Silence",
+    "text": "Nothing happens. The silence feels deliberate."
+  },
+  {
+    "id": "blessing-a-cold-touch",
+    "name": "A cold touch",
+    "text": "The stone under your knees is cold, colder than it should be, and you feel watched.",
+    "effect": "Disadvantage on your next Charisma check today. The gods are displeased, or busy."
+  },
+  {
+    "id": "blessing-courage",
+    "name": "Courage",
+    "text": "A voice you know, though not from where, tells you: not yet.",
+    "effect": "Advantage on your next saving throw against being frightened."
+  },
+  {
+    "id": "blessing-good-fortune",
+    "name": "Good fortune",
+    "text": "A coin you did not drop lies at the foot of the altar.",
+    "effect": "You find 1d6 sp on your way out."
+  },
+  {
+    "id": "blessing-the-road-ahead",
+    "name": "The road ahead",
+    "text": "You dream that night of a road, a crossroads, and a lantern left burning.",
+    "effect": "The DM gives you a small hint about your current quest."
+  },
+  {
+    "id": "blessing-peace",
+    "name": "Peace",
+    "text": "Old aches you had forgotten about are, for once, gone."
+  }
+]

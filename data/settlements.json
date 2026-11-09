@@ -42,5 +42,17 @@
     "subtitle": "Little Town",
     "summary": "A little town made of scraps, lost in the wild, built on ruins.",
     "body": "A little town made of scraps, lost in the wild and built on ruins. Who created the settlement and how it grew remains quite mysterious, but the inhabitants now seem to be able to protect themselves from the horrors of the wild... mostly. "
+  },
+  {
+    "id": "city-lemerolai",
+    "name": "Lemerolai",
+    "parent": "lemerolai",
+    "subtitle": "The Ever Standing City",
+    "codex": "Codex Entry:07.B",
+    "map": {
+      "x": 312,
+      "y": 371,
+      "icon": "capital"
+    }
   }
 ]

@@ -1,0 +1,5958 @@
+[
+  {
+    "id": "rope-hempen",
+    "name": "Rope, hempen",
+    "category": "gear",
+    "desc": "Coarse, strong and smelling of tar.",
+    "basePrice": 100,
+    "unit": "50 ft",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "rope-silk",
+    "name": "Rope, silk",
+    "category": "gear",
+    "desc": "Light as a ribbon, stronger than it looks.",
+    "basePrice": 1000,
+    "unit": "50 ft",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "torches",
+    "name": "Torches",
+    "category": "gear",
+    "desc": "Pitch-soaked; an hour of light, more or less.",
+    "basePrice": 1,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "lantern-hooded",
+    "name": "Lantern, hooded",
+    "category": "gear",
+    "desc": "Shutters for when you'd rather not be seen.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "lantern-bullseye",
+    "name": "Lantern, bullseye",
+    "category": "gear",
+    "desc": "Throws a beam 60 feet down a corridor.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "oil-flask",
+    "name": "Oil flask",
+    "category": "gear",
+    "desc": "Lamp oil. Or something to throw.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "tinderbox",
+    "name": "Tinderbox",
+    "category": "gear",
+    "desc": "Flint, steel and dry tinder.",
+    "basePrice": 50,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "bedroll",
+    "name": "Bedroll",
+    "category": "gear",
+    "desc": "Wool and canvas, rolled tight.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "tent-two-person",
+    "name": "Tent, two-person",
+    "category": "gear",
+    "desc": "Waxed canvas; mostly keeps the rain out.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "backpack",
+    "name": "Backpack",
+    "category": "gear",
+    "desc": "Leather, two straps and a flap.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "waterskin",
+    "name": "Waterskin",
+    "category": "gear",
+    "desc": "Holds four pints; tastes of goat.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "crowbar",
+    "name": "Crowbar",
+    "category": "gear",
+    "desc": "Opens what was meant to stay shut.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "grappling-hook",
+    "name": "Grappling hook",
+    "category": "gear",
+    "desc": "Three iron prongs and a ring.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "piton",
+    "name": "Piton",
+    "category": "gear",
+    "desc": "Iron spike for cracks in rock.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "chain",
+    "name": "Chain",
+    "category": "gear",
+    "desc": "Heavy links, good for doors and prisoners.",
+    "basePrice": 500,
+    "unit": "10 ft",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "manacles",
+    "name": "Manacles",
+    "category": "gear",
+    "desc": "Key included. Usually.",
+    "basePrice": 200,
+    "unit": "pair",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "hunting-trap",
+    "name": "Hunting trap",
+    "category": "gear",
+    "desc": "Steel jaws on a chain.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "rustic",
+      "hunter"
+    ]
+  },
+  {
+    "id": "ball-bearings",
+    "name": "Ball bearings",
+    "category": "gear",
+    "desc": "For the floor behind you.",
+    "basePrice": 100,
+    "unit": "bag of 1,000",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "caltrops",
+    "name": "Caltrops",
+    "category": "gear",
+    "desc": "For the road behind you.",
+    "basePrice": 100,
+    "unit": "bag of 20",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "spyglass",
+    "name": "Spyglass",
+    "category": "gear",
+    "desc": "Brass and ground glass; things far away come close.",
+    "basePrice": 100000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "coastal"
+    ]
+  },
+  {
+    "id": "mirror-steel",
+    "name": "Mirror, steel",
+    "category": "gear",
+    "desc": "Pocket-sized, for corners and vanity.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "signal-whistle",
+    "name": "Signal whistle",
+    "category": "gear",
+    "desc": "Shrill enough to wake the dead. Almost.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "hourglass",
+    "name": "Hourglass",
+    "category": "gear",
+    "desc": "Fine sand, measures an hour.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "lock",
+    "name": "Lock",
+    "category": "gear",
+    "desc": "With two keys.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "rations",
+    "name": "Rations",
+    "category": "provisions",
+    "desc": "Hard bread, dried meat, cheese rind.",
+    "basePrice": 50,
+    "unit": "1 day",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "trail-rations-fine",
+    "name": "Trail rations, fine",
+    "category": "provisions",
+    "desc": "Honeyed nuts, cured sausage, figs.",
+    "basePrice": 150,
+    "unit": "1 day",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "salt-pork",
+    "name": "Salt pork",
+    "category": "provisions",
+    "desc": "Keeps for months, tastes of the barrel.",
+    "basePrice": 30,
+    "unit": "1 lb",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic",
+      "coastal"
+    ]
+  },
+  {
+    "id": "ale-small-cask",
+    "name": "Ale, small cask",
+    "category": "provisions",
+    "desc": "For the road, or for bribes.",
+    "basePrice": 200,
+    "unit": "gallon",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "wine-travelling",
+    "name": "Wine, travelling",
+    "category": "provisions",
+    "desc": "Rough red in a stoppered flask.",
+    "basePrice": 200,
+    "unit": "bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "feed",
+    "name": "Feed",
+    "category": "provisions",
+    "desc": "Oats and hay for one animal.",
+    "basePrice": 5,
+    "unit": "1 day",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "spices-pouch",
+    "name": "Spices, pouch",
+    "category": "provisions",
+    "desc": "Pepper, saffron and something unnamed.",
+    "basePrice": 100,
+    "unit": "pouch",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "common-clothes",
+    "name": "Common clothes",
+    "category": "clothing",
+    "desc": "Wool and linen, patched at the elbows.",
+    "basePrice": 50,
+    "unit": "set",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "traveller-s-clothes",
+    "name": "Traveller's clothes",
+    "category": "clothing",
+    "desc": "Sturdy boots, a cloak, a hood.",
+    "basePrice": 200,
+    "unit": "set",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "fine-clothes",
+    "name": "Fine clothes",
+    "category": "clothing",
+    "desc": "Velvet, silver buttons, an air of importance.",
+    "basePrice": 1500,
+    "unit": "set",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "cold-weather-gear",
+    "name": "Cold-weather gear",
+    "category": "clothing",
+    "desc": "Furs, mittens and a scarf to the eyes.",
+    "basePrice": 1000,
+    "unit": "set",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "costume",
+    "name": "Costume",
+    "category": "clothing",
+    "desc": "Somebody else, for an evening.",
+    "basePrice": 500,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "explorer-s-pack",
+    "name": "Explorer's pack",
+    "category": "clothing",
+    "desc": "Backpack, bedroll, rations, rope, torches.",
+    "basePrice": 1000,
+    "unit": "pack",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "dungeoneer-s-pack",
+    "name": "Dungeoneer's pack",
+    "category": "clothing",
+    "desc": "Crowbar, hammer, pitons, rope, torches.",
+    "basePrice": 1200,
+    "unit": "pack",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "burglar-s-pack",
+    "name": "Burglar's pack",
+    "category": "clothing",
+    "desc": "Ball bearings, string, a bell, candles, crowbar.",
+    "basePrice": 1600,
+    "unit": "pack",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "thieves-tools",
+    "name": "Thieves' tools",
+    "category": "tools",
+    "desc": "Picks and files, wrapped in oilcloth.",
+    "basePrice": 2500,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "healer-s-kit",
+    "name": "Healer's kit",
+    "category": "tools",
+    "desc": "Bandages, salves, splints. Ten uses.",
+    "basePrice": 500,
+    "unit": "kit",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "herbalism-kit",
+    "name": "Herbalism kit",
+    "category": "tools",
+    "desc": "Clippers, pouches, mortar and pestle.",
+    "basePrice": 500,
+    "unit": "kit",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "smith-s-tools",
+    "name": "Smith's tools",
+    "category": "tools",
+    "desc": "Hammers, tongs, a small anvil.",
+    "basePrice": 2000,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "carpenter-s-tools",
+    "name": "Carpenter's tools",
+    "category": "tools",
+    "desc": "Saw, hammer, nails, plane.",
+    "basePrice": 800,
+    "unit": "set",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "cartographer-s-tools",
+    "name": "Cartographer's tools",
+    "category": "tools",
+    "desc": "Quills, rulers, compasses, vellum.",
+    "basePrice": 1500,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "disguise-kit",
+    "name": "Disguise kit",
+    "category": "tools",
+    "desc": "Paints, wigs, false noses.",
+    "basePrice": 2500,
+    "unit": "kit",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "forgery-kit",
+    "name": "Forgery kit",
+    "category": "tools",
+    "desc": "Papers, inks, wax and a steady hand not included.",
+    "basePrice": 1500,
+    "unit": "kit",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "poisoner-s-kit",
+    "name": "Poisoner's kit",
+    "category": "tools",
+    "desc": "Vials, gloves, and no questions.",
+    "basePrice": 5000,
+    "unit": "kit",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "navigator-s-tools",
+    "name": "Navigator's tools",
+    "category": "tools",
+    "desc": "Sextant, charts, a compass.",
+    "basePrice": 2500,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "dice-set",
+    "name": "Dice set",
+    "category": "tools",
+    "desc": "Bone dice. Probably fair.",
+    "basePrice": 10,
+    "unit": "set",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "dagger",
+    "name": "Dagger",
+    "category": "weapons",
+    "desc": "Short, sharp and easily hidden.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "club",
+    "name": "Club",
+    "category": "weapons",
+    "desc": "A good stick.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "poor",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "quarterstaff",
+    "name": "Quarterstaff",
+    "category": "weapons",
+    "desc": "Ash wood, iron-shod.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "handaxe",
+    "name": "Handaxe",
+    "category": "weapons",
+    "desc": "For wood or for faces.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "spear",
+    "name": "Spear",
+    "category": "weapons",
+    "desc": "Ash shaft, leaf blade.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common",
+      "military"
+    ]
+  },
+  {
+    "id": "mace",
+    "name": "Mace",
+    "category": "weapons",
+    "desc": "Flanged iron head.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "shortsword",
+    "name": "Shortsword",
+    "category": "weapons",
+    "desc": "A soldier's blade.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "longsword",
+    "name": "Longsword",
+    "category": "weapons",
+    "desc": "The knight's companion.",
+    "basePrice": 1500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "rapier",
+    "name": "Rapier",
+    "category": "weapons",
+    "desc": "Elegant, quick, for duels at dawn.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "battleaxe",
+    "name": "Battleaxe",
+    "category": "weapons",
+    "desc": "Broad-bladed, well-balanced.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven",
+      "military"
+    ]
+  },
+  {
+    "id": "warhammer",
+    "name": "Warhammer",
+    "category": "weapons",
+    "desc": "Dwarven pattern, square-faced.",
+    "basePrice": 1500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven",
+      "military"
+    ]
+  },
+  {
+    "id": "greatsword",
+    "name": "Greatsword",
+    "category": "weapons",
+    "desc": "Six feet of steel.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "shortbow",
+    "name": "Shortbow",
+    "category": "weapons",
+    "desc": "Yew, waxed string.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "hunter",
+      "elven",
+      "bow"
+    ]
+  },
+  {
+    "id": "longbow",
+    "name": "Longbow",
+    "category": "weapons",
+    "desc": "Taller than its archer.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "hunter",
+      "elven",
+      "bow"
+    ]
+  },
+  {
+    "id": "light-crossbow",
+    "name": "Light crossbow",
+    "category": "weapons",
+    "desc": "Cranked, not drawn.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military",
+      "bow"
+    ]
+  },
+  {
+    "id": "hand-crossbow",
+    "name": "Hand crossbow",
+    "category": "weapons",
+    "desc": "Fits under a cloak.",
+    "basePrice": 7500,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "arrows",
+    "name": "Arrows",
+    "category": "ammunition",
+    "desc": "Goose-fletched.",
+    "basePrice": 100,
+    "unit": "20",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common",
+      "hunter"
+    ]
+  },
+  {
+    "id": "crossbow-bolts",
+    "name": "Crossbow bolts",
+    "category": "ammunition",
+    "desc": "Square-headed quarrels.",
+    "basePrice": 100,
+    "unit": "20",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "sling-bullets",
+    "name": "Sling bullets",
+    "category": "ammunition",
+    "desc": "Lead shot.",
+    "basePrice": 4,
+    "unit": "20",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "silvered-arrows",
+    "name": "Silvered arrows",
+    "category": "ammunition",
+    "desc": "For the things iron won't stop.",
+    "basePrice": 10000,
+    "unit": "20",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "padded-armour",
+    "name": "Padded armour",
+    "category": "armour",
+    "desc": "Quilted layers. Hot and loud.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "leather-armour",
+    "name": "Leather armour",
+    "category": "armour",
+    "desc": "Boiled and stiffened hide.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "studded-leather",
+    "name": "Studded leather",
+    "category": "armour",
+    "desc": "Leather with rivets.",
+    "basePrice": 4500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "hide-armour",
+    "name": "Hide armour",
+    "category": "armour",
+    "desc": "Thick furs and pelts.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "chain-shirt",
+    "name": "Chain shirt",
+    "category": "armour",
+    "desc": "Rings worn under a tunic.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "scale-mail",
+    "name": "Scale mail",
+    "category": "armour",
+    "desc": "Overlapping steel scales.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "breastplate",
+    "name": "Breastplate",
+    "category": "armour",
+    "desc": "Fitted steel cuirass.",
+    "basePrice": 40000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "chain-mail",
+    "name": "Chain mail",
+    "category": "armour",
+    "desc": "Heavy and reliable.",
+    "basePrice": 7500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military",
+      "dwarven"
+    ]
+  },
+  {
+    "id": "half-plate",
+    "name": "Half plate",
+    "category": "armour",
+    "desc": "Shaped plates, open at the back.",
+    "basePrice": 75000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "shield",
+    "name": "Shield",
+    "category": "armour",
+    "desc": "Wood bound in iron.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common",
+      "military"
+    ]
+  },
+  {
+    "id": "healing-potion",
+    "name": "Potion of healing",
+    "category": "remedies",
+    "desc": "Red, faintly glowing. Heals 2d4 + 2.",
+    "basePrice": 5000,
+    "unit": "vial",
+    "minTier": "modest",
+    "maxTier": "aristocratic",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "potion-of-greater-healing",
+    "name": "Potion of greater healing",
+    "category": "remedies",
+    "desc": "Deep crimson, warm to the touch. Heals 4d4 + 4.",
+    "basePrice": 25000,
+    "unit": "vial",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "antitoxin",
+    "name": "Antitoxin",
+    "category": "remedies",
+    "desc": "Bitter. Advantage against poison for an hour.",
+    "basePrice": 5000,
+    "unit": "vial",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "healing-herbs",
+    "name": "Healing herbs",
+    "category": "remedies",
+    "desc": "Comfrey, yarrow, a prayer.",
+    "basePrice": 100,
+    "unit": "bundle",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "smelling-salts",
+    "name": "Smelling salts",
+    "category": "remedies",
+    "desc": "Wakes the fainted and the dead drunk.",
+    "basePrice": 50,
+    "unit": "vial",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "restorative-tonic",
+    "name": "Restorative tonic",
+    "category": "remedies",
+    "desc": "Doctor's own recipe. Mostly brandy.",
+    "basePrice": 1500,
+    "unit": "bottle",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "alchemist-s-fire",
+    "name": "Alchemist's fire",
+    "category": "alchemy",
+    "desc": "Bursts into flame in the air.",
+    "basePrice": 5000,
+    "unit": "flask",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "acid",
+    "name": "Acid",
+    "category": "alchemy",
+    "desc": "Eats through flesh and locks.",
+    "basePrice": 2500,
+    "unit": "vial",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "holy-water",
+    "name": "Holy water",
+    "category": "alchemy",
+    "desc": "Blessed, sealed with wax.",
+    "basePrice": 2500,
+    "unit": "flask",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "basic-poison",
+    "name": "Basic poison",
+    "category": "alchemy",
+    "desc": "For blades. Not for questions.",
+    "basePrice": 10000,
+    "unit": "vial",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "smoke-pellet",
+    "name": "Smoke pellet",
+    "category": "alchemy",
+    "desc": "Crush it and vanish. Or cough.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "tanglefoot-bag",
+    "name": "Tanglefoot bag",
+    "category": "alchemy",
+    "desc": "Sticky goo, sticks to everything.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "thunderstone",
+    "name": "Thunderstone",
+    "category": "alchemy",
+    "desc": "Thrown hard, it booms.",
+    "basePrice": 4000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "component-pouch",
+    "name": "Component pouch",
+    "category": "arcane",
+    "desc": "Bat guano, sulphur, bits of string.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "arcane-focus-crystal",
+    "name": "Arcane focus, crystal",
+    "category": "arcane",
+    "desc": "A clear prism that hums when held.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "arcane-focus-wand",
+    "name": "Arcane focus, wand",
+    "category": "arcane",
+    "desc": "Carved wood, a silver tip.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "arcane-focus-orb",
+    "name": "Arcane focus, orb",
+    "category": "arcane",
+    "desc": "Glass sphere, mist inside.",
+    "basePrice": 2000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "druidic-focus-sprig-of-mistletoe",
+    "name": "Druidic focus, sprig of mistletoe",
+    "category": "arcane",
+    "desc": "Cut with a golden sickle, they say.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "spellbook-blank",
+    "name": "Spellbook, blank",
+    "category": "arcane",
+    "desc": "A hundred vellum pages, leather-bound.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "spell-scroll-ink",
+    "name": "Spell scroll ink",
+    "category": "arcane",
+    "desc": "Shimmers when wet.",
+    "basePrice": 1000,
+    "unit": "bottle",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "pearl-component",
+    "name": "Pearl (component)",
+    "category": "arcane",
+    "desc": "Worth 100 gp to a spell.",
+    "basePrice": 10000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "coastal",
+      "fine"
+    ]
+  },
+  {
+    "id": "spell-scroll-cantrip",
+    "name": "Spell scroll (cantrip)",
+    "category": "arcane",
+    "desc": "Rolled tight, warm wax seal.",
+    "basePrice": 3000,
+    "unit": "scroll",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "spell-scroll-1st-level",
+    "name": "Spell scroll (1st level)",
+    "category": "arcane",
+    "desc": "The ink still glows faintly.",
+    "basePrice": 5000,
+    "unit": "scroll",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "paper",
+    "name": "Paper",
+    "category": "books",
+    "desc": "Rag paper, slightly yellow.",
+    "basePrice": 20,
+    "unit": "sheet",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "parchment",
+    "name": "Parchment",
+    "category": "books",
+    "desc": "Scraped hide.",
+    "basePrice": 10,
+    "unit": "sheet",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "ink",
+    "name": "Ink",
+    "category": "books",
+    "desc": "Black as a moonless night.",
+    "basePrice": 1000,
+    "unit": "1-oz bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "ink-pen",
+    "name": "Ink pen",
+    "category": "books",
+    "desc": "A trimmed quill.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "sealing-wax",
+    "name": "Sealing wax",
+    "category": "books",
+    "desc": "Red, with a gold fleck.",
+    "basePrice": 50,
+    "unit": "stick",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "book-local-history",
+    "name": "Book, local history",
+    "category": "books",
+    "desc": "Mostly true.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "map-regional",
+    "name": "Map, regional",
+    "category": "books",
+    "desc": "Roads, rivers and a few guesses.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "map-sea-chart",
+    "name": "Map, sea chart",
+    "category": "books",
+    "desc": "Soundings, shoals and a kraken in the corner.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "riding-horse",
+    "name": "Riding horse",
+    "category": "mounts",
+    "desc": "Calm, steady, eats a lot.",
+    "basePrice": 7500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "pony",
+    "name": "Pony",
+    "category": "mounts",
+    "desc": "Stubborn and sure-footed.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "mule",
+    "name": "Mule",
+    "category": "mounts",
+    "desc": "Carries more than it complains.",
+    "basePrice": 800,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "warhorse",
+    "name": "Warhorse",
+    "category": "mounts",
+    "desc": "Trained not to flee.",
+    "basePrice": 40000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "saddle-riding",
+    "name": "Saddle, riding",
+    "category": "mounts",
+    "desc": "Worn leather, stirrups.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "saddlebags",
+    "name": "Saddlebags",
+    "category": "mounts",
+    "desc": "Two leather bags.",
+    "basePrice": 400,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "cart",
+    "name": "Cart",
+    "category": "mounts",
+    "desc": "Two wheels, one creak.",
+    "basePrice": 1500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "rye-loaf",
+    "name": "Rye loaf",
+    "category": "bread",
+    "desc": "Dark, dense and sour; keeps a week.",
+    "basePrice": 2,
+    "unit": "loaf",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "barley-bannock",
+    "name": "Barley bannock",
+    "category": "bread",
+    "desc": "Flat and griddle-baked, good for soaking up stew.",
+    "basePrice": 1,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "white-manchet-loaf",
+    "name": "White manchet loaf",
+    "category": "bread",
+    "desc": "Fine-sifted flour, a crust that crackles.",
+    "basePrice": 8,
+    "unit": "loaf",
+    "minTier": "modest",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "seeded-oat-round",
+    "name": "Seeded oat round",
+    "category": "bread",
+    "desc": "Studded with oats, flax and poppy.",
+    "basePrice": 3,
+    "unit": "loaf",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "black-ship-s-biscuit",
+    "name": "Black ship's biscuit",
+    "category": "bread",
+    "desc": "Hard enough to break a tooth; lasts a voyage.",
+    "basePrice": 6,
+    "unit": "dozen",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "braided-festival-loaf",
+    "name": "Braided festival loaf",
+    "category": "bread",
+    "desc": "Glazed with egg, plaited in three strands for luck.",
+    "basePrice": 15,
+    "unit": "loaf",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "honey-and-walnut-loaf",
+    "name": "Honey-and-walnut loaf",
+    "category": "bread",
+    "desc": "Sweet, nutty, and gone by noon.",
+    "basePrice": 12,
+    "unit": "loaf",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "onion-flatbread",
+    "name": "Onion flatbread",
+    "category": "bread",
+    "desc": "Charred at the edges, brushed with dripping.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "cheese-crusted-roll",
+    "name": "Cheese-crusted roll",
+    "category": "bread",
+    "desc": "Baked with a cap of melted hard cheese.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "herb-focaccia",
+    "name": "Herb focaccia",
+    "category": "bread",
+    "desc": "Pocked with thumbprints of oil, salt and rosemary.",
+    "basePrice": 6,
+    "unit": "slab",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "trencher-bread",
+    "name": "Trencher bread",
+    "category": "bread",
+    "desc": "Stale by design: the plate you eat at a feast.",
+    "basePrice": 4,
+    "unit": "dozen",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "elven-waybread",
+    "name": "Elven waybread",
+    "category": "bread",
+    "desc": "A single bite fills a stomach for half a day, or so they claim.",
+    "basePrice": 50,
+    "unit": "wrapped cake",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "elven",
+      "fine"
+    ]
+  },
+  {
+    "id": "dwarven-stone-loaf",
+    "name": "Dwarven stone-loaf",
+    "category": "bread",
+    "desc": "Baked in a cave oven; heavy as a brick, and nearly as durable.",
+    "basePrice": 10,
+    "unit": "loaf",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "day-old-bread",
+    "name": "Day-old bread",
+    "category": "bread",
+    "desc": "Yesterday's unsold loaves, cheap and a little hard.",
+    "basePrice": 1,
+    "unit": "sack",
+    "minTier": "squalid",
+    "maxTier": "poor"
+  },
+  {
+    "id": "apple-turnover",
+    "name": "Apple turnover",
+    "category": "pastries",
+    "desc": "Flaky pastry folded over spiced apple.",
+    "basePrice": 4,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "honey-cake-slice",
+    "name": "Honey cake slice",
+    "category": "pastries",
+    "desc": "Dense, sticky and fragrant with clove.",
+    "basePrice": 5,
+    "unit": "slice",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "cream-puff",
+    "name": "Cream puff",
+    "category": "pastries",
+    "desc": "A cloud of choux pastry, filled to bursting.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "plum-tart",
+    "name": "Plum tart",
+    "category": "pastries",
+    "desc": "Dark plums on a buttery crust.",
+    "basePrice": 6,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "meat-pasty",
+    "name": "Meat pasty",
+    "category": "pastries",
+    "desc": "Folded crust with minced mutton and turnip.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "saffron-bun",
+    "name": "Saffron bun",
+    "category": "pastries",
+    "desc": "Golden-yellow and faintly floral.",
+    "basePrice": 8,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "almond-marzipan-cake",
+    "name": "Almond marzipan cake",
+    "category": "pastries",
+    "desc": "Layered and iced, for weddings and debts of honour.",
+    "basePrice": 300,
+    "unit": "whole cake",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "cinnamon-knot",
+    "name": "Cinnamon knot",
+    "category": "pastries",
+    "desc": "Twisted dough, rolled in sugar and spice.",
+    "basePrice": 4,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "berry-crumble",
+    "name": "Berry crumble",
+    "category": "pastries",
+    "desc": "Still warm under a cloth.",
+    "basePrice": 15,
+    "unit": "dish",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "lemon-custard-tart",
+    "name": "Lemon custard tart",
+    "category": "pastries",
+    "desc": "Sharp and silky; the lemons came by ship.",
+    "basePrice": 12,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "coastal"
+    ]
+  },
+  {
+    "id": "butter-biscuits",
+    "name": "Butter biscuits",
+    "category": "pastries",
+    "desc": "Pressed with the baker's mark.",
+    "basePrice": 8,
+    "unit": "dozen",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "gingerbread-figure",
+    "name": "Gingerbread figure",
+    "category": "pastries",
+    "desc": "Shaped like knights, dragons, or a local dignitary.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "rosewater-macaron-box",
+    "name": "Rosewater macaron box",
+    "category": "pastries",
+    "desc": "Pastel shells; a fashion at court this season.",
+    "basePrice": 60,
+    "unit": "box of 6",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "fried-dough-twists",
+    "name": "Fried dough twists",
+    "category": "pastries",
+    "desc": "Hot from the oil, dusted with sugar.",
+    "basePrice": 2,
+    "unit": "bag",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "boiled-sweets",
+    "name": "Boiled sweets",
+    "category": "sweets",
+    "desc": "Hard little jewels of sugar in every colour.",
+    "basePrice": 2,
+    "unit": "paper twist",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "honeycomb-toffee",
+    "name": "Honeycomb toffee",
+    "category": "sweets",
+    "desc": "Brittle and golden, sticks to every tooth.",
+    "basePrice": 5,
+    "unit": "bag",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "candied-ginger",
+    "name": "Candied ginger",
+    "category": "sweets",
+    "desc": "Sweet first, then a burn.",
+    "basePrice": 8,
+    "unit": "bag",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "liquorice-whips",
+    "name": "Liquorice whips",
+    "category": "sweets",
+    "desc": "Black, chewy, divisive.",
+    "basePrice": 1,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "sugared-almonds",
+    "name": "Sugared almonds",
+    "category": "sweets",
+    "desc": "Pastel-coated, given at weddings.",
+    "basePrice": 10,
+    "unit": "bag",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "chocolate-truffles",
+    "name": "Chocolate truffles",
+    "category": "sweets",
+    "desc": "Cocoa from far-off coasts; a luxury few have tasted.",
+    "basePrice": 120,
+    "unit": "box of 6",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "maple-sugar-leaves",
+    "name": "Maple sugar leaves",
+    "category": "sweets",
+    "desc": "Pressed in leaf-shaped moulds.",
+    "basePrice": 6,
+    "unit": "bag",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "rock-candy-stick",
+    "name": "Rock candy stick",
+    "category": "sweets",
+    "desc": "Sugar crystals grown on a string.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "modest"
+  },
+  {
+    "id": "marshmallow-root-sweets",
+    "name": "Marshmallow root sweets",
+    "category": "sweets",
+    "desc": "Soft, pale and soothing to a sore throat.",
+    "basePrice": 4,
+    "unit": "bag",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "fudge-slab",
+    "name": "Fudge slab",
+    "category": "sweets",
+    "desc": "Butter, cream and far too much sugar.",
+    "basePrice": 8,
+    "unit": "slab",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "sour-cherry-drops",
+    "name": "Sour cherry drops",
+    "category": "sweets",
+    "desc": "Pucker-inducing, popular with apprentices.",
+    "basePrice": 3,
+    "unit": "bag",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "candied-violets",
+    "name": "Candied violets",
+    "category": "sweets",
+    "desc": "Real flowers, crystallised in sugar.",
+    "basePrice": 40,
+    "unit": "tin",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "fizzing-sherbet",
+    "name": "Fizzing sherbet",
+    "category": "sweets",
+    "desc": "A pinch of harmless cantrip makes it crackle on the tongue.",
+    "basePrice": 3,
+    "unit": "paper cone",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "arcane"
+    ]
+  },
+  {
+    "id": "dragon-s-breath-peppers",
+    "name": "Dragon's breath peppers",
+    "category": "sweets",
+    "desc": "Sugared chillies; a dare among sailors.",
+    "basePrice": 5,
+    "unit": "bag",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "apples",
+    "name": "Apples",
+    "category": "produce",
+    "desc": "Red, green, and one with a worm.",
+    "basePrice": 4,
+    "unit": "dozen",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "turnips",
+    "name": "Turnips",
+    "category": "produce",
+    "desc": "The honest root of the poor man's table.",
+    "basePrice": 3,
+    "unit": "sack",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "carrots",
+    "name": "Carrots",
+    "category": "produce",
+    "desc": "Still muddy, greens attached.",
+    "basePrice": 1,
+    "unit": "bunch",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "onions",
+    "name": "Onions",
+    "category": "produce",
+    "desc": "Braided by the stalks.",
+    "basePrice": 2,
+    "unit": "string",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "leeks",
+    "name": "Leeks",
+    "category": "produce",
+    "desc": "Sweet when slow-cooked.",
+    "basePrice": 2,
+    "unit": "bunch",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "cabbage",
+    "name": "Cabbage",
+    "category": "produce",
+    "desc": "Heavy and squeaky.",
+    "basePrice": 1,
+    "unit": "head",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "potatoes",
+    "name": "Potatoes",
+    "category": "produce",
+    "desc": "Knobbly, filling, endlessly useful.",
+    "basePrice": 4,
+    "unit": "sack",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "pears",
+    "name": "Pears",
+    "category": "produce",
+    "desc": "Ripe for exactly one afternoon.",
+    "basePrice": 6,
+    "unit": "dozen",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "wild-mushrooms",
+    "name": "Wild mushrooms",
+    "category": "produce",
+    "desc": "Mostly safe. The grocer eats them himself.",
+    "basePrice": 8,
+    "unit": "basket",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "grapes",
+    "name": "Grapes",
+    "category": "produce",
+    "desc": "Dusty-skinned, warm from the sun.",
+    "basePrice": 4,
+    "unit": "bunch",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "figs",
+    "name": "Figs",
+    "category": "produce",
+    "desc": "Purple, split and honey-sweet.",
+    "basePrice": 12,
+    "unit": "dozen",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "oranges",
+    "name": "Oranges",
+    "category": "produce",
+    "desc": "A rare treat inland; brought by ship.",
+    "basePrice": 24,
+    "unit": "dozen",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic",
+      "coastal"
+    ]
+  },
+  {
+    "id": "pumpkin",
+    "name": "Pumpkin",
+    "category": "produce",
+    "desc": "Big enough for a family, or a lantern.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "fresh-herbs",
+    "name": "Fresh herbs",
+    "category": "produce",
+    "desc": "Parsley, thyme, sage, whatever's growing.",
+    "basePrice": 1,
+    "unit": "bunch",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "mutton-chops",
+    "name": "Mutton chops",
+    "category": "meat",
+    "desc": "Fatty and flavourful.",
+    "basePrice": 6,
+    "unit": "pound",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "pork-sausages",
+    "name": "Pork sausages",
+    "category": "meat",
+    "desc": "Seasoned with sage and pepper.",
+    "basePrice": 8,
+    "unit": "string of 6",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "smoked-ham",
+    "name": "Smoked ham",
+    "category": "meat",
+    "desc": "Hung over oak smoke for a month.",
+    "basePrice": 150,
+    "unit": "whole",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "beef-brisket",
+    "name": "Beef brisket",
+    "category": "meat",
+    "desc": "Long-cooking cut, rich and dark.",
+    "basePrice": 10,
+    "unit": "pound",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "venison-haunch",
+    "name": "Venison haunch",
+    "category": "meat",
+    "desc": "Lean and gamey; ask no questions about the king's forest.",
+    "basePrice": 120,
+    "unit": "haunch",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "hunter",
+      "fine"
+    ]
+  },
+  {
+    "id": "rabbit",
+    "name": "Rabbit",
+    "category": "meat",
+    "desc": "Skinned or with fur, as you like.",
+    "basePrice": 4,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic",
+      "hunter"
+    ]
+  },
+  {
+    "id": "chicken",
+    "name": "Chicken",
+    "category": "meat",
+    "desc": "Plucked this morning.",
+    "basePrice": 6,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "black-pudding",
+    "name": "Black pudding",
+    "category": "meat",
+    "desc": "Blood, oats and fat; better than it sounds.",
+    "basePrice": 5,
+    "unit": "ring",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "cured-sausage",
+    "name": "Cured sausage",
+    "category": "meat",
+    "desc": "Dry and peppery, travels well.",
+    "basePrice": 15,
+    "unit": "stick",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "goose",
+    "name": "Goose",
+    "category": "meat",
+    "desc": "For feast days.",
+    "basePrice": 40,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "lamb-s-liver",
+    "name": "Lamb's liver",
+    "category": "meat",
+    "desc": "Cheap and iron-rich.",
+    "basePrice": 3,
+    "unit": "pound",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "pheasant-brace",
+    "name": "Pheasant brace",
+    "category": "meat",
+    "desc": "Hung for three days, as the gentry prefer.",
+    "basePrice": 60,
+    "unit": "pair",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "hunter"
+    ]
+  },
+  {
+    "id": "salt-beef",
+    "name": "Salt beef",
+    "category": "meat",
+    "desc": "Ships' and soldiers' fare by the barrel.",
+    "basePrice": 300,
+    "unit": "barrel",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "military",
+      "coastal"
+    ]
+  },
+  {
+    "id": "bones-for-broth",
+    "name": "Bones for broth",
+    "category": "meat",
+    "desc": "Cracked marrow bones; the butcher's charity.",
+    "basePrice": 1,
+    "unit": "bag",
+    "minTier": "squalid",
+    "maxTier": "poor"
+  },
+  {
+    "id": "herring",
+    "name": "Herring",
+    "category": "fish",
+    "desc": "Silver and oily, caught this morning.",
+    "basePrice": 3,
+    "unit": "dozen",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "coastal",
+      "common"
+    ]
+  },
+  {
+    "id": "smoked-kippers",
+    "name": "Smoked kippers",
+    "category": "fish",
+    "desc": "Golden-brown, for breakfast.",
+    "basePrice": 4,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "salt-cod",
+    "name": "Salt cod",
+    "category": "fish",
+    "desc": "Stiff as a board; soak for a day.",
+    "basePrice": 10,
+    "unit": "slab",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "river-trout",
+    "name": "River trout",
+    "category": "fish",
+    "desc": "Speckled and fresh.",
+    "basePrice": 6,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "eels",
+    "name": "Eels",
+    "category": "fish",
+    "desc": "Sold live in a bucket, or jellied.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "oysters-fish",
+    "name": "Oysters",
+    "category": "fish",
+    "desc": "Shucked to order, with a lemon if you're lucky.",
+    "basePrice": 20,
+    "unit": "dozen",
+    "minTier": "modest",
+    "maxTier": "aristocratic",
+    "tags": [
+      "coastal",
+      "fine"
+    ]
+  },
+  {
+    "id": "mussels",
+    "name": "Mussels",
+    "category": "fish",
+    "desc": "Scrubbed and bearded.",
+    "basePrice": 8,
+    "unit": "bucket",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "lobster",
+    "name": "Lobster",
+    "category": "fish",
+    "desc": "Blue-black and snapping.",
+    "basePrice": 80,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "coastal",
+      "fine"
+    ]
+  },
+  {
+    "id": "crab",
+    "name": "Crab",
+    "category": "fish",
+    "desc": "Dressed, or alive and furious.",
+    "basePrice": 15,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "pike",
+    "name": "Pike",
+    "category": "fish",
+    "desc": "All teeth and bones, but good in a pie.",
+    "basePrice": 12,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "pickled-whelks",
+    "name": "Pickled whelks",
+    "category": "fish",
+    "desc": "An acquired taste.",
+    "basePrice": 4,
+    "unit": "jar",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "sturgeon-roe",
+    "name": "Sturgeon roe",
+    "category": "fish",
+    "desc": "Black pearls of salt; worth their weight in silver.",
+    "basePrice": 500,
+    "unit": "small jar",
+    "minTier": "aristocratic",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "squid",
+    "name": "Squid",
+    "category": "fish",
+    "desc": "Ink sac included at no extra charge.",
+    "basePrice": 6,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "hen-s-eggs",
+    "name": "Hen's eggs",
+    "category": "dairy",
+    "desc": "Brown and speckled.",
+    "basePrice": 3,
+    "unit": "dozen",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "duck-eggs",
+    "name": "Duck eggs",
+    "category": "dairy",
+    "desc": "Rich yolks, prized by bakers.",
+    "basePrice": 4,
+    "unit": "half dozen",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "butter",
+    "name": "Butter",
+    "category": "dairy",
+    "desc": "Salted and wrapped in cabbage leaves.",
+    "basePrice": 6,
+    "unit": "pound",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "fresh-milk",
+    "name": "Fresh milk",
+    "category": "dairy",
+    "desc": "Still warm in the morning.",
+    "basePrice": 1,
+    "unit": "jug",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "clotted-cream",
+    "name": "Clotted cream",
+    "category": "dairy",
+    "desc": "Thick enough to stand a spoon in.",
+    "basePrice": 6,
+    "unit": "pot",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "farmhouse-cheese",
+    "name": "Farmhouse cheese",
+    "category": "dairy",
+    "desc": "Crumbly and sharp.",
+    "basePrice": 40,
+    "unit": "wheel",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "goat-s-cheese",
+    "name": "Goat's cheese",
+    "category": "dairy",
+    "desc": "Soft, white, rolled in ash.",
+    "basePrice": 8,
+    "unit": "round",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "blue-veined-cheese",
+    "name": "Blue-veined cheese",
+    "category": "dairy",
+    "desc": "Pungent; banned from some inns.",
+    "basePrice": 20,
+    "unit": "wedge",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "smoked-cheese",
+    "name": "Smoked cheese",
+    "category": "dairy",
+    "desc": "Brown-rinded and oaky.",
+    "basePrice": 12,
+    "unit": "wedge",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "dwarven-cave-cheese",
+    "name": "Dwarven cave cheese",
+    "category": "dairy",
+    "desc": "Aged in deep tunnels; it fights back.",
+    "basePrice": 30,
+    "unit": "wedge",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "sheep-s-curd",
+    "name": "Sheep's curd",
+    "category": "dairy",
+    "desc": "Fresh, mild, with honey.",
+    "basePrice": 3,
+    "unit": "pot",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "elven-moon-cheese",
+    "name": "Elven moon cheese",
+    "category": "dairy",
+    "desc": "Pale and faintly luminous; made only under a full moon.",
+    "basePrice": 120,
+    "unit": "small round",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "elven",
+      "fine"
+    ]
+  },
+  {
+    "id": "buttermilk",
+    "name": "Buttermilk",
+    "category": "dairy",
+    "desc": "Sour and refreshing.",
+    "basePrice": 1,
+    "unit": "jug",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "salt",
+    "name": "Salt",
+    "category": "pantry",
+    "desc": "Grey sea salt or white rock salt.",
+    "basePrice": 5,
+    "unit": "pound",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "black-pepper",
+    "name": "Black pepper",
+    "category": "pantry",
+    "desc": "Worth its weight in silver, almost.",
+    "basePrice": 20,
+    "unit": "ounce",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "cinnamon-bark",
+    "name": "Cinnamon bark",
+    "category": "pantry",
+    "desc": "Curled quills from the southern isles.",
+    "basePrice": 25,
+    "unit": "ounce",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "saffron",
+    "name": "Saffron",
+    "category": "pantry",
+    "desc": "Red threads harvested by hand.",
+    "basePrice": 100,
+    "unit": "pinch",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic",
+      "fine"
+    ]
+  },
+  {
+    "id": "dried-chillies",
+    "name": "Dried chillies",
+    "category": "pantry",
+    "desc": "For the brave.",
+    "basePrice": 5,
+    "unit": "string",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "honey",
+    "name": "Honey",
+    "category": "pantry",
+    "desc": "Wildflower, heather or clover.",
+    "basePrice": 10,
+    "unit": "jar",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "olive-oil",
+    "name": "Olive oil",
+    "category": "pantry",
+    "desc": "Green and peppery.",
+    "basePrice": 15,
+    "unit": "flask",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "flour",
+    "name": "Flour",
+    "category": "pantry",
+    "desc": "Stone-ground, a little gritty.",
+    "basePrice": 20,
+    "unit": "sack",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "dried-beans",
+    "name": "Dried beans",
+    "category": "pantry",
+    "desc": "Simmer all day with a ham bone.",
+    "basePrice": 8,
+    "unit": "sack",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "black-tea",
+    "name": "Black tea",
+    "category": "pantry",
+    "desc": "Smoky leaves pressed into bricks.",
+    "basePrice": 50,
+    "unit": "tin",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "herbal-tisane",
+    "name": "Herbal tisane",
+    "category": "pantry",
+    "desc": "Mint, chamomile and lime blossom.",
+    "basePrice": 5,
+    "unit": "pouch",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "coffee-beans",
+    "name": "Coffee beans",
+    "category": "pantry",
+    "desc": "Bitter dark beans; the newest fashion among scholars.",
+    "basePrice": 80,
+    "unit": "pouch",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic",
+      "fine"
+    ]
+  },
+  {
+    "id": "vinegar",
+    "name": "Vinegar",
+    "category": "pantry",
+    "desc": "For pickling, cleaning, and poultices.",
+    "basePrice": 3,
+    "unit": "flask",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "sugar-loaf",
+    "name": "Sugar loaf",
+    "category": "pantry",
+    "desc": "A cone of white sugar, cut with nippers.",
+    "basePrice": 60,
+    "unit": "loaf",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "small-beer-drink",
+    "name": "Small beer",
+    "category": "drink",
+    "desc": "Weak enough for breakfast.",
+    "basePrice": 50,
+    "unit": "cask",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "brown-ale",
+    "name": "Brown ale",
+    "category": "drink",
+    "desc": "Malty and honest.",
+    "basePrice": 4,
+    "unit": "bottle",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "cider-drink",
+    "name": "Cider",
+    "category": "drink",
+    "desc": "Cloudy and sharp.",
+    "basePrice": 6,
+    "unit": "jug",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "mead-drink",
+    "name": "Mead",
+    "category": "drink",
+    "desc": "Honey wine, sweet and strong.",
+    "basePrice": 30,
+    "unit": "bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "table-red",
+    "name": "Table red",
+    "category": "drink",
+    "desc": "Drinkable, mostly.",
+    "basePrice": 20,
+    "unit": "bottle",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "vintage-red",
+    "name": "Vintage red",
+    "category": "drink",
+    "desc": "Laid down before you were born.",
+    "basePrice": 500,
+    "unit": "bottle",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "white-wine",
+    "name": "White wine",
+    "category": "drink",
+    "desc": "Pale and crisp from the river valleys.",
+    "basePrice": 40,
+    "unit": "bottle",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "sparkling-wine",
+    "name": "Sparkling wine",
+    "category": "drink",
+    "desc": "For toasts and christenings of ships.",
+    "basePrice": 1000,
+    "unit": "bottle",
+    "minTier": "aristocratic",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "brandy",
+    "name": "Brandy",
+    "category": "drink",
+    "desc": "Distilled wine, aged in oak.",
+    "basePrice": 150,
+    "unit": "bottle",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "grain-spirit",
+    "name": "Grain spirit",
+    "category": "drink",
+    "desc": "Clear as water, kicks like a mule. Untaxed.",
+    "basePrice": 15,
+    "unit": "bottle",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "dwarven-stout",
+    "name": "Dwarven stout",
+    "category": "drink",
+    "desc": "Black as a mineshaft, thick as porridge.",
+    "basePrice": 800,
+    "unit": "keg",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "elven-summerwine",
+    "name": "Elven summerwine",
+    "category": "drink",
+    "desc": "Tastes of a meadow at dusk. Very, very expensive.",
+    "basePrice": 2000,
+    "unit": "bottle",
+    "minTier": "aristocratic",
+    "maxTier": "aristocratic",
+    "tags": [
+      "elven",
+      "fine"
+    ]
+  },
+  {
+    "id": "spiced-rum",
+    "name": "Spiced rum",
+    "category": "drink",
+    "desc": "Molasses, cinnamon and ship's tar.",
+    "basePrice": 60,
+    "unit": "bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "herbal-bitters",
+    "name": "Herbal bitters",
+    "category": "drink",
+    "desc": "A digestive, or a dare.",
+    "basePrice": 25,
+    "unit": "small bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "homespun-wool",
+    "name": "Homespun wool",
+    "category": "fabrics",
+    "desc": "Grey or undyed brown.",
+    "basePrice": 200,
+    "unit": "bolt",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "linen",
+    "name": "Linen",
+    "category": "fabrics",
+    "desc": "Bleached white for shirts and sheets.",
+    "basePrice": 400,
+    "unit": "bolt",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "dyed-broadcloth",
+    "name": "Dyed broadcloth",
+    "category": "fabrics",
+    "desc": "Fulled wool in madder red, woad blue or weld yellow.",
+    "basePrice": 1000,
+    "unit": "bolt",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "silk",
+    "name": "Silk",
+    "category": "fabrics",
+    "desc": "Shimmering, from caravans in the east.",
+    "basePrice": 1000,
+    "unit": "yard",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "velvet",
+    "name": "Velvet",
+    "category": "fabrics",
+    "desc": "Deep pile, for nobles' doublets.",
+    "basePrice": 800,
+    "unit": "yard",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "lace-collar",
+    "name": "Lace collar",
+    "category": "fabrics",
+    "desc": "Bobbin lace, weeks of work.",
+    "basePrice": 300,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "buttons",
+    "name": "Buttons",
+    "category": "fabrics",
+    "desc": "Bone, horn or wood.",
+    "basePrice": 10,
+    "unit": "dozen",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "silver-buttons",
+    "name": "Silver buttons",
+    "category": "fabrics",
+    "desc": "Embossed with a crest of your choosing.",
+    "basePrice": 600,
+    "unit": "dozen",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "thread-and-needles",
+    "name": "Thread and needles",
+    "category": "fabrics",
+    "desc": "Everything to mend a tear.",
+    "basePrice": 5,
+    "unit": "kit",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "ribbon",
+    "name": "Ribbon",
+    "category": "fabrics",
+    "desc": "Every colour, for hair, hats and favours.",
+    "basePrice": 2,
+    "unit": "yard",
+    "minTier": "poor",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "felt",
+    "name": "Felt",
+    "category": "fabrics",
+    "desc": "For hats and boot linings.",
+    "basePrice": 20,
+    "unit": "yard",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "fur-trim",
+    "name": "Fur trim",
+    "category": "fabrics",
+    "desc": "Fox, rabbit or something more expensive.",
+    "basePrice": 200,
+    "unit": "yard",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "embroidery-floss",
+    "name": "Embroidery floss",
+    "category": "fabrics",
+    "desc": "Bright dyed silk thread.",
+    "basePrice": 3,
+    "unit": "skein",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "sailcloth",
+    "name": "Sailcloth",
+    "category": "fabrics",
+    "desc": "Heavy canvas, tarred or plain.",
+    "basePrice": 500,
+    "unit": "bolt",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "wooden-clogs",
+    "name": "Wooden clogs",
+    "category": "footwear",
+    "desc": "Loud on cobbles, dry in mud.",
+    "basePrice": 10,
+    "unit": "pair",
+    "minTier": "squalid",
+    "maxTier": "poor",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "work-boots",
+    "name": "Work boots",
+    "category": "footwear",
+    "desc": "Hobnailed and heavy.",
+    "basePrice": 100,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "riding-boots",
+    "name": "Riding boots",
+    "category": "footwear",
+    "desc": "Tall, stiff and polished.",
+    "basePrice": 400,
+    "unit": "pair",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "soft-shoes",
+    "name": "Soft shoes",
+    "category": "footwear",
+    "desc": "Cloth uppers, leather soles; for indoors.",
+    "basePrice": 50,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "silk-slippers",
+    "name": "Silk slippers",
+    "category": "footwear",
+    "desc": "Embroidered and impractical.",
+    "basePrice": 500,
+    "unit": "pair",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "thigh-high-waders",
+    "name": "Thigh-high waders",
+    "category": "footwear",
+    "desc": "Waxed leather for fishermen.",
+    "basePrice": 300,
+    "unit": "pair",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "sandals",
+    "name": "Sandals",
+    "category": "footwear",
+    "desc": "Leather straps on a stout sole.",
+    "basePrice": 20,
+    "unit": "pair",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "leather-belt",
+    "name": "Leather belt",
+    "category": "footwear",
+    "desc": "With an iron or brass buckle.",
+    "basePrice": 30,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "purse",
+    "name": "Purse",
+    "category": "footwear",
+    "desc": "Drawstring leather, with a hidden pocket.",
+    "basePrice": 25,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "satchel",
+    "name": "Satchel",
+    "category": "footwear",
+    "desc": "Tooled leather with a long strap.",
+    "basePrice": 150,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "gloves",
+    "name": "Gloves",
+    "category": "footwear",
+    "desc": "Kid leather for gentry, pigskin for work.",
+    "basePrice": 40,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "leather-jerkin",
+    "name": "Leather jerkin",
+    "category": "footwear",
+    "desc": "Not armour, but it stops a splinter.",
+    "basePrice": 300,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "waterskin-tooled",
+    "name": "Waterskin, tooled",
+    "category": "footwear",
+    "desc": "Embossed with a hunting scene.",
+    "basePrice": 60,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "dwarven-boot-spikes",
+    "name": "Dwarven boot-spikes",
+    "category": "footwear",
+    "desc": "Strap-on iron spikes for ice and scree.",
+    "basePrice": 80,
+    "unit": "pair",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "copper-ring",
+    "name": "Copper ring",
+    "category": "jewellery",
+    "desc": "Turns your finger green.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "silver-ring",
+    "name": "Silver ring",
+    "category": "jewellery",
+    "desc": "Plain band or a twisted wire.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "gold-signet-ring",
+    "name": "Gold signet ring",
+    "category": "jewellery",
+    "desc": "Engraved to order.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "glass-bead-necklace",
+    "name": "Glass bead necklace",
+    "category": "jewellery",
+    "desc": "Bright and cheap.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "amber-pendant",
+    "name": "Amber pendant",
+    "category": "jewellery",
+    "desc": "A fly trapped in honey-gold resin.",
+    "basePrice": 800,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "pearl-earrings",
+    "name": "Pearl earrings",
+    "category": "jewellery",
+    "desc": "Matched and lustrous.",
+    "basePrice": 5000,
+    "unit": "pair",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "coastal"
+    ]
+  },
+  {
+    "id": "locket",
+    "name": "Locket",
+    "category": "jewellery",
+    "desc": "Room for a portrait or a lock of hair.",
+    "basePrice": 600,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "brooch",
+    "name": "Brooch",
+    "category": "jewellery",
+    "desc": "Pewter, brass or silver, for a cloak.",
+    "basePrice": 300,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "garnet-bracelet",
+    "name": "Garnet bracelet",
+    "category": "jewellery",
+    "desc": "Deep red stones in a gold setting.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "carved-bone-charm",
+    "name": "Carved bone charm",
+    "category": "jewellery",
+    "desc": "Said to keep off the evil eye.",
+    "basePrice": 15,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "hair-combs",
+    "name": "Hair combs",
+    "category": "jewellery",
+    "desc": "Tortoiseshell or horn.",
+    "basePrice": 50,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "pocket-watch",
+    "name": "Pocket watch",
+    "category": "jewellery",
+    "desc": "Gnomish clockwork; ticks loud enough to hear in a quiet room.",
+    "basePrice": 50000,
+    "unit": "each",
+    "minTier": "aristocratic",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "dwarven"
+    ]
+  },
+  {
+    "id": "silver-chain",
+    "name": "Silver chain",
+    "category": "jewellery",
+    "desc": "Fine links, sold by the length.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "lucky-coin",
+    "name": "Lucky coin",
+    "category": "jewellery",
+    "desc": "A foreign coin with a hole bored through it.",
+    "basePrice": 25,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "modest"
+  },
+  {
+    "id": "rosewater",
+    "name": "Rosewater",
+    "category": "perfumes",
+    "desc": "Distilled petals, for the face and hands.",
+    "basePrice": 50,
+    "unit": "small bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "lavender-water",
+    "name": "Lavender water",
+    "category": "perfumes",
+    "desc": "Clean and calming.",
+    "basePrice": 20,
+    "unit": "small bottle",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "musk-perfume",
+    "name": "Musk perfume",
+    "category": "perfumes",
+    "desc": "Heavy and animal; worn at court.",
+    "basePrice": 1000,
+    "unit": "vial",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "bar-of-soap",
+    "name": "Bar of soap",
+    "category": "perfumes",
+    "desc": "Tallow and ash, scented with herbs.",
+    "basePrice": 5,
+    "unit": "bar",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "fine-milled-soap",
+    "name": "Fine milled soap",
+    "category": "perfumes",
+    "desc": "Shaped like a shell, wrapped in paper.",
+    "basePrice": 40,
+    "unit": "bar",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "tooth-powder",
+    "name": "Tooth powder",
+    "category": "perfumes",
+    "desc": "Chalk and mint; better than a twig.",
+    "basePrice": 10,
+    "unit": "tin",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "hair-oil",
+    "name": "Hair oil",
+    "category": "perfumes",
+    "desc": "Makes it shine, or at least stay put.",
+    "basePrice": 25,
+    "unit": "bottle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "face-powder",
+    "name": "Face powder",
+    "category": "perfumes",
+    "desc": "White lead powder. Fashionable and slowly poisonous.",
+    "basePrice": 100,
+    "unit": "box",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "kohl",
+    "name": "Kohl",
+    "category": "perfumes",
+    "desc": "Dark liner for the eyes.",
+    "basePrice": 30,
+    "unit": "pot",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "beard-wax",
+    "name": "Beard wax",
+    "category": "perfumes",
+    "desc": "Holds a braid through a battle.",
+    "basePrice": 15,
+    "unit": "tin",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "lip-rouge",
+    "name": "Lip rouge",
+    "category": "perfumes",
+    "desc": "Beeswax and crushed beetles.",
+    "basePrice": 60,
+    "unit": "pot",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "pomander",
+    "name": "Pomander",
+    "category": "perfumes",
+    "desc": "A pierced silver ball of cloves, against bad air.",
+    "basePrice": 80,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "bath-salts",
+    "name": "Bath salts",
+    "category": "perfumes",
+    "desc": "With dried petals.",
+    "basePrice": 20,
+    "unit": "jar",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "comb-and-mirror-set",
+    "name": "Comb and mirror set",
+    "category": "perfumes",
+    "desc": "Horn comb, polished bronze mirror.",
+    "basePrice": 50,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "clay-mug",
+    "name": "Clay mug",
+    "category": "household",
+    "desc": "Thick and chipped.",
+    "basePrice": 1,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "earthenware-jug",
+    "name": "Earthenware jug",
+    "category": "household",
+    "desc": "Holds a gallon.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "glazed-bowl",
+    "name": "Glazed bowl",
+    "category": "household",
+    "desc": "Blue-green glaze, hand-thrown.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "porcelain-teacup",
+    "name": "Porcelain teacup",
+    "category": "household",
+    "desc": "So thin you can see light through it.",
+    "basePrice": 150,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "iron-cooking-pot",
+    "name": "Iron cooking pot",
+    "category": "household",
+    "desc": "Black, heavy, older than you.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "wooden-spoons",
+    "name": "Wooden spoons",
+    "category": "household",
+    "desc": "Carved from beech.",
+    "basePrice": 2,
+    "unit": "set",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "pewter-plate",
+    "name": "Pewter plate",
+    "category": "household",
+    "desc": "The respectable family's tableware.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "silver-goblet",
+    "name": "Silver goblet",
+    "category": "household",
+    "desc": "Polished and engraved.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "broom",
+    "name": "Broom",
+    "category": "household",
+    "desc": "Birch twigs bound to a handle.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "washtub",
+    "name": "Washtub",
+    "category": "household",
+    "desc": "Coopered oak.",
+    "basePrice": 30,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "woven-basket",
+    "name": "Woven basket",
+    "category": "household",
+    "desc": "Willow, sturdy enough for market.",
+    "basePrice": 4,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "woollen-blanket",
+    "name": "Woollen blanket",
+    "category": "household",
+    "desc": "Scratchy but warm.",
+    "basePrice": 50,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "feather-pillow",
+    "name": "Feather pillow",
+    "category": "household",
+    "desc": "Goose down in linen ticking.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "glass-bottle",
+    "name": "Glass bottle",
+    "category": "household",
+    "desc": "Green glass, with a cork.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "tallow-candles",
+    "name": "Tallow candles",
+    "category": "candles",
+    "desc": "Smoky and smelly but cheap.",
+    "basePrice": 5,
+    "unit": "dozen",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "beeswax-candles",
+    "name": "Beeswax candles",
+    "category": "candles",
+    "desc": "Clean-burning, honey-scented.",
+    "basePrice": 60,
+    "unit": "dozen",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "rushlights",
+    "name": "Rushlights",
+    "category": "candles",
+    "desc": "Pith dipped in fat; a poor man's light.",
+    "basePrice": 1,
+    "unit": "bundle",
+    "minTier": "squalid",
+    "maxTier": "poor",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "hour-candle",
+    "name": "Hour candle",
+    "category": "candles",
+    "desc": "Marked in rings; burns one hour per ring.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "scented-candle",
+    "name": "Scented candle",
+    "category": "candles",
+    "desc": "Rose, pine or sandalwood.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "clay-oil-lamp",
+    "name": "Clay oil lamp",
+    "category": "candles",
+    "desc": "A spout, a wick, and a steady flame.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "brass-oil-lamp",
+    "name": "Brass oil lamp",
+    "category": "candles",
+    "desc": "Polished, with a glass chimney.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "lamp-oil",
+    "name": "Lamp oil",
+    "category": "candles",
+    "desc": "Whale, olive or rape-seed.",
+    "basePrice": 10,
+    "unit": "flask",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "candle-snuffer",
+    "name": "Candle snuffer",
+    "category": "candles",
+    "desc": "A little brass bell on a handle.",
+    "basePrice": 15,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "tinder-and-flint",
+    "name": "Tinder and flint",
+    "category": "candles",
+    "desc": "Strike-a-light in a tin.",
+    "basePrice": 5,
+    "unit": "set",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "altar-candle",
+    "name": "Altar candle",
+    "category": "candles",
+    "desc": "Tall, white, and blessed.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "wax-sealing-sticks",
+    "name": "Wax sealing sticks",
+    "category": "candles",
+    "desc": "Red, black and green.",
+    "basePrice": 30,
+    "unit": "bundle",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "lantern-glass",
+    "name": "Lantern glass",
+    "category": "candles",
+    "desc": "Replacement for a broken lantern.",
+    "basePrice": 20,
+    "unit": "pane",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "posy-of-wildflowers",
+    "name": "Posy of wildflowers",
+    "category": "flowers",
+    "desc": "Picked by a child this morning.",
+    "basePrice": 1,
+    "unit": "posy",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "rose-bouquet",
+    "name": "Rose bouquet",
+    "category": "flowers",
+    "desc": "Red for love, white for mourning.",
+    "basePrice": 50,
+    "unit": "bouquet",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "lavender-bundle",
+    "name": "Lavender bundle",
+    "category": "flowers",
+    "desc": "Dried, for drawers and pillows.",
+    "basePrice": 2,
+    "unit": "bundle",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "potted-herb",
+    "name": "Potted herb",
+    "category": "flowers",
+    "desc": "Basil, mint or rosemary for the windowsill.",
+    "basePrice": 5,
+    "unit": "pot",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "vegetable-seeds",
+    "name": "Vegetable seeds",
+    "category": "flowers",
+    "desc": "Beans, peas, cabbage.",
+    "basePrice": 1,
+    "unit": "packet",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common",
+      "rustic"
+    ]
+  },
+  {
+    "id": "flower-bulbs",
+    "name": "Flower bulbs",
+    "category": "flowers",
+    "desc": "Tulips and lilies, guaranteed to bloom, maybe.",
+    "basePrice": 20,
+    "unit": "dozen",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "orchid",
+    "name": "Orchid",
+    "category": "flowers",
+    "desc": "A rarity from steaming jungles.",
+    "basePrice": 500,
+    "unit": "pot",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "funeral-wreath",
+    "name": "Funeral wreath",
+    "category": "flowers",
+    "desc": "Laurel and white lilies.",
+    "basePrice": 30,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "garland",
+    "name": "Garland",
+    "category": "flowers",
+    "desc": "For festival doorways.",
+    "basePrice": 10,
+    "unit": "yard",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "corsage",
+    "name": "Corsage",
+    "category": "flowers",
+    "desc": "Pinned to a ball gown.",
+    "basePrice": 15,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "fruit-tree-sapling",
+    "name": "Fruit tree sapling",
+    "category": "flowers",
+    "desc": "Apple, pear or plum, wrapped in burlap.",
+    "basePrice": 40,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "dried-flower-wreath",
+    "name": "Dried flower wreath",
+    "category": "flowers",
+    "desc": "Will outlast the season.",
+    "basePrice": 25,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "moonpetal-blossom",
+    "name": "Moonpetal blossom",
+    "category": "flowers",
+    "desc": "Opens only at night, glowing faintly.",
+    "basePrice": 200,
+    "unit": "stem",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "elven",
+      "arcane"
+    ]
+  },
+  {
+    "id": "wooden-top",
+    "name": "Wooden top",
+    "category": "toys",
+    "desc": "Painted stripes, spins forever.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "rag-doll",
+    "name": "Rag doll",
+    "category": "toys",
+    "desc": "Button eyes, yarn hair.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "porcelain-doll",
+    "name": "Porcelain doll",
+    "category": "toys",
+    "desc": "Glass eyes that close when she lies down.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "tin-soldiers",
+    "name": "Tin soldiers",
+    "category": "toys",
+    "desc": "Painted in the colours of the local regiment.",
+    "basePrice": 50,
+    "unit": "box of 12",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "hobby-horse",
+    "name": "Hobby horse",
+    "category": "toys",
+    "desc": "A horse's head on a stick.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "kite",
+    "name": "Kite",
+    "category": "toys",
+    "desc": "Paper and willow, with a long tail.",
+    "basePrice": 8,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "marbles",
+    "name": "Marbles",
+    "category": "toys",
+    "desc": "Glass and clay, one prized blue \"giant\".",
+    "basePrice": 3,
+    "unit": "bag",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "puzzle-box",
+    "name": "Puzzle box",
+    "category": "toys",
+    "desc": "Opens only one way; the shopkeeper won't tell.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "cup-and-ball",
+    "name": "Cup-and-ball",
+    "category": "toys",
+    "desc": "Harder than it looks.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "playing-cards",
+    "name": "Playing cards",
+    "category": "toys",
+    "desc": "Hand-painted, for gambling or fortune-telling.",
+    "basePrice": 50,
+    "unit": "deck",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "chess-set",
+    "name": "Chess set",
+    "category": "toys",
+    "desc": "Carved in bone and ebony.",
+    "basePrice": 300,
+    "unit": "set",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "dragon-chess-set",
+    "name": "Dragon chess set",
+    "category": "toys",
+    "desc": "Three boards stacked; the rules take a winter to learn.",
+    "basePrice": 1500,
+    "unit": "set",
+    "minTier": "aristocratic",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "clockwork-mouse",
+    "name": "Clockwork mouse",
+    "category": "toys",
+    "desc": "Wind it up and it scurries under your bed.",
+    "basePrice": 250,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "toy-sword",
+    "name": "Toy sword",
+    "category": "toys",
+    "desc": "Wooden, for heroes in training.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "wooden-flute",
+    "name": "Wooden flute",
+    "category": "instruments",
+    "desc": "Six holes and a sweet tone.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "tin-whistle",
+    "name": "Tin whistle",
+    "category": "instruments",
+    "desc": "Shrill and cheerful.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "hand-drum",
+    "name": "Hand drum",
+    "category": "instruments",
+    "desc": "Goatskin over a wooden frame.",
+    "basePrice": 600,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "lute",
+    "name": "Lute",
+    "category": "instruments",
+    "desc": "Pear-shaped, eight courses of gut strings.",
+    "basePrice": 3500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "lyre",
+    "name": "Lyre",
+    "category": "instruments",
+    "desc": "Ancient design, still loved by bards.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "fiddle",
+    "name": "Fiddle",
+    "category": "instruments",
+    "desc": "For jigs and laments.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "bagpipes",
+    "name": "Bagpipes",
+    "category": "instruments",
+    "desc": "Loud enough to scare off wolves, or neighbours.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "horn",
+    "name": "Horn",
+    "category": "instruments",
+    "desc": "Brass or ox-horn, for hunts and alarms.",
+    "basePrice": 300,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "shawm",
+    "name": "Shawm",
+    "category": "instruments",
+    "desc": "Double-reed, piercing.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "dulcimer",
+    "name": "Dulcimer",
+    "category": "instruments",
+    "desc": "Struck with tiny hammers.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "viol",
+    "name": "Viol",
+    "category": "instruments",
+    "desc": "Bowed, played upright between the knees.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "harp",
+    "name": "Harp",
+    "category": "instruments",
+    "desc": "Gilded frame, thirty strings.",
+    "basePrice": 10000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "elven"
+    ]
+  },
+  {
+    "id": "lute-strings",
+    "name": "Lute strings",
+    "category": "instruments",
+    "desc": "Gut, for when one snaps mid-ballad.",
+    "basePrice": 20,
+    "unit": "set",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "songbook",
+    "name": "Songbook",
+    "category": "instruments",
+    "desc": "Ballads, drinking songs, and one bawdy verse too many.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "pipeweed",
+    "name": "Pipeweed",
+    "category": "tobacco",
+    "desc": "Coarse leaf, rough smoke.",
+    "basePrice": 10,
+    "unit": "pouch",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "fine-pipeweed",
+    "name": "Fine pipeweed",
+    "category": "tobacco",
+    "desc": "Cured in honey and aged a year.",
+    "basePrice": 50,
+    "unit": "pouch",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "clay-pipe",
+    "name": "Clay pipe",
+    "category": "tobacco",
+    "desc": "Long-stemmed, snaps if you look at it.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "briar-pipe",
+    "name": "Briar pipe",
+    "category": "tobacco",
+    "desc": "Carved and polished.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "meerschaum-pipe",
+    "name": "Meerschaum pipe",
+    "category": "tobacco",
+    "desc": "The bowl is carved into a bearded face.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "exotic"
+    ]
+  },
+  {
+    "id": "snuff",
+    "name": "Snuff",
+    "category": "tobacco",
+    "desc": "Finely ground, scented with bergamot.",
+    "basePrice": 40,
+    "unit": "tin",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "snuffbox",
+    "name": "Snuffbox",
+    "category": "tobacco",
+    "desc": "Enamelled lid with a hunting scene.",
+    "basePrice": 300,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "chewing-tobacco",
+    "name": "Chewing tobacco",
+    "category": "tobacco",
+    "desc": "Sailors' and soldiers' habit.",
+    "basePrice": 5,
+    "unit": "plug",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "halfling-longbottom-leaf",
+    "name": "Halfling longbottom leaf",
+    "category": "tobacco",
+    "desc": "The best in the land, say the halflings who grow it.",
+    "basePrice": 100,
+    "unit": "pouch",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "pipe-cleaners",
+    "name": "Pipe cleaners",
+    "category": "tobacco",
+    "desc": "Twisted wire and wool.",
+    "basePrice": 1,
+    "unit": "bundle",
+    "minTier": "poor",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "cigars",
+    "name": "Cigars",
+    "category": "tobacco",
+    "desc": "Rolled leaf from the southern plantations.",
+    "basePrice": 300,
+    "unit": "box",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic",
+      "fine"
+    ]
+  },
+  {
+    "id": "dreamleaf",
+    "name": "Dreamleaf",
+    "category": "tobacco",
+    "desc": "Gives strange, vivid dreams. Not strictly legal.",
+    "basePrice": 50,
+    "unit": "pinch",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "illicit"
+    ]
+  },
+  {
+    "id": "kitten",
+    "name": "Kitten",
+    "category": "pets",
+    "desc": "Mews, scratches, catches mice eventually.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "puppy",
+    "name": "Puppy",
+    "category": "pets",
+    "desc": "Big paws; will be a big dog.",
+    "basePrice": 50,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "hunting-hound",
+    "name": "Hunting hound",
+    "category": "pets",
+    "desc": "Trained to track and hold.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "hunter"
+    ]
+  },
+  {
+    "id": "songbird-in-a-cage",
+    "name": "Songbird in a cage",
+    "category": "pets",
+    "desc": "A linnet that sings at dawn.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "talking-parrot",
+    "name": "Talking parrot",
+    "category": "pets",
+    "desc": "Knows six words, four of them rude.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic",
+      "coastal"
+    ]
+  },
+  {
+    "id": "ferret",
+    "name": "Ferret",
+    "category": "pets",
+    "desc": "Sent down rabbit holes.",
+    "basePrice": 30,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "hunter"
+    ]
+  },
+  {
+    "id": "messenger-pigeon",
+    "name": "Messenger pigeon",
+    "category": "pets",
+    "desc": "Flies home to this shop; rent a pair to send a note.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "hunting-falcon",
+    "name": "Hunting falcon",
+    "category": "pets",
+    "desc": "Hooded and jessed; a noble's companion.",
+    "basePrice": 10000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "hunter"
+    ]
+  },
+  {
+    "id": "pet-frog",
+    "name": "Pet frog",
+    "category": "pets",
+    "desc": "Lives in a jar; children love it.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "lapdog",
+    "name": "Lapdog",
+    "category": "pets",
+    "desc": "Fluffy, yappy, adored by duchesses.",
+    "basePrice": 1500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "tortoise",
+    "name": "Tortoise",
+    "category": "pets",
+    "desc": "Will outlive you.",
+    "basePrice": 50,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "goldfish-in-a-bowl",
+    "name": "Goldfish in a bowl",
+    "category": "pets",
+    "desc": "Glass bowl included.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "riding-goat",
+    "name": "Riding goat",
+    "category": "pets",
+    "desc": "Sure-footed on mountain paths.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "dwarven",
+      "rustic"
+    ]
+  },
+  {
+    "id": "pet-rat",
+    "name": "Pet rat",
+    "category": "pets",
+    "desc": "Clever, clean, and unfairly maligned.",
+    "basePrice": 1,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "poor"
+  },
+  {
+    "id": "ship-in-a-bottle",
+    "name": "Ship in a bottle",
+    "category": "curios",
+    "desc": "How did they get it in there?",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "stuffed-owl",
+    "name": "Stuffed owl",
+    "category": "curios",
+    "desc": "Glassy-eyed, slightly moth-eaten.",
+    "basePrice": 150,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "old-coins",
+    "name": "Old coins",
+    "category": "curios",
+    "desc": "From an empire no one remembers.",
+    "basePrice": 50,
+    "unit": "handful",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "brass-astrolabe",
+    "name": "Brass astrolabe",
+    "category": "curios",
+    "desc": "For reading the stars, or decorating a study.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "ancient-helm",
+    "name": "Ancient helm",
+    "category": "curios",
+    "desc": "Dented, rusted, possibly cursed.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "music-box",
+    "name": "Music box",
+    "category": "curios",
+    "desc": "Plays a lullaby nobody can name.",
+    "basePrice": 1500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "fossil-shell",
+    "name": "Fossil shell",
+    "category": "curios",
+    "desc": "A spiral of stone from a vanished sea.",
+    "basePrice": 30,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "painted-miniature",
+    "name": "Painted miniature",
+    "category": "curios",
+    "desc": "Portrait of a stranger in old-fashioned clothes.",
+    "basePrice": 800,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "tarnished-mirror",
+    "name": "Tarnished mirror",
+    "category": "curios",
+    "desc": "Sometimes shows the room a little differently.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "arcane"
+    ]
+  },
+  {
+    "id": "dragon-tooth",
+    "name": "Dragon tooth",
+    "category": "curios",
+    "desc": "Probably a crocodile's. Probably.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "hourglass-of-black-sand",
+    "name": "Hourglass of black sand",
+    "category": "curios",
+    "desc": "The sand runs a few grains too slowly.",
+    "basePrice": 600,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "map-of-nowhere",
+    "name": "Map of nowhere",
+    "category": "curios",
+    "desc": "A land that does not appear in any atlas.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "shrunken-head",
+    "name": "Shrunken head",
+    "category": "curios",
+    "desc": "The shopkeeper keeps it behind the counter.",
+    "basePrice": 400,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "crystal-ball-decorative",
+    "name": "Crystal ball (decorative)",
+    "category": "curios",
+    "desc": "No magic, but very convincing.",
+    "basePrice": 2000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "pine-coffin",
+    "name": "Pine coffin",
+    "category": "funerary",
+    "desc": "Plain boards, iron nails.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "oak-coffin",
+    "name": "Oak coffin",
+    "category": "funerary",
+    "desc": "Brass handles, silk lining.",
+    "basePrice": 2000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "stone-sarcophagus",
+    "name": "Stone sarcophagus",
+    "category": "funerary",
+    "desc": "Carved with the likeness of the deceased.",
+    "basePrice": 50000,
+    "unit": "each",
+    "minTier": "aristocratic",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "burial-shroud",
+    "name": "Burial shroud",
+    "category": "funerary",
+    "desc": "Unbleached linen.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "grave-marker",
+    "name": "Grave marker",
+    "category": "funerary",
+    "desc": "Carved wood, with name and dates.",
+    "basePrice": 300,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "headstone",
+    "name": "Headstone",
+    "category": "funerary",
+    "desc": "Granite, engraved by a mason.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic"
+  },
+  {
+    "id": "mourning-band",
+    "name": "Mourning band",
+    "category": "funerary",
+    "desc": "Black crape for the arm or hat.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "wealthy",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "mourning-jewellery",
+    "name": "Mourning jewellery",
+    "category": "funerary",
+    "desc": "A jet brooch holding a lock of hair.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine"
+    ]
+  },
+  {
+    "id": "funeral-urn",
+    "name": "Funeral urn",
+    "category": "funerary",
+    "desc": "Glazed clay or bronze, for ashes.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy"
+  },
+  {
+    "id": "ferryman-s-coins",
+    "name": "Ferryman's coins",
+    "category": "funerary",
+    "desc": "For the eyes of the dead.",
+    "basePrice": 2,
+    "unit": "pair",
+    "minTier": "squalid",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "memorial-candle",
+    "name": "Memorial candle",
+    "category": "funerary",
+    "desc": "Burns for three days.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "embalming-spices",
+    "name": "Embalming spices",
+    "category": "funerary",
+    "desc": "Myrrh and natron, the old way.",
+    "basePrice": 300,
+    "unit": "jar",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "bell-coffin",
+    "name": "Bell coffin",
+    "category": "funerary",
+    "desc": "A bell and string, just in case.",
+    "basePrice": 3000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "shave",
+    "name": "Shave",
+    "category": "services",
+    "desc": "Hot towel, cold steel.",
+    "basePrice": 1,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "barber"
+    ]
+  },
+  {
+    "id": "haircut",
+    "name": "Haircut",
+    "category": "services",
+    "desc": "Bowl cut or the latest fashion.",
+    "basePrice": 2,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "barber"
+    ]
+  },
+  {
+    "id": "beard-trim-and-oiling",
+    "name": "Beard trim and oiling",
+    "category": "services",
+    "desc": "Shaped, combed and scented.",
+    "basePrice": 5,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "barber"
+    ]
+  },
+  {
+    "id": "tooth-pulling",
+    "name": "Tooth pulling",
+    "category": "services",
+    "desc": "Quick, with a slug of brandy first.",
+    "basePrice": 10,
+    "unit": "tooth",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "barber"
+    ]
+  },
+  {
+    "id": "bloodletting",
+    "name": "Bloodletting",
+    "category": "services",
+    "desc": "Balances the humours, or so they say.",
+    "basePrice": 20,
+    "unit": "session",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "barber"
+    ]
+  },
+  {
+    "id": "wig-fitting",
+    "name": "Wig fitting",
+    "category": "services",
+    "desc": "Powdered and curled.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "barber",
+      "fine"
+    ]
+  },
+  {
+    "id": "blade-sharpening",
+    "name": "Blade sharpening",
+    "category": "services",
+    "desc": "Whetstone and oil, edge like new.",
+    "basePrice": 5,
+    "unit": "blade",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "smith"
+    ]
+  },
+  {
+    "id": "armour-repair",
+    "name": "Armour repair",
+    "category": "services",
+    "desc": "Hammered out, rings replaced.",
+    "basePrice": 500,
+    "unit": "piece",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "smith"
+    ]
+  },
+  {
+    "id": "horseshoeing",
+    "name": "Horseshoeing",
+    "category": "services",
+    "desc": "Four new shoes.",
+    "basePrice": 10,
+    "unit": "horse",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "smith",
+      "stable"
+    ]
+  },
+  {
+    "id": "custom-engraving",
+    "name": "Custom engraving",
+    "category": "services",
+    "desc": "A name, a crest, a motto.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "smith",
+      "jeweller"
+    ]
+  },
+  {
+    "id": "clothes-mending",
+    "name": "Clothes mending",
+    "category": "services",
+    "desc": "Patched and darned.",
+    "basePrice": 2,
+    "unit": "garment",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "tailor"
+    ]
+  },
+  {
+    "id": "tailored-fitting",
+    "name": "Tailored fitting",
+    "category": "services",
+    "desc": "Taken in, let out, made to flatter.",
+    "basePrice": 500,
+    "unit": "garment",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "tailor"
+    ]
+  },
+  {
+    "id": "embroidered-crest",
+    "name": "Embroidered crest",
+    "category": "services",
+    "desc": "Your heraldry in silk thread.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "tailor",
+      "fine"
+    ]
+  },
+  {
+    "id": "boot-resoling",
+    "name": "Boot resoling",
+    "category": "services",
+    "desc": "Fresh leather, new nails.",
+    "basePrice": 20,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "cobbler"
+    ]
+  },
+  {
+    "id": "waterproofing",
+    "name": "Waterproofing",
+    "category": "services",
+    "desc": "Waxed and dubbined.",
+    "basePrice": 10,
+    "unit": "pair",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "cobbler"
+    ]
+  },
+  {
+    "id": "gem-appraisal",
+    "name": "Gem appraisal",
+    "category": "services",
+    "desc": "An honest valuation. Mostly honest.",
+    "basePrice": 500,
+    "unit": "stone",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "jeweller"
+    ]
+  },
+  {
+    "id": "ring-resizing",
+    "name": "Ring resizing",
+    "category": "services",
+    "desc": "Stretched or cut down.",
+    "basePrice": 200,
+    "unit": "ring",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "jeweller"
+    ]
+  },
+  {
+    "id": "letter-writing",
+    "name": "Letter writing",
+    "category": "services",
+    "desc": "Dictate it, sign with your mark.",
+    "basePrice": 5,
+    "unit": "letter",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "scribe"
+    ]
+  },
+  {
+    "id": "letter-reading",
+    "name": "Letter reading",
+    "category": "services",
+    "desc": "For those who never learned their letters.",
+    "basePrice": 1,
+    "unit": "letter",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "scribe"
+    ]
+  },
+  {
+    "id": "document-copying",
+    "name": "Document copying",
+    "category": "services",
+    "desc": "Fair hand, faithful copy.",
+    "basePrice": 20,
+    "unit": "page",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "scribe"
+    ]
+  },
+  {
+    "id": "translation",
+    "name": "Translation",
+    "category": "services",
+    "desc": "Common, Elvish, Dwarvish; rarer tongues cost more.",
+    "basePrice": 200,
+    "unit": "page",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "scribe"
+    ]
+  },
+  {
+    "id": "grooming-and-stabling",
+    "name": "Grooming and stabling",
+    "category": "services",
+    "desc": "Brushed, fed and watered.",
+    "basePrice": 5,
+    "unit": "day",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "stable"
+    ]
+  },
+  {
+    "id": "horse-hire",
+    "name": "Horse hire",
+    "category": "services",
+    "desc": "A docile mare, returned by sundown.",
+    "basePrice": 200,
+    "unit": "day",
+    "minTier": "poor",
+    "maxTier": "wealthy",
+    "tags": [
+      "stable"
+    ]
+  },
+  {
+    "id": "instrument-tuning",
+    "name": "Instrument tuning",
+    "category": "services",
+    "desc": "Every string true.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "luthier"
+    ]
+  },
+  {
+    "id": "instrument-repair",
+    "name": "Instrument repair",
+    "category": "services",
+    "desc": "Cracked bodies glued, necks reset.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "luthier"
+    ]
+  },
+  {
+    "id": "burial",
+    "name": "Burial",
+    "category": "services",
+    "desc": "Dug, filled, a few words said.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "undertaker"
+    ]
+  },
+  {
+    "id": "hired-mourners",
+    "name": "Hired mourners",
+    "category": "services",
+    "desc": "Professional wailing, by the hour.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "undertaker"
+    ]
+  },
+  {
+    "id": "embalming",
+    "name": "Embalming",
+    "category": "services",
+    "desc": "The deceased, presentable for a week.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "wealthy",
+    "maxTier": "aristocratic",
+    "tags": [
+      "undertaker",
+      "fine"
+    ]
+  },
+  {
+    "id": "heavy-crossbow",
+    "name": "Heavy crossbow",
+    "category": "weapons",
+    "desc": "Wound with a windlass; slow and brutal.",
+    "basePrice": 5000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military",
+      "bow"
+    ]
+  },
+  {
+    "id": "sling",
+    "name": "Sling",
+    "category": "weapons",
+    "desc": "A leather pouch and two cords.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "scimitar",
+    "name": "Scimitar",
+    "category": "weapons",
+    "desc": "Curved blade from the desert lands.",
+    "basePrice": 2500,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "flail",
+    "name": "Flail",
+    "category": "weapons",
+    "desc": "Spiked ball on a chain.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "trident",
+    "name": "Trident",
+    "category": "weapons",
+    "desc": "Fisherman's spear, three tines.",
+    "basePrice": 500,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal"
+    ]
+  },
+  {
+    "id": "whip",
+    "name": "Whip",
+    "category": "weapons",
+    "desc": "Braided leather.",
+    "basePrice": 200,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "blowgun",
+    "name": "Blowgun",
+    "category": "weapons",
+    "desc": "A hollow reed and patience.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "exotic"
+    ]
+  },
+  {
+    "id": "fishing-tackle",
+    "name": "Fishing tackle",
+    "category": "gear",
+    "desc": "Rod, line, hooks and a lucky float.",
+    "basePrice": 100,
+    "unit": "kit",
+    "minTier": "squalid",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal",
+      "rustic"
+    ]
+  },
+  {
+    "id": "climber-s-kit",
+    "name": "Climber's kit",
+    "category": "gear",
+    "desc": "Pitons, harness, gloves.",
+    "basePrice": 2500,
+    "unit": "kit",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "iron-pot-and-tripod",
+    "name": "Iron pot and tripod",
+    "category": "gear",
+    "desc": "For cooking over a campfire.",
+    "basePrice": 300,
+    "unit": "set",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "collapsible-ladder",
+    "name": "Collapsible ladder",
+    "category": "gear",
+    "desc": "Ten feet, folds to two.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "dwarven"
+    ]
+  },
+  {
+    "id": "bell",
+    "name": "Bell",
+    "category": "gear",
+    "desc": "For doors, goats, or alarms.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "chalk",
+    "name": "Chalk",
+    "category": "gear",
+    "desc": "For marking passages.",
+    "basePrice": 1,
+    "unit": "bag",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "hunting-bow",
+    "name": "Hunting bow",
+    "category": "weapons",
+    "desc": "Ash stave, rawhide grip; good enough for deer.",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "hunter",
+      "bow",
+      "rustic"
+    ]
+  },
+  {
+    "id": "composite-bow",
+    "name": "Composite bow",
+    "category": "weapons",
+    "desc": "Horn, wood and sinew, laminated for power.",
+    "basePrice": 7500,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "bow",
+      "exotic"
+    ]
+  },
+  {
+    "id": "bodkin-arrows",
+    "name": "Bodkin arrows",
+    "category": "ammunition",
+    "desc": "Narrow heads to punch through mail.",
+    "basePrice": 300,
+    "unit": "20",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "military"
+    ]
+  },
+  {
+    "id": "whistling-arrows",
+    "name": "Whistling arrows",
+    "category": "ammunition",
+    "desc": "They shriek in flight; for signals.",
+    "basePrice": 200,
+    "unit": "10",
+    "minTier": "modest",
+    "maxTier": "wealthy",
+    "tags": [
+      "hunter"
+    ]
+  },
+  {
+    "id": "fishing-arrows",
+    "name": "Fishing arrows",
+    "category": "ammunition",
+    "desc": "Barbed, with a line ring.",
+    "basePrice": 50,
+    "unit": "10",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "coastal",
+      "rustic"
+    ]
+  },
+  {
+    "id": "saltpetre",
+    "name": "Saltpetre",
+    "category": "alchemy",
+    "desc": "Scraped from cellar walls; for preserving and other uses.",
+    "basePrice": 20,
+    "unit": "pouch",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "quicklime",
+    "name": "Quicklime",
+    "category": "alchemy",
+    "desc": "Burns skin, whitens walls, hides smells.",
+    "basePrice": 10,
+    "unit": "sack",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "dye-salts",
+    "name": "Dye salts",
+    "category": "alchemy",
+    "desc": "Alum and copperas for fixing dyes.",
+    "basePrice": 15,
+    "unit": "pouch",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "lampblack",
+    "name": "Lampblack",
+    "category": "alchemy",
+    "desc": "Soot for inks and paints.",
+    "basePrice": 5,
+    "unit": "jar",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "willow-bark-tea",
+    "name": "Willow-bark tea",
+    "category": "remedies",
+    "desc": "Bitter; eases aches and fevers.",
+    "basePrice": 2,
+    "unit": "pouch",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic",
+      "common"
+    ]
+  },
+  {
+    "id": "mustard-poultice",
+    "name": "Mustard poultice",
+    "category": "remedies",
+    "desc": "Hot on the chest for a cough.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "common"
+    ]
+  },
+  {
+    "id": "leeches",
+    "name": "Leeches",
+    "category": "remedies",
+    "desc": "Lively, hungry, recommended by barbers.",
+    "basePrice": 10,
+    "unit": "jar",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "garlic-and-honey-tincture",
+    "name": "Garlic and honey tincture",
+    "category": "remedies",
+    "desc": "For colds, and for keeping company away.",
+    "basePrice": 8,
+    "unit": "bottle",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "hedge-witch-charm",
+    "name": "Hedge-witch charm",
+    "category": "arcane",
+    "desc": "Knotted twine and a feather; wards off nightmares, maybe.",
+    "basePrice": 10,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "chalk-and-salt-circle-kit",
+    "name": "Chalk and salt circle kit",
+    "category": "arcane",
+    "desc": "For drawing wards and summoning circles.",
+    "basePrice": 50,
+    "unit": "kit",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "divination-bones",
+    "name": "Divination bones",
+    "category": "arcane",
+    "desc": "Knucklebones scratched with runes.",
+    "basePrice": 30,
+    "unit": "set",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "rustic"
+    ]
+  },
+  {
+    "id": "odd-keys",
+    "name": "Odd keys",
+    "category": "curios",
+    "desc": "Keys to doors nobody can find.",
+    "basePrice": 5,
+    "unit": "bundle",
+    "minTier": "squalid",
+    "maxTier": "modest"
+  },
+  {
+    "id": "glass-eye",
+    "name": "Glass eye",
+    "category": "curios",
+    "desc": "It seems to follow you around the room.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable"
+  },
+  {
+    "id": "hemming-and-patching",
+    "name": "Hemming and patching",
+    "category": "services",
+    "desc": "Quick work while you wait.",
+    "basePrice": 1,
+    "unit": "garment",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "tailor"
+    ]
+  },
+  {
+    "id": "strap-and-buckle-repair",
+    "name": "Strap and buckle repair",
+    "category": "services",
+    "desc": "Stitched and riveted.",
+    "basePrice": 3,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "modest",
+    "tags": [
+      "cobbler"
+    ]
+  },
+  {
+    "id": "jewellery-cleaning",
+    "name": "Jewellery cleaning",
+    "category": "services",
+    "desc": "Polished to a shine.",
+    "basePrice": 20,
+    "unit": "piece",
+    "minTier": "modest",
+    "maxTier": "comfortable",
+    "tags": [
+      "jeweller"
+    ]
+  },
+  {
+    "id": "string-replacement",
+    "name": "String replacement",
+    "category": "services",
+    "desc": "One string, fitted and tuned.",
+    "basePrice": 5,
+    "unit": "string",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "luthier"
+    ]
+  },
+  {
+    "id": "pauper-s-burial",
+    "name": "Pauper's burial",
+    "category": "services",
+    "desc": "A shared grave and a short prayer.",
+    "basePrice": 20,
+    "unit": "each",
+    "minTier": "squalid",
+    "maxTier": "poor",
+    "tags": [
+      "undertaker"
+    ]
+  },
+  {
+    "id": "laying-out-the-dead",
+    "name": "Laying out the dead",
+    "category": "services",
+    "desc": "Washed, dressed, and made decent.",
+    "basePrice": 100,
+    "unit": "each",
+    "minTier": "poor",
+    "maxTier": "comfortable",
+    "tags": [
+      "undertaker"
+    ]
+  },
+  {
+    "id": "map-copying",
+    "name": "Map copying",
+    "category": "services",
+    "desc": "Traced faithfully, legend and all.",
+    "basePrice": 300,
+    "unit": "sheet",
+    "minTier": "comfortable",
+    "maxTier": "wealthy",
+    "tags": [
+      "scribe"
+    ]
+  }
+]

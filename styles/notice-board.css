@@ -1,0 +1,137 @@
+/* Notice boards: the town board of settlement.html and a POI's Board tab (poi.html).
+   Markup: scripts/notice-board.js. */
+
+.notice-board {
+    position: relative;
+    border-radius: 0.25rem;
+    padding: 1.5rem 1rem;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 0.18) 0 1px, transparent 2px) 0 0 / 14px 14px,
+        radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.04) 0 1px, transparent 2px) 0 0 / 11px 11px,
+        linear-gradient(160deg, #4a3624, #3a2a1b 60%, #33251a);
+    border: 6px solid #2a1e13;
+    box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.55), 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+@media (min-width: 640px) { .notice-board { padding: 2rem 1.75rem; } }
+
+.notice-board__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.75rem 1.25rem;
+    align-items: start;
+}
+.notice-board__empty {
+    margin: 0;
+    padding: 2rem 0.5rem;
+    text-align: center;
+    font-family: var(--font-body), serif;
+    font-style: italic;
+    color: rgba(255, 236, 205, 0.55);
+}
+
+/* --- One note --- */
+.notice {
+    position: relative;
+    padding: 1.4rem 1.1rem 1rem;
+    background: linear-gradient(175deg, #efe2c4, #e2d1ab);
+    color: #2e2316;
+    border-radius: 2px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45), inset 0 0 30px rgba(120, 85, 40, 0.18);
+    transform: rotate(var(--tilt, 0deg));
+    transition: transform 200ms var(--ease);
+    font-family: var(--font-body), serif;
+}
+.notice:hover { transform: rotate(0deg) scale(1.02); z-index: 1; }
+@media (max-width: 639px) {
+    .notice { transform: rotate(calc(var(--tilt, 0deg) / 2)); }
+}
+@media (prefers-reduced-motion: reduce) { .notice, .notice:hover { transition: none; } }
+
+.notice__pin {
+    position: absolute;
+    top: 0.45rem;
+    left: 50%;
+    width: 12px; height: 12px;
+    margin-left: -6px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #f3a39a, #9b2a20 70%);
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+}
+.notice--bounty .notice__pin, .notice--wanted .notice__pin { background: radial-gradient(circle at 35% 35%, #f6d28b, #8a5a12 70%); }
+.notice--announcement .notice__pin { background: radial-gradient(circle at 35% 35%, #a9c7f5, #24467d 70%); }
+.notice--personal .notice__pin { background: radial-gradient(circle at 35% 35%, #c9b2f2, #4f2f86 70%); }
+
+.notice__kind {
+    margin: 0 0 0.2rem;
+    font-family: var(--font-label), sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #8a5a2b;
+}
+.notice--wanted .notice__kind, .notice--bounty .notice__kind { color: #9b2a20; }
+.notice__title {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-headline), serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.notice--wanted .notice__title { text-transform: uppercase; letter-spacing: 0.08em; text-align: center; font-size: 1.3rem; }
+.notice__image {
+    display: block;
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    margin: 0 0 0.7rem;
+    filter: sepia(0.6) contrast(1.05);
+    border: 1px solid rgba(46, 35, 22, 0.3);
+}
+.notice__body { font-size: 0.98rem; line-height: 1.45; }
+.notice__body p + p { margin-top: 0.5rem; }
+.notice__body a { color: #6b3b10; text-decoration: underline; font-weight: 600; }
+.notice__reward {
+    margin: 0.8rem 0 0;
+    padding-top: 0.5rem;
+    border-top: 1px dashed rgba(46, 35, 22, 0.35);
+    font-family: var(--font-headline), serif;
+    font-weight: 700;
+}
+.notice__reward span {
+    font-family: var(--font-label), sans-serif;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8a5a2b;
+    margin-right: 0.3rem;
+}
+.notice__sign {
+    margin: 0.6rem 0 0;
+    font-style: italic;
+    font-size: 0.9rem;
+    text-align: right;
+    color: #5b4630;
+}
+.notice__sign a { color: inherit; text-decoration: underline; }
+
+/* Taken / closed: a stamp in the lower corner, colours drained */
+.notice.is-taken, .notice.is-done { filter: saturate(0.5); }
+.notice.is-done { opacity: 0.6; }
+.notice__stamp {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.9rem;
+    transform: rotate(-12deg);
+    padding: 0.2rem 0.8rem;
+    border: 3px double #9b2a20;
+    color: #9b2a20;
+    font-family: var(--font-label), sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0.8;
+    pointer-events: none;
+}
+.notice.is-done .notice__stamp { border-color: #4b4b4b; color: #4b4b4b; }

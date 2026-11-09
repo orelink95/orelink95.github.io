@@ -109,7 +109,7 @@
     align-items: start;
 }
 @media (min-width: 1100px) {
-    .poi-grid { grid-template-columns: 1fr 1.05fr; }
+    .poi-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
 }
 .poi-col { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
 
@@ -227,3 +227,171 @@
 .poi-root.is-danger .poi-hero { border-color: rgba(255, 180, 171, 0.25); }
 
 .poi-root [hidden] { display: none !important; }
+
+/* =====================================================================
+   LEDGER CARD — one tab per role of the place (scripts/poi-scripts.js):
+   Fare · Wares · Shrine · Rumours · Board. Phones: the card comes first,
+   right under the hero, with its tab strip stuck under the site header.
+   ===================================================================== */
+.poi-root { --poi-sticky-top: 4.25rem; }
+
+.poi-ledger--tabbed { padding-top: 0; }
+@media (min-width: 640px) { .poi-ledger--tabbed { padding-top: 0; } }
+
+.poi-tabs {
+    position: sticky;
+    top: var(--poi-sticky-top);
+    z-index: 5;
+    display: flex;
+    gap: 0.25rem;
+    margin: 0 -1.5rem 2rem;
+    padding: 0.6rem 0.75rem 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: linear-gradient(to bottom, #241e16, var(--poi-paper));
+    border-bottom: 1px solid rgba(233, 193, 118, 0.18);
+    border-radius: 0.25rem 0.25rem 0 0;
+}
+.poi-tabs::-webkit-scrollbar { display: none; }
+@media (min-width: 640px) { .poi-tabs { margin: 0 -2.75rem 2.25rem; padding: 0.75rem 2rem 0; } }
+
+.poi-tab {
+    flex: 1 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-height: 44px;           /* touch target */
+    padding: 0.5rem 0.85rem;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: none;
+    color: var(--poi-outline);
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background-color .2s;
+}
+.poi-tab__icon { font-size: 18px; }
+.poi-tab:hover { color: var(--poi-ink); }
+.poi-tab.is-active { color: var(--poi-gold); border-bottom-color: var(--poi-gold); background: rgba(233, 193, 118, 0.05); }
+.poi-tab:focus-visible { outline: 2px solid var(--poi-gold); outline-offset: -2px; }
+/* Narrow phones: icon over a small label, so five tabs still fit */
+@media (max-width: 479px) {
+    .poi-tab { flex-direction: column; gap: 0.1rem; padding: 0.4rem 0.5rem; font-size: 9px; letter-spacing: 0.12em; flex: 1 1 0; min-width: 3.6rem; }
+}
+
+/* Phones and tablets: the ledger first, the lore after it */
+@media (max-width: 1099px) {
+    .poi-ledger { order: -1; }
+}
+
+
+/* Form bits */
+.poi-select {
+    max-width: 100%;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid rgba(233, 193, 118, 0.25);
+    border-radius: 0.25rem;
+    background: var(--poi-panel-deep);
+    color: var(--poi-ink);
+    font-family: 'Noto Serif', serif;
+    font-size: 0.95rem;
+}
+.poi-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.6rem 1.3rem;
+    border: 1px solid rgba(233, 193, 118, 0.45);
+    border-radius: 999px;
+    background: rgba(233, 193, 118, 0.08);
+    color: var(--poi-gold);
+    font-family: 'Manrope', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color .2s, color .2s, box-shadow .2s;
+}
+.poi-button:hover { background: rgba(233, 193, 118, 0.18); color: #ffdea5; box-shadow: 0 0 24px rgba(233, 193, 118, 0.15); }
+.poi-button:focus-visible { outline: 2px solid var(--poi-gold); outline-offset: 2px; }
+.poi-button .material-symbols-outlined { font-size: 18px; }
+
+/* --- Shrine: the prayer --- */
+.poi-prayer { margin-bottom: 2rem; }
+.poi-prayer__ask { display: flex; flex-direction: column; align-items: center; gap: 0.75rem; text-align: center; }
+.poi-prayer__lede { margin: 0; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.05rem; color: var(--poi-ink-dim); }
+.poi-prayer__label { font-family: 'Manrope', sans-serif; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--poi-outline); }
+.poi-blessing {
+    position: relative;
+    padding: 1.5rem 1.25rem 1.25rem;
+    text-align: center;
+    border: 1px solid rgba(233, 193, 118, 0.3);
+    border-radius: 0.25rem;
+    background: radial-gradient(ellipse at top, rgba(255, 222, 165, 0.12), transparent 70%);
+}
+.poi-blessing__icon { font-size: 32px; color: var(--poi-gold); text-shadow: 0 0 18px rgba(233, 193, 118, 0.6); }
+.poi-blessing__eyebrow { margin: 0.25rem 0 0.6rem; font-family: 'Manrope', sans-serif; font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--poi-gold); }
+.poi-blessing__text { margin: 0; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.15rem; line-height: 1.5; color: var(--poi-ink); }
+.poi-blessing__effect { margin: 0.8rem 0 0; font-family: 'Manrope', sans-serif; font-size: 0.8rem; font-weight: 700; color: #ffdea5; }
+.poi-blessing__note { margin: 0.9rem 0 0; font-family: 'Newsreader', serif; font-size: 0.85rem; color: var(--poi-outline); }
+
+/* --- Rumours --- */
+.poi-rumours__list { display: flex; flex-direction: column; gap: 1rem; }
+.poi-rumour {
+    margin: 0;
+    padding: 0.9rem 1rem 0.9rem 1.2rem;
+    border-left: 2px solid rgba(233, 193, 118, 0.5);
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 0 0.25rem 0.25rem 0;
+}
+.poi-rumour p { margin: 0; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.08rem; line-height: 1.5; color: var(--poi-ink); }
+.poi-rumour p::before { content: '“'; color: var(--poi-gold); }
+.poi-rumour p::after { content: '”'; color: var(--poi-gold); }
+.poi-rumour footer { margin-top: 0.4rem; font-family: 'Manrope', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--poi-outline); }
+.poi-rumours__action { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 1.5rem; text-align: center; }
+.poi-rumours__left { margin: 0; font-family: 'Newsreader', serif; font-style: italic; font-size: 0.95rem; color: var(--poi-outline); }
+
+/* --- Board tab: the board fills the card's width --- */
+.poi-ledger .notice-board { margin: 0 -0.5rem; }
+@media (min-width: 640px) { .poi-ledger .notice-board { margin: 0 -1.25rem; } }
+
+/* --- Wares tab: the shopkeepers (poi.shop.keepers) --- */
+.poi-keepers {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem 0.9rem;
+    margin: -0.5rem 0 1.75rem;
+}
+.poi-keepers__label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--poi-outline);
+}
+.poi-keepers__list { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.poi-keeper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 40px;
+    padding: 0.25rem 0.85rem 0.25rem 0.25rem;
+    border: 1px solid rgba(233, 193, 118, 0.25);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--poi-gold);
+    font-family: 'Noto Serif', serif;
+    font-weight: 700;
+    transition: border-color .2s, background-color .2s;
+}
+.poi-keeper:hover { border-color: rgba(233, 193, 118, 0.6); background: rgba(233, 193, 118, 0.08); }
+.poi-keeper img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; filter: grayscale(0.4); }

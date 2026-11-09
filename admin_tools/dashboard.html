@@ -11,6 +11,7 @@
     <!-- the item and spell card previews use the site's own card styles -->
     <link href="../styles/tokens.css" rel="stylesheet" />
     <link href="../styles/loot-card.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles/notice-board.css">
     <link href="../styles/spell-card.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -724,6 +725,81 @@
             white-space: nowrap;
         }
 
+        /* list fields with an enum: checkboxes (tavern games, shop shelves) */
+        .enum-set {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 18px;
+            padding: 6px 0;
+        }
+
+        .enum-set__opt {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            text-transform: none;
+            letter-spacing: 0;
+            color: var(--ink);
+            cursor: pointer;
+        }
+
+        /* rumours and notices of a POI / settlement (scripts/market.js) */
+        .mkt-list {
+            list-style: none;
+            margin: 4px 0 0;
+            padding: 0;
+        }
+
+        .mkt-list li {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0 8px;
+            padding: 5px 6px;
+            border-radius: 6px;
+            font-size: 11.5px;
+            cursor: pointer;
+        }
+
+        .mkt-list li:hover {
+            background: #ffffff0a;
+        }
+
+        .mkt-list li.out {
+            color: var(--ink-faint);
+        }
+
+        .mkt-list small {
+            grid-column: 1 / -1;
+            color: var(--ink-faint);
+            font-size: 10px;
+        }
+
+        .truth {
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--ink-faint);
+            white-space: nowrap;
+        }
+
+        .truth--true { color: #4ade80; }
+        .truth--partly { color: #fbbf24; }
+        .truth--false { color: #f87171; }
+
+        .notice-prev .notice-board__grid {
+            grid-template-columns: 1fr;
+        }
+
+        /* the note's title is an h4: undo .box h4 */
+        .notice-prev .notice__title {
+            margin: 0 0 .6rem;
+            font-size: 1.1rem;
+            letter-spacing: 0;
+            text-transform: none;
+            color: #2e2316;
+        }
+
         /* item card preview (cards: ../styles/loot-card.css) */
         .card-prev .seg {
             display: inline-flex;
@@ -907,6 +983,8 @@
     <script src="../scripts/core/store.js"></script>
     <script src="../scripts/core/seal.js"></script>
     <script src="../scripts/tavern-menu.js"></script>
+    <script src="../scripts/market.js"></script>
+    <script src="../scripts/notice-board.js"></script>
     <script src="../scripts/loot-card.js"></script>
     <script src="../scripts/spell-card.js"></script>
     <script src="../scripts/upcoming-sessions.js"></script>

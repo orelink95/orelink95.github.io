@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             image,
             pill,
             icon: type === 'poi' ? (POI_ICONS[(rec.map || {}).icon] || 'location_on') : label.icon,
-            cta: type === 'poi' && rec.tavern && rec.tavern.tier ? 'Enter the tavern' : 'Open the entry',
+            cta: type === 'poi' ? Atlas.cta(store, rec) : 'Open the entry',
             // ids of the places above, for the menus
             above: Object.fromEntries(filterTypes.map(t => [t, (at(t) || {}).id || '']))
         };

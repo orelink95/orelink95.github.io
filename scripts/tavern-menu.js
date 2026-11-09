@@ -116,5 +116,6 @@
         return `Bill of Fare · Folio ${hash(`folio|${code}|${poiId}`) % 900 + 100}`;
     }
 
-    ATH.tavern = { buildMenu, buildServices, folioLabel, formatPrice, normaliseCode, tierOf };
+    // hash, mulberry32 and seededPick are shared with scripts/market.js (shops, temples, rumours)
+    ATH.tavern = { buildMenu, buildServices, folioLabel, formatPrice, normaliseCode, tierOf, hash, mulberry32, seededPick };
 })(typeof window !== 'undefined' ? window : globalThis);

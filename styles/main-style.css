@@ -201,6 +201,15 @@
     position: relative;
 }
 
+/* Pale gold: deities (scripts/core/store.js LINK_CLASS) */
+.kw-deity {
+    color: #f3dc9b;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 1px dotted rgba(243, 220, 155, 0.6);
+    position: relative;
+}
+
 /* Tooltip Styling */
 #keyword-tooltip {
     position: fixed;

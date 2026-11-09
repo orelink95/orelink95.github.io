@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Pantheon — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/deity-card.css" rel="stylesheet" />
+    <link href="styles/pages/deity.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/deity-card.js"></script>
+    <script src="scripts/deity-scripts.js"></script>
+</head>
+
+<body class="page mystical-bg">
+
+    <div id="dust-container" class="dust-layer"></div>
+    <div id="header-placeholder" class="header-slot"></div>
+    <div id="library-sidebar-placeholder"></div>
+
+    <main id="deity-main" class="deity-main">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="index.html" class="breadcrumbs__link">Athenaeum</a>
+            <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            <a href="library.html" class="breadcrumbs__link">Black Archive</a>
+            <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            <a href="pantheon.html" class="breadcrumbs__link">The Pantheon</a>
+            <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            <span id="deity-crumb" class="breadcrumbs__current" aria-current="page">…</span>
+        </nav>
+
+        <!-- Filled by scripts/deity-scripts.js: the card on one side, the entry on the other -->
+        <div id="deity-layout" class="deity-layout"></div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadComponent("header-placeholder", "components/library-header.html");
+            loadComponent("footer-placeholder", "components/library-footer.html");
+            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
+        });
+    </script>
+</body>
+
+</html>

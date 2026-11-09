@@ -128,14 +128,14 @@ const MOBILE_NAV = [
     },
     {
         name: 'Archive', url: 'library.html', icon: 'account_balance', tone: 'violet',
-        pages: ['library.html', 'bestiary.html', 'beast.html', 'handouts.html', 'tomes.html', 'vault.html', 'spellbook.html', 'pantheon.html'],
+        pages: ['library.html', 'bestiary.html', 'beast.html', 'handouts.html', 'tomes.html', 'vault.html', 'spellbook.html', 'pantheon.html', 'deity.html'],
         sub: [
             { name: 'Elder Tarot', url: 'bestiary.html', icon: 'temp_preferences_custom', alias: ['beast.html'] },
             { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' },
             { name: 'Reference', url: 'tomes.html', icon: 'menu_book' },
             { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
             { name: 'Book of Shadows', url: 'spellbook.html', icon: 'auto_fix_high' },
-            { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7' },
+            { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] },
             { name: 'Exit Archive', url: 'index.html', icon: 'door_front', exit: true }
         ]
     },
@@ -281,6 +281,8 @@ function highlightLibrarySidebar() {
         // If on the specific beast page, highlight the bestiary
         currentFileName = "bestiary.html";
     }
+    // A god's page sits under the Pantheon
+    if (currentFileName === "deity.html") currentFileName = "pantheon.html";
 
     const links = document.querySelectorAll('#lib-sidebar-nav a');
 

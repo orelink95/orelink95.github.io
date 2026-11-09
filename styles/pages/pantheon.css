@@ -1,5 +1,5 @@
-/* The Pantheon (pantheon.html). Each card and the dialog take the deity's
-   colour from --deity (its `colour` in data/deities.json, gold by default). */
+/* The Pantheon (pantheon.html): one section per tier, each with its own
+   card size. The cards themselves: styles/deity-card.css. */
 
 .page {
     position: relative;
@@ -20,11 +20,20 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 6rem 1rem 4rem;
+    overflow-x: clip;   /* the cards' rays and glow never widen the page */
 }
 @media (min-width: 768px) { .pantheon-main { padding-left: 2rem; padding-right: 2rem; } }
 
 /* --- Head --- */
-.pantheon-head { max-width: 44rem; margin-bottom: 3rem; }
+.pantheon-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-bottom: 3.5rem;
+}
+.pantheon-head__text { max-width: 44rem; }
 .breadcrumbs {
     display: flex; align-items: center; gap: 0.5rem;
     margin-bottom: 1rem;
@@ -47,107 +56,84 @@
 .pantheon-head__lede { margin: 0; font-size: 1.15rem; font-style: italic; color: var(--color-on-surface-variant); }
 .pantheon-empty { font-style: italic; color: var(--color-outline); }
 
-/* --- Cards --- */
-.pantheon-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 1.25rem;
+/* Campaign drop-down (same look as Dramatis Personae's) */
+.pantheon-picker {
+    min-height: 44px;
+    min-width: 240px;
+    padding: 0 2.25rem 0 1rem;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    border-radius: 0.375rem;
+    background-color: rgb(0 0 0 / 0.4);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e9c176' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    font-family: var(--font-label);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgb(255 255 255 / 0.8);
+    cursor: pointer;
+    appearance: none;
+    transition: border-color 150ms var(--ease);
 }
-@media (max-width: 479px) { .pantheon-grid { grid-template-columns: 1fr; } }
+.pantheon-picker:hover, .pantheon-picker:focus { border-color: var(--color-secondary); }
+@media (max-width: 767.98px) {
+    /* 16px: below that, iPhones zoom the page on focus */
+    .pantheon-picker { width: 100%; font-size: 1rem; text-transform: none; letter-spacing: normal; }
+}
 
-.deity-card {
-    --deity: #e9c176;
-    position: relative;
+/* --- Tiers --- */
+.pantheon-tiers { display: flex; flex-direction: column; gap: 4.5rem; }
+.pantheon-tier {
+    /* each tier sets these */
+    --tier-ink: #e9c176;
+    --tier-line: #e9c176;
+    --card-w: 196px;
+    --gap: 20px;
+    --row-max: 1080px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.4rem;
-    padding: 1.75rem 1.25rem 1.5rem;
+    gap: 2rem;
+}
+.pantheon-tier__head { display: flex; align-items: center; gap: 1.25rem; width: 100%; }
+.pantheon-tier__rule { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--tier-line)); }
+.pantheon-tier__rule:last-child { background: linear-gradient(to left, transparent, var(--tier-line)); }
+.pantheon-tier__title {
+    margin: 0;
+    font-family: var(--font-headline);
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--tier-ink);
     text-align: center;
-    border: 1px solid color-mix(in srgb, var(--deity) 30%, transparent);
-    border-radius: 0.5rem;
-    background:
-        radial-gradient(ellipse at top, color-mix(in srgb, var(--deity) 16%, transparent), transparent 65%),
-        var(--color-surface-container-low);
-    color: var(--color-on-surface);
-    cursor: pointer;
-    transition: transform 200ms var(--ease), border-color 200ms var(--ease), box-shadow 200ms var(--ease);
 }
-.deity-card:hover, .deity-card:focus-visible {
-    transform: translateY(-3px);
-    border-color: color-mix(in srgb, var(--deity) 65%, transparent);
-    box-shadow: 0 12px 40px color-mix(in srgb, var(--deity) 18%, transparent);
-    outline: none;
+.pantheon-tier__cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: calc(var(--gap) + 12px) var(--gap);
+    width: 100%;
+    max-width: var(--row-max);
+    margin: 0;
+    padding: 1.5rem 0 0;   /* room for the medallion's rays */
+    list-style: none;
 }
-.deity-card__sigil {
-    display: grid; place-items: center;
-    width: 72px; height: 72px;
-    margin-bottom: 0.4rem;
-    border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--deity) 50%, transparent);
-    background: color-mix(in srgb, var(--deity) 10%, transparent);
-    color: var(--deity);
-    overflow: hidden;
-}
-.deity-card__sigil img { width: 100%; height: 100%; object-fit: cover; }
-.deity-card__sigil .material-symbols-outlined { font-size: 36px; text-shadow: 0 0 16px color-mix(in srgb, var(--deity) 60%, transparent); }
-.deity-card__name { font-family: var(--font-headline); font-size: 1.35rem; font-weight: 700; color: #fff; }
-.deity-card__epithet { font-style: italic; color: var(--deity); }
-.deity-card__domains { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.3rem; margin-top: 0.3rem; }
-.deity-card__domains span {
-    padding: 0.15rem 0.5rem;
-    border: 1px solid color-mix(in srgb, var(--deity) 35%, transparent);
-    border-radius: 999px;
-    font-family: var(--font-label); font-size: 9px; font-weight: 700;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--color-on-surface-variant);
-}
-.deity-card__summary { margin-top: 0.4rem; font-size: 0.98rem; line-height: 1.45; color: var(--color-on-surface-variant); }
+.pantheon-tier__cards > li { width: var(--card-w); }
 
-/* --- Dialog --- */
-.deity-dialog {
-    width: min(760px, calc(100vw - 2rem));
-    max-height: calc(100vh - 4rem);
-    padding: 0;
-    border: 1px solid rgba(233, 193, 118, 0.25);
-    border-radius: 0.5rem;
-    background: var(--color-surface-container-low);
-    color: var(--color-on-surface);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+.pantheon-tier--creator { --tier-ink: #f4ead2; --tier-line: #f4ead2; --card-w: 280px; --gap: 40px; --row-max: 1000px; }
+.pantheon-tier--creator .pantheon-tier__title { font-size: 2.25rem; }
+.pantheon-tier--great { --tier-ink: #e9c176; --tier-line: #e9c176; --card-w: 196px; --gap: 20px; --row-max: 1080px; }
+.pantheon-tier--minor { --tier-ink: #d9a676; --tier-line: #c8915c; --card-w: 154px; --gap: 12px; --row-max: 1160px; }
+.pantheon-tier--minor .pantheon-tier__title { font-size: 1.6rem; }
+.pantheon-tier--primordial { --tier-ink: #b9cf8e; --tier-line: #94b35a; --card-w: 174px; --gap: 16px; --row-max: 1160px; }
+.pantheon-tier--elder { --tier-ink: #e07aa6; --tier-line: #8e3cc9; --card-w: 154px; --gap: 12px; --row-max: 830px; }
+
+/* Phones: two cards a row, whatever the tier */
+@media (max-width: 639.98px) {
+    .pantheon-tiers { gap: 3rem; }
+    .pantheon-tier { gap: 1.25rem; }
+    .pantheon-tier__title { font-size: 1.5rem; }
+    .pantheon-tier--creator .pantheon-tier__title { font-size: 1.75rem; }
+    .pantheon-tier__cards { gap: 22px 12px; }
+    .pantheon-tier__cards > li { width: calc((100% - 12px) / 2); max-width: 200px; }
 }
-.deity-dialog::backdrop { background: rgba(5, 6, 5, 0.75); backdrop-filter: blur(4px); }
-/* Phones: a full-height sheet */
-@media (max-width: 639px) {
-    .deity-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; margin: 0; border-radius: 0; border: 0; }
-}
-.deity-dialog__close {
-    position: sticky; top: 0.5rem; float: right;
-    display: grid; place-items: center;
-    width: 44px; height: 44px; margin: 0.5rem 0.5rem 0 0;
-    border: 0; border-radius: 50%;
-    background: rgba(0, 0, 0, 0.35);
-    color: var(--color-on-surface);
-    cursor: pointer; z-index: 1;
-}
-.deity-dialog__close:hover { color: var(--color-secondary); }
-.deity-dialog__content { --deity: #e9c176; padding: 1.75rem 1.25rem 2rem; }
-@media (min-width: 640px) { .deity-dialog__content { padding: 2.5rem 2.5rem 2.5rem; } }
-.deity-dialog__head { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.5rem; }
-.deity-dialog__sigil { flex: 0 0 auto; margin: 0; }
-.deity-dialog__name { margin: 0; font-family: var(--font-headline); font-size: 2rem; font-weight: 700; color: #fff; }
-.deity-dialog__epithet { margin: 0.2rem 0 0; font-style: italic; font-size: 1.1rem; color: var(--deity); }
-.deity-dialog__facts {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem 1.5rem;
-    margin: 0 0 1.5rem; padding: 1rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.06); border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-.deity-dialog__facts:empty { display: none; }
-.deity-dialog__facts dt { font-family: var(--font-label); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-outline); margin-bottom: 0.2rem; }
-.deity-dialog__facts dd { margin: 0; font-family: var(--font-headline); }
-.deity-dialog__body { font-size: 1.05rem; line-height: 1.65; color: var(--color-on-surface-variant); }
-.deity-dialog__body p + p { margin-top: 0.9rem; }
-.deity-dialog__temples { clear: both; margin-top: 1.75rem; }
-.deity-dialog__temples h3 { margin: 0 0 0.6rem; font-family: var(--font-label); font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-outline); }
-.deity-dialog__temples ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
-.deity-dialog__temples a { color: var(--deity); font-family: var(--font-headline); text-decoration: underline; text-underline-offset: 3px; }
-.deity-dialog__temples small { color: var(--color-outline); margin-left: 0.4rem; }

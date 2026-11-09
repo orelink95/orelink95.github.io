@@ -2,6 +2,9 @@
   {
     "id": "arawan",
     "name": "Arawan",
-    "epithet": "The Everlasting"
+    "tier": "great",
+    "epithet": "The Everlasting",
+    "portrait": "images/Arawan.png",
+    "symbol": "images/Eraldom Gods Symbols/Arawan Symbol.png"
   }
 ]

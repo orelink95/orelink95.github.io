@@ -112,6 +112,14 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'postponed', label: 'Postponed (amber, date struck through)' },
                 { id: 'cancelled', label: 'Cancelled (red, dimmed)' },
             ],
+            /* The Pantheon's sections, in page order (scripts/deity-card.js draws one frame per tier) */
+            deityTier: [
+                { id: 'creator', label: 'The Creators' },
+                { id: 'great', label: 'The Great Pantheon' },
+                { id: 'minor', label: 'Minor Gods' },
+                { id: 'primordial', label: 'Primordials' },
+                { id: 'elder', label: 'Elder Gods' },
+            ],
             itemRarity: ['Common', 'Uncommon', 'Rare', 'Very rare', 'Legendary', 'Artifact', 'Varies', 'Unknown'],
             sentiment: [
                 { id: 'like', label: 'Positive' },
@@ -732,22 +740,31 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             },
 
             /*-------------------------------------======= FAITH =======-------------------------------------*/
+            /* The Pantheon (pantheon.html) groups the gods by `tier`; each opens its own page
+               (deity.html). Elder gods stay sealed (no name, no page, no keyword link) until
+               a campaign lists them in `revealedIn`. Card frames: scripts/deity-card.js. */
             deity: {
                 label: 'Deity', plural: 'Pantheon', icon: 'brightness_7', group: 'Faith',
                 file: 'data/deities.json',
-                page: 'pantheon.html?id={id}',
-                autolink: true,
+                page: 'deity.html?id={id}',
+                autolink: true,   // sealed Elder gods excepted (store.revealed)
                 fields: {
+                    tier: { kind: 'enum', enum: 'deityTier', label: 'Tier (the section of the Pantheon and the frame of the card)' },
                     epithet: { kind: 'text', label: 'Epithet (The Lady of Ashes…)' },
-                    summary: { kind: 'text', label: 'One-line summary (card and keyword tooltips)', long: true },
-                    domains: { kind: 'list', label: 'Domains / portfolio' },
+                    summary: { kind: 'text', label: 'One-line summary (keyword tooltips)', long: true },
+                    domains: { kind: 'list', label: 'Domains / portfolio (the card shows the first three)' },
                     alignment: { kind: 'text', label: 'Alignment' },
-                    symbol: { kind: 'image', label: 'Holy symbol (image)' },
+                    portrait: { kind: 'image', label: 'Portrait (full body, upright 2:3)' },
+                    portraitFocus: { kind: 'text', label: 'Portrait framing on the card (CSS position, e.g. 50% 20%; empty = 50% 30%)' },
+                    symbol: { kind: 'image', label: 'Holy symbol (image with a transparent background, shown in the medallion)' },
                     symbolText: { kind: 'text', label: 'Holy symbol (description)' },
-                    icon: { kind: 'text', label: 'Icon when there is no image (Material Symbols name)' },
-                    colour: { kind: 'text', label: 'Colour of the card (CSS colour, e.g. #e9c176)' },
+                    icon: { kind: 'text', label: 'Icon when there is no symbol image (Material Symbols name)' },
+                    colour: { kind: 'text', label: 'Colour of the god: gems and glow of the card (CSS colour, e.g. #e9c176)' },
                     worshippers: { kind: 'text', label: 'Typical worshippers', long: true },
                     body: { kind: 'markdown', label: 'Lore' },
+                    artifact: { kind: 'ref', to: ['item'], label: 'Artifact (an item: a legend on this page; in the Vault only once a party finds it)' },
+                    artifactLegend: { kind: 'markdown', label: 'The artifact as the stories tell it' },
+                    revealedIn: { kind: 'refs', to: ['campaign'], label: 'Elder gods only: campaigns where the party has learned of it (none = sealed everywhere)' },
                 },
             },
             templeService: {

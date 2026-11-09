@@ -13,6 +13,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/deity-card.css" rel="stylesheet" />
     <link href="styles/pages/pantheon.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
@@ -20,6 +21,8 @@
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/personae.js"></script>
+    <script src="scripts/deity-card.js"></script>
     <script src="scripts/pantheon-scripts.js"></script>
 </head>
 
@@ -31,27 +34,24 @@
 
     <main class="pantheon-main">
         <div class="pantheon-head">
-            <nav class="breadcrumbs" aria-label="Breadcrumb">
-                <a href="index.html" class="breadcrumbs__link">Athenaeum</a>
-                <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                <a href="library.html" class="breadcrumbs__link">Black Archive</a>
-                <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
-                <span class="breadcrumbs__current" aria-current="page">The Pantheon</span>
-            </nav>
-            <h1 class="pantheon-head__title">The Pantheon</h1>
-            <p class="pantheon-head__lede">The gods who are prayed to, feared and bargained with, and the temples raised in their names.</p>
+            <div class="pantheon-head__text">
+                <nav class="breadcrumbs" aria-label="Breadcrumb">
+                    <a href="index.html" class="breadcrumbs__link">Athenaeum</a>
+                    <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                    <a href="library.html" class="breadcrumbs__link">Black Archive</a>
+                    <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                    <span class="breadcrumbs__current" aria-current="page">The Pantheon</span>
+                </nav>
+                <h1 class="pantheon-head__title">The Pantheon</h1>
+                <p class="pantheon-head__lede">The gods who are prayed to, feared and bargained with, and the temples raised in their names.</p>
+            </div>
+            <!-- Which campaign: decides which Elder gods are revealed (shared with Dramatis Personae) -->
+            <select id="pantheon-campaign" class="pantheon-picker hidden" aria-label="Campaign"></select>
         </div>
 
-        <div id="pantheon-grid" class="pantheon-grid"></div>
+        <!-- One section per tier (data/schema.js, enum deityTier), filled by scripts/pantheon-scripts.js -->
+        <div id="pantheon-tiers" class="pantheon-tiers"></div>
     </main>
-
-    <!-- One deity, opened from a card or with ?id=<deity id> -->
-    <dialog id="deity-dialog" class="deity-dialog" aria-labelledby="deity-name">
-        <button type="button" id="deity-close" class="deity-dialog__close" aria-label="Close">
-            <span class="material-symbols-outlined" aria-hidden="true">close</span>
-        </button>
-        <div id="deity-content" class="deity-dialog__content"></div>
-    </dialog>
 
     <div id="footer-placeholder"></div>
 

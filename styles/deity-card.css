@@ -1,0 +1,245 @@
+/* =====================================================================
+   DEITY CARDS  —  markup: scripts/deity-card.js
+   Shared by the Pantheon, a god's page (deity.html) and the dashboard.
+   A card is as wide as its box (height follows, 280 × 540); every size
+   inside is a percentage of the card or a cqw (1% of its width), so the
+   same card works at 150px in a grid and at 400px on the god's page.
+   --deity: the god's colour (gems, glow), set on the card from its data.
+   Layer positions below are the frame's grid divided by 280 (x) / 540 (y).
+   ===================================================================== */
+
+.deity-card-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.deity-card {
+    --deity: #e9c176;
+    --deity-glow: color-mix(in srgb, var(--deity) 40%, transparent);
+    /* per tier, below */
+    --plaque-bg: rgba(20, 16, 9, 0.92);
+    --disc-bg: #1d1910;
+    --name: #ffdea5;
+    --epithet: #e9c176;
+    --domains: #cdbb94;
+    --disc-left: 39.286%;
+    --disc-top: 6.296%;
+    --disc-size: 21.429%;
+
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 280 / 540;
+    container-type: inline-size;
+    color: #e2e3df;
+    font-family: var(--font-body), serif;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 220ms var(--ease), filter 220ms var(--ease);
+}
+a.deity-card:hover,
+a.deity-card:focus-visible {
+    transform: translateY(-4px);
+    filter: brightness(1.07) drop-shadow(0 0 4cqw var(--deity-glow));
+}
+a.deity-card:focus-visible { outline: 2px solid var(--deity); outline-offset: 4px; border-radius: 4cqw; }
+@media (prefers-reduced-motion: reduce) {
+    .deity-card { transition: none; }
+    a.deity-card:hover, a.deity-card:focus-visible { transform: none; }
+}
+
+/* The SVG layers: behind, frame, chains (sealed), flourishes */
+.deity-card__layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+}
+.deity-card__frame {
+    filter: drop-shadow(0 0 5cqw var(--deity-glow)) drop-shadow(0 5cqw 6cqw rgba(0, 0, 0, 0.6));
+}
+
+/* Portrait window: x 34–246, y 78–396, arched top (radius 106 × 66) */
+.deity-card__window {
+    position: absolute;
+    left: 12.143%;
+    top: 14.444%;
+    width: 75.714%;
+    height: 58.889%;
+    overflow: hidden;
+    border-radius: 50% 50% 0 0 / 20.755% 20.755% 0 0;
+    background: #0b0a0c;
+}
+.deity-card__window::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 10cqw rgba(0, 0, 0, 0.75);
+    pointer-events: none;
+}
+.deity-card__portrait {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
+}
+.deity-card__silhouette {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    fill: var(--deity);
+    opacity: 0.18;
+}
+
+/* Name plaque: x 34–246, y 410–492 */
+.deity-card__plaque-ground,
+.deity-card__plaque {
+    position: absolute;
+    left: 12.143%;
+    top: 75.926%;
+    width: 75.714%;
+    height: 15.185%;
+}
+.deity-card__plaque-ground { border-radius: 1cqw; background: var(--plaque-bg); }
+.deity-card__plaque {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7cqw;
+    padding: 0 3.5cqw;
+    text-align: center;
+    overflow: hidden;
+}
+.deity-card__name {
+    font-family: var(--font-headline), serif;
+    font-size: 6.8cqw;
+    font-weight: 700;
+    line-height: 1.12;
+    color: var(--name);
+    text-wrap: balance;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.deity-card__epithet {
+    font-size: 5cqw;
+    font-style: italic;
+    line-height: 1.2;
+    color: var(--epithet);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+.deity-card__domains {
+    margin-top: 0.4cqw;
+    font-family: var(--font-label), sans-serif;
+    font-size: 3.05cqw;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--domains);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+/* Medallion: the holy symbol, centred on (140, 64) */
+.deity-card__medallion {
+    position: absolute;
+    left: var(--disc-left);
+    top: var(--disc-top);
+    width: var(--disc-size);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, var(--deity-glow) 0%, var(--disc-bg) 72%);
+    box-shadow: inset 0 0 3.5cqw rgba(0, 0, 0, 0.8);
+}
+.deity-card__symbol { width: 74%; height: 74%; object-fit: contain; }
+.deity-card__icon {
+    font-size: 9cqw;
+    color: var(--deity);
+    text-shadow: 0 0 3cqw var(--deity-glow);
+}
+
+/* ---------------- tiers ---------------- */
+.deity-card--creator {
+    --deity: #bfe3ff;
+    --plaque-bg: rgba(18, 16, 24, 0.9);
+    --disc-bg: #1d1c25;
+    --name: #fffaf0;
+    --epithet: #efe2c4;
+    --domains: #d3ccba;
+}
+.deity-card--great { /* the defaults above */ }
+.deity-card--minor {
+    --deity: #c8915c;
+    --deity-glow: color-mix(in srgb, var(--deity) 30%, transparent);
+    --plaque-bg: rgba(22, 16, 11, 0.92);
+    --disc-bg: #1b1510;
+    --name: #f1d3b3;
+    --epithet: #d9a676;
+    --domains: #c4ac94;
+    --disc-left: 41.786%;
+    --disc-top: 7.593%;
+    --disc-size: 16.429%;
+}
+.deity-card--primordial {
+    --deity: #e0a03a;
+    --deity-glow: color-mix(in srgb, var(--deity) 30%, transparent);
+    --plaque-bg: rgba(24, 18, 11, 0.92);
+    --disc-bg: #161b12;
+    --name: #eadcc0;
+    --epithet: #b9cf8e;
+    --domains: #c7b89c;
+    --disc-left: 40.714%;
+    --disc-top: 7.037%;
+    --disc-size: 18.571%;
+}
+.deity-card--elder,
+.deity-card--sealed {
+    --plaque-bg: rgba(14, 7, 16, 0.93);
+    --disc-bg: #150a18;
+    --disc-left: 40.357%;
+    --disc-top: 6.852%;
+    --disc-size: 19.286%;
+}
+.deity-card--elder {
+    --deity: #b0245c;
+    --name: #f3d9e6;
+    --epithet: #e07aa6;
+    --domains: #c9a9c0;
+}
+
+/* Sealed: no name, no symbol, a dim violet glow */
+.deity-card--sealed {
+    --deity: #8e3cc9;
+    --deity-glow: rgba(142, 60, 201, 0.25);
+    --plaque-bg: rgba(10, 6, 12, 0.94);
+    --disc-bg: #0d0a12;
+    color: #b79bc8;
+}
+.deity-card__mist {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 70% 40% at 50% 50%, rgba(142, 60, 201, 0.3) 0%, rgba(142, 60, 201, 0) 70%),
+        radial-gradient(ellipse at 50% 55%, #2a1438 0%, #12081a 45%, #050307 100%);
+}
+.deity-card__runes { width: 40%; color: #9a6ab8; }
+.deity-card__sealed-label {
+    font-family: var(--font-label), sans-serif;
+    font-size: 3.6cqw;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #b79bc8;
+}
+.deity-card__cracked { width: 50%; color: #4a2a5a; }

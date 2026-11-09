@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (tavern || shop) fact('tier', esc(M.tierFor(store, poi, shop).label));
     const hours = (tavern && tavern.hours) || (shop && shop.hours) || (temple && temple.hours);
     if (hours) fact('hours', esc(hours));
-    const deities = temple ? M.deitiesOf(store, poi) : [];
+    // Sealed Elder gods (not revealed in the reader's campaign) are not named here
+    const deities = temple ? M.deitiesOf(store, poi).filter(d => store.revealed(d)) : [];
     if (deities.length) fact('deities', deities.map(d => `<a class="poi-link" href="${store.url(d)}">${esc(d.name)}</a>`).join(', '));
 
     /* ---------- Lore & people ---------- */

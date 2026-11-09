@@ -13,6 +13,7 @@
     <link href="../styles/loot-card.css" rel="stylesheet" />
     <link rel="stylesheet" href="../styles/notice-board.css">
     <link href="../styles/spell-card.css" rel="stylesheet" />
+    <link href="../styles/deity-card.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -851,6 +852,47 @@
             transform: none;
         }
 
+        /* deity card preview (cards: ../styles/deity-card.css) */
+        .card-prev__stage--deity {
+            padding-top: 26px;
+        }
+
+        .card-prev .deity-card {
+            width: 210px;
+        }
+
+        .deity-prev__tier {
+            text-align: center;
+            font-size: 12px;
+            color: var(--ink-faint);
+        }
+
+        .seal-status ul {
+            list-style: none;
+            margin: 0 0 8px;
+            padding: 0;
+            display: grid;
+            gap: 4px;
+        }
+
+        .seal-status li span {
+            display: inline-block;
+            min-width: 92px;
+            color: var(--ink-faint);
+        }
+
+        .seal-status li.is-open span {
+            color: var(--gold);
+        }
+
+        .seal-status .hint,
+        .box .hint {
+            margin: 8px 0 0;
+            font-size: 12px;
+            line-height: 1.45;
+            color: var(--ink-faint);
+        }
+
         :where(.card-prev) :where(h2, p, ul) {
             margin: 0;
         }
@@ -987,6 +1029,7 @@
     <script src="../scripts/notice-board.js"></script>
     <script src="../scripts/loot-card.js"></script>
     <script src="../scripts/spell-card.js"></script>
+    <script src="../scripts/deity-card.js"></script>
     <script src="../scripts/upcoming-sessions.js"></script>
 </head>
 

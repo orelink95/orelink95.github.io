@@ -24,6 +24,11 @@
        store.standing(npc, 'last-sigil')      -> its relation (NPC) / status
                                                  (faction) in that campaign
        store.campaignEntries(npc)             -> [{campaign, value}] it is listed in
+       store.viewCampaign()                   -> the campaign the reader is looking at
+                                                 (?campaign=…, else the one picked in
+                                                 this tab, else settings.currentCampaign)
+       store.revealed(deity, campaignId)      -> false for an Elder god still sealed
+                                                 there (campaignId: default viewCampaign())
        store.validate()                       -> {errors, warnings}
        store.world / store.settings           -> data/world.json, data/settings.json
    Node tools build a store from files with Athenaeum.createStore().
@@ -114,6 +119,29 @@
                 (isAll(cid) ? (list.find(e => e.campaign === current) || list[0]) : null);
             const own = typeOfRec.get(rec) === 'npc' ? rec.relation : rec.status;
             return (entry && entry.value) || own || 'Unknown';
+        }
+
+        /* ---------- the reader's campaign, sealed gods ----------
+           viewCampaign: ?campaign=… in the address, else the choice kept for this
+           browser tab by the campaign drop-downs (scripts/personae.js, same key),
+           else settings.currentCampaign. In Node (tools), the current campaign. */
+        const PICKED_KEY = 'athenaeum.personae.campaign';
+        function viewCampaign() {
+            const ids = (byType.campaign || []).map(c => c.id);
+            const ok = v => !!v && (v === 'all' || ids.includes(v));
+            let asked = null, kept = null;
+            try { asked = new URLSearchParams(root.location.search).get('campaign'); } catch (e) { /* no address */ }
+            try { kept = root.sessionStorage.getItem(PICKED_KEY); } catch (e) { /* no storage */ }
+            return [asked, kept, (singletons.settings || {}).currentCampaign].find(ok) || 'all';
+        }
+        /* Gods of every tier are known to all, but an Elder god is sealed until a
+           campaign lists it in `revealedIn`. 'all' = revealed in at least one. */
+        function revealed(x, cid) {
+            const rec = resolve(x);
+            if (!rec || typeOfRec.get(rec) !== 'deity' || rec.tier !== 'elder') return true;
+            const list = rec.revealedIn || [];
+            const c = cid === undefined ? viewCampaign() : cid;
+            return isAll(c) ? list.length > 0 : list.includes(c);
         }
 
         /* ---------- hierarchy ---------- */
@@ -223,8 +251,9 @@
                 if (!def.autolink) continue;
                 const typeCls = LINK_CLASS[type] || (def.place ? 'kw-place' : 'kw-lore');
                 for (const rec of byType[type]) {
-                    // An item nobody has found has no card to show yet
-                    if (type === 'item' && !(backIndex.get(rec.id) || []).length) continue;
+                    // An item nobody has found has no card to show yet (a god's
+                    // artifact is only a legend until a session or a party lists it)
+                    if (type === 'item' && !(backIndex.get(rec.id) || []).some(h => h.type !== 'deity')) continue;
                     // Glossary terms are coloured by their kind
                     const cls = type === 'lore' ? `kw-${rec.kind || 'lore'}` : typeCls;
                     for (const term of [rec.name, ...(rec.aliases || [])]) {
@@ -250,6 +279,8 @@
             linkIndex = linkIndex || buildLinkIndex();
             if (!linkIndex.re) return html;
             const exclude = new Set([].concat(options.exclude || []));
+            // A sealed Elder god stays plain text (options.campaign: default viewCampaign())
+            const cid = options.campaign === undefined ? viewCampaign() : options.campaign;
             let inAnchor = 0;
             return html.split(/(<[^>]+>)/g).map(part => {
                 if (part.startsWith('<')) {
@@ -261,6 +292,7 @@
                 return part.replace(linkIndex.re, match => {
                     const t = linkIndex.terms.get(termKey(match));
                     if (!t || exclude.has(t.id)) return match;
+                    if (!revealed(t.rec, cid)) return match;
                     if (!t.href && !options.terms) return match;
                     const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
                     const attrs = typeof options.attrs === 'function' ? options.attrs(t.rec, match) : options.attrs;
@@ -464,6 +496,16 @@
                     if (tiers.indexOf(item.minTier) > tiers.indexOf(item.maxTier)) errors.push(`[${type}] ${item.id}: minTier is above maxTier`);
                 }
             }
+            const artifactOf = new Map();
+            for (const d of byType.deity || []) {
+                if (!d.tier) warnings.push(`[deity] ${d.id}.tier: not set (shown with the Great Pantheon)`);
+                if ((d.revealedIn || []).length && d.tier !== 'elder') warnings.push(`[deity] ${d.id}.revealedIn: only Elder gods are sealed, so this list is ignored`);
+                if (d.artifactLegend && !d.artifact) warnings.push(`[deity] ${d.id}.artifactLegend: written, but no artifact is chosen, so it is not shown`);
+                if (d.artifact) {
+                    if (artifactOf.has(d.artifact)) warnings.push(`[deity] ${d.id}.artifact: "${d.artifact}" is already the artifact of ${artifactOf.get(d.artifact)}`);
+                    else artifactOf.set(d.artifact, d.id);
+                }
+            }
             for (const r of byType.rumour || []) {
                 const w = resolve(r.where);
                 if (!w) continue;
@@ -482,6 +524,7 @@
             plain: t => (ATH.mdPlain ? ATH.mdPlain(t) : t),
             autolink, validate,
             campaignEntries, inCampaign, standing,
+            viewCampaign, revealed,
         };
     }
 

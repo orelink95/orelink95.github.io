@@ -692,9 +692,11 @@
             if (S.view.key === 'notice' && ATH.noticeBoard) parts.unshift(noticePreview(rec));
             if (S.view.key === 'item' && ATH.lootCard) parts.unshift(cardPreview(rec), foundIn(rec));
             if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
+            if (S.view.key === 'deity' && ATH.deityCard) parts.unshift(deityPreview(rec), sealStatus(rec));
+            if (S.view.key === 'item' && ATH.deityCard) parts.unshift(artifactOf(rec));
         }
         side.innerHTML = parts.join('') || `<div class="box"><h4>Links</h4><span style="color:var(--ink-faint)">Nothing points here yet.</span></div>`;
-        if (S.view.key === 'item') loadThumbs();
+        if (S.view.key === 'item' || S.view.key === 'deity') loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
     }
 
@@ -787,6 +789,47 @@
             <div class="row" style="justify-content:space-between;align-items:center"><h4 style="margin:0">Card preview</h4>
                 <span class="seg"><button data-action="card-side" data-side="front" class="${sheet ? '' : 'on'}">Front</button><button data-action="card-side" data-side="sheet" class="${sheet ? 'on' : ''}">Opened</button></span></div>
             <div class="card-prev__stage">${card}</div></div>`;
+    }
+
+    /* ---------- deity cards: preview, seal, artifact ---------- */
+    // The god's card as the Pantheon shows it (an Elder god also as its sealed slot)
+    function deityPreview(rec) {
+        const d = S.store.get(rec.id) || rec;
+        const elder = ATH.deityCard.tierOf(d) === 'elder';
+        const sealedSide = elder && S.cardSide === 'sealed';
+        const card = sealedSide
+            ? ATH.deityCard.sealed()
+            : ATH.deityCard.card(d, { tag: 'div', picture: src => `data-thumb="${esc(src)}"` });
+        const btn = (key, label) => `<button data-action="card-side" data-side="${key}" class="${(key === 'sealed') === sealedSide ? 'on' : ''}">${label}</button>`;
+        const tier = (S.store.enumOptions('deityTier').find(t => t.id === ATH.deityCard.tierOf(d)) || {}).label || '';
+        return `<div class="box card-prev">
+            <div class="row" style="justify-content:space-between;align-items:center"><h4 style="margin:0">Card preview</h4>
+                ${elder ? `<span class="seg">${btn('front', 'Revealed')}${btn('sealed', 'Sealed')}</span>` : ''}</div>
+            <div class="card-prev__stage card-prev__stage--deity">${card}</div>
+            <p class="deity-prev__tier">${esc(tier)}${d.tier ? '' : ' (no tier set)'}</p></div>`;
+    }
+    // Elder gods: where the party knows of it (revealedIn), campaign by campaign
+    function sealStatus(rec) {
+        const d = S.store.get(rec.id) || rec;
+        if (ATH.deityCard.tierOf(d) !== 'elder') return '';
+        const camps = S.store.all('campaign');
+        if (!camps.length) return '';
+        const lines = camps.map(c => {
+            const open = S.store.revealed(d, c.id);
+            return `<li class="${open ? 'is-open' : ''}"><span>${open ? '✓ Revealed' : 'Sealed'}</span> ${esc(c.name)}</li>`;
+        }).join('');
+        return `<div class="box seal-status"><h4>Seal</h4><ul>${lines}</ul>
+            <p class="hint">Sealed: a nameless slot in the Pantheon, no page, no keyword link, hidden from its temples. Tick the campaigns in “Elder gods only: campaigns where…” to reveal it.</p></div>`;
+    }
+    // An item that is a god's artifact: a legend on the god's page until a party finds it
+    function artifactOf(rec) {
+        const gods = S.store.backrefs(rec.id, 'deity', 'artifact');
+        if (!gods.length) return '';
+        const found = S.store.backrefs(rec.id).some(r => S.store.typeOf(r) !== 'deity');
+        return `<div class="box"><h4>Legendary artifact</h4>${chips(gods)}
+            <p class="hint">${found
+                ? 'Found by a party: its card is in the Vault (and the god’s page still tells the legend).'
+                : 'Not found yet: only the god’s page shows it, as a legend. Add it to a session’s loot when the party finds it.'}</p></div>`;
     }
 
     /* ---------- spell cards: preview and who knows them ---------- */

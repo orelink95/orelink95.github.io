@@ -220,6 +220,15 @@
         .li.active { background: #e9c17614; border-color: #e9c1763d; }
         .li .t { font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .li.active .t { color: var(--gold); }
+        /* drag to reorder (types with no fixed order): a gold line where it will land */
+        .li[draggable="true"] { position: relative; }
+        .li.dragging { opacity: .4; }
+        .li.drop-before::before, .li.drop-after::after {
+            content: ''; position: absolute; left: 4px; right: 4px; height: 2px; border-radius: 2px;
+            background: var(--gold); box-shadow: 0 0 6px #e9c17680; pointer-events: none;
+        }
+        .li.drop-before::before { top: -2px; }
+        .li.drop-after::after { bottom: -2px; }
         .li .s { grid-column: 1 / -1; font-size: 12px; color: var(--ink-faint); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .li .bad {
             min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;

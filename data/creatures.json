@@ -1,6 +1,6 @@
 [
   {
-    "id": "jeff-wicked-skull",
+    "id": "ancient-stone-guardian",
     "name": "Ancient Stone Guardian",
     "arcana": "I · THE GUARDIAN",
     "specimenNo": "002",
@@ -185,8 +185,8 @@
   {
     "id": "corrupted-stag",
     "name": "Tainted Velociraptor",
-    "arcana": "V · PESTILENCE",
-    "specimenNo": "04",
+    "arcana": "IV · PESTILENCE",
+    "specimenNo": "34",
     "location": "Balageal",
     "image": "images/Tainted Velociraptor.png",
     "imageFocus": "6% 30%",
@@ -244,7 +244,7 @@
   {
     "id": "flesh-hound",
     "name": "Flesh Hound",
-    "arcana": "IV · Nightmare",
+    "arcana": "V · Nightmare",
     "specimenNo": "013",
     "location": "Dreamlands",
     "image": "images/Flesh-hound.png",

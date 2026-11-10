@@ -43,11 +43,8 @@
     },
     "look": {
       "theme": "hearth",
-      "textureStrength": 11,
       "titleFont": "Grenze Gotisch",
-      "frame": "filigree",
-      "banner": "images/Lemerolai.jpeg",
-      "inherit": true
+      "frame": "filigree"
     }
   },
   {

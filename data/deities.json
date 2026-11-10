@@ -37,7 +37,8 @@
     "portraitZoom": 117,
     "symbol": "images/Eraldom Gods Symbols/Oghma Symbol.png",
     "symbolText": "A Golden Key in a Triangle",
-    "colour": "#fffb8f",
-    "body": "Oghma, the All-Knowing, is revered as the divine patron of scholars, artisans, and sages. Also known as the \"Whisperer of Truths\", Oghma governs the realms of knowledge, eloquence, and craftsmanship, blessing those who pursue understanding and creation. Temples dedicated to Oghma often double as libraries or workshops, called Scriptoriums, where his followers catalog discoveries, refine their crafts, and promote free speech. His followers also set up Lodges of Candor for those who seek arbitrations."
+    "colour": "#fee543",
+    "worshippers": "Scholars, Spellcasters, Sages",
+    "body": "Oghma, *the All-Knowing*, is revered as the divine patron of scholars, artisans, and sages. Also known as the \"Whisperer of Truths\", Oghma governs the realms of knowledge, eloquence, and craftsmanship, blessing those who pursue understanding and creation. Temples dedicated to Oghma often double as libraries or workshops, called Scriptoriums, where his followers catalog discoveries, refine their crafts, and promote free speech. His followers also set up Lodges of Candor for those who seek arbitrations."
   }
 ]

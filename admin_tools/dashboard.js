@@ -537,7 +537,7 @@
         const item = r => {
             const bad = recordErrors(type, r.id).length;
             const depth = depthOf(r);
-            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${depth ? 'nested' : ''}" ${depth ? `style="--depth:${depth}"` : ''} data-select="${esc(r.id)}">
+            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${depth ? 'nested' : ''}" ${depth ? `style="--depth:${depth}"` : ''} data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
                 <span class="t">${esc(r.name || '(no name)')}</span>
                 ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
@@ -1667,6 +1667,21 @@
         [list[a], list[b]] = [list[b], list[a]];
         edited(true);
     }
+    // Drag and drop in the list: moves the record in its file, so the site shows it there.
+    // Only within its group (and, for POIs, among the places that sit in the same one).
+    function sameShelf(type, a, b) {
+        const ga = listGroup(type, a), gb = listGroup(type, b);
+        if ((ga ? ga.key : '') !== (gb ? gb.key : '')) return false;
+        return type !== 'poi' || (a.parent || '') === (b.parent || '');
+    }
+    function dropRecord(id, targetId, after) {
+        const type = S.view.key, list = S.data[type];
+        const rec = list.find(r => r.id === id), target = list.find(r => r.id === targetId);
+        if (!rec || !target || rec === target || !sameShelf(type, rec, target)) return;
+        list.splice(list.indexOf(rec), 1);
+        list.splice(list.indexOf(target) + (after ? 1 : 0), 0, rec);
+        edited(true);
+    }
     function moreMenu(btn) {
         const def = TYPES[S.view.key];
         const items = [{ action: 'rename', icon: 'edit', label: 'Rename id…' }];
@@ -1861,6 +1876,46 @@
         drag = null; edited(true);
     });
     document.addEventListener('dragend', () => { drag = null; $$('.tok.dragging').forEach(t => t.classList.remove('dragging')); });
+    // Records in the list: drag to reorder (dropRecord)
+    let recDrag = null;
+    const clearDrop = () => $$('#list-items .drop-before, #list-items .drop-after').forEach(li => li.classList.remove('drop-before', 'drop-after'));
+    const dropSpot = e => {
+        const li = e.target.closest && e.target.closest('#list-items .li[data-select]');
+        if (!recDrag || !li || li.dataset.select === recDrag) return null;
+        const type = S.view.key, a = S.store.get(recDrag), b = S.store.get(li.dataset.select);
+        if (!a || !b || !sameShelf(type, a, b)) return null;
+        const r = li.getBoundingClientRect();
+        return { li, after: e.clientY > r.top + r.height / 2 };
+    };
+    document.addEventListener('dragstart', e => {
+        const li = e.target.closest && e.target.closest('#list-items .li[draggable="true"]');
+        if (!li) return;
+        recDrag = li.dataset.select;
+        li.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', recDrag);
+    });
+    document.addEventListener('dragover', e => {
+        if (!recDrag) return;
+        const spot = dropSpot(e);
+        clearDrop();
+        if (!spot) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        spot.li.classList.add(spot.after ? 'drop-after' : 'drop-before');
+    });
+    document.addEventListener('drop', e => {
+        if (!recDrag) return;
+        const spot = dropSpot(e), id = recDrag;
+        recDrag = null; clearDrop();
+        if (!spot) return;
+        e.preventDefault();
+        dropRecord(id, spot.li.dataset.select, spot.after);
+    });
+    document.addEventListener('dragend', () => {
+        recDrag = null; clearDrop();
+        $$('#list-items .li.dragging').forEach(li => li.classList.remove('dragging'));
+    });
     // Tooltips of the icon rail
     document.addEventListener('mouseover', e => { const t = e.target.closest('#nav [data-tip]'); if (t && t.dataset.tip) showTip(t); else $('#tip').hidden = true; });
     document.addEventListener('scroll', () => { $('#tip').hidden = true; }, true);

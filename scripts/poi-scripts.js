@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // The page's own look (styles/looks.css, scripts/core/look.js): the POI's own,
+    // else the one a place above it passes down ("Also for the places inside")
+    if (Athenaeum.look) Athenaeum.look.apply(document.body, Athenaeum.look.resolve(store, poi).look, 'poi');
+
     const T = Athenaeum.tavern, M = Athenaeum.market;
     const tavern = poi.tavern && poi.tavern.tier ? poi.tavern : null;
     const shop = poi.shop && poi.shop.kind ? poi.shop : null;

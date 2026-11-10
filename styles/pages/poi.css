@@ -2,7 +2,7 @@
 
 .page {
     overflow-x: hidden;
-    background-color: var(--color-surface);
+    background-color: var(--look-page, var(--color-surface));   /* --look-page: the page's look (styles/looks.css) */
     font-family: var(--font-body);
     color: var(--color-on-surface);
 }
@@ -12,7 +12,7 @@
     flex-direction: column;
     min-height: 100vh;
     padding: 6rem 1rem 3rem;
-    background-color: var(--color-surface);
+    /* no background of its own: the page's (and its look's texture and banner) shows through */
 }
 @media (min-width: 768px) {
     .poi-main {
@@ -40,7 +40,7 @@
     transition: color 150ms var(--ease);
 }
 .breadcrumbs__link:hover {
-    color: var(--color-secondary);
+    color: var(--look-accent, var(--color-secondary));
 }
 
 .breadcrumbs__separator {
@@ -49,5 +49,5 @@
 
 .breadcrumbs__current {
     font-weight: 700;
-    color: var(--color-secondary);
+    color: var(--look-accent, var(--color-secondary));
 }

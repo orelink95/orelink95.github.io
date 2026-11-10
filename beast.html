@@ -17,12 +17,15 @@
     <link href="styles/components.css" rel="stylesheet" />
     <link href="styles/pages/beast.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
+    <!-- the page's own look (record.look): last, so it wins -->
+    <link href="styles/looks.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/core/threat.js"></script>
+    <script src="scripts/core/look.js"></script>
 </head>
 
 <body class="page">
@@ -155,6 +158,8 @@
                 return;
             }
 
+            // The page's own look (styles/looks.css), if it has one
+            Athenaeum.look.apply(document.body, beast.look, 'creature');
             // Populate Basic Info
             document.getElementById('b-crumb-name').textContent = beast.name;
             document.getElementById('b-image').src = beast.image;

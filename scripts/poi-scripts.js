@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <span class="poi-item-price">${esc(item.priceLabel)}${item.unit ? ` <span class="poi-unit">${esc(item.unit)}</span>` : ''}</span>
             </div>
             ${item.desc ? `<p class="poi-item-desc">${esc(item.desc)}</p>` : ''}
+            ${item.link ? `<p class="poi-item-desc"><a class="poi-item-link" href="${esc(item.link.href)}">${esc(item.link.label)}</a></p>` : ''}
         </li>`;
     const priceList = cats => cats.map(cat => `
         <section class="poi-menu-cat">
@@ -181,9 +182,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         showKeepers('poi-tavern-keepers', tavern, 'Behind the bar');
         $('poi-menu').innerHTML = priceList(T.buildMenu(store, poi, code));
         $('poi-folio').textContent = T.folioLabel(code, poi.id);
-        const services = T.buildServices(store, poi);
-        // The gaming table is a service of the house: free, links to the Games tab
-        if (games.length) services.push({ name: 'Gaming table', desc: `${games.join(', ')} with the regulars. See the Games tab.`, priceLabel: 'Free' });
+        let services = T.buildServices(store, poi);
+        // The gaming table is a (paid) service of the house; with games ticked, its line links to the Games tab.
+        // A tavern with games but without the catalogue service gets the line anyway.
+        if (games.length) {
+            const link = { href: '#games', label: `Play ${games.join(', ')} with the regulars →` };
+            const own = services.find(s => s.id === 'gaming-table');
+            if (own) own.link = link;
+            else {
+                const base = store.get('gaming-table');
+                if (base) services.push({ ...base, priceLabel: T.formatPrice(base.basePrice * T.tierOf(store, poi.tavern).mult), link });
+            }
+        }
         if (services.length) {
             $('poi-services').innerHTML = services.map(priceItem).join('');
             $('poi-services-section').hidden = false;

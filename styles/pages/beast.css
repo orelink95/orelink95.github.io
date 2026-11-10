@@ -1,10 +1,12 @@
-/* A creature of the Elder Tarot (beast.html) */
+/* A creature of the Elder Tarot (beast.html).
+   Colours and fonts go through the --beast-* variables of .beast-main, which
+   follow the page's look when it has one (styles/looks.css, record.look). */
 
 .page {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #050505;
+    background-color: var(--look-page, #050505);
     font-family: var(--font-body);
     color: var(--color-on-surface);
 }
@@ -15,6 +17,14 @@
 }
 
 .beast-main {
+    --beast-accent: var(--look-accent, var(--color-secondary));
+    --beast-ink: var(--look-ink, #fff);
+    --beast-panel: var(--look-panel, var(--color-surface-container-low));
+    --beast-panel-deep: var(--look-panel-deep, #0a0b0a);
+    --beast-panel-alt: var(--look-panel-deep, var(--color-surface));
+    --beast-font-title: var(--look-font-title, var(--font-headline));
+    --beast-font-body: var(--look-font-body, var(--font-body));
+    font-family: var(--beast-font-body);
     position: relative;
     z-index: 10;
     flex-grow: 1;
@@ -41,7 +51,7 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     flex-wrap: wrap;
-    color: rgb(255 255 255 / 0.4);
+    color: color-mix(in srgb, var(--beast-ink) 40%, transparent);
 }
 
 .breadcrumbs__link {
@@ -50,7 +60,7 @@
     transition-duration: 150ms;
 }
 .breadcrumbs__link:hover {
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .breadcrumbs__separator {
@@ -59,7 +69,7 @@
 
 .breadcrumbs__current {
     font-weight: 700;
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .beast-hero {
@@ -95,7 +105,7 @@
     width: 4rem;
     border-left-width: 1px;
     border-top-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    border-color: color-mix(in srgb, var(--beast-accent) 40%, transparent);
     pointer-events: none;
 }
 
@@ -107,7 +117,7 @@
     width: 4rem;
     border-bottom-width: 1px;
     border-right-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    border-color: color-mix(in srgb, var(--beast-accent) 40%, transparent);
     pointer-events: none;
 }
 
@@ -118,7 +128,7 @@
     overflow: hidden;
     border-width: 1px;
     border-color: rgb(255 255 255 / 0.05);
-    background-color: #0a0b0a;
+    background-color: var(--beast-panel-deep);
     box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 }
 @media (min-width: 1024px) {
@@ -183,21 +193,21 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: rgb(255 255 255 / 0.4);
+    color: color-mix(in srgb, var(--beast-ink) 40%, transparent);
 }
 
 .beast-summary__specimen-no {
-    color: rgb(255 255 255 / 0.8);
+    color: color-mix(in srgb, var(--beast-ink) 80%, transparent);
 }
 
 .beast-summary__name {
     margin-bottom: 2.5rem;
-    font-family: var(--font-headline);
+    font-family: var(--beast-font-title), serif;
     font-size: 3.75rem;
     line-height: 1;
     font-weight: 700;
     letter-spacing: -0.025em;
-    color: #fff;
+    color: var(--beast-ink);
 }
 @media (min-width: 768px) {
     .beast-summary__name {
@@ -212,8 +222,8 @@
     padding: 2rem;
     border-radius: 0.25rem;
     border-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
-    background-color: #0a0b0a;
+    border-color: color-mix(in srgb, var(--beast-accent) 20%, transparent);
+    background-color: var(--beast-panel-deep);
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
@@ -230,7 +240,7 @@
 .beast-stats__icon {
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .beast-stats__title {
@@ -238,7 +248,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 /* Threat pill (.threat-pill, components.css), pushed to the right */
@@ -293,7 +303,7 @@
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: rgb(255 255 255 / 0.4);
+    color: color-mix(in srgb, var(--beast-ink) 40%, transparent);
 }
 
 .beast-habitats__list {
@@ -330,7 +340,7 @@
     border-radius: 0.25rem;
     border-width: 1px;
     border-color: rgb(255 255 255 / 0.05);
-    background-color: var(--color-surface-container-low);
+    background-color: var(--beast-panel);
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 @media (min-width: 768px) {
@@ -347,17 +357,17 @@
 }
 
 .beast-lore__title {
-    font-family: var(--font-headline);
+    font-family: var(--beast-font-title), serif;
     font-size: 1.875rem;
     line-height: 2.25rem;
     font-weight: 700;
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .beast-lore__icon {
     font-size: 2.25rem;
     line-height: 2.5rem;
-    color: rgb(255 255 255 / 0.1);
+    color: color-mix(in srgb, var(--beast-ink) 10%, transparent);
 }
 
 /* Short description: a standfirst, set apart by italics, contrast and a rule, not by a new typeface */
@@ -365,12 +375,12 @@
     max-width: 62ch;
     margin-bottom: 2rem;
     padding-left: 1.25rem;
-    border-left: 2px solid rgb(233 193 118 / 0.5);
-    font-family: var(--font-body);
+    border-left: 2px solid color-mix(in srgb, var(--beast-accent) 50%, transparent);
+    font-family: var(--beast-font-body), serif;
     font-size: 1.125rem;
     line-height: 1.75;
     font-style: italic;
-    color: rgb(255 255 255 / 0.9);
+    color: color-mix(in srgb, var(--beast-ink) 90%, transparent);
 }
 .beast-lore__lede:has(+ [hidden]) {
     margin-bottom: 0;   /* no lore under it */
@@ -382,10 +392,10 @@
 /* Lore: larger, a little brighter and a readable line length for long reading */
 .beast-lore__text {
     max-width: 70ch;
-    font-family: var(--font-body);
+    font-family: var(--beast-font-body), serif;
     font-size: 1.125rem;
     line-height: 1.75;
-    color: rgb(255 255 255 / 0.78);
+    color: color-mix(in srgb, var(--beast-ink) 78%, transparent);
 }
 .beast-lore__text p + p {
     margin-top: 1em;
@@ -407,7 +417,7 @@
     border-radius: 0.25rem;
     border-width: 1px;
     border-color: rgb(255 255 255 / 0.05);
-    background-color: var(--color-surface-container-low);
+    background-color: var(--beast-panel);
 }
 
 .beast-traits__title {
@@ -416,7 +426,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: rgb(255 255 255 / 0.5);
+    color: color-mix(in srgb, var(--beast-ink) 50%, transparent);
 }
 
 .beast-traits__list > :not([hidden]) ~ :not([hidden]) {
@@ -424,10 +434,10 @@
     margin-bottom: 0;
 }
 .beast-traits__list {
-    font-family: var(--font-body);
+    font-family: var(--beast-font-body), serif;
     font-size: 0.875rem;
     line-height: 1.25rem;
-    color: rgb(255 255 255 / 0.7);
+    color: color-mix(in srgb, var(--beast-ink) 70%, transparent);
 }
 
 .beast-side {
@@ -443,10 +453,10 @@
 
 .beast-side__title {
     margin-bottom: 1.5rem;
-    font-family: var(--font-headline);
+    font-family: var(--beast-font-title), serif;
     font-size: 1.5rem;
     line-height: 2rem;
-    color: #fff;
+    color: var(--beast-ink);
 }
 
 .beast-drops > :not([hidden]) ~ :not([hidden]) {
@@ -461,7 +471,7 @@
     border-radius: 0.25rem;
     border-width: 1px;
     border-color: rgb(255 255 255 / 0.1);
-    background-color: var(--color-surface);
+    background-color: var(--beast-panel-alt);
     box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
@@ -472,7 +482,7 @@
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.3em;
-    color: rgb(255 255 255 / 0.4);
+    color: color-mix(in srgb, var(--beast-ink) 40%, transparent);
 }
 
 .beast-scholar__quote {
@@ -480,7 +490,7 @@
     font-size: 0.875rem;
     font-style: italic;
     line-height: 1.625;
-    color: rgb(255 255 255 / 0.8);
+    color: color-mix(in srgb, var(--beast-ink) 80%, transparent);
 }
 
 .beast-scholar__name {
@@ -489,7 +499,7 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgb(255 255 255 / 0.4);
+    color: color-mix(in srgb, var(--beast-ink) 40%, transparent);
 }
 
 .beast-tag {
@@ -501,7 +511,7 @@
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgb(255 255 255 / 0.6);
+    color: color-mix(in srgb, var(--beast-ink) 60%, transparent);
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
@@ -515,11 +525,11 @@
     font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: rgb(255 255 255 / 0.6);
+    color: color-mix(in srgb, var(--beast-ink) 60%, transparent);
 }
 
 .beast-stat__value {
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .beast-stat__track {
@@ -532,8 +542,8 @@
 
 .beast-stat__bar {
     height: 100%;
-    background-color: var(--color-secondary);
-    box-shadow: 0 0 10px rgba(233,193,118,0.5);
+    background-color: var(--beast-accent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--beast-accent) 50%, transparent);
     transition: all 1000ms cubic-bezier(0, 0, 0.2, 1);
 }
 
@@ -544,19 +554,19 @@
     padding: 0.375rem 0.75rem;
     border-radius: 0.75rem;
     border-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
-    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+    border-color: color-mix(in srgb, var(--beast-accent) 20%, transparent);
+    background-color: color-mix(in srgb, var(--beast-accent) 10%, transparent);
     font-family: var(--font-label);
     font-size: 9px;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-secondary) 80%, transparent);
+    color: color-mix(in srgb, var(--beast-accent) 80%, transparent);
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
 
 .beast-habitat__icon {
     font-size: 12px;
-    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    color: color-mix(in srgb, var(--beast-accent) 50%, transparent);
 }
 
 .beast-trait {
@@ -566,7 +576,7 @@
 
 .beast-trait__bullet {
     margin-top: 0.125rem;
-    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    color: color-mix(in srgb, var(--beast-accent) 50%, transparent);
 }
 
 .beast-drop {
@@ -577,13 +587,13 @@
     border-radius: 0.25rem;
     border-width: 1px;
     border-color: rgb(255 255 255 / 0.05);
-    background-color: #0a0b0a;
+    background-color: var(--beast-panel-deep);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: var(--ease);
     transition-duration: 150ms;
 }
 .beast-drop:hover {
-    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    border-color: color-mix(in srgb, var(--beast-accent) 30%, transparent);
 }
 
 .beast-drop__badge {
@@ -596,45 +606,45 @@
     border-radius: 0.125rem;
     border-width: 1px;
     border-color: rgb(255 255 255 / 0.1);
-    background-color: var(--color-surface);
+    background-color: var(--beast-panel-alt);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: var(--ease);
     transition-duration: 150ms;
 }
 .beast-drop:hover .beast-drop__badge {
-    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    border-color: color-mix(in srgb, var(--beast-accent) 50%, transparent);
 }
 
 .beast-drop__icon {
     font-size: 18px;
-    color: rgb(255 255 255 / 0.5);
+    color: color-mix(in srgb, var(--beast-ink) 50%, transparent);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: var(--ease);
     transition-duration: 150ms;
 }
 .beast-drop:hover .beast-drop__icon {
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .beast-drop__name {
-    font-family: var(--font-headline);
+    font-family: var(--beast-font-title), serif;
     font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--beast-ink);
     transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
     transition-timing-function: var(--ease);
     transition-duration: 150ms;
 }
 .beast-drop:hover .beast-drop__name {
-    color: var(--color-secondary);
+    color: var(--beast-accent);
 }
 
 .beast-drop__type {
     font-size: 0.75rem;
     line-height: 1rem;
     font-style: italic;
-    color: rgb(255 255 255 / 0.4);
+    color: color-mix(in srgb, var(--beast-ink) 40%, transparent);
 }
 
 .beast-traits__title--weaknesses {

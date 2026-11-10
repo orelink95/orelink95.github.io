@@ -13,6 +13,7 @@ Plain CSS, no build step. Every page loads, in this order:
 | `notice-board.css` | The cork board and its pinned notes, shared by the settlement Town Board, the POI Board tab and the dashboard preview. Markup: `scripts/notice-board.js`. |
 | `spell-card.css` | The spell cards (one hue per school, symbols, materials tooltip) and their pop-ups, shared by the Book of Shadows and the heroes page. Also declares the Rieven Uncial font. Markup: `scripts/spell-card.js`. |
 | `deity-card.css` | The gods' cards, one frame per tier (gold, pearl, bronze, living wood, obsidian, sealed), shared by the Pantheon, a god's page and the dashboard preview. The card scales with its box (sizes in % and `cqw`). Markup and SVG frames: `scripts/deity-card.js`. |
+| `looks.css` | The look of ONE page: themes, textures, frames and banner of a POI (`poi.html`) or a creature (`beast.html`), set per record in the dashboard (card **Look**, `record.look`). Applied by `scripts/core/look.js`; loaded last on those two pages. Its header lists the `--look-*` variables and how to add a theme. |
 | `atlas-style.css` | Shared by the Atlas pages: Leaflet popups, the small country/settlement pins, the popup button and "Read the lore" link, list-card flip, and the narrow-screen layout (map first, lore panel under it). Loaded after the page stylesheet, so it wins on equal selectors. |
 | `main-style.css`, `poi-style.css` | Older hand-written styles (lore text, keyword links, POI entries). |
 

@@ -216,6 +216,8 @@
     font-size: 0.95rem; color: var(--poi-outline);
     margin: 0.15rem 0 0;
 }
+.poi-item-link { color: var(--poi-gold); text-decoration: none; border-bottom: 1px dotted var(--poi-line); }
+.poi-item-link:hover, .poi-item-link:focus-visible { color: var(--poi-gold-soft); border-bottom-color: var(--poi-gold-soft); }
 .poi-item--signature .poi-item-name { color: #ffdea5; }
 .poi-star { color: var(--poi-gold); margin-right: 0.4rem; font-size: 0.8em; }
 

@@ -424,6 +424,15 @@
     line-height: 1.625;
     color: #a0a0a0;
 }
+/* Markdown inside the definition */
+.keyword-tooltip__body p + p,
+.keyword-tooltip__body ul,
+.keyword-tooltip__body ol { margin-top: 0.5rem; }
+.keyword-tooltip__body ul { padding-left: 1rem; list-style: disc; }
+.keyword-tooltip__body ol { padding-left: 1rem; list-style: decimal; }
+.keyword-tooltip__body strong { color: #d4d4d4; font-weight: 600; }
+.keyword-tooltip__body em { font-style: italic; }
+.keyword-tooltip__body a { color: var(--color-secondary); text-decoration: underline; text-underline-offset: 2px; }
 
 .keyword-tooltip__hint {
     margin-top: 1rem;

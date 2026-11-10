@@ -1,12 +1,72 @@
 [
   {
-    "id": "jewel-theft",
-    "name": "Jewel Theft",
+    "id": "rumour-knocking-well",
+    "name": "Knocking in the old well",
+    "where": "ash_district",
+    "text": "They say the old well behind the market gives back more than water. Someone heard knocking from below, three nights running.",
+    "source": "A stable hand, three drinks in"
+  },
+  {
+    "id": "rumour-captain-wine-bill",
+    "name": "The captain's wine bill",
+    "where": "the_docks",
+    "text": "The watch has gone soft on certain cargo coming through the gates. Ask who pays the captain's wine bill.",
+    "source": "A carter who was turned back last week"
+  },
+  {
+    "id": "rumour-millers-daughter",
+    "name": "The miller's daughter",
+    "where": "deercrest",
+    "text": "The miller says his daughter ran off with a pedlar. But she was seen leaving at night with two strangers, and she wasn't smiling.",
+    "source": "The barmaid"
+  },
+  {
+    "id": "rumour-dead-merchant-debt",
+    "name": "A dead merchant's debt",
+    "where": "bazaar",
+    "text": "The merchant who died last tenday owed money to someone who doesn't take coin as payment.",
+    "source": "A clerk who helped with the inventory"
+  },
+  {
+    "id": "rumour-shrine-false-bottom",
+    "name": "The shrine's offering bowl",
     "where": "brightend",
-    "campaigns": [
-      "echoes-from-the-void"
-    ],
-    "text": "A few jewelry shops have been the victims of minor thefts but the owners say nothing about it. I think they're in on it.",
-    "source": "A drunk patron"
+    "text": "A pilgrim swears the offering bowl at the roadside shrine has a false bottom, and that it isn't empty.",
+    "source": "A pilgrim on the road home"
+  },
+  {
+    "id": "rumour-bell-cow",
+    "name": "Beast in the north fields",
+    "where": "brightend",
+    "text": "Livestock keeps vanishing near the north fields. The farmers blame wolves, but wolves don't take the bell off the cow.",
+    "source": "A farmhand with a bandaged arm"
+  },
+  {
+    "id": "rumour-taster-quit",
+    "name": "The taster who quit",
+    "where": "brightend",
+    "text": "The lord's food taster quit and left town the same morning. A coincidence, says the steward.",
+    "source": "A kitchen boy"
+  },
+  {
+    "id": "rumour-driverless-wagon",
+    "name": "The driverless wagon",
+    "where": "the_docks",
+    "text": "A wagon rolled in at dawn with no driver, the horses perfectly calm, and nothing aboard but a locked chest. The watch took it away and won't talk.",
+    "source": "A dockside gossip"
+  },
+  {
+    "id": "rumour-tax-collector",
+    "name": "The tax collector counts chairs",
+    "where": "ash_district",
+    "text": "The new tax collector counts the coin twice and the chairs once. He's measuring who can afford what, and a purge of the poor quarter is coming.",
+    "source": "A shopkeeper behind on his dues"
+  },
+  {
+    "id": "rumour-healer-cures",
+    "name": "Cures that work too well",
+    "where": "ash_district",
+    "text": "The hedge-healer's cures work too well. The sick get up and walk, but they don't talk the same afterwards.",
+    "source": "A widow, quietly"
   }
 ]

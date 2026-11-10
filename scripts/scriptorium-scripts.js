@@ -287,7 +287,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         title.textContent = term;
         title.style.color = activeColor;
         tt.style.borderColor = activeColor;
-        document.getElementById('tooltip-body').textContent = definition;
+        // Markdown (glossary definitions; plain summaries come out the same)
+        document.getElementById('tooltip-body').innerHTML = store.md(definition);
 
         tt.style.display = 'block';
 

@@ -274,7 +274,9 @@
                 : null;
             return { terms, re };
         }
-        // Only touches text outside tags, and never inside an existing <a>.
+        // Only touches text outside tags, never inside an existing <a>, nor inside
+        // <span class="nolink"> (Markdown {text}); in text that is not Markdown,
+        // {text} is kept plain too and loses its braces.
         // options: exclude (ids), className (added to each link), attrs (string,
         // or function(record) -> string), terms (also wrap glossary terms, which
         // have no page, in a <span>).
@@ -285,15 +287,9 @@
             const exclude = new Set([].concat(options.exclude || []));
             // A sealed Elder god stays plain text (options.campaign: default viewCampaign())
             const cid = options.campaign === undefined ? viewCampaign() : options.campaign;
-            let inAnchor = 0;
-            return html.split(/(<[^>]+>)/g).map(part => {
-                if (part.startsWith('<')) {
-                    if (/^<a[\s>]/i.test(part)) inAnchor++;
-                    else if (/^<\/a>/i.test(part)) inAnchor = Math.max(0, inAnchor - 1);
-                    return part;
-                }
-                if (inAnchor || !part) return part;
-                return part.replace(linkIndex.re, match => {
+            let inAnchor = 0, inCode = 0;
+            const spans = [];   // for each open <span>: is it a nolink one?
+            const link = text => text.replace(linkIndex.re, match => {
                     const t = linkIndex.terms.get(termKey(match));
                     if (!t || exclude.has(t.id)) return match;
                     if (!revealed(t.rec, cid)) return match;
@@ -305,6 +301,21 @@
                         ? `<a href="${t.href}" class="${cls}"${extra}>${match}</a>`
                         : `<span class="${cls}"${extra}>${match}</span>`;
                 });
+            return html.split(/(<[^>]+>)/g).map(part => {
+                if (part.startsWith('<')) {
+                    if (/^<a[\s>]/i.test(part)) inAnchor++;
+                    else if (/^<\/a>/i.test(part)) inAnchor = Math.max(0, inAnchor - 1);
+                    else if (/^<span[\s>]/i.test(part)) spans.push(/\bclass="[^"]*\bnolink\b/.test(part));
+                    else if (/^<\/span>/i.test(part)) spans.pop();
+                    else if (/^<code[\s>]/i.test(part)) inCode++;
+                    else if (/^<\/code>/i.test(part)) inCode = Math.max(0, inCode - 1);
+                    return part;
+                }
+                if (!part || inCode) return part;   // code is shown as written
+                // {text}: plain, without its braces
+                const pieces = part.split(/\{([^{}\n]+)\}/g);
+                if (inAnchor || spans.includes(true)) return pieces.join('');
+                return pieces.map((p, i) => (i % 2 ? p : link(p))).join('');
             }).join('');
         }
 

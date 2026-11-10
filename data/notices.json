@@ -1,1 +1,136 @@
-[]
+[
+  {
+    "id": "notice-curfew-bells",
+    "name": "Curfew bells",
+    "where": "brightend",
+    "kind": "announcement",
+    "body": "By order of the watch: the gates close at the second bell after dusk. Those found outside the walls after that hour sleep outside them, or in the cells.",
+    "issuerText": "The Watch",
+    "posted": "Pinned this season"
+  },
+  {
+    "id": "notice-cellar-vermin",
+    "name": "Cellar vermin",
+    "where": "gilded-goldfinch",
+    "kind": "job",
+    "body": "Rats in the cellar of a respectable house. Too many, too bold, and they come from somewhere. Pay on proof of work.",
+    "reward": "5 gp",
+    "issuerText": "A householder, name on request"
+  },
+  {
+    "id": "notice-lost-ledger",
+    "name": "Lost: brass-bound ledger",
+    "where": "brightend",
+    "kind": "personal",
+    "body": "Lost on a coach bench: a brass-bound ledger, no great value to anyone but its owner. No questions asked.",
+    "reward": "10 gp, no questions",
+    "issuerText": "A very anxious clerk"
+  },
+  {
+    "id": "notice-fields-beast-bounty",
+    "name": "Bounty: the thing in the north fields",
+    "where": "twill",
+    "kind": "bounty",
+    "status": "taken",
+    "body": "Livestock lost on three farms. Bring proof of the kill, or at least a good description.",
+    "reward": "40 gp, shared between the farms",
+    "issuerText": "The north field farmers"
+  },
+  {
+    "id": "notice-missing-ring-finger",
+    "name": "Wanted: man with a missing finger",
+    "where": "deercrest",
+    "kind": "wanted",
+    "status": "done",
+    "body": "Information sought on a man missing the ring finger of his left hand, last seen leaving the market in a hurry. Do not approach him.",
+    "reward": "15 gp for information",
+    "issuerText": "The Watch"
+  },
+  {
+    "id": "notice-caravan-guards",
+    "name": "Hands wanted: caravan guards",
+    "where": "brightend",
+    "kind": "job",
+    "body": "Guards wanted for a caravan leaving in a few days. Experience preferred, discretion required. Ask what's in the wagons, and you're not hired.",
+    "reward": "30 gp each, half up front",
+    "issuerText": "A caravan master"
+  },
+  {
+    "id": "notice-bounty-road-bandits",
+    "name": "Bounty: road bandits",
+    "where": "city-lemerolai",
+    "kind": "bounty",
+    "body": "The road's been cut for a month. These bandits are organised and well informed. Bring back their leader, or the people feeding them news.",
+    "reward": "100 gp for the leader",
+    "issuerText": "A merchants' guild"
+  },
+  {
+    "id": "notice-wanted-poisoner",
+    "name": "Wanted: a poisoner",
+    "where": "rusty-anchor",
+    "kind": "wanted",
+    "body": "A woman who sold bad medicine to the wrong people. Keeps to the back streets and has a different name for each lodging. Alive, if you can.",
+    "reward": "60 gp",
+    "issuerText": "Name withheld"
+  },
+  {
+    "id": "notice-companion-wanted",
+    "name": "Seeking a travelling companion",
+    "where": "brightend",
+    "kind": "personal",
+    "body": "Traveller bound for a far town seeks a companion with a good sword and better manners. I pay for meals. I also snore.",
+    "reward": "Meals on the road",
+    "issuerText": "A traveller in room 3"
+  },
+  {
+    "id": "notice-private-evening",
+    "name": "Closed for a private gathering",
+    "where": "brightend",
+    "kind": "announcement",
+    "body": "The back room is closed on the next market night for a private gathering. Do not ask. Do not listen at the door.",
+    "issuerText": "The landlord"
+  },
+  {
+    "id": "notice-alms-day",
+    "name": "Alms day",
+    "where": "deercrest",
+    "kind": "announcement",
+    "body": "Alms are given at the shrine at midday on the last day of the week. The faithful are asked to bring bread, blankets, or coin, and the others to bring patience.",
+    "issuerText": "The keepers of the shrine"
+  },
+  {
+    "id": "notice-pilgrim-escort",
+    "name": "Escort for a pilgrim",
+    "where": "black-rose-inn",
+    "kind": "job",
+    "body": "An elderly pilgrim must reach a distant shrine before the season turns. Safe passage, not speed. The pilgrim is stubborn and will not be carried.",
+    "reward": "25 gp and a blessing",
+    "issuerText": "A temple almoner"
+  },
+  {
+    "id": "notice-prayers-for-missing",
+    "name": "Prayers for the missing",
+    "where": "gilded-goldfinch",
+    "kind": "personal",
+    "body": "My brother left for the hills before the thaw and has not written. If you've seen him, or his mule, tell me. If you've seen only the mule, tell me that too.",
+    "issuerText": "A tanner's apprentice"
+  },
+  {
+    "id": "notice-discreet-courier",
+    "name": "A discreet courier",
+    "where": "rusty-anchor",
+    "kind": "job",
+    "body": "A sealed package must reach its recipient in the next town by the end of the week. You may not open it, and you may not lose it. Apply in person, alone.",
+    "reward": "50 gp on delivery",
+    "issuerText": "A sealed signature"
+  },
+  {
+    "id": "notice-toll-change",
+    "name": "New toll on the market road",
+    "where": "brightend",
+    "kind": "announcement",
+    "status": "done",
+    "body": "From the new moon, a toll is due at the market road for every cart and animal. Those who can't pay may leave their goods in the care of the watch.",
+    "issuerText": "The tax office"
+  }
+]

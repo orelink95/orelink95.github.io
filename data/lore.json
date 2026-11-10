@@ -51,5 +51,11 @@
     "name": "Nihilium",
     "kind": "object",
     "definition": "A crystallization of Void energy that started to plague the Material Plane as a result of a botched spell at the end of the Ophrasian War."
+  },
+  {
+    "id": "order-of-the-lens",
+    "name": "Order of the Lens",
+    "kind": "faction",
+    "definition": "*Field*: History and prophecy\nMotto: “To know what came before is to see what comes next.”\nRole: They maintain the Chronicle Vaults and the prophecies of Ereor Menolas. \nNotable Trait: They recite an oath each morning to not alter a single recorded word, no matter how damning."
   }
 ]

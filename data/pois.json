@@ -40,6 +40,14 @@
           }
         }
       ]
+    },
+    "look": {
+      "theme": "hearth",
+      "textureStrength": 11,
+      "titleFont": "Grenze Gotisch",
+      "frame": "filigree",
+      "banner": "images/Lemerolai.jpeg",
+      "inherit": true
     }
   },
   {
@@ -427,7 +435,8 @@
     "subtitle": "Order of the Lens",
     "codex": "Athenaeum's History Wing",
     "summary": "Also known as H-wing, it is the place Order of the Lens Sages spend the most time in.",
-    "body": "The History Wing, also known as the H-wing contains everything thing about the history of the Realms, as well as workspaces for Historian Sages. ",
+    "body": "The History Wing, also known as the H-wing contains everything thing about the history of the Realms, as well as workspaces for Historian Sages of the Order of the Lens. ",
+    "image": "images/Lemerolai.jpeg",
     "map": {
       "x": 1092,
       "y": 232,
@@ -453,9 +462,41 @@
     "name": "Great Readers Office",
     "parent": "caeraotrom-athenaeum",
     "subtitle": "Administrative and Scholarly Department",
+    "image": "images/Lemerolai.jpeg",
     "map": {
       "x": 912,
       "y": 253
+    }
+  },
+  {
+    "id": "red-flaggon",
+    "name": "The Red Flaggon",
+    "parent": "ash_district",
+    "map": {
+      "x": 867,
+      "y": 406
+    },
+    "tavern": {
+      "tier": "modest",
+      "picks": {
+        "drinks": 3,
+        "meals": 1,
+        "bites": 2
+      },
+      "excludeTags": [
+        "fine",
+        "coastal",
+        "exotic"
+      ],
+      "services": [
+        "gaming-table",
+        "tavern-storage",
+        "room-common"
+      ],
+      "rumourDraws": 2,
+      "games": [
+        "knucklebones"
+      ]
     }
   }
 ]

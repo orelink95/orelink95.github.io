@@ -8,6 +8,8 @@
      - item / 1. item  lists
      ---               horizontal rule
      **bold**  *italic*  _italic_  `code`  [text](url)
+     {text}            shown without the braces and never turned into an
+                       automatic link (store.autolink): {Caeraotrom}
      line ending with two spaces or a backslash  ->  line break
    Raw HTML is passed through untouched (the content is written by the
    DM, not by visitors).
@@ -24,6 +26,7 @@
             return `\u0000${codes.length - 1}\u0000`;
         });
         s = s
+            .replace(/\{([^{}\n]+)\}/g, '<span class="nolink">$1</span>')
             .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>')
             .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
             .replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\w)/g, '$1<em>$2</em>')

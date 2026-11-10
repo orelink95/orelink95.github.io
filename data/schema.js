@@ -55,6 +55,30 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
         body: { kind: 'markdown', label: 'Lore', section: 'Lore' },
         danger: { kind: 'boolean', label: 'Dangerous place', help: 'Red pin and a “Danger” tag.' },
     };
+    /* The look of ONE page (record.look): a theme of the type plus tweaks that win over it.
+       styles/looks.css holds the themes, textures and frames; scripts/core/look.js applies them. */
+    const lookField = (themeEnum, withCard) => ({
+        kind: 'object', label: 'Look of this page', optional: true, section: 'Look',
+        help: 'Changes this one page. Pick a theme, then change any part of it below (an empty field keeps the theme’s, or the site’s).',
+        fields: {
+            theme: { kind: 'enum', enum: themeEnum, label: 'Theme', width: 'full', help: 'Empty = the site’s usual look. Themes are in styles/looks.css.' },
+            accent: { kind: 'text', color: true, label: 'Accent', width: 'third', help: 'Titles, links, rules, prices.' },
+            ink: { kind: 'text', color: true, label: 'Text', width: 'third' },
+            panel: { kind: 'text', color: true, label: 'Boxes', width: 'third', help: 'Background of the panels.' },
+            ...(withCard ? { card: { kind: 'text', color: true, label: 'Tabbed card', width: 'third', help: 'Menu, wares, map…' } } : {}),
+            page: { kind: 'text', color: true, label: 'Page background', width: 'third' },
+            texture: { kind: 'enum', enum: 'lookTexture', label: 'Texture', width: 'third', help: 'Over the page background. Empty = the theme’s.' },
+            textureImage: { kind: 'image', label: 'Texture image', showIf: { key: 'texture', is: ['image'] }, help: 'Tiled over the page. A small seamless image works best.' },
+            textureStrength: { kind: 'number', label: 'Texture strength (%)', width: 'full', range: [0, 100], help: 'Empty = the theme’s (about 20).' },
+            titleFont: { kind: 'enum', enum: 'lookFont', label: 'Font of the titles', width: 'half', help: 'The name and the headings.' },
+            bodyFont: { kind: 'enum', enum: 'lookFont', label: 'Font of the lore & subtitle', width: 'half', help: 'Long text: keep a plain one.' },
+            frame: { kind: 'enum', enum: 'lookFrame', label: 'Frame of the boxes', width: 'half', help: 'Empty = the theme’s.' },
+            banner: { kind: 'image', label: 'Banner', help: 'A wide picture fading out behind the top of the page.' },
+            bannerFocus: { kind: 'text', focus: true, label: 'Banner focus', showIf: { key: 'banner', set: true }, help: 'The part of the picture kept when it is cropped.' },
+            bannerStrength: { kind: 'number', label: 'Banner strength (%)', range: [0, 100], showIf: { key: 'banner', set: true }, help: 'Empty = 45.' },
+            ...(withCard ? { inherit: { kind: 'boolean', label: 'Also for the places inside', help: 'The POIs that sit in this one (and in those) take this whole look, unless they have a look of their own.' } } : {}),
+        },
+    });
     const PIN_HELP = 'Settlements have no map of their own (their maps are their districts’): put the place in a district to pin it.';
 
     ATH.schema = {
@@ -275,6 +299,69 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'library', label: 'Library', map: 'Plan of the Stacks', places: 'Wings & Reading Rooms', people: 'Keepers & Scholars', cta: 'Visit the library' },
                 { id: 'institution', label: 'Institution', map: 'Plan of the Grounds', places: 'Places Within', people: 'Who’s Who', cta: 'Visit the place' },
             ],
+            /* Page looks (record.look; styles/looks.css). One set of themes per type:
+               each id is a .look--poi-<id> / .look--creature-<id> rule in styles/looks.css. */
+            poiTheme: [
+                { id: 'hearth', label: 'Hearth & Timber (amber, oak)' },
+                { id: 'sanctum', label: 'Sanctum (pale gold, marble)' },
+                { id: 'haunted', label: 'Haunted (cold teal, fog)' },
+                { id: 'arcane', label: 'Arcane (violet, stars)' },
+                { id: 'sylvan', label: 'Sylvan (moss green)' },
+                { id: 'frost', label: 'Frostbound (ice blue)' },
+                { id: 'infernal', label: 'Infernal (embers, iron)' },
+                { id: 'den', label: 'Shadowed Den (tarnished brass)' },
+            ],
+            creatureTheme: [
+                { id: 'abyssal', label: 'Abyssal (deep sea, scales)' },
+                { id: 'blighted', label: 'Blighted (sickly green)' },
+                { id: 'infernal', label: 'Infernal (hellfire)' },
+                { id: 'fey', label: 'Fey (rose, twilight)' },
+                { id: 'void', label: 'Voidborn (violet)' },
+                { id: 'frost', label: 'Frost (rime, pale blue)' },
+                { id: 'bone', label: 'Ossuary (bone, ivory)' },
+                { id: 'draconic', label: 'Draconic (molten gold)' },
+            ],
+            /* .look-texture--<id> in styles/looks.css; 'image' = the page's texture image */
+            lookTexture: [
+                { id: 'none', label: 'None (removes the theme’s)' },
+                { id: 'grain', label: 'Parchment grain' },
+                { id: 'stone', label: 'Stone' },
+                { id: 'wood', label: 'Wood grain' },
+                { id: 'smoke', label: 'Smoke / fog' },
+                { id: 'linen', label: 'Linen' },
+                { id: 'grid', label: 'Drafting grid' },
+                { id: 'stars', label: 'Stars' },
+                { id: 'scales', label: 'Scales' },
+                { id: 'image', label: 'An image…' },
+            ],
+            /* .look-frame--<id> in styles/looks.css */
+            lookFrame: [
+                { id: 'none', label: 'None (flat)' },
+                { id: 'gilt', label: 'Gilt rule' },
+                { id: 'double', label: 'Double rule' },
+                { id: 'filigree', label: 'Filigree corners' },
+                { id: 'ornate', label: 'Ornate (double rule + corners)' },
+                { id: 'iron', label: 'Iron & rivets' },
+                { id: 'runic', label: 'Runic glow' },
+            ],
+            /* Fonts a look can use, fetched from Google Fonts only on the pages that use them.
+               id = the font's name; google = its "family=" parameter. */
+            lookFont: [
+                { id: 'Cinzel', label: 'Cinzel (Roman capitals)', google: 'Cinzel:wght@400;700' },
+                { id: 'Cinzel Decorative', label: 'Cinzel Decorative (titles only)', google: 'Cinzel+Decorative:wght@400;700' },
+                { id: 'Cormorant Garamond', label: 'Cormorant Garamond (elegant serif)', google: 'Cormorant+Garamond:ital,wght@0,400;0,700;1,400' },
+                { id: 'EB Garamond', label: 'EB Garamond (book serif)', google: 'EB+Garamond:ital,wght@0,400;0,700;1,400' },
+                { id: 'Spectral', label: 'Spectral (readable serif)', google: 'Spectral:ital,wght@0,400;0,700;1,400' },
+                { id: 'IM Fell English', label: 'IM Fell English (old print)', google: 'IM+Fell+English:ital@0;1' },
+                { id: 'Almendra', label: 'Almendra (calligraphic)', google: 'Almendra:ital,wght@0,400;0,700;1,400' },
+                { id: 'Marcellus', label: 'Marcellus (carved)', google: 'Marcellus' },
+                { id: 'Uncial Antiqua', label: 'Uncial Antiqua (uncial, titles only)', google: 'Uncial+Antiqua' },
+                { id: 'MedievalSharp', label: 'MedievalSharp (titles only)', google: 'MedievalSharp' },
+                { id: 'Metamorphous', label: 'Metamorphous (titles only)', google: 'Metamorphous' },
+                { id: 'Pirata One', label: 'Pirata One (blackletter, titles only)', google: 'Pirata+One' },
+                { id: 'Grenze Gotisch', label: 'Grenze Gotisch (gothic, titles only)', google: 'Grenze+Gotisch:wght@400;700' },
+                { id: 'UnifrakturCook', label: 'UnifrakturCook (fraktur, titles only)', google: 'UnifrakturCook:wght@700' },
+            ],
             /* Rumours: DM only (data/private.json) */
             rumourTruth: [
                 { id: 'true', label: 'True' },
@@ -375,7 +462,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 /* parent 'poi': a key location inside an institution (a hall of the university),
                    pinned on one of the institution's own maps (map.on = that map's id). */
                 place: true, parent: ['district', 'settlement', 'country', 'poi'], autolink: true,
-                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Temple'],
+                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Temple', 'Look'],
                 fields: {
                     ...PLACE_FIELDS,
                     subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: page header, map pop-up, POIs list.' },
@@ -503,6 +590,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                             },
                         },
                     },
+                    look: lookField('poiTheme', true),
                 },
             },
 
@@ -589,7 +677,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 autolink: true,
                 fields: {
                     kind: { kind: 'enum', enum: 'loreKind', label: 'Kind', required: true, help: 'Sets the keyword’s colour.' },
-                    definition: { kind: 'text', label: 'Definition', long: true, help: TOOLTIP_HELP },
+                    definition: { kind: 'markdown', label: 'Definition', help: TOOLTIP_HELP + ' Markdown: **bold**, *italic*, [links](url)…' },
                 },
             },
             tome: {
@@ -632,7 +720,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/creatures.json',
                 page: 'beast.html?id={id}',
                 autolink: true,
-                sections: ['Essentials', 'Stats', 'Lore', 'Field notes'],
+                sections: ['Essentials', 'Stats', 'Lore', 'Field notes', 'Look'],
                 fields: {
                     arcana: { kind: 'text', label: 'Arcana', help: 'e.g. I · THE GUARDIAN' },
                     specimenNo: { kind: 'text', label: 'Specimen number' },
@@ -663,6 +751,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     },
                     scholarQuote: { kind: 'text', label: 'Scholar quote', long: true, section: 'Lore' },
                     scholarName: { kind: 'text', label: 'Scholar name', section: 'Lore' },
+                    look: lookField('creatureTheme', false),
                 },
             },
             /* A spell, shown as a card in the Spellbook (spellbook.html) and from the

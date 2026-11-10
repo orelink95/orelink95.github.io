@@ -14,6 +14,7 @@
     <link href="../styles/notice-board.css" rel="stylesheet" />
     <link href="../styles/spell-card.css" rel="stylesheet" />
     <link href="../styles/deity-card.css" rel="stylesheet" />
+    <link href="../styles/looks.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -618,6 +619,39 @@
         .card-prev .spell-card--open { width: 100%; max-width: 310px; }
         .card-prev .spell-card:hover { transform: none; }
         .card-prev__stage--deity { padding-top: 26px; }
+        /* Look preview (POIs, creatures): a small mock of the page, drawn with
+           styles/looks.css and the same --look-* variables as the site */
+        .look-prev {
+            position: relative; overflow: hidden; isolation: isolate;
+            margin-top: 10px; padding: 12px; border-radius: 8px;
+            background: var(--look-page, var(--lp-page)); color: var(--look-ink, #e2e3df);
+            font-family: var(--look-font-body, 'Newsreader'), serif;
+            --look-banner-height: 150px;
+        }
+        .look-prev[data-type="poi"] { --lp-page: #121412; --lp-panel: #1a1c1a; --lp-card: #201b14; }
+        .look-prev[data-type="creature"] { --lp-page: #050505; --lp-panel: #1a1c1a; --lp-card: #0a0b0a; }
+        .look-prev > :not(.look-banner) { position: relative; z-index: 1; }
+        .look-prev__crumbs { margin: 0 0 8px; font: 700 8.5px 'Manrope'; letter-spacing: .12em; text-transform: uppercase; color: var(--look-accent, #e9c176); }
+        .look-prev__box {
+            margin-top: 8px; padding: 12px 14px; border-radius: 4px;
+            border: 1px solid rgb(255 255 255 / .06);
+            background: var(--look-panel, var(--lp-panel));
+        }
+        .look-prev__box--card { background: var(--look-card, var(--lp-card)); border-color: var(--look-card-edge, #3a2d1a); text-align: center; }
+        .look-prev__eyebrow { margin: 0 0 3px; font: 700 8.5px 'Manrope'; letter-spacing: .26em; text-transform: uppercase; color: var(--look-accent, #e9c176); }
+        .look-prev__title { margin: 0; font: 700 21px/1.1 var(--look-font-title, 'Noto Serif'), serif; color: var(--look-ink, #fff); }
+        .look-prev__sub { margin: 4px 0 0; font-style: italic; font-size: 13px; color: var(--look-ink-dim, #c3c8c0); }
+        .look-prev__label { margin: 0 0 6px; padding-bottom: 5px; border-bottom: 1px solid rgb(255 255 255 / .07); font: 700 8.5px 'Manrope'; letter-spacing: .22em; text-transform: uppercase; color: var(--look-ink-faint, #8d928b); }
+        .look-prev__text { margin: 0; font-size: 13px; line-height: 1.5; color: var(--look-ink-dim, #c3c8c0); }
+        .look-prev__text b { color: var(--look-accent, #e9c176); font-weight: 600; }
+        .look-prev__heading { margin: 0; font: 700 16px var(--look-font-title, 'Noto Serif'), serif; color: var(--look-accent-soft, #dab36a); }
+        .look-prev__rule { width: 70px; height: 1px; margin: 8px auto 10px; background: linear-gradient(to right, transparent, var(--look-accent, #e9c176), transparent); }
+        .look-prev__item { display: flex; align-items: baseline; gap: 6px; font: 13px var(--look-font-title, 'Noto Serif'), serif; text-align: left; }
+        .look-prev__item i { flex: 1; border-bottom: 1px dotted color-mix(in srgb, var(--look-accent, #e9c176) 35%, transparent); }
+        .look-prev__item b { font: 700 11px 'Manrope'; color: var(--look-accent, #e9c176); }
+        .look-prev__bar { height: 4px; margin: 4px 0 9px; border-radius: 4px; background: rgb(255 255 255 / .06); }
+        .look-prev__bar span { display: block; height: 100%; border-radius: inherit; background: var(--look-accent, #e9c176); box-shadow: 0 0 8px color-mix(in srgb, var(--look-accent, #e9c176) 50%, transparent); }
+        .look-prev__stat { display: flex; justify-content: space-between; font: 700 8.5px 'Manrope'; letter-spacing: .1em; text-transform: uppercase; color: var(--look-ink-dim, #c3c8c0); }
         .card-prev .deity-card { width: 220px; }
         .deity-prev__tier { text-align: center; font-size: 12.5px; color: var(--ink-faint); }
         .seal-status ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
@@ -728,6 +762,7 @@
     <script src="../data/schema.js"></script>
     <script src="../scripts/core/markdown.js"></script>
     <script src="../scripts/core/store.js"></script>
+    <script src="../scripts/core/look.js"></script>
     <script src="../scripts/core/seal.js"></script>
     <script src="../scripts/tavern-menu.js"></script>
     <script src="../scripts/market.js"></script>

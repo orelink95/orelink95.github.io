@@ -1082,6 +1082,7 @@
             if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
             if (S.view.key === 'deity' && ATH.deityCard) parts.unshift(deityPreview(rec), sealStatus(rec));
             if (S.view.key === 'item' && ATH.deityCard) parts.unshift(artifactOf(rec));
+            if ((S.view.key === 'poi' || S.view.key === 'creature') && ATH.look && lookOf(rec).look) parts.unshift(lookPreview(rec));
         }
         const html = parts.filter(Boolean).join('');
         side.innerHTML = html ? `<div class="side-head"><span>Previews & links</span><button class="btn icon" data-action="toggle-side" title="Close"><span class="material-symbols-outlined">close</span></button></div>${html}` : '';
@@ -1089,6 +1090,53 @@
         const sb = $('#side-btn'); if (sb) sb.hidden = !html;
         if (S.view.key === 'item' || S.view.key === 'deity') loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
+        if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
+    }
+
+    /* ---------- page look (POIs, creatures): a small mock of the page ---------- */
+    // Drawn with the site's styles/looks.css and scripts/core/look.js, so what it shows
+    // is what the page gets. Redrawn after each change, like the other previews.
+    // The record's own look (as edited), else the one a place above it passes down
+    function lookOf(rec) {
+        if (!ATH.look.isEmpty(rec.look)) return { look: rec.look, from: null };
+        const r = ATH.look.resolve(S.store, S.store.get(rec.id) || rec);
+        return r.from && r.from.id !== rec.id ? r : { look: null, from: null };
+    }
+    function lookPreview(rec) {
+        const type = S.view.key;
+        const plain = s => String(s || '').replace(/[#*_>\[\]()`]/g, '').replace(/\s+/g, ' ').trim();
+        const lore = plain(rec.body || rec.shortDesc || rec.summary) || 'The lore of the place reads like this, with a keyword now and then.';
+        const words = lore.split(' ');
+        const text = esc(words.slice(0, 26).join(' ')) + (words.length > 26 ? '…' : '');
+        const eyebrow = type === 'poi'
+            ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || 'Landmark'
+            : (rec.arcana || 'Specimen');
+        const extra = type === 'poi'
+            ? `<div class="look-prev__box look-prev__box--card"><p class="look-prev__eyebrow">Today at the Bar</p><h5 class="look-prev__heading">Bill of Fare</h5>
+                <div class="look-prev__rule"></div><div class="look-prev__item"><span>Spiced ale</span><i></i><b>4 cp</b></div></div>`
+            : `<div class="look-prev__box"><p class="look-prev__eyebrow">Threat Assessment</p>
+                ${(rec.stats && rec.stats.length ? rec.stats.slice(0, 2) : [{ label: 'Strength', value: 70 }, { label: 'Cunning', value: 45 }])
+                    .map(st => `<div class="look-prev__stat"><span>${esc(st.label)}</span><span>${esc(st.value ?? 0)}</span></div><div class="look-prev__bar"><span style="width:${Math.max(0, Math.min(100, +st.value || 0))}%"></span></div>`).join('')}</div>`;
+        return `<div class="box"><div class="box-head"><h4>Look preview</h4></div>
+            <div class="look-prev" data-type="${type}" id="look-prev">
+                <p class="look-prev__crumbs">${esc(rec.name || 'Name')}</p>
+                <div class="look-prev__box"><p class="look-prev__eyebrow">${esc(eyebrow)}</p><h3 class="look-prev__title">${esc(rec.name || 'Name')}</h3>${rec.subtitle ? `<p class="look-prev__sub">${esc(rec.subtitle)}</p>` : ''}</div>
+                <div class="look-prev__box"><p class="look-prev__label">${type === 'poi' ? 'Archive Entry' : esc(rec.loreTitle || 'Archival Record')}</p><p class="look-prev__text">${text} <b>keyword</b></p></div>
+                ${extra}
+            </div>
+            ${lookOf(rec).from ? `<p class="hint">Taken from <span class="chip" data-jump="${esc(lookOf(rec).from.id)}">${esc(lookOf(rec).from.name)}</span> (“Also for the places inside”). Give this place a look of its own to replace it.</p>`
+                : rec.look && rec.look.inherit ? `<p class="hint">Also used by the places inside this one that have no look of their own.</p>` : ''}
+            <p class="hint">A sketch of the page: on the site, every box of the page follows the same look.</p></div>`;
+    }
+    async function applyLookPreview(rec) {
+        const el = document.getElementById('look-prev');
+        if (!el || !ATH.look) return;
+        const look = lookOf(rec).look || {};
+        // images come from the linked folder: load them before drawing
+        const paths = [look.banner, look.texture === 'image' && look.textureImage].filter(Boolean);
+        const urls = new Map(await Promise.all(paths.map(async p => [p, await thumbUrl(p)])));
+        if (!el.isConnected) return;
+        ATH.look.apply(el, look, S.view.key, { url: p => urls.get(p) || '' });
     }
 
     /* ---------- upcoming sessions (homepage): preview and tools ---------- */

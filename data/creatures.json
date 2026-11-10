@@ -114,7 +114,12 @@
         "type": "Alchemical Compound",
         "icon": "water_drop"
       }
-    ]
+    ],
+    "look": {
+      "theme": "void",
+      "textureStrength": 25,
+      "frame": "runic"
+    }
   },
   {
     "id": "ulnorya",
@@ -161,6 +166,9 @@
       }
     ],
     "scholarQuote": "Where the Ulnorya comes from is a mystery. Many think it is a result of the Void corruption that affected the world after the War, but ancient texts mention creatures eerily similar. We shouldn't forget the horrors that roamed the world eons ago.",
-    "scholarName": "Alkalily Neir"
+    "scholarName": "Alkalily Neir",
+    "look": {
+      "theme": "void"
+    }
   }
 ]

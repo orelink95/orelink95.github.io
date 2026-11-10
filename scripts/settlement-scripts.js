@@ -33,8 +33,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 2. DATA FOR EACH DISTRICT
     // -----------------------------------------------------------------
     // NPCs living in the settlement itself, or in a POI placed directly under it
+    // (and in the places inside those POIs: the halls of a university…)
+    const withInside = p => [p, ...store.descendants(p, 'poi')];
     const townPois = store.children(settlement, 'poi');
-    const townFolk = [settlement, ...townPois].flatMap(p => store.backrefs(p, 'npc', 'home'));
+    const townFolk = [settlement, ...townPois.flatMap(withInside)].flatMap(p => store.backrefs(p, 'npc', 'home'));
 
     const districts = store.children(settlement, 'district').map(d => {
         const pois = store.children(d, 'poi');
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             name: d.shortName || d.name,
             image: d.mapImage && d.mapImage.src ? d.mapImage : null,
             pois: pois.filter(p => p.map),
-            residents: [...townFolk, ...[d, ...pois].flatMap(p => store.backrefs(p, 'npc', 'home'))]
+            residents: [...townFolk, ...[d, ...pois.flatMap(withInside)].flatMap(p => store.backrefs(p, 'npc', 'home'))]
         };
     });
 
@@ -135,7 +137,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         npcs.forEach(npc => {
             const home = store.get(npc.home);
-            const marker = home ? markers[home.id] : null;
+            // Someone living in a hall of an institution is shown at the institution's pin
+            const pinned = home ? [home, ...store.ancestors(home).reverse()].find(p => markers[p.id]) : null;
+            const marker = pinned ? markers[pinned.id] : null;
             const card = document.createElement('div');
             card.className = 'resident';
             card.dataset.npcId = npc.id;
@@ -164,11 +168,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (marker) {
                 card.tabIndex = 0;
                 card.setAttribute('role', 'button');
-                card.setAttribute('aria-label', `Show ${home.name} on the map`);
+                card.setAttribute('aria-label', `Show ${pinned.name} on the map`);
                 const focusHome = () => {
                     map.panTo(marker.getLatLng(), { animate: true });
                     marker.openPopup();
-                    panel.show(pinView(home));
+                    panel.show(pinView(pinned));
                 };
                 card.addEventListener('click', e => { if (!e.target.closest('a')) focusHome(); });
                 card.addEventListener('keydown', e => {

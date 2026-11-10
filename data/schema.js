@@ -20,7 +20,7 @@ admin dashboard all read this file; nothing else describes the data.
 text · markdown · number · boolean · image · url · list (of strings)
 date (YYYY-MM-DD) · time (HH:MM, 24 h)
 enum (options | enum: '<name of a shared enum below>')
-ref / refs (to: [types]) · map ({x, y, icon, layer}) · mapImage
+ref / refs (to: [types]) · map ({x, y, icon, layer, on}) · mapImage
 object (fields) · objects (array; fields) · json (free-form, raw)
 
 ※ DASHBOARD ONLY (the site and the validator ignore these) ※
@@ -264,6 +264,17 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'rites', label: 'Rites & Ceremonies' },
                 { id: 'offerings', label: 'Offerings' },
             ],
+            /* Institutions (poi.institution): large places with maps of their own, key
+               locations (POIs whose parent is the institution) and people in groups.
+               label = the page's eyebrow; map / places / people = the headings of the
+               Map, Locations and People tabs; cta = the button in a map pop-up.
+               Each kind has its own card colours in styles/poi-style.css
+               (.poi-ledger--inst-<id>); a new kind without them takes the generic look. */
+            institutionKind: [
+                { id: 'university', label: 'University', map: 'Plan of the Grounds', places: 'Halls & Colleges', people: 'Masters & Scholars', cta: 'Visit the university' },
+                { id: 'library', label: 'Library', map: 'Plan of the Stacks', places: 'Wings & Reading Rooms', people: 'Keepers & Scholars', cta: 'Visit the library' },
+                { id: 'institution', label: 'Institution', map: 'Plan of the Grounds', places: 'Places Within', people: 'Who’s Who', cta: 'Visit the place' },
+            ],
             /* Rumours: DM only (data/private.json) */
             rumourTruth: [
                 { id: 'true', label: 'True' },
@@ -361,8 +372,10 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 label: 'Point of interest', plural: 'Points of interest', icon: 'location_on', group: 'Places',
                 file: 'data/pois.json',
                 page: 'poi.html?id={id}',
-                place: true, parent: ['district', 'settlement', 'country'], autolink: true,
-                sections: ['Essentials', 'Lore', 'Map', 'Tavern', 'Shop', 'Temple'],
+                /* parent 'poi': a key location inside an institution (a hall of the university),
+                   pinned on one of the institution's own maps (map.on = that map's id). */
+                place: true, parent: ['district', 'settlement', 'country', 'poi'], autolink: true,
+                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Temple'],
                 fields: {
                     ...PLACE_FIELDS,
                     subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: page header, map pop-up, POIs list.' },
@@ -371,7 +384,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     image: { kind: 'image', label: 'Picture', help: 'Page header and POIs list card.' },
                     featured: { kind: 'boolean', label: 'Featured landmark', help: '“Featured” tag in the POIs list.' },
                     safe: { kind: 'boolean', label: 'Safe haven', help: '“Safe” tag in the POIs list.' },
-                    map: { kind: 'map', label: 'Pin on the parent map', section: 'Map', noPin: PIN_HELP },
+                    map: { kind: 'map', label: 'Pin on the parent map', section: 'Map', noPin: PIN_HELP, help: 'Inside an institution: choose which of its maps the pin is on.' },
                     tavern: {
                         kind: 'object', label: 'Tavern', optional: true, section: 'Tavern',
                         help: 'Gives the page a Fare tab (seeded menu and services), plus Rumours and Games tabs when they apply.',
@@ -453,6 +466,41 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                                 }
                             },
                             noPrayer: { kind: 'boolean', label: 'No prayer button', help: 'No blessing is drawn here.' },
+                        },
+                    },
+                    /* A university, a great library…: its own maps, its key locations and its people.
+                       Key locations are ordinary POIs whose “Sits in” is this place (each has its
+                       own page, pin and residents, and can be a tavern, a shop or a temple). */
+                    institution: {
+                        kind: 'object', label: 'Institution', optional: true, section: 'Institution',
+                        help: 'Gives the page Map, Locations and People tabs. Its key locations are the POIs that sit in it.',
+                        fields: {
+                            kind: { kind: 'enum', enum: 'institutionKind', label: 'Kind', required: true, help: 'Sets the wording of the page.' },
+                            hours: { kind: 'text', label: 'Opening hours' },
+                            maps: {
+                                kind: 'objects', label: 'Maps', itemLabel: 'name',
+                                help: 'One per floor, wing or ground. The page opens on the first; its key locations are pinned on one of them.',
+                                fields: {
+                                    id: { kind: 'text', label: 'Id', required: true, width: 'half', help: 'Lowercase, no spaces (ground, floor-1…). Pins point to it: do not change it once pins are placed.' },
+                                    name: { kind: 'text', label: 'Name', required: true, width: 'half', help: 'On the map picker: Ground Floor, East Wing…' },
+                                    image: { kind: 'mapImage', label: 'Map image' },
+                                    note: { kind: 'text', label: 'Caption', long: true, help: 'One or two lines shown under the map.' },
+                                },
+                            },
+                            groups: {
+                                kind: 'objects', label: 'People, by function', itemLabel: 'name',
+                                help: 'The People tab, in this order. Anyone whose home is here (or in one of its locations) and who is in no group is listed last.',
+                                fields: {
+                                    name: { kind: 'text', label: 'Group', required: true, help: 'Faculty of Abjuration, Archivists, Students…' },
+                                    desc: { kind: 'text', label: 'Description', long: true },
+                                    members: {
+                                        kind: 'objects', label: 'Members', itemLabel: 'npc', fields: {
+                                            npc: { kind: 'ref', to: ['npc'], label: 'NPC', required: true },
+                                            title: { kind: 'text', label: 'Title here', help: 'Empty = the NPC’s own role.' },
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                 },

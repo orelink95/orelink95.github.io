@@ -343,5 +343,14 @@
       }
     ],
     "biography": "A tattooed halfling who owns the Stoat and Cellar in Silverbrook."
+  },
+  {
+    "id": "ellia-mortemer",
+    "name": "Sylvira Savikas",
+    "role": "Great Reader",
+    "summary": "Savikas is Maltona's foremost expert on Planes",
+    "quote": "There are myriads of worlds beyond our own.",
+    "home": "great-readers-office",
+    "biography": "Often invited to Runebridge University, Savikas was once attacked on her way there. Despite her extensive spell casting abilities and her security detail, she came back scared and with a certain apprehension of leaving the confines of the Athenaeum. "
   }
 ]

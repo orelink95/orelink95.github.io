@@ -181,7 +181,7 @@
             let v = obj[k];
             if (f && f.kind === 'object' && v && typeof v === 'object') v = tidy(f.fields, v);
             else if (f && f.kind === 'objects' && Array.isArray(v)) v = v.map(o => tidy(f.fields, o)).filter(o => !isEmpty(o));
-            else if (f && f.kind === 'map' && v && typeof v === 'object') v = tidy({ x: {}, y: {}, icon: {}, layer: {} }, v);
+            else if (f && f.kind === 'map' && v && typeof v === 'object') v = tidy({ x: {}, y: {}, icon: {}, layer: {}, on: {} }, v);
             else if (f && f.kind === 'mapImage' && v && typeof v === 'object') v = tidy({ src: {}, width: {}, height: {} }, v);
             else if ((k === 'aliases' || (f && (f.kind === 'list' || f.kind === 'refs'))) && Array.isArray(v)) v = v.map(s => String(s).trim()).filter(Boolean);
             else if (typeof v === 'string' && f && f.kind !== 'markdown') v = v.trim();
@@ -413,6 +413,18 @@
             if (!groups.has(key)) groups.set(key, { ...(g || { label: '' }), first: i, recs: [] });
             groups.get(key).recs.push(r);
         });
+        // POIs: a place inside another POI comes right under it (and its own places under
+        // it in turn), wherever it sits in the file. The list indents it (renderList).
+        if (type === 'poi') groups.forEach(g => {
+            const here = new Set(g.recs.map(r => r.id));
+            const kids = new Map();
+            g.recs.forEach(r => { if (here.has(r.parent)) kids.set(r.parent, [...(kids.get(r.parent) || []), r]); });
+            const out = [], seen = new Set();
+            const walk = r => { if (seen.has(r.id)) return; seen.add(r.id); out.push(r); (kids.get(r.id) || []).forEach(walk); };
+            g.recs.filter(r => !here.has(r.parent)).forEach(walk);
+            g.recs.forEach(walk);       // a loop of parents (flagged by the checks) still shows
+            g.recs = out;
+        });
         return [...groups.values()].sort((a, b) => (a.rank ?? 0) - (b.rank ?? 0) || a.first - b.first);
     }
     function toast(msg) {
@@ -514,9 +526,18 @@
         const total = S.data[type].length;
         $('#list-title').innerHTML = `${esc(def.plural || def.label)} <span>${q ? `${groups.reduce((n, g) => n + g.recs.length, 0)} / ` : ''}${total}</span>`;
         $('#new-btn').title = `New ${def.label.toLowerCase()}`;
+        // A place inside another POI is indented under it, one step per level (while a
+        // search hides its parent it stands at the edge; its second line names the parent)
+        const shownIds = new Set(groups.flatMap(g => g.recs.map(r => r.id)));
+        const depthOf = r => {
+            let d = 0;
+            for (let p = r, hops = 0; type === 'poi' && hops < 6 && shownIds.has(p.parent) && typeOfId(p.parent) === 'poi'; hops++) { d++; p = S.store.get(p.parent); }
+            return d;
+        };
         const item = r => {
             const bad = recordErrors(type, r.id).length;
-            return `<button class="li ${r.id === S.sel ? 'active' : ''}" data-select="${esc(r.id)}">
+            const depth = depthOf(r);
+            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${depth ? 'nested' : ''}" ${depth ? `style="--depth:${depth}"` : ''} data-select="${esc(r.id)}">
                 <span class="t">${esc(r.name || '(no name)')}</span>
                 ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
@@ -551,7 +572,7 @@
        FORM FIELDS
        ================================================================= */
     const SECTION_ICONS = {
-        Essentials: 'badge', Details: 'tune', Lore: 'auto_stories', Map: 'map', 'On the page': 'web', Tavern: 'sports_bar', Shop: 'storefront', Temple: 'brightness_7',
+        Essentials: 'badge', Details: 'tune', Lore: 'auto_stories', Map: 'map', 'On the page': 'web', Institution: 'account_balance', Tavern: 'sports_bar', Shop: 'storefront', Temple: 'brightness_7',
         Identity: 'person', 'Where & ties': 'pin_drop', Campaigns: 'flag', Biography: 'history_edu', 'DM only': 'lock', Dossier: 'folder_open', Relations: 'handshake',
         Intelligence: 'visibility', 'Field evidence': 'folder_supervised', Look: 'palette', Text: 'subject', 'Picture & file': 'image', Stats: 'monitoring', 'Field notes': 'edit_note',
         Card: 'style', Description: 'subject', Story: 'auto_stories', Quests: 'flag', Party: 'groups', Allegiances: 'handshake', Spellbooks: 'webhook', Overview: 'summarize',
@@ -804,15 +825,21 @@
         const m = value || {};
         const rec = curRecord(), def = curDef();
         const hostType = def.parent && def.parent.length ? typeOfId(rec && rec.parent) : null;
-        const noMap = hostType && !TYPES[hostType].fields.mapImage;
+        // A place inside an institution (its parent is a POI) is pinned on one of the institution's maps
+        const hostMaps = hostType === 'poi' ? (((S.store.get(rec.parent) || {}).institution || {}).maps || []).filter(x => x && x.id) : null;
+        const noMap = hostType && (hostMaps ? !hostMaps.length : !TYPES[hostType].fields.mapImage);
         const head = `<div class="sub-head">${labelHtml(f, key)}${value ? `<button class="btn sm" data-action="remove" data-path="${pathAttr(path)}">Remove the pin</button>` : ''}</div>`;
-        if (noMap) return `${head}<p class="help">${esc(f.noPin || 'The parent has no map of its own.')}</p>`;
+        if (noMap) return `${head}<p class="help">${esc(hostMaps ? 'The place it sits in has no map yet: add one in that place’s Institution card, then pin this one on it.' : (f.noPin || 'The parent has no map of its own.'))}</p>`;
         return `${head}<div class="row map-row">
             <span class="mini">X</span><input class="num-s" type="number" data-path="${pathAttr([...path, 'x'])}" data-kind="number" value="${m.x ?? ''}" aria-label="X">
             <span class="mini">Y</span><input class="num-s" type="number" data-path="${pathAttr([...path, 'y'])}" data-kind="number" value="${m.y ?? ''}" aria-label="Y">
             <span class="mini">Icon</span>${iconInput(m.icon, pathAttr([...path, 'icon']))}
             ${f.layers ? `<span class="mini">Layer</span><select data-path="${pathAttr([...path, 'layer'])}" data-kind="enum" aria-label="Layer"><option value="">—</option>
                 ${S.store.enumOptions('mapLayer').map(o => `<option ${o.id === m.layer ? 'selected' : ''}>${esc(o.id)}</option>`).join('')}</select>` : ''}
+            ${hostMaps ? `<span class="mini">Map</span><select data-path="${pathAttr([...path, 'on'])}" data-kind="enum" aria-label="Map">
+                <option value="">${esc(hostMaps[0].name || hostMaps[0].id)} (the first)</option>
+                ${hostMaps.slice(1).map(x => `<option value="${esc(x.id)}" ${x.id === m.on ? 'selected' : ''}>${esc(x.name || x.id)}</option>`).join('')}
+                ${m.on && !hostMaps.some(x => x.id === m.on) ? `<option value="${esc(m.on)}" selected>⚠ ${esc(m.on)} (no such map)</option>` : ''}</select>` : ''}
             <button class="btn" data-action="place" data-path="${pathAttr(path)}"><span class="material-symbols-outlined">add_location_alt</span>Place on the map</button>
         </div>${helpHtml(f)}`;
     }
@@ -1311,6 +1338,20 @@
         if (!poi) return [];
         const code = marketCode(), M = ATH.market, out = [];
         const tavern = poi.tavern && poi.tavern.tier, shop = poi.shop && poi.shop.kind, temple = poi.temple;
+        // Institution (or any POI that others sit in): its places and where each is pinned
+        const I = ATH.institution, inside = S.store.children(poi, 'poi');
+        if (I && (I.block(poi) || inside.length)) {
+            const maps = I.maps(poi), folk = I.people(S.store, poi);
+            const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+            out.push(`<div class="box mkt-prev"><h4>${I.block(poi) ? esc(I.kind(S.store, poi).label) : 'Places inside'} <span>${inside.length}</span></h4>
+                ${inside.length ? `<ul class="mkt-list">${inside.map(p => {
+                    const on = I.mapOf(poi, p);
+                    return `<li class="${on ? 'in' : 'out'}" data-jump="${esc(p.id)}"><span>${esc(p.name)}</span><span class="truth">${on ? esc(on.name || on.id) : 'no pin'}</span></li>`;
+                }).join('')}</ul>` : '<p class="muted">No place inside it yet.</p>'}
+                ${I.block(poi) ? hint(`${plural(maps.length, 'map')} with an image · ${plural(folk.groups.length, 'group')} · ${plural(folk.groups.reduce((n, g) => n + g.members.length, 0) + folk.others.length, 'person').replace('persons', 'people')}. Its places are the POIs whose “Sits in” is this one.`) : ''}
+                ${I.block(poi) && !maps.length ? '<p class="warn">No map with an image, width and height: no Map tab.</p>' : ''}
+                ${addHere('poi', rec.id, 'Place inside this one')}</div>`);
+        }
         if (tavern || shop) out.push(`<div class="box menu-prev"><h4>Market code</h4>${codeInput()}${hint(`Menus, wares and the rumour order below use this code. The live code (${esc(S.store.settings.tavernCode || 'none')}) is in Settings.`)}</div>`);
         if (tavern) {
             out.push(`<div class="box menu-prev"><h4>Menu preview</h4>
@@ -1462,7 +1503,10 @@
     function newRecord(preset = {}) {
         const type = S.view.key, def = TYPES[type];
         const current = curRecord();
-        const guessParent = current && def.place ? ((def.parent || []).includes(typeOfId(current.id)) ? current.id : current.parent) : '';
+        // "+ New" beside an open record: a child of it when it can hold one, else its sibling.
+        // A POI holds other POIs only when it is an institution (or when asked: preset.parent).
+        const holds = current && (def.parent || []).includes(typeOfId(current.id)) && (typeOfId(current.id) !== 'poi' || !!(current.institution && current.institution.kind));
+        const guessParent = preset.parent || (current && def.place ? (holds ? current.id : current.parent) : '');
         const dlg = modal(`<h3>New ${esc(def.label.toLowerCase())}</h3>
             <div class="grid">
                 <div class="fld w-12"><label for="nr-name">Name</label><input id="nr-name" autofocus></div>
@@ -1598,14 +1642,22 @@
         const rec = curRecord(), def = curDef();
         if (typeof L === 'undefined') { alertBox('Map unavailable', '<p>Leaflet could not be loaded (offline?). Type X and Y instead.</p>'); return; }
         const host = def.parent && def.parent.length ? S.store.get(rec.parent) : S.store.world;
-        const img = host && host.mapImage;
+        const cur = getAt(rec, path) || {};
+        let img = host && host.mapImage;
+        // Inside an institution: the map chosen in “Map” (else its first one)
+        const inInstitution = host && typeOfId(host.id) === 'poi';
+        let onMap = null;
+        if (inInstitution) {
+            const maps = ((host.institution || {}).maps || []).filter(x => x && x.id);
+            onMap = cur.on ? maps.find(x => x.id === cur.on) : maps[0];
+            img = onMap && onMap.image;
+        }
         if (!img || !img.src || !img.width || !img.height) {
-            alertBox('No map to place on', `<p>${host ? `“${esc(host.name)}”` : 'The parent'} has no map image with a width and height yet.</p>`);
+            alertBox('No map to place on', `<p>${host ? `“${esc(onMap ? `${host.name} · ${onMap.name || onMap.id}` : host.name)}”` : 'The parent'} has no map image with a width and height yet.</p>`);
             return;
         }
-        const cur = getAt(rec, path) || {};
         let pos = cur.x != null && cur.y != null ? [cur.y, cur.x] : [img.height / 2, img.width / 2];
-        const dlg = modal(`<h3>Place “${esc(rec.name)}” on ${esc(host.name || 'the map')}</h3>
+        const dlg = modal(`<h3>Place “${esc(rec.name)}” on ${esc(onMap ? `${host.name} · ${onMap.name || onMap.id}` : (host.name || 'the map'))}</h3>
             <p class="muted" style="margin-top:-6px">Click the map or drag the gold pin. Other pins on this map are shown in white.</p>
             <div id="placer"></div>
             <div class="foot"><span id="placer-pos" class="muted" style="margin-right:auto"></span>
@@ -1617,7 +1669,8 @@
         const sibs = def.parent && def.parent.length
             ? Object.keys(TYPES).flatMap(t => TYPES[t].place ? S.data[t].filter(r => r.parent === rec.parent) : [])
             : S.data[S.view.key];
-        sibs.filter(r => r !== rec && r.map && r.map.x != null).forEach(r =>
+        const firstMapId = inInstitution ? (((host.institution || {}).maps || []).find(x => x && x.id) || {}).id : null;
+        sibs.filter(r => r !== rec && r.map && r.map.x != null && (!inInstitution || (r.map.on || firstMapId) === onMap.id)).forEach(r =>
             L.marker([r.map.y, r.map.x], { icon: L.divIcon({ className: '', html: '<div class="pin-dot"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }) })
                 .bindTooltip(r.name).addTo(map));
         const me = L.marker(pos, { draggable: true, icon: L.divIcon({ className: '', html: '<div class="pin-dot me"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(map);
@@ -1777,7 +1830,7 @@
                 // "+ Rumour / + Notice" from a POI or settlement: open the new-record dialog on that type
                 S.search = ''; $('#search').value = '';
                 select({ kind: 'type', key: t.dataset.type }, null);
-                newRecord({ where: t.dataset.where });
+                newRecord(t.dataset.type === 'poi' ? { parent: t.dataset.where } : { where: t.dataset.where });
                 break;
             }
             case 'found-add': {

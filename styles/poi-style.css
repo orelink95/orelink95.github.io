@@ -13,6 +13,8 @@
     --poi-panel-deep: #1a1c1a;
     --poi-paper: #201b14;
     --poi-paper-edge: #3a2d1a;
+    --poi-paper-top: #241e16;                        /* top of the tab strip */
+    --poi-paper-glow: rgba(233, 193, 118, 0.07);    /* light from above on the card */
     max-width: 1400px;
     width: 100%;
     margin: 0 auto;
@@ -161,7 +163,7 @@
 .poi-menu-card {
     position: relative;
     background:
-        radial-gradient(ellipse at top, rgba(233, 193, 118, 0.07), transparent 60%),
+        radial-gradient(ellipse at top, var(--poi-paper-glow), transparent 60%),
         var(--poi-paper);
     border: 1px solid var(--poi-paper-edge);
     outline: 1px solid rgba(233, 193, 118, 0.12);
@@ -256,7 +258,7 @@
     padding: 0.6rem 0.75rem 0;
     overflow-x: auto;
     scrollbar-width: none;
-    background: linear-gradient(to bottom, #241e16, var(--poi-paper));
+    background: linear-gradient(to bottom, var(--poi-paper-top), var(--poi-paper));
     border-bottom: 1px solid rgba(233, 193, 118, 0.18);
     border-radius: 0.25rem 0.25rem 0 0;
 }
@@ -403,3 +405,306 @@
 }
 .poi-keeper:hover { border-color: rgba(233, 193, 118, 0.6); background: rgba(233, 193, 118, 0.08); }
 .poi-keeper img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; filter: grayscale(0.4); }
+
+/* =====================================================================
+   INSTITUTIONS — a university, a great library… (poi.institution)
+   Map · Locations · People tabs of the ledger card (scripts/poi-scripts.js).
+   ===================================================================== */
+
+/* The card needs room for the map: lore in a narrower column beside it */
+@media (min-width: 1100px) {
+    .poi-grid--wide { grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.6fr); }
+}
+
+.poi-within-map {
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--poi-outline);
+    margin-left: 0.4rem;
+}
+
+/* Small text buttons and links (Show on the map, Open the entry…) */
+.poi-textbtn {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    min-height: 40px;
+    padding: 0.25rem 0;
+    border: 0; background: none;
+    color: var(--poi-gold);
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    cursor: pointer;
+    transition: color .2s;
+}
+.poi-textbtn:hover { color: #ffdea5; }
+.poi-textbtn:focus-visible { outline: 2px solid var(--poi-gold); outline-offset: 3px; border-radius: 2px; }
+.poi-textbtn .material-symbols-outlined { font-size: 16px; }
+
+/* --- Map tab --- */
+.poi-mappicker {
+    display: flex;
+    justify-content: safe center;
+    gap: 0.4rem;
+    margin: 0 0 1rem;
+    padding: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.poi-mappicker::-webkit-scrollbar { display: none; }
+.poi-mapbtn {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0.4rem 1rem;
+    border: 1px solid rgba(233, 193, 118, 0.25);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--poi-ink-dim);
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: color .2s, border-color .2s, background-color .2s;
+}
+.poi-mapbtn:hover { color: var(--poi-ink); border-color: rgba(233, 193, 118, 0.5); }
+.poi-mapbtn.is-active { color: #201b14; background: var(--poi-gold); border-color: var(--poi-gold); }
+.poi-mapbtn:focus-visible { outline: 2px solid var(--poi-gold); outline-offset: 2px; }
+
+/* The map sits in a frame like a chart under glass: a hatched mat in the colour of the
+   card, a gold fillet, tooled corners. The frame takes the shape of the map image
+   (--map-ratio, set by the script), so the image fills it with no dark margins;
+   --map-max-h keeps a tall plan on the screen. */
+.poi-mapframe {
+    --map-ratio: 1.5;
+    --map-pad: 14px;
+    --map-max-h: min(76vh, 760px);
+    position: relative;
+    isolation: isolate;          /* Leaflet's z-indexes stay under the sticky tabs and the site header */
+    box-sizing: border-box;
+    width: min(100%, calc(var(--map-max-h) * var(--map-ratio) + 2 * var(--map-pad)));
+    margin: 0 auto;
+    padding: var(--map-pad);
+    border: 1px solid rgba(233, 193, 118, 0.38);
+    border-radius: 3px;
+    background:
+        repeating-linear-gradient(45deg, rgba(233, 193, 118, 0.045) 0 1px, transparent 1px 7px),
+        repeating-linear-gradient(-45deg, rgba(233, 193, 118, 0.045) 0 1px, transparent 1px 7px),
+        radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.45)),
+        color-mix(in srgb, var(--poi-paper) 60%, #000);
+    box-shadow:
+        inset 0 0 0 3px color-mix(in srgb, var(--poi-paper) 35%, #000),
+        inset 0 0 0 4px rgba(233, 193, 118, 0.16),
+        0 14px 34px rgba(0, 0, 0, 0.5);
+}
+/* tooled corners, over the corners of the map */
+.poi-mapframe::before {
+    content: '';
+    position: absolute; inset: 5px;
+    z-index: 1100;
+    pointer-events: none;
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44' fill='none' stroke='%23e9c176' stroke-width='1.2'%3E%3Cg transform='rotate(0 22 22)'%3E%3Cpath d='M1.5 43V11a9.5 9.5 0 0 1 9.5-9.5h32'/%3E%3Cpath d='M6.5 43V14a7.5 7.5 0 0 1 7.5-7.5h29' opacity='.45'/%3E%3Cpath d='M1.5 24h5M24 1.5v5' opacity='.7'/%3E%3Cpath d='M14 9.5l4.5 4.5-4.5 4.5L9.5 14z' fill='%23e9c176' stroke='none'/%3E%3C/g%3E%3C/svg%3E") left top / 44px 44px no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44' fill='none' stroke='%23e9c176' stroke-width='1.2'%3E%3Cg transform='rotate(90 22 22)'%3E%3Cpath d='M1.5 43V11a9.5 9.5 0 0 1 9.5-9.5h32'/%3E%3Cpath d='M6.5 43V14a7.5 7.5 0 0 1 7.5-7.5h29' opacity='.45'/%3E%3Cpath d='M1.5 24h5M24 1.5v5' opacity='.7'/%3E%3Cpath d='M14 9.5l4.5 4.5-4.5 4.5L9.5 14z' fill='%23e9c176' stroke='none'/%3E%3C/g%3E%3C/svg%3E") right top / 44px 44px no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44' fill='none' stroke='%23e9c176' stroke-width='1.2'%3E%3Cg transform='rotate(180 22 22)'%3E%3Cpath d='M1.5 43V11a9.5 9.5 0 0 1 9.5-9.5h32'/%3E%3Cpath d='M6.5 43V14a7.5 7.5 0 0 1 7.5-7.5h29' opacity='.45'/%3E%3Cpath d='M1.5 24h5M24 1.5v5' opacity='.7'/%3E%3Cpath d='M14 9.5l4.5 4.5-4.5 4.5L9.5 14z' fill='%23e9c176' stroke='none'/%3E%3C/g%3E%3C/svg%3E") right bottom / 44px 44px no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44' fill='none' stroke='%23e9c176' stroke-width='1.2'%3E%3Cg transform='rotate(270 22 22)'%3E%3Cpath d='M1.5 43V11a9.5 9.5 0 0 1 9.5-9.5h32'/%3E%3Cpath d='M6.5 43V14a7.5 7.5 0 0 1 7.5-7.5h29' opacity='.45'/%3E%3Cpath d='M1.5 24h5M24 1.5v5' opacity='.7'/%3E%3Cpath d='M14 9.5l4.5 4.5-4.5 4.5L9.5 14z' fill='%23e9c176' stroke='none'/%3E%3C/g%3E%3C/svg%3E") left bottom / 44px 44px no-repeat;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.8));
+}
+/* glass: a soft shadow round the edges of the map, under the pins */
+.poi-mapframe::after {
+    content: '';
+    position: absolute; inset: var(--map-pad);
+    z-index: 450;
+    pointer-events: none;
+    box-shadow: inset 0 0 0 1px rgba(233, 193, 118, 0.5), inset 0 0 70px rgba(0, 0, 0, 0.5), inset 0 0 14px rgba(0, 0, 0, 0.55);
+}
+.poi-map { aspect-ratio: var(--map-ratio); min-height: 200px; background: #0b0b0a; }
+.poi-map.leaflet-container { font-family: 'Manrope', sans-serif; }
+/* zoom buttons in the colours of the frame */
+.poi-map .leaflet-bar { margin: 0 20px 20px 0; border: 1px solid rgba(233, 193, 118, 0.45); border-radius: 3px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6); }
+.poi-map .leaflet-bar a {
+    width: 34px; height: 34px; line-height: 32px;
+    background: color-mix(in srgb, var(--poi-paper) 80%, #000);
+    color: var(--poi-gold);
+    border-bottom-color: rgba(233, 193, 118, 0.25);
+}
+.poi-map .leaflet-bar a:hover, .poi-map .leaflet-bar a:focus-visible { background: rgba(233, 193, 118, 0.18); color: #ffdea5; }
+.poi-map .leaflet-bar a.leaflet-disabled { background: color-mix(in srgb, var(--poi-paper) 80%, #000); color: rgba(233, 193, 118, 0.3); }
+@media (max-width: 639px) {
+    .poi-mapframe { --map-pad: 9px; --map-max-h: 68vh; }
+    .poi-mapframe::before { inset: 3px; background-size: 34px 34px; }
+}
+
+.poi-map-note {
+    margin: 0.75rem 0 0;
+    text-align: center;
+    font-family: 'Newsreader', serif; font-style: italic; font-size: 0.95rem;
+    color: var(--poi-outline);
+}
+
+/* Under the map: the places of this map, or the one chosen */
+.poi-spot { margin-top: 1.5rem; }
+.poi-spot__hint {
+    margin: 0 0 0.75rem;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.25em;
+    color: var(--poi-outline);
+}
+.poi-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+.poi-chip {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    min-height: 40px;
+    padding: 0.3rem 0.9rem 0.3rem 0.6rem;
+    border: 1px solid rgba(233, 193, 118, 0.25);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--poi-ink);
+    font-family: 'Noto Serif', serif; font-size: 0.9rem;
+    cursor: pointer;
+    transition: border-color .2s, background-color .2s, color .2s;
+}
+.poi-chip img { width: 16px; height: 16px; object-fit: contain; filter: brightness(0) invert(1); opacity: .7; }
+.poi-chip:hover { border-color: rgba(233, 193, 118, 0.6); background: rgba(233, 193, 118, 0.08); color: #ffdea5; }
+.poi-chip:focus-visible { outline: 2px solid var(--poi-gold); outline-offset: 2px; }
+.poi-chip.is-danger { border-color: rgba(255, 180, 171, 0.35); color: #ffb4ab; }
+
+.poi-spot__card {
+    padding: 1.25rem 1.25rem 1rem;
+    border: 1px solid rgba(233, 193, 118, 0.22);
+    border-left: 2px solid var(--poi-gold);
+    border-radius: 0 0.25rem 0.25rem 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+.poi-spot__card.is-danger { border-color: rgba(255, 180, 171, 0.3); border-left-color: #ffb4ab; }
+.poi-spot__card.is-danger .poi-eyebrow { color: #ffb4ab; }
+.poi-spot__title { margin: 0; font-family: 'Noto Serif', serif; font-size: 1.4rem; font-weight: 700; color: var(--poi-ink); }
+.poi-spot__sub { margin: 0.2rem 0 0; font-family: 'Newsreader', serif; font-style: italic; font-size: 1.05rem; color: var(--poi-ink-dim); }
+.poi-spot__card .poi-prose { margin-top: 0.9rem; }
+.poi-spot__folk { justify-content: flex-start; margin: 1.1rem 0 0; }
+.poi-spot__folk .poi-keepers__list { justify-content: flex-start; }
+.poi-spot__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; margin-top: 1.1rem; }
+
+/* --- Locations tab --- */
+.poi-places__group + .poi-places__group { margin-top: 2rem; }
+.poi-places__list { display: grid; gap: 0.9rem; }
+@media (min-width: 1100px) { .poi-grid--wide .poi-places__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.poi-place {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 0.9rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0.25rem;
+    background: rgba(0, 0, 0, 0.2);
+    transition: border-color .2s;
+}
+.poi-place:hover { border-color: rgba(233, 193, 118, 0.35); }
+.poi-place.is-danger { border-color: rgba(255, 180, 171, 0.25); }
+.poi-place__thumb { display: block; width: 72px; height: 72px; border-radius: 0.25rem; overflow: hidden; background: rgba(233, 193, 118, 0.06); }
+.poi-place__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.poi-place__thumb--icon { display: flex; align-items: center; justify-content: center; border: 1px solid var(--poi-line); }
+.poi-place__thumb--icon img { width: 28px; height: 28px; object-fit: contain; filter: brightness(0) invert(1); opacity: .55; }
+.poi-place__name { margin: 0; font-family: 'Noto Serif', serif; font-size: 1.05rem; font-weight: 700; line-height: 1.25; color: var(--poi-gold); }
+.poi-place__name a:hover { color: #ffdea5; }
+.poi-place.is-danger .poi-place__name { color: #ffb4ab; }
+.poi-place__sub { margin: 0.1rem 0 0; font-family: 'Newsreader', serif; font-style: italic; color: var(--poi-ink-dim); }
+.poi-place__tags { display: flex; flex-wrap: wrap; gap: 0.3rem 0.4rem; margin: 0.45rem 0 0; }
+.poi-place__tags > span {
+    display: inline-flex; align-items: center; gap: 0.2rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid rgba(233, 193, 118, 0.2);
+    border-radius: 999px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--poi-outline);
+}
+.poi-place__count .material-symbols-outlined { font-size: 12px; }
+.poi-place__text { margin-top: 0.5rem; font-family: 'Newsreader', serif; font-size: 0.98rem; line-height: 1.5; color: var(--poi-ink-dim); }
+.poi-place__text p {
+    margin: 0;
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4;
+    overflow: hidden;
+}
+.poi-place__actions { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin-top: 0.35rem; }
+@media (max-width: 479px) {
+    .poi-place { grid-template-columns: 56px minmax(0, 1fr); gap: 0.75rem; }
+    .poi-place__thumb { width: 56px; height: 56px; }
+}
+
+/* --- People tab --- */
+.poi-roster__group + .poi-roster__group { margin-top: 2rem; }
+.poi-roster__desc {
+    max-width: 46rem;
+    margin: -0.4rem auto 1rem;
+    text-align: center;
+    font-family: 'Newsreader', serif; font-style: italic; font-size: 1rem;
+    color: var(--poi-outline);
+}
+.poi-roster__list { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+.poi-npc-at {
+    display: flex; align-items: center; gap: 0.15rem;
+    margin-top: 3px;
+    font-family: 'Newsreader', serif; font-style: italic; font-size: 0.85rem;
+    color: var(--poi-ink-dim);
+}
+.poi-npc-at .material-symbols-outlined { font-size: 13px; color: var(--poi-outline); }
+.poi-npc > span { min-width: 0; }
+
+/* Pins and pop-ups of the institution maps: same look as the settlement maps */
+.poi-map .region-pin {
+    border: 2px solid #f8fafc;
+    background-color: var(--color-primary-container);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+}
+.poi-map .region-pin.region-pin--danger { border-color: #ff5252; background-color: #3b0909; }
+.poi-map .map-popup { padding: 0.25rem; text-align: center; }
+.poi-map .map-popup__title {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-family: var(--font-headline);
+    font-size: 1.125rem; line-height: 1.5rem;
+    color: var(--color-secondary);
+}
+.poi-map .map-popup__title--danger { color: #ffb4ab; }
+.poi-map .map-popup__subtitle { font-family: 'Newsreader', serif; font-style: italic; color: var(--poi-ink-dim); }
+.poi-map a.map-popup__button { color: var(--color-secondary); }
+
+/* ---------------------------------------------------------------------
+   Institution card: not a bill of fare, so not paper. One look per kind
+   (institutionKind in data/schema.js); gold stays the accent everywhere.
+   A kind with no rule of its own keeps the generic look (.poi-ledger--inst).
+   --------------------------------------------------------------------- */
+/* Generic: the green of the Atlas maps */
+.poi-ledger--inst {
+    --poi-paper: #151d18;
+    --poi-paper-edge: #2a3b2f;
+    --poi-paper-top: #19241d;
+    --poi-paper-glow: rgba(179, 205, 182, 0.06);
+}
+
+/* Library: oxblood leather, gold tooling (a double fillet inside the edge) */
+.poi-ledger--inst-library {
+    --poi-paper: #221315;
+    --poi-paper-edge: #4a2226;
+    --poi-paper-top: #2b171a;
+    --poi-paper-glow: rgba(233, 193, 118, 0.06);
+    outline-color: rgba(233, 193, 118, 0.22);
+    box-shadow:
+        inset 0 0 0 12px var(--poi-paper),
+        inset 0 0 0 13px rgba(233, 193, 118, 0.10),
+        inset 0 0 90px rgba(0, 0, 0, 0.45),
+        0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+/* University: ink blue with the faint grid of a drafting table */
+.poi-ledger--inst-university {
+    --poi-paper: #131a25;
+    --poi-paper-edge: #263449;
+    --poi-paper-top: #172030;
+    --poi-paper-glow: rgba(160, 190, 230, 0.07);
+    background:
+        radial-gradient(ellipse at top, var(--poi-paper-glow), transparent 60%),
+        repeating-linear-gradient(0deg, rgba(160, 190, 230, 0.035) 0 1px, transparent 1px 28px),
+        repeating-linear-gradient(90deg, rgba(160, 190, 230, 0.035) 0 1px, transparent 1px 28px),
+        var(--poi-paper);
+}
+/* the sticky tab strip stays opaque over the grid */
+.poi-ledger--inst .poi-tabs { background: linear-gradient(to bottom, var(--poi-paper-top), var(--poi-paper)); }

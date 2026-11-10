@@ -213,6 +213,9 @@
             background: none; cursor: pointer;
         }
         .li:hover { background: #ffffff08; }
+        /* a POI inside another POI: indented under it, with a rule down the side */
+        .li.nested { width: auto; margin-left: calc(var(--depth, 1) * 16px); padding-left: 12px; border-radius: 0 8px 8px 0; box-shadow: -1px 0 0 #e9c17640; }
+        .li.nested .t { font-weight: 500; font-size: 13px; }
         .li.active { background: #e9c17614; border-color: #e9c1763d; }
         .li .t { font-weight: 600; font-size: 13.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .li.active .t { color: var(--gold); }
@@ -728,6 +731,7 @@
     <script src="../scripts/core/seal.js"></script>
     <script src="../scripts/tavern-menu.js"></script>
     <script src="../scripts/market.js"></script>
+    <script src="../scripts/institution.js"></script>
     <script src="../scripts/notice-board.js"></script>
     <script src="../scripts/loot-card.js"></script>
     <script src="../scripts/spell-card.js"></script>

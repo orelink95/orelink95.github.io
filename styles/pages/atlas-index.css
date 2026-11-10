@@ -416,3 +416,21 @@
         display: block;
     }
 }
+
+/* A POI that holds others (an institution and its halls): how many, under its location */
+.poi-card__inside {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+    padding: 0.15rem 0.55rem 0.15rem 0.4rem;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    font-family: var(--font-label);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-on-surface);
+}
+.poi-card__inside .material-symbols-outlined { font-size: 14px; color: var(--color-secondary); }

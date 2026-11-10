@@ -83,7 +83,8 @@
       "cha": 14
     },
     "factions": [
-      "alabaster-wardens"
+      "alabaster-wardens",
+      "caeraotrom-faction"
     ],
     "sealedSecret": {
       "v": 1,

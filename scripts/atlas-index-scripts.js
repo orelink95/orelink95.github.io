@@ -8,6 +8,9 @@
 //     The menus narrow each other: pick a continent, the country menu only
 //     offers its countries.
 // Countries marked "unlisted" stay off the Countries list, as on the continent page.
+// POIs inside another POI (the halls of a university…) stay off the POI list too:
+// the card of the place that holds them says how many it has, and its page lists
+// them. A name search still finds them.
 // Names come from Atlas.LABELS (scripts/atlas-common.js).
 // =====================================================================
 
@@ -67,7 +70,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         else if (type === 'settlement') where = (at('country') || {}).name || '';
         // Settlements without real districts have one wrapper district with the
         // settlement's own name: drop duplicates so it reads "Deercrest", not "Deercrest, Deercrest"
-        else where = [district && (district.shortName || district.name), (at('settlement') || at('country') || {}).name]
+        // A place inside an institution names it first: "Caeraotrom Athenæum, Lemerolai"
+        else where = [(at('poi') || {}).name, district && (district.shortName || district.name), (at('settlement') || at('country') || {}).name]
             .filter((v, i, a) => v && a.indexOf(v) === i).join(', ');
 
         // Status pill
@@ -87,6 +91,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             pill,
             icon: type === 'poi' ? (POI_ICONS[(rec.map || {}).icon] || 'location_on') : label.icon,
             cta: type === 'poi' ? Atlas.cta(store, rec) : 'Open the entry',
+            // A place inside another POI: found by search only. `inside` = how many this one holds
+            nested: type === 'poi' && !!at('poi'),
+            inside: type === 'poi' ? store.descendants(rec, 'poi').length : 0,
             // ids of the places above, for the menus
             above: Object.fromEntries(filterTypes.map(t => [t, (at(t) || {}).id || '']))
         };
@@ -139,6 +146,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="poi-card__caption">
                         <h2 class="poi-card__name">${it.name}</h2>
                         ${it.where ? `<p class="poi-card__region">${it.where}</p>` : ''}
+                        ${it.inside ? `<p class="poi-card__inside"><span class="material-symbols-outlined" aria-hidden="true">meeting_room</span>${it.inside} ${it.inside === 1 ? 'place' : 'places'} within</p>` : ''}
                         ${it.subtitle ? `<p class="poi-card__hint">${it.subtitle}</p>` : ''}
                     </div>
                     ${pill}
@@ -158,15 +166,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     function render() {
         refreshMenus();
         const q = search.value.trim().toLowerCase();
+        const listed = items.filter(it => !it.nested);
         const shown = items.filter(it =>
-            (!q || it.search.includes(q)) &&
+            (q ? it.search.includes(q) : !it.nested) &&
             menus.every(m => m.select.value === 'all' || it.above[m.type] === m.select.value));
 
         $('index-grid').innerHTML = shown.length
             ? shown.map(card).join('')
             : `<p class="poi-grid__empty">No ${label.many.toLowerCase()} found in these records.</p>`;
-        $('index-count').textContent = shown.length === items.length
-            ? `${items.length} ${items.length === 1 ? label.one : label.many} on record`
+        const within = items.length - listed.length;
+        $('index-count').textContent = shown.length === listed.length && !q
+            ? `${listed.length} ${listed.length === 1 ? label.one : label.many} on record${within ? `, and ${within} more within them` : ''}`
             : `Showing ${shown.length} of ${items.length}`;
     }
 

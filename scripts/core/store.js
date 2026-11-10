@@ -144,6 +144,10 @@
             return isAll(c) ? list.length > 0 : list.includes(c);
         }
 
+        // The maps of an institution that have an image (poi.institution.maps)
+        const institutionMaps = poi => ((poi && poi.institution && poi.institution.maps) || [])
+            .filter(m => m && m.id && m.image && m.image.src);
+
         /* ---------- hierarchy ---------- */
         const childIndex = new Map();
         for (const [type, list] of Object.entries(byType)) {
@@ -349,6 +353,7 @@
                     break;
                 case 'map':
                     if (typeof v !== 'object' || typeof v.x !== 'number' || typeof v.y !== 'number') error(`${where}: needs numeric x and y`);
+                    if (v.on !== undefined && typeof v.on !== 'string') error(`${where}.on: expected the id of a map`);
                     if (v.layer && !enumValues('mapLayer').includes(v.layer)) error(`${where}.layer: unknown layer "${v.layer}"`);
                     else if (v.layer && !f.layers) warn(`${where}.layer: only the world map has layers, so it is ignored here`);
                     break;
@@ -409,7 +414,9 @@
                         }
                         if (rec.map) {
                             const host = def.parent.length === 0 ? singletons.world : parent(rec);
-                            if (host && !host.mapImage) warnings.push(`${where}.map: pinned on ${host.id || 'the world'}, which has no map image`);
+                            // A POI inside an institution is pinned on one of the institution's maps
+                            const hostMaps = host && typeOfRec.get(host) === 'poi' ? institutionMaps(host) : [];
+                            if (host && !host.mapImage && !hostMaps.length) warnings.push(`${where}.map: pinned on ${host.id || 'the world'}, which has no map image`);
                         }
                     } else if (rec.parent !== undefined) {
                         warnings.push(`${where}.parent: ${type} is not a place; use a reference field instead`);
@@ -505,6 +512,34 @@
                 if (d.artifact) {
                     if (artifactOf.has(d.artifact)) warnings.push(`[deity] ${d.id}.artifact: "${d.artifact}" is already the artifact of ${artifactOf.get(d.artifact)}`);
                     else artifactOf.set(d.artifact, d.id);
+                }
+            }
+            // Institutions: map ids, and the pins of the places inside them
+            for (const p of byType.poi || []) {
+                const inst = p.institution || {};
+                const ids = new Set();
+                (inst.maps || []).forEach((m, i) => {
+                    if (!m || !m.id) return;
+                    if (!ID_RE.test(m.id)) errors.push(`[poi] ${p.id}.institution.maps[${i}].id: lowercase letters, digits, - or _ only`);
+                    else if (ids.has(m.id)) errors.push(`[poi] ${p.id}.institution.maps[${i}].id: "${m.id}" is used twice`);
+                    ids.add(m.id);
+                });
+                (inst.groups || []).forEach((g, i) => {
+                    const seenNpc = new Set();
+                    ((g && g.members) || []).forEach((m, j) => {
+                        if (!m || !m.npc) return;
+                        if (seenNpc.has(m.npc)) warnings.push(`[poi] ${p.id}.institution.groups[${i}].members[${j}]: "${m.npc}" is listed twice in this group`);
+                        seenNpc.add(m.npc);
+                    });
+                });
+                if (p.institution && !(inst.maps || []).length && !(inst.groups || []).length && !children(p, 'poi').length) {
+                    warnings.push(`[poi] ${p.id}.institution: no map, no group and no place inside it yet, so its page shows nothing more`);
+                }
+                const host = parent(p);
+                const on = p.map && p.map.on;
+                if (on && (!host || typeOfRec.get(host) !== 'poi')) warnings.push(`[poi] ${p.id}.map.on: only a place inside an institution chooses a map, so it is ignored`);
+                else if (on && !((host.institution || {}).maps || []).some(m => m && m.id === on)) {
+                    errors.push(`[poi] ${p.id}.map.on: "${on}" is not a map of ${host.id}`);
                 }
             }
             for (const r of byType.rumour || []) {

@@ -14,6 +14,12 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <!-- Leaflet: the maps of an institution (Map tab) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link href="styles/atlas-style.css" rel="stylesheet" />
     <link href="styles/pages/poi.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
     <link href="styles/poi-style.css" rel="stylesheet" />
@@ -25,6 +31,7 @@
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/atlas-common.js"></script>
+    <script src="scripts/institution.js"></script>
     <script src="scripts/tavern-menu.js"></script>
     <script src="scripts/market.js"></script>
     <script src="scripts/notice-board.js"></script>
@@ -56,6 +63,11 @@
                     <p id="poi-subtitle" class="poi-subtitle"></p>
 
                     <dl class="poi-facts">
+                        <!-- a key location of an institution: link back to it (and to its pin) -->
+                        <div id="poi-within-fact" hidden>
+                            <dt>Within</dt>
+                            <dd id="poi-within"></dd>
+                        </div>
                         <div id="poi-tier-fact" hidden>
                             <dt>Standing</dt>
                             <dd id="poi-tier"></dd>
@@ -98,9 +110,39 @@
                 </div>
 
                 <!-- RIGHT (first on phones): one tab per role of the place
-                     Fare (tavern) · Wares (shop) · Shrine (temple) · Rumours · Games (tavern) · Board (notices) -->
+                     Map · Locations · People (institution) · Fare (tavern) · Wares (shop) · Shrine (temple)
+                     · Rumours · Games (tavern) · Board (notices) -->
                 <section id="poi-ledger" class="poi-menu-card poi-ledger" hidden>
                     <div id="poi-tabs" class="poi-tabs" role="tablist" aria-label="What this place offers"></div>
+
+                    <!-- Institution: its maps (one per floor, wing…) and the places pinned on them -->
+                    <div id="tab-map" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">The Chart Room</p>
+                        <h3 id="poi-map-heading" class="poi-menu-heading">Plan of the Grounds</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-map-picker" class="poi-mappicker" role="group" aria-label="Choose a map" hidden></div>
+                        <div class="poi-mapframe">
+                            <div id="poi-map" class="poi-map"></div>
+                        </div>
+                        <p id="poi-map-note" class="poi-map-note" hidden></p>
+                        <div id="poi-spot" class="poi-spot" aria-live="polite"></div>
+                    </div>
+
+                    <!-- The POIs that sit in this one, map by map -->
+                    <div id="tab-places" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">Within These Walls</p>
+                        <h3 id="poi-places-heading" class="poi-menu-heading">Places Within</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-places" class="poi-places"></div>
+                    </div>
+
+                    <!-- Institution: its people, by function (institution.groups) -->
+                    <div id="tab-people" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">The Register</p>
+                        <h3 id="poi-roster-heading" class="poi-menu-heading">Who’s Who</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-roster" class="poi-roster"></div>
+                    </div>
 
                     <div id="tab-fare" class="poi-tabpanel" role="tabpanel" hidden>
                         <p class="poi-eyebrow poi-center">Today at the Bar</p>

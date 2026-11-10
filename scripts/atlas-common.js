@@ -34,9 +34,13 @@
         poi: 'pois.html',
     };
 
-    // Button label for a record: taverns, shops and temples get their own.
+    // Button label for a record: institutions, taverns, shops and temples get their own.
     function cta(store, rec) {
         const type = store.typeOf(rec);
+        if (type === 'poi' && rec.institution && rec.institution.kind) {
+            const kind = store.enumOptions('institutionKind').find(k => k.id === rec.institution.kind);
+            return (kind && kind.cta) || 'Visit the place';
+        }
         if (type === 'poi' && rec.tavern && rec.tavern.tier) return 'Enter the tavern';
         if (type === 'poi' && rec.shop && rec.shop.kind) return 'Enter the shop';
         if (type === 'poi' && rec.temple) return 'Enter the temple';
@@ -94,8 +98,10 @@
     // 4. MAPS
     // -----------------------------------------------------------------
     // A flat image map (L.CRS.Simple), zoom buttons bottom-right on every page.
-    function createMap(elementId, { minZoom = -1, maxZoom = 2 } = {}) {
+    // Any other Leaflet option can be passed too (zoomSnap…).
+    function createMap(elementId, { minZoom = -1, maxZoom = 2, ...more } = {}) {
         const map = L.map(elementId, {
+            ...more,
             crs: L.CRS.Simple,
             minZoom, maxZoom,
             zoomControl: false,       // added back below, always in the same corner

@@ -109,12 +109,33 @@
   {
     "id": "runebridge",
     "name": "Runebridge",
-    "stub": true
+    "summary": "Members of Staff from the University of Runebridge",
+    "status": "Neutral",
+    "reputation": 25,
+    "reputationText": "Neutral / Negative",
+    "base": "Runebridge University",
+    "scale": "Continental",
+    "threatLevel": "Low",
+    "allies": [
+      "caeraotrom-faction"
+    ]
   },
   {
     "id": "blackwater-syndicate",
     "name": "The Blackwater Syndicate",
     "summary": "A mysterious criminal syndicate involved in illegal fighting rings and gambling in Brightend",
     "quote": "Gold never lies"
+  },
+  {
+    "id": "caeraotrom-faction",
+    "name": "Caeraotrom",
+    "summary": "Members of Staff of the Caeraotrom Athenæum",
+    "status": "Allied",
+    "reputation": 65,
+    "reputationText": "Good Reputation",
+    "scale": "Continental, amongst scholars",
+    "allies": [
+      "runebridge"
+    ]
   }
 ]

@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "jewel-theft",
+    "name": "Jewel Theft",
+    "where": "brightend",
+    "campaigns": [
+      "echoes-from-the-void"
+    ],
+    "text": "A few jewelry shops have been the victims of minor thefts but the owners say nothing about it. I think they're in on it.",
+    "source": "A drunk patron"
+  }
+]

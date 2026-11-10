@@ -19,13 +19,27 @@
     "parent": "lemerolai",
     "subtitle": "Oghma's Blessing",
     "codex": "Codex Entry: 03.H",
-    "body": "Aratanath Surrkerin, an ancient dragon sage is fabled to have conversed with Oghma. After their last discussion the god missioned him with the construction of the greatest trove of knowledge of the material plane - a place where all could aspire to learn.\n\nThere is only one way in and out of the Caeraotrom Athenæum: a small road coming up the mountain from the closest town. There is 150 km separating the two, with a 600m elevation gain.",
+    "body": "On the eastern slope of Mount Lerosia in the Wolf's Teeth mountain range, stands the massive citadel of Caeraotrom which has endured the elements for centuries and defied the degradations of time. Visible for miles around, Caeraotrom has an eye-catching silhouette: a high wall interspersed with towers. This wall encloses a large space from which more towers rise.\n\nThe entrance to Caeraotrom is a double gate that stands at the end of the thousand-step road, the only road that provides access to and from the outside world. The route follows a lonely path along the mountainside where Caeraotrom stands.\n\nThose who gain entry discover a cloistered community of scholars milling around inside Caeraotrom's walls, a place of enlightened conversation and friendly debate. No better place in the Realms exists for those who have a love for or a need of knowledge and who want to pursue such interests alongside fellow seekers.\n\nCaeraotrom has the largest repository of written lore in Eraldom, including the collected prophecies of the great sage Ereor Menolas. Those compiled divinations make up a tiny fraction of the accumulated knowledge and secrets contained in the library's vast collection.\n\nNot all knowledge preserved in Caeraotrom is of historical importance. The library holds thousands upon thousands of lost recipes, old songs, collections of folklore, and journals written by folks whose time has long since passed. The abundance of these ancillary works makes finding notable tomes an exercise in patience and perseverance. Fortunately, a legion of scholars and sages called the Avowed look after the library and remain vigilant in the care and cataloging of all the knowledge it holds.",
     "image": "images/Lemerolai.jpeg",
     "safe": true,
     "map": {
       "x": 206,
       "y": 335,
       "icon": "capital"
+    },
+    "institution": {
+      "kind": "library",
+      "maps": [
+        {
+          "id": "caeraotrom-map",
+          "name": "Grounds Map",
+          "image": {
+            "src": "images/maps/Edinburgh_Castle_Plan.png",
+            "width": 2048,
+            "height": 1312
+          }
+        }
+      ]
     }
   },
   {
@@ -189,10 +203,20 @@
     "parent": "cloud_district",
     "subtitle": "Where the best fabric is!",
     "body": "Late Elira Thayne's tailor shop. Only the best materials, coming from all over the continent, assembled by the best seamstresses!",
+    "image": "images/pois/finest-cloth.jpg",
     "map": {
       "x": 640,
       "y": 380,
       "icon": "pay-money"
+    },
+    "shop": {
+      "kind": "outfitter",
+      "keepers": [
+        "erikthayne"
+      ],
+      "tier": "wealthy",
+      "hours": "10 am - 6 pm",
+      "markup": 110
     }
   },
   {
@@ -246,6 +270,17 @@
       "x": 277,
       "y": 777,
       "icon": "pay-money"
+    },
+    "shop": {
+      "kind": "jeweller",
+      "tier": "comfortable",
+      "hours": "9 am to 7 pm",
+      "picks": 6,
+      "excludeTags": [
+        "military",
+        "illicit",
+        "rustic"
+      ]
     }
   },
   {
@@ -282,6 +317,12 @@
           "name": "Deercrest Venison Stew",
           "desc": "The town's pride, simmered since morning.",
           "price": 25
+        },
+        {
+          "category": "drinks",
+          "name": "Deer Wine",
+          "desc": "A \"delicious\" local wine",
+          "price": 3
         }
       ],
       "services": [
@@ -290,6 +331,9 @@
         "bath",
         "stabling",
         "laundry"
+      ],
+      "games": [
+        "liars-dice"
       ]
     }
   },
@@ -374,6 +418,44 @@
       "games": [
         "knucklebones"
       ]
+    }
+  },
+  {
+    "id": "history-and-philosophy-wings",
+    "name": "History Wing",
+    "parent": "caeraotrom-athenaeum",
+    "subtitle": "Order of the Lens",
+    "codex": "Athenaeum's History Wing",
+    "summary": "Also known as H-wing, it is the place Order of the Lens Sages spend the most time in.",
+    "body": "The History Wing, also known as the H-wing contains everything thing about the history of the Realms, as well as workspaces for Historian Sages. ",
+    "map": {
+      "x": 1092,
+      "y": 232,
+      "icon": "bookshelf"
+    },
+    "institution": {
+      "kind": "library",
+      "maps": [
+        {
+          "id": "history-wing-map",
+          "name": "History Wing Floorplan",
+          "image": {
+            "src": "images/maps/library-with-grid.jpg",
+            "width": 1892,
+            "height": 3428
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "great-readers-office",
+    "name": "Great Readers Office",
+    "parent": "caeraotrom-athenaeum",
+    "subtitle": "Administrative and Scholarly Department",
+    "map": {
+      "x": 912,
+      "y": 253
     }
   }
 ]

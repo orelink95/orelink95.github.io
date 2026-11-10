@@ -105,11 +105,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     searchInput.addEventListener('input', applyFilters);
 
     // --- 4. MODAL LOGIC ---
+    // Framing of the modal's picture: object-position + a zoom centred on the same point
+    function frameOf(b) {
+        const at = b.imageFocus || '50% 30%';
+        const zoom = typeof b.imageZoom === 'number' && b.imageZoom > 100 ? b.imageZoom / 100 : 1;
+        return { objectPosition: at, transform: zoom > 1 ? `scale(${zoom})` : '', transformOrigin: at };
+    }
     window.openBestiaryModal = (id) => {
         const beast = bestiaryData.find(b => b.id === id);
         if (!beast) return;
 
-        document.getElementById('modal-beast-img').src = beast.image;
+        // The picture fills its window, framed by imageFocus / imageZoom (set in the dashboard)
+        const img = document.getElementById('modal-beast-img');
+        img.src = beast.image;
+        Object.assign(img.style, frameOf(beast));
         document.getElementById('modal-beast-arcana').textContent = beast.arcana;
         document.getElementById('modal-beast-name').textContent = beast.name;
         document.getElementById('modal-beast-location').textContent = beast.location;

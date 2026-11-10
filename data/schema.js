@@ -67,6 +67,10 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             panel: { kind: 'text', color: true, label: 'Boxes', width: 'third', help: 'Background of the panels.' },
             ...(withCard ? { card: { kind: 'text', color: true, label: 'Tabbed card', width: 'third', help: 'Menu, wares, map…' } } : {}),
             page: { kind: 'text', color: true, label: 'Page background', width: 'third' },
+            ...(withCard ? {} : {
+                tag: { kind: 'text', color: true, label: 'Tags', width: 'third', help: 'Background of the tags on the picture.' },
+                tagInk: { kind: 'text', color: true, label: 'Tag text', width: 'third' },
+            }),
             texture: { kind: 'enum', enum: 'lookTexture', label: 'Texture', width: 'third', help: 'Over the page background. Empty = the theme’s.' },
             textureImage: { kind: 'image', label: 'Texture image', showIf: { key: 'texture', is: ['image'] }, help: 'Tiled over the page. A small seamless image works best.' },
             textureStrength: { kind: 'number', label: 'Texture strength (%)', width: 'full', range: [0, 100], help: 'Empty = the theme’s (about 20).' },
@@ -310,6 +314,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'frost', label: 'Frostbound (ice blue)' },
                 { id: 'infernal', label: 'Infernal (embers, iron)' },
                 { id: 'den', label: 'Shadowed Den (tarnished brass)' },
+                { id: 'ruins', label: 'Ruins (weathered stone, lichen)' },
             ],
             creatureTheme: [
                 { id: 'abyssal', label: 'Abyssal (deep sea, scales)' },
@@ -320,6 +325,8 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'frost', label: 'Frost (rime, pale blue)' },
                 { id: 'bone', label: 'Ossuary (bone, ivory)' },
                 { id: 'draconic', label: 'Draconic (molten gold)' },
+                { id: 'ruins', label: 'Ruins (moss on fallen stone)' },
+                { id: 'celestial', label: 'Celestial (radiant gold, starlight)' },
             ],
             /* .look-texture--<id> in styles/looks.css; 'image' = the page's texture image */
             lookTexture: [
@@ -726,6 +733,8 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     specimenNo: { kind: 'text', label: 'Specimen number' },
                     location: { kind: 'text', label: 'Where it was met' },
                     image: { kind: 'image', label: 'Image' },
+                    imageFocus: { kind: 'text', focus: true, label: 'Framing in the bestiary', showIf: { key: 'image', set: true }, help: 'The point the picture is centred and zoomed on, in the bestiary’s window (left → right, top → bottom). Empty = 50% 30%.' },
+                    imageZoom: { kind: 'number', label: 'Zoom in the bestiary (%)', range: [100, 300], showIf: { key: 'image', set: true }, help: 'The picture fills the window; zoom in to frame it closer. Empty = 100.' },
                     threat: { kind: 'enum', enum: 'creatureThreat', label: 'Threat level', section: 'Stats' },
                     realm: { kind: 'text', label: 'Realm' },
                     phylogeny: { kind: 'text', label: 'Phylogeny' },

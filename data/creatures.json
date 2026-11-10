@@ -1,76 +1,196 @@
 [
   {
     "id": "jeff-wicked-skull",
-    "name": "Jeff",
+    "name": "Ancient Stone Guardian",
     "arcana": "I · THE GUARDIAN",
     "specimenNo": "002",
-    "location": "The Valehouse",
-    "image": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/ToB2/creature/Wicked%20Skull.webp",
-    "threat": "Friendly",
-    "phylogeny": "Monstrosity",
-    "shortDesc": "This skull chatters eerily, gently rocking as it comes to life. It calls out a warning in a hauntingly musical voice.",
+    "location": "Temple of Nechana",
+    "image": "images/stone golem.jpeg",
+    "imageFocus": "63% 30%",
+    "threat": "Moderate",
+    "realm": "Material Plane",
+    "phylogeny": "Construct",
+    "shortDesc": "Tall, mindless construct tasked with the protection of places or objects.",
     "stats": [
       {
         "label": "Brute Strength",
-        "value": 7
+        "value": 74
       },
       {
         "label": "Agility & Speed",
-        "value": 68
+        "value": 17
       },
       {
-        "label": "Arcane Resonance",
-        "value": 82
+        "label": "Physical Resistence",
+        "value": 90
+      }
+    ],
+    "tags": [
+      "CONSTRUCT"
+    ],
+    "habitats": [
+      "Ruins",
+      "Temples",
+      "Urban"
+    ],
+    "loreTitle": "Lore of the Stone Guardian",
+    "body": "Carved from bedrock and bound by forgotten rites of warding, stone guardians stand vigil over ancient sanctums, deep vaults, and forgotten tombs. Cloaked in centuries of dust and creeping moss, they rest in deceptive stillness, appearing indistinguishable from ordinary weathered statuary to the unwary traveler. Yet beneath that calcified exterior lies an unblinking, tireless purpose waiting for the singular transgression that breaches their sacred perimeter.\n\nThe moment their ward is disturbed, long-dormant runes flare to life along their granite limbs with a bone-jarring groan of grinding rock. Once roused, a guardian knows neither fatigue, doubt, nor mercy. Driven by the unyielding logic of its ancient mandate, it cannot return to its stony slumber until the trespasser has been thoroughly eradicated—a terrifying, inexorable testament to the enduring craft of its creators.",
+    "behaviors": [
+      "Relentlessly pursues designated trespassers.",
+      "Ignores parley, pain, and tactical feints.",
+      "Prioritizes crushing the nearest active threat."
+    ],
+    "weaknesses": [
+      "Exposed runes",
+      "Force damage",
+      "Limited Vision"
+    ],
+    "drops": [
+      {
+        "name": "Heartstone Core",
+        "type": "Trophy & Crafting",
+        "icon": "orbit"
       },
       {
-        "label": "Cunning",
-        "value": 75
+        "name": "Basalt Ocular Gem",
+        "type": "Trophy & Crafting",
+        "icon": "diamond"
+      }
+    ],
+    "scholarQuote": "\"Flesh grows weary, and the mortal heart can be reasoned with, frightened, or broken. But an oath carved into bedrock possesses neither pity nor doubt; once stirred, it is unstoppable.\"",
+    "scholarName": "Killian Elmwood",
+    "look": {
+      "theme": "ruins",
+      "texture": "wood",
+      "textureStrength": 6
+    }
+  },
+  {
+    "id": "crawling-grave",
+    "name": "Crawling Grave",
+    "arcana": "II · THE OSSUARY",
+    "location": "Balageal",
+    "image": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/GHMG/CrawlingGrave.webp",
+    "imageFocus": "31% 30%",
+    "imageZoom": 108,
+    "threat": "Lethal",
+    "realm": "Material Plane",
+    "phylogeny": "Undead",
+    "stats": [
+      {
+        "label": "Constituion",
+        "value": 71
+      },
+      {
+        "label": "Intelligence",
+        "value": 18
+      },
+      {
+        "label": "Reach",
+        "value": 85
+      },
+      {
+        "label": "Dread",
+        "value": 100
       }
     ],
     "tags": [
       "CONSTRUCT",
-      "SHAPESHIFTER"
+      "UNDEAD",
+      "HUGE"
     ],
     "habitats": [
-      "Urban",
-      "Arcane Labs",
-      "Libraries",
-      "Wizard Hangouts"
+      "Grave",
+      "Temples",
+      "Ruins"
     ],
-    "loreTitle": "Lore of the Wicked Skull",
-    "body": "Born of the whims of a trickster wizard, *Jeff* is born of malice and cunning. Wicked skulls crave entertainment above all else, and they do not consider their tricks to be malicious. Pretending to be a person transformed into an object or horrifying monster, giving confusing directions through a dungeon, or speaking only in rhymes are just a few tactics they seem to enjoy. A wicked skull avoids direct combat whenever possible and prefers to play mind games.",
+    "loreTitle": "Crawling Graves",
+    "body": "Usually born from atrocities too terrible for the earth to swallow, crawling graves stir within unhallowed trenches, plague pits, and the forgotten ditches of wartime slaughter. Where countless lives are violently snuffed out and discarded without rites or mourning, the concentrated residue of their terror curdles the surrounding soil. In time, this lingering agony binds fractured marrow, shattered ribs, and mismatched skulls into a single skittering horror—a hideous amalgamation of the murdered, coalesced into a unified monument of hatred.\n\nDriven by an insatiable compulsion to expand its necrotic chorus, the heap drags itself forward on hundreds of frantic, clawing fingers. It knows no mortal frailties—needing neither air, nourishment, nor reprieve—only the cold imperative to assimilate the living. As it rolls over its prey, it snaps and weaves their fresh remains into its churning bulk, dragging new victims into its eternal, restless torment.",
     "behaviors": [
-      "Tricks and treats",
-      "Triple-sensory awareness (360° proprioception)",
-      "(Limited?) Shapeshifting"
+      "Consumes fresh corpses to absorb bones.",
+      "Scuttles relentlessly over obstacles and walls.",
+      "Targets wounded prey to expand itself."
     ],
     "weaknesses": [
-      "Fear of abandonment",
-      "Anti-magic fields",
-      "???"
+      "Bludgeoning Impact",
+      "Radiant damage",
+      "Mindless"
     ],
     "drops": [
       {
-        "name": "Pseudoresin",
-        "type": "Rare Alchemy Ingredient",
-        "icon": "colorize"
+        "name": "Bone",
+        "type": "Alchemy Ingredient",
+        "icon": "tibia"
+      }
+    ],
+    "scholarQuote": "This thing was born from a mass grave? Makes you wonder who the real monster is, doesn't it?",
+    "scholarName": "Jon Olsen, undertaker",
+    "look": {
+      "theme": "bone",
+      "textureStrength": 11
+    }
+  },
+  {
+    "id": "ulnorya",
+    "name": "Ulnorya",
+    "arcana": "III · THE STALKER",
+    "specimenNo": "072",
+    "location": "Wildlands",
+    "image": "images/Ulnorya.webp",
+    "imageFocus": "50% 51%",
+    "imageZoom": 139,
+    "threat": "High",
+    "realm": "Material Plane",
+    "phylogeny": "Aberration",
+    "shortDesc": "Eight long, writhing tentacles support and propel this snarling horror's oblong body while its jagged maw reveals rows of razor teeth.",
+    "stats": [
+      {
+        "label": "Dexterity",
+        "value": 80
       },
       {
-        "name": "Bone Fragment",
+        "label": "Invisibility",
+        "value": 60
+      },
+      {
+        "label": "Tentacle Strength",
+        "value": 74
+      },
+      {
+        "label": "Cuteness",
+        "value": 2
+      }
+    ],
+    "tags": [
+      "Aberration",
+      "Predator",
+      "Wildlands"
+    ],
+    "habitats": [
+      "Forest"
+    ],
+    "drops": [
+      {
+        "name": "Teeth",
         "type": "Trophy & Crafting",
         "icon": "humerus"
       }
     ],
-    "scholarQuote": "Such wicked skulls seem to have been made for hundreds of year. But the way to make them appears to escape common knowledge.",
-    "scholarName": "L. Maldy"
+    "scholarQuote": "Where the Ulnorya comes from is a mystery. Many think it is a result of the Void corruption that affected the world after the War, but ancient texts mention creatures eerily similar. We shouldn't forget the horrors that roamed the world eons ago.",
+    "scholarName": "Alkalily Neir",
+    "look": {
+      "theme": "void"
+    }
   },
   {
     "id": "corrupted-stag",
     "name": "Tainted Velociraptor",
-    "arcana": "VII - PESTILENCE",
+    "arcana": "V · PESTILENCE",
     "specimenNo": "04",
     "location": "Balageal",
     "image": "images/Tainted Velociraptor.png",
+    "imageFocus": "6% 30%",
+    "imageZoom": 100,
     "threat": "High",
     "phylogeny": "Aberration",
     "shortDesc": "Little is known of these creatures. While it is known that some dinosaurs still roam the land, the existence of *tainted* ones remains purely theoretical. If it were to exist, it is safe to say that there little chance for someone to survive this encounter...",
@@ -122,53 +242,59 @@
     }
   },
   {
-    "id": "ulnorya",
-    "name": "Ulnorya",
-    "arcana": "II - THE STALKER",
-    "specimenNo": "072",
-    "location": "Wildlands",
-    "image": "images/Ulnorya.webp",
-    "threat": "High",
-    "realm": "Material Plane",
-    "phylogeny": "Aberration",
-    "shortDesc": "Eight long, writhing tentacles support and propel this snarling horror's oblong body while its jagged maw reveals rows of razor teeth.",
+    "id": "flesh-hound",
+    "name": "Flesh Hound",
+    "arcana": "IV · Nightmare",
+    "specimenNo": "013",
+    "location": "Dreamlands",
+    "image": "images/Flesh-hound.png",
+    "threat": "Moderate",
+    "realm": "Dreamlands",
+    "phylogeny": "Nightmare",
+    "shortDesc": "A shapeless abominable heap of ever shaking muscle, with sharp bones protruding from its face and numerous dark beady eyes.",
     "stats": [
       {
-        "label": "Dexterity",
-        "value": 80
+        "label": "Dread",
+        "value": 73
       },
       {
-        "label": "Invisibility",
-        "value": 60
+        "label": "Cunning",
+        "value": 34
       },
       {
-        "label": "Tentacle Strength",
-        "value": 74
-      },
-      {
-        "label": "Cuteness",
-        "value": 2
+        "label": "Mindless Charge",
+        "value": 67
       }
     ],
     "tags": [
-      "Aberration",
-      "Predator",
-      "Wildlands"
+      "ABOMINATION",
+      "CORRUPTED",
+      "NIGHTMARE"
     ],
-    "habitats": [
-      "Forest"
+    "loreTitle": "Flesh Hounds",
+    "body": "Amongst the many horrors of the Dystopian Weald, Flesh Hounds hold a special place. They are driven by what seems to be an appetite for destruction. Those who made their way up to the Oneiric Fields are found hunting endemic creatures and destroying plant-life. Their presence on other layers of the Dreamlands is a real threat to the balance of the realm. ",
+    "behaviors": [
+      "Erratic",
+      "Driven by hunger",
+      "Pounces on its preys",
+      "Will attack creatures larger than it"
+    ],
+    "weaknesses": [
+      "Radiant Damage",
+      "True love",
+      "A bonesaw, possibly ?"
     ],
     "drops": [
       {
-        "name": "Teeth",
+        "name": "Flesh Hound Tusk",
         "type": "Trophy & Crafting",
-        "icon": "humerus"
+        "icon": "tibia"
       }
     ],
-    "scholarQuote": "Where the Ulnorya comes from is a mystery. Many think it is a result of the Void corruption that affected the world after the War, but ancient texts mention creatures eerily similar. We shouldn't forget the horrors that roamed the world eons ago.",
-    "scholarName": "Alkalily Neir",
     "look": {
-      "theme": "void"
+      "theme": "abyssal",
+      "titleFont": "MedievalSharp",
+      "frame": "filigree"
     }
   }
 ]

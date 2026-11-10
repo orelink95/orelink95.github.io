@@ -296,47 +296,51 @@
 @media (min-width: 768px) {
     .beast-modal__card {
         flex-direction: row;
+        /* a steady height, so the picture's window (and its framing) keeps one shape */
+        height: min(90vh, 52rem);
     }
 }
 
 .beast-modal__media {
     position: relative;
-    display: flex;
     flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
+    overflow: hidden;       /* the zoomed picture stays in its window */
+    height: 45vh;           /* phones / narrow: a band above the text */
     background-color: #000;
 }
 @media (min-width: 768px) {
     .beast-modal__media {
         width: 41.666667%;
+        height: auto;       /* the full height of the card */
     }
 }
 
+/* Soft edge where the picture meets the text: at the bottom on phones,
+   on the right side (towards the text) on a computer */
 .beast-modal__fade {
     position: absolute;
     inset: 0;
     z-index: 10;
-    background-image: linear-gradient(to top, var(--color-surface), transparent);
+    pointer-events: none;
+    background-image: linear-gradient(to top, var(--color-surface) 0%, color-mix(in srgb, var(--color-surface) 60%, transparent) 14%, transparent 42%);
 }
 @media (min-width: 768px) {
     .beast-modal__fade {
-        display: none;
+        background-image:
+            linear-gradient(to left, var(--color-surface) 0%, color-mix(in srgb, var(--color-surface) 65%, transparent) 12%, transparent 38%),
+            linear-gradient(to top, rgb(0 0 0 / 0.35), transparent 30%);
     }
 }
 
+/* Fills the window; imageFocus / imageZoom (inline, bestiary-scripts.js) frame it */
 .beast-modal__img {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 0;
-    height: auto;
-    max-height: 100%;
     width: 100%;
-    object-fit: contain;
-    border-radius: 0.125rem;
-    border-width: 1px;
-    border-color: rgb(255 255 255 / 0.1);
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 30%;
 }
 
 .beast-modal__content {
@@ -781,13 +785,7 @@
     }
 
     .beast-modal__media {
-        padding: 1.25rem 1.25rem 0;
-    }
-
-    .beast-modal__img {
-        width: auto;
-        max-width: 100%;
-        max-height: 45vh;
+        height: 45vh;
     }
 
     .beast-modal__content {

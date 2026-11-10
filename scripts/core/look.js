@@ -8,7 +8,7 @@
      Athenaeum.look.apply(el, look, type, opts)
         el     where the look goes: document.body on the site,
                the preview box in the dashboard
-        look   record.look: { theme, accent, ink, panel, card, page,
+        look   record.look: { theme, accent, ink, panel, card, page, tag, tagInk,
                texture, textureImage, textureStrength, titleFont, bodyFont,
                frame, banner, bannerFocus, bannerStrength, inherit }
      Athenaeum.look.resolve(store, rec) -> { look, from }
@@ -23,7 +23,7 @@
 (function (root) {
     const ATH = root.Athenaeum = root.Athenaeum || {};
 
-    const COLOURS = { accent: '--look-accent', ink: '--look-ink', panel: '--look-panel', card: '--look-card', page: '--look-page' };
+    const COLOURS = { accent: '--look-accent', ink: '--look-ink', panel: '--look-panel', card: '--look-card', page: '--look-page', tag: '--look-tag', tagInk: '--look-tag-ink' };
     const VARS = [...Object.values(COLOURS), '--look-texture', '--look-texture-size', '--look-texture-position', '--look-texture-opacity',
         '--look-font-title', '--look-font-body', '--look-banner-image', '--look-banner-focus', '--look-banner-opacity'];
     const PREFIXES = ['look--', 'look-frame--', 'look-texture--'];

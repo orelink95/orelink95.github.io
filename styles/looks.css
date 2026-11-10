@@ -18,6 +18,7 @@
    --look-panel             background of the boxes (lore, stats, people…)
    --look-card              the tabbed card of a POI (menu, wares, map…)
    --look-page              background of the page
+   --look-tag / --look-tag-ink   a creature's tags (background / text)
    --look-texture           image(s) over the page, with
      --look-texture-size / --look-texture-position / --look-texture-opacity
    --look-font-title        a font name ("Cinzel"); fonts of the lookFont enum
@@ -170,6 +171,20 @@
     --look-frame: iron;
 }
 
+/* Ruins: weathered sandstone, lichen, carved capitals */
+.look--poi-ruins {
+    --look-accent: #c9b98a;
+    --look-ink: #dcd8cc;
+    --look-panel: #1a1915;
+    --look-card: #1d1b16;
+    --look-page: #0e0d0b;
+    --look-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='n' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  2.4 0 0 0 -1.05'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E");
+    --look-texture-size: 420px;
+    --look-texture-opacity: 0.18;
+    --look-font-title: "Marcellus";
+    --look-frame: double;
+}
+
 
 /* ---------------------------------------------------------------------
    3. CREATURE THEMES  (creatureTheme enum)
@@ -188,6 +203,8 @@
     --look-texture-opacity: 0.08;
     --look-font-title: "Cormorant Garamond";
     --look-frame: filigree;
+    --look-tag: #0e4a5a;
+    --look-tag-ink: #bdeef5;
 }
 
 /* Blighted: sickly green, rot */
@@ -201,6 +218,8 @@
     --look-texture-opacity: 0.2;
     --look-font-title: "IM Fell English";
     --look-frame: iron;
+    --look-tag: #3d4a14;
+    --look-tag-ink: #e3eda8;
 }
 
 /* Infernal: hellfire */
@@ -213,6 +232,8 @@
     --look-texture-opacity: 0.14;
     --look-font-title: "Grenze Gotisch";
     --look-frame: iron;
+    --look-tag: #6b1a0c;
+    --look-tag-ink: #ffc7b3;
 }
 
 /* Fey: rose and twilight */
@@ -229,6 +250,8 @@
     --look-texture-opacity: 0.45;
     --look-font-title: "Almendra";
     --look-frame: filigree;
+    --look-tag: #5c2350;
+    --look-tag-ink: #ffd6f1;
 }
 
 /* Voidborn: the violet of the Void */
@@ -241,6 +264,8 @@
     --look-texture-opacity: 0.16;
     --look-font-title: "Cinzel Decorative";
     --look-frame: runic;
+    --look-tag: #3a1f6e;
+    --look-tag-ink: #dcc9ff;
 }
 
 /* Frost: rime and pale blue */
@@ -253,6 +278,8 @@
     --look-texture-opacity: 0.12;
     --look-font-title: "Marcellus";
     --look-frame: gilt;
+    --look-tag: #1f4a66;
+    --look-tag-ink: #dff2ff;
 }
 
 /* Ossuary: bone and old ivory */
@@ -266,6 +293,8 @@
     --look-texture-opacity: 0.18;
     --look-font-title: "UnifrakturCook";
     --look-frame: double;
+    --look-tag: #4a4234;
+    --look-tag-ink: #f0e8d6;
 }
 
 /* Draconic: molten gold, scales */
@@ -281,6 +310,44 @@
     --look-texture-opacity: 0.07;
     --look-font-title: "Cinzel";
     --look-frame: ornate;
+    --look-tag: #6b3a0c;
+    --look-tag-ink: #ffe0b3;
+}
+
+/* Ruins: moss on fallen stone (guardians, golems, things of lost places) */
+.look--creature-ruins {
+    --look-accent: #a3b88a;
+    --look-ink: #dfe2d6;
+    --look-panel: #141611;
+    --look-page: #0a0b08;
+    --look-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='n' x='0' y='0' width='100%' height='100%'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.03' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  2.4 0 0 0 -1.05'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23n)'/%3E%3C/svg%3E");
+    --look-texture-size: 420px;
+    --look-texture-opacity: 0.15;
+    --look-font-title: "Uncial Antiqua";
+    --look-frame: iron;
+    --look-tag: #3a4530;
+    --look-tag-ink: #dfe8d0;
+}
+
+/* Celestial: radiant pale gold on a starlit night (angels, empyreans, things of the upper planes) */
+.look--creature-celestial {
+    --look-accent: #f4e4a8;
+    --look-ink: #f2f0ea;
+    --look-panel: #16161f;
+    --look-page: #0a0a12;
+    --look-texture:
+        radial-gradient(1px 1px at 22px 34px, #fff 50%, transparent),
+        radial-gradient(1px 1px at 120px 80px, #fff 50%, transparent),
+        radial-gradient(1.5px 1.5px at 170px 150px, #fff 50%, transparent),
+        radial-gradient(1px 1px at 60px 170px, #fff 50%, transparent),
+        radial-gradient(1px 1px at 190px 20px, #fff 50%, transparent);
+    --look-texture-size: 210px 210px;
+    --look-texture-opacity: 0.55;
+    --look-font-title: "Cinzel";
+    --look-frame: gilt;
+    --look-tag: #5a4c1f;
+    --look-tag-ink: #fff4cc;
+    --frame-glow: 0 0 36px color-mix(in srgb, #f4e4a8 14%, transparent);
 }
 
 

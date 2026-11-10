@@ -1083,12 +1083,13 @@
             if (S.view.key === 'deity' && ATH.deityCard) parts.unshift(deityPreview(rec), sealStatus(rec));
             if (S.view.key === 'item' && ATH.deityCard) parts.unshift(artifactOf(rec));
             if ((S.view.key === 'poi' || S.view.key === 'creature') && ATH.look && lookOf(rec).look) parts.unshift(lookPreview(rec));
+            if (S.view.key === 'creature' && rec.image) parts.unshift(beastFramePreview(rec));
         }
         const html = parts.filter(Boolean).join('');
         side.innerHTML = html ? `<div class="side-head"><span>Previews & links</span><button class="btn icon" data-action="toggle-side" title="Close"><span class="material-symbols-outlined">close</span></button></div>${html}` : '';
         $('.ed-wrap').classList.toggle('no-side', !html);
         const sb = $('#side-btn'); if (sb) sb.hidden = !html;
-        if (S.view.key === 'item' || S.view.key === 'deity') loadThumbs();
+        if (S.view.key === 'item' || S.view.key === 'deity' || S.view.key === 'creature') loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
         if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
     }
@@ -1096,6 +1097,14 @@
     /* ---------- page look (POIs, creatures): a small mock of the page ---------- */
     // Drawn with the site's styles/looks.css and scripts/core/look.js, so what it shows
     // is what the page gets. Redrawn after each change, like the other previews.
+    // A creature's picture as the bestiary's window shows it (same rule as bestiary-scripts.js)
+    function beastFramePreview(rec) {
+        const at = rec.imageFocus || '50% 30%';
+        const zoom = typeof rec.imageZoom === 'number' && rec.imageZoom > 100 ? rec.imageZoom / 100 : 1;
+        return `<div class="box"><div class="box-head"><h4>Bestiary window</h4></div>
+            <div class="frame-prev"><img data-thumb="${esc(rec.image)}" alt="" style="object-position:${esc(at)};transform-origin:${esc(at)};${zoom > 1 ? `transform:scale(${zoom})` : ''}"></div>
+            <p class="hint">The left half of the bestiary’s pop-up, on a computer. On a phone it is a wide band, cut from the same point.</p></div>`;
+    }
     // The record's own look (as edited), else the one a place above it passes down
     function lookOf(rec) {
         if (!ATH.look.isEmpty(rec.look)) return { look: rec.look, from: null };
@@ -1120,7 +1129,8 @@
         return `<div class="box"><div class="box-head"><h4>Look preview</h4></div>
             <div class="look-prev" data-type="${type}" id="look-prev">
                 <p class="look-prev__crumbs">${esc(rec.name || 'Name')}</p>
-                <div class="look-prev__box"><p class="look-prev__eyebrow">${esc(eyebrow)}</p><h3 class="look-prev__title">${esc(rec.name || 'Name')}</h3>${rec.subtitle ? `<p class="look-prev__sub">${esc(rec.subtitle)}</p>` : ''}</div>
+                <div class="look-prev__box"><p class="look-prev__eyebrow">${esc(eyebrow)}</p><h3 class="look-prev__title">${esc(rec.name || 'Name')}</h3>${rec.subtitle ? `<p class="look-prev__sub">${esc(rec.subtitle)}</p>` : ''}
+                    ${type === 'creature' ? `<div class="look-prev__tags">${(rec.tags && rec.tags.length ? rec.tags.slice(0, 3) : ['Tag', 'Tag']).map(t => `<span class="look-prev__tag">${esc(t)}</span>`).join('')}</div>` : ''}</div>
                 <div class="look-prev__box"><p class="look-prev__label">${type === 'poi' ? 'Archive Entry' : esc(rec.loreTitle || 'Archival Record')}</p><p class="look-prev__text">${text} <b>keyword</b></p></div>
                 ${extra}
             </div>

@@ -64,7 +64,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', shop && M.shopKind(store, shop).label, temple && 'Temple'].filter(Boolean);
     $('poi-image').src = poi.image || 'images/pois/placeholder.png';
     $('poi-image').alt = poi.name;
-    $('poi-eyebrow').textContent = roles.length ? roles.join(' · ') : poi.danger ? 'Danger Zone' : poi.featured ? 'Featured Landmark' : 'Landmark';
+    // Roles (institution, tavern, shop, temple) name the place; otherwise the label set by hand,
+    // else the danger / featured flags. Nothing to say = no eyebrow (no more default "Landmark").
+    const typeLabel = String(poi.typeLabel || '').trim();
+    const eyebrow = roles.length ? roles.join(' · ') : typeLabel || (poi.danger ? 'Danger Zone' : poi.featured ? 'Featured Landmark' : '');
+    $('poi-eyebrow').textContent = eyebrow;
+    $('poi-eyebrow').hidden = !eyebrow;
     $('poi-title').textContent = poi.name;
     $('poi-subtitle').textContent = poi.subtitle || '';
     // Where it is: Eraldom › continent › country › settlement › this POI

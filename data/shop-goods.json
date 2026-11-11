@@ -5954,5 +5954,33 @@
     "tags": [
       "scribe"
     ]
+  },
+  {
+    "id": "book-fiction",
+    "name": "Book, fiction",
+    "category": "books",
+    "desc": "A common fiction book by a relatively unknown author",
+    "basePrice": 1000,
+    "unit": "each",
+    "minTier": "modest",
+    "maxTier": "aristocratic",
+    "tags": [
+      "common",
+      "scribe"
+    ]
+  },
+  {
+    "id": "book-poetry",
+    "name": "Book, poetry",
+    "category": "books",
+    "desc": "The refined works of traveling poet",
+    "basePrice": 1650,
+    "unit": "each",
+    "minTier": "comfortable",
+    "maxTier": "aristocratic",
+    "tags": [
+      "fine",
+      "scribe"
+    ]
   }
 ]

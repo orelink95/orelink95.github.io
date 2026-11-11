@@ -9,6 +9,7 @@
    A game is a file in scripts/games/ that calls
        Athenaeum.games.register({
            id: 'liars-dice',            // = its id in the tavernGame enum
+           kind: 'dice',                // 'dice' (default) or 'cards'
            blurb: 'One line for the picker',
            rules: '<p>…</p>',           // shown under "How to play"
            opponents: 3,                // bots it needs
@@ -51,6 +52,23 @@
     }
     ATH.dice = { roll, html: dieHtml, tumble, WORDS };
 
+    /* ---------- mini-cards for the game picker ---------- */
+    const PICK_SUITS = [
+        { sym: '♠', cls: 'ink' },
+        { sym: '♥', cls: 'crimson' },
+        { sym: '♦', cls: 'crimson' },
+        { sym: '♣', cls: 'ink' },
+    ];
+    const PICK_RANKS = ['A', 'K', 'Q', 'J', '10'];
+    function pickCardsHtml() {
+        const s1 = PICK_SUITS[Math.floor(Math.random() * PICK_SUITS.length)];
+        const s2 = PICK_SUITS[(PICK_SUITS.indexOf(s1) + 1 + Math.floor(Math.random() * 3)) % PICK_SUITS.length];
+        const r1 = PICK_RANKS[Math.floor(Math.random() * PICK_RANKS.length)];
+        const r2 = PICK_RANKS[Math.floor(Math.random() * PICK_RANKS.length)];
+        return `<span class="gt-pick__card gt-pick__card--${s1.cls}"><b>${r1}</b><i>${s1.sym}</i></span>` +
+            `<span class="gt-pick__card gt-pick__card--${s2.cls}"><b>${r2}</b><i>${s2.sym}</i></span>`;
+    }
+
     /* ---------- registry ---------- */
     const games = {
         register(game) { GAMES.set(game.id, game); },
@@ -61,7 +79,7 @@
     const REGULARS = ['Old Brannoc', 'Mags the Fishwife', 'Tobin Quickfingers', 'Sister Ilse', 'Gerrit One-Ear', 'Wenna', 'Corporal Dask', 'Pell the Tinker', 'Yorra Saltbeard', 'Fenwick'];
     function shuffle(list) {
         const a = [...list];
-        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+        for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; }
         return a;
     }
     function pickOpponents(store, poi, n) {
@@ -102,14 +120,19 @@
             el.innerHTML = `
                 <p class="gt-lede">Pull up a stool. The regulars are always up for a game.</p>
                 <div class="gt-picker">${ids.map(id => {
-                    const t = tally(id);
-                    return `<button type="button" class="gt-pick" data-game="${esc(id)}">
-                        <span class="gt-pick__dice" aria-hidden="true">${dieHtml(roll(), { label: false })}${dieHtml(roll(), { label: false })}</span>
+                const game = GAMES.get(id);
+                const t = tally(id);
+                const isCards = game.kind === 'cards' || game.icon === 'cards';
+                const iconHtml = isCards
+                    ? `<span class="gt-pick__dice gt-pick__dice--cards" aria-hidden="true">${pickCardsHtml()}</span>`
+                    : `<span class="gt-pick__dice" aria-hidden="true">${dieHtml(roll(), { label: false })}${dieHtml(roll(), { label: false })}</span>`;
+                return `<button type="button" class="gt-pick" data-game="${esc(id)}">
+                        ${iconHtml}
                         <span class="gt-pick__name">${esc(labels[id] || id)}</span>
-                        <span class="gt-pick__blurb">${esc(GAMES.get(id).blurb)}</span>
+                        <span class="gt-pick__blurb">${esc(game.blurb)}</span>
                         ${t.win + t.loss + t.draw ? `<span class="gt-pick__tally">Your record: ${t.win} won · ${t.loss} lost${t.draw ? ` · ${t.draw} drawn` : ''}</span>` : ''}
                     </button>`;
-                }).join('')}</div>`;
+            }).join('')}</div>`;
         }
 
         function play(id) {
@@ -144,10 +167,15 @@
         else el.innerHTML = '<p class="gt-lede">The gaming table is empty tonight.</p>';
     }
 
-    // Names of the games of a tavern, for its "Gaming table" service line
+    // Names of the games of a tavern, for its "Gaming table" service line.
+    // Formats `.join()` as "X or Y" or "X, Y or Z".
     const gameNames = (store, poi) => {
         const labels = Object.fromEntries(store.enumOptions('tavernGame').map(o => [o.id, o.label]));
-        return ((poi.tavern && poi.tavern.games) || []).filter(id => GAMES.has(id)).map(id => labels[id] || id);
+        const list = ((poi.tavern && poi.tavern.games) || []).filter(id => GAMES.has(id)).map(id => labels[id] || id);
+        list.join = () => list.length <= 1
+            ? (list[0] || '')
+            : `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}`;
+        return list;
     };
 
     ATH.games = { ...games, mountTable, gameNames, avatarHtml };

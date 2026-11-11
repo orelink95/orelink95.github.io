@@ -42,6 +42,7 @@
     <script src="scripts/games/table.js"></script>
     <script src="scripts/games/liars-dice.js"></script>
     <script src="scripts/games/knucklebones.js"></script>
+    <script src="scripts/games/crown-and-dagger.js"></script>
     <script src="scripts/poi-scripts.js"></script>
 </head>
 
@@ -61,7 +62,7 @@
                     <img id="poi-image" src="" alt="" />
                 </div>
                 <div class="poi-hero-text">
-                    <p id="poi-eyebrow" class="poi-eyebrow">Landmark</p>
+                    <p id="poi-eyebrow" class="poi-eyebrow" hidden></p>
                     <h2 id="poi-title" class="poi-title"></h2>
                     <p id="poi-subtitle" class="poi-subtitle"></p>
 
@@ -123,7 +124,8 @@
                         <p class="poi-eyebrow poi-center">The Chart Room</p>
                         <h3 id="poi-map-heading" class="poi-menu-heading">Plan of the Grounds</h3>
                         <div class="poi-rule"></div>
-                        <div id="poi-map-picker" class="poi-mappicker" role="group" aria-label="Choose a map" hidden></div>
+                        <div id="poi-map-picker" class="poi-mappicker" role="group" aria-label="Choose a map" hidden>
+                        </div>
                         <div class="poi-mapframe">
                             <div id="poi-map" class="poi-map"></div>
                         </div>

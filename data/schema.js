@@ -200,6 +200,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
             tavernGame: [
                 { id: 'liars-dice', label: 'Liar’s Dice' },
                 { id: 'knucklebones', label: 'Knucklebones' },
+                { id: 'crown-and-dagger', label: 'Crown and dagger' }
             ],
             /* Shops (poi.shop). Goods are sorted in these shelves, in this order. */
             shopCategory: [
@@ -476,6 +477,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     codex: { ...PLACE_FIELDS.codex, help: 'Small capitals above the lore panel when its pin is clicked on a map.' },
                     danger: { ...PLACE_FIELDS.danger, help: 'Red pin, red page and a “Danger” tag.' },
                     image: { kind: 'image', label: 'Picture', help: 'Page header and POIs list card.' },
+                    typeLabel: { kind: 'text', label: 'Type label', help: 'Small capitals above the name on the page (e.g. “Ruins”, “Monument”, “Battlefield”). Only used when the place is not an institution, tavern, shop or temple, which name themselves. Empty = no label.' },
                     featured: { kind: 'boolean', label: 'Featured landmark', help: '“Featured” tag in the POIs list.' },
                     safe: { kind: 'boolean', label: 'Safe haven', help: '“Safe” tag in the POIs list.' },
                     map: { kind: 'map', label: 'Pin on the parent map', section: 'Map', noPin: PIN_HELP, help: 'Inside an institution: choose which of its maps the pin is on.' },

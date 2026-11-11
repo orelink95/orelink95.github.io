@@ -502,16 +502,16 @@
             <div class="nav-sec" style="--c:${GROUP_COLOURS[g] || SPARE_COLOURS[i % SPARE_COLOURS.length]}">
             <div class="nav-group"><span>${esc(g)}</span></div>
             ${entries.filter(e => (e.d.group || 'Other') === g).map(e => {
-                const label = e.d.navLabel || e.d.plural || e.d.label;
-                const dirty = e.kind === 'type' ? S.data[e.key].some(r => isDirtyRec(e.key, r)) : isDirtySingle(e.key);
-                const count = e.kind === 'type' ? S.data[e.key].length : '';
-                return `<button class="nav-btn ${S.view.kind === e.kind && S.view.key === e.key ? 'active' : ''}" data-nav="${e.kind}:${e.key}" ${S.navOpen ? '' : `data-tip="${esc(label)}"`} aria-label="${esc(label)}">
+            const label = e.d.navLabel || e.d.plural || e.d.label;
+            const dirty = e.kind === 'type' ? S.data[e.key].some(r => isDirtyRec(e.key, r)) : isDirtySingle(e.key);
+            const count = e.kind === 'type' ? S.data[e.key].length : '';
+            return `<button class="nav-btn ${S.view.kind === e.kind && S.view.key === e.key ? 'active' : ''}" data-nav="${e.kind}:${e.key}" ${S.navOpen ? '' : `data-tip="${esc(label)}"`} aria-label="${esc(label)}">
                     <span class="material-symbols-outlined">${esc(e.d.icon || 'description')}</span>
                     <span class="lbl">${esc(label)}</span>
                     <span class="cnt">${count}</span>
                     ${dirty ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 </button>`;
-            }).join('')}
+        }).join('')}
             </div>`).join('');
         $('#nav-pin').innerHTML = `<span class="material-symbols-outlined">${S.navOpen ? 'left_panel_close' : 'left_panel_open'}</span><span class="lbl">Collapse menu</span>`;
         $('#nav-pin').dataset.tip = S.navOpen ? '' : 'Show the labels';
@@ -687,9 +687,9 @@
     };
     const colOf = (key, sf) => sf.kind === 'number' ? 'minmax(64px,.55fr)'
         : /^(name|title|label)$/.test(key) ? 'minmax(130px,1.4fr)'
-        : sf.kind === 'boolean' ? '56px'
-            : /desc|description|text/.test(key) && sf.kind === 'text' ? 'minmax(140px,2fr)'
-                : 'minmax(110px,1fr)';
+            : sf.kind === 'boolean' ? '56px'
+                : /desc|description|text/.test(key) && sf.kind === 'text' ? 'minmax(140px,2fr)'
+                    : 'minmax(110px,1fr)';
 
     function fieldHtml(f, key, value, path, holder) {
         if (!shown(f, holder)) return '';
@@ -797,14 +797,14 @@
         }
         return `<div class="sub">${head}
             ${arr.map((item, i) => {
-                const ik = JSON.stringify([...path, i]), ic = S.collapsed.has(ik);
-                return `<div class="card ${ic ? 'collapsed' : ''}">
+            const ik = JSON.stringify([...path, i]), ic = S.collapsed.has(ik);
+            return `<div class="card ${ic ? 'collapsed' : ''}">
                     <div class="card-head" data-action="collapse" data-key="${esc(ik)}">
                         <b><span class="material-symbols-outlined chev">expand_more</span>${esc(cardLabel(f, item) || `Entry ${i + 1}`)}</b>${acts(i)}
                     </div>
                     <div class="grid card-body">${fieldsGrid(f.fields, item || {}, [...path, i])}</div>
                 </div>`;
-            }).join('')}
+        }).join('')}
             ${add}</div>`;
     }
     // Links (refs) and tags (list): chips, an input with suggestions, drag to reorder
@@ -1118,14 +1118,14 @@
         const words = lore.split(' ');
         const text = esc(words.slice(0, 26).join(' ')) + (words.length > 26 ? '…' : '');
         const eyebrow = type === 'poi'
-            ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || 'Landmark'
+            ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || String(rec.typeLabel || '').trim() || (rec.danger ? 'Danger Zone' : rec.featured ? 'Featured Landmark' : '')
             : (rec.arcana || 'Specimen');
         const extra = type === 'poi'
             ? `<div class="look-prev__box look-prev__box--card"><p class="look-prev__eyebrow">Today at the Bar</p><h5 class="look-prev__heading">Bill of Fare</h5>
                 <div class="look-prev__rule"></div><div class="look-prev__item"><span>Spiced ale</span><i></i><b>4 cp</b></div></div>`
             : `<div class="look-prev__box"><p class="look-prev__eyebrow">Threat Assessment</p>
                 ${(rec.stats && rec.stats.length ? rec.stats.slice(0, 2) : [{ label: 'Strength', value: 70 }, { label: 'Cunning', value: 45 }])
-                    .map(st => `<div class="look-prev__stat"><span>${esc(st.label)}</span><span>${esc(st.value ?? 0)}</span></div><div class="look-prev__bar"><span style="width:${Math.max(0, Math.min(100, +st.value || 0))}%"></span></div>`).join('')}</div>`;
+                .map(st => `<div class="look-prev__stat"><span>${esc(st.label)}</span><span>${esc(st.value ?? 0)}</span></div><div class="look-prev__bar"><span style="width:${Math.max(0, Math.min(100, +st.value || 0))}%"></span></div>`).join('')}</div>`;
         return `<div class="box"><div class="box-head"><h4>Look preview</h4></div>
             <div class="look-prev" data-type="${type}" id="look-prev">
                 <p class="look-prev__crumbs">${esc(rec.name || 'Name')}</p>
@@ -1403,9 +1403,9 @@
             const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
             out.push(`<div class="box mkt-prev"><h4>${I.block(poi) ? esc(I.kind(S.store, poi).label) : 'Places inside'} <span>${inside.length}</span></h4>
                 ${inside.length ? `<ul class="mkt-list">${inside.map(p => {
-                    const on = I.mapOf(poi, p);
-                    return `<li class="${on ? 'in' : 'out'}" data-jump="${esc(p.id)}"><span>${esc(p.name)}</span><span class="truth">${on ? esc(on.name || on.id) : 'no pin'}</span></li>`;
-                }).join('')}</ul>` : '<p class="muted">No place inside it yet.</p>'}
+                const on = I.mapOf(poi, p);
+                return `<li class="${on ? 'in' : 'out'}" data-jump="${esc(p.id)}"><span>${esc(p.name)}</span><span class="truth">${on ? esc(on.name || on.id) : 'no pin'}</span></li>`;
+            }).join('')}</ul>` : '<p class="muted">No place inside it yet.</p>'}
                 ${I.block(poi) ? hint(`${plural(maps.length, 'map')} with an image · ${plural(folk.groups.length, 'group')} · ${plural(folk.groups.reduce((n, g) => n + g.members.length, 0) + folk.others.length, 'person').replace('persons', 'people')}. Its places are the POIs whose “Sits in” is this one.`) : ''}
                 ${I.block(poi) && !maps.length ? '<p class="warn">No map with an image, width and height: no Map tab.</p>' : ''}
                 ${addHere('poi', rec.id, 'Place inside this one')}</div>`);

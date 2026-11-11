@@ -7,6 +7,7 @@
     "codex": "Codex Entry: 99.X",
     "body": "The bereft hill are shunned by locals for a good reason. Strange things wander these parts, the walls of Modbury seem too frail hold the flood of nightmares from the region.",
     "danger": true,
+    "typeLabel": "Landmark",
     "map": {
       "x": 1074,
       "y": 835,
@@ -44,7 +45,8 @@
     "look": {
       "theme": "hearth",
       "titleFont": "Grenze Gotisch",
-      "frame": "filigree"
+      "frame": "filigree",
+      "inherit": true
     }
   },
   {
@@ -55,6 +57,7 @@
     "summary": "Eperina's seat of power, on the cliff of Brightend.",
     "body": "The seat of power in Brightend. From here, the King oversees the distribution of resources across the vale.",
     "image": "images/pois/alabaster_palace.png",
+    "typeLabel": "Political Institution",
     "map": {
       "x": 705,
       "y": 990,
@@ -105,6 +108,7 @@
     "subtitle": "Headquarters and barracks",
     "body": "The epicenter of law enforcement and military power in Brightend. The elite military corp is respected through the whole country.",
     "image": "images/pois/alabaster_ward.png",
+    "typeLabel": "MILITARY",
     "map": {
       "x": 800,
       "y": 916,
@@ -121,6 +125,20 @@
       "x": 424,
       "y": 718,
       "icon": "bookshelf"
+    },
+    "shop": {
+      "kind": "scribe",
+      "keepers": [
+        "ovan"
+      ],
+      "tier": "wealthy",
+      "picks": 4,
+      "categories": [
+        "books",
+        "curios",
+        "services"
+      ],
+      "markup": 120
     }
   },
   {
@@ -130,6 +148,7 @@
     "subtitle": "Nimo and Gust's mercenary agency",
     "body": "A small office tucked neatly between two impressive homes in the Cloud District houses the yound mercenary agency. Already hired by the Crown, the agency sees itself becoming a staple of the city.",
     "image": "images/pois/bbagency.png",
+    "typeLabel": "Private Dicks / Mercenaries",
     "safe": true,
     "map": {
       "x": 1018,
@@ -142,7 +161,7 @@
     "name": "Gilded Goldfinch",
     "parent": "cloud_district",
     "subtitle": "The finest drinks and eats the city has to offer",
-    "body": "The finest inn in the city... or the country, according to owner Merton Lensher.",
+    "body": "The finest inn in the city... or the country, according to owner Merton Lensher. No other place be to socialize, enjoy a nice meal or eavesdrop on the newest rumors.",
     "image": "images/pois/gilded_goldfinch.png",
     "map": {
       "x": 298,
@@ -157,7 +176,7 @@
       "hours": "Noon until the last candle",
       "picks": {
         "drinks": 4,
-        "meals": 3,
+        "meals": 4,
         "bites": 3
       },
       "excludeTags": [
@@ -191,8 +210,9 @@
     "name": "Thayne Household",
     "parent": "cloud_district",
     "subtitle": "Where the traumatized widower lives.",
-    "body": "We all know what happened here... it's like zombies were done to the cupboard",
+    "body": "We all know what happened here... it's like zombies were done to the cupboard. The poor Thayne widower, now sole owner of Finest Cloth still resides in this house, desperately awaiting the return of his departed wife. The house itself still feels inhabited by the magic responsible for her disappearance.",
     "image": "images/pois/thaynehouse.png",
+    "typeLabel": "Abode",
     "map": {
       "x": 600,
       "y": 367,
@@ -232,7 +252,8 @@
     ],
     "parent": "cloud_district",
     "subtitle": "The Archamge's Tower",
-    "body": "The Turris Magi is the second highest building in the cloud district, second the Alabaster Palace. It is a landmark known by all but feared by most. As a place of magic most people shun it and some even avoid it.",
+    "body": "The Turris Magi is one of the highest building in the cloud district, second the Alabaster Palace. It is a landmark known by all but feared by most. As a place of magic most people shun it and some even avoid it.",
+    "typeLabel": "Mage Tower",
     "featured": true,
     "map": {
       "x": 1038,
@@ -248,6 +269,7 @@
     "body": "Underground arenas where disputes are settled in blood and illegal wagers are the city's true currency.",
     "danger": true,
     "image": "images/pois/brightend_fightpits.png",
+    "typeLabel": "UNDERWORLD",
     "map": {
       "x": 500,
       "y": 500,
@@ -338,7 +360,8 @@
         "laundry"
       ],
       "games": [
-        "liars-dice"
+        "liars-dice",
+        "crown-and-dagger"
       ]
     }
   },
@@ -388,6 +411,9 @@
           "price": 17,
           "unit": "per night"
         }
+      ],
+      "games": [
+        "crown-and-dagger"
       ]
     }
   },
@@ -395,6 +421,7 @@
     "id": "rusty-anchor",
     "name": "The Rusty Anchor",
     "parent": "the_docks",
+    "image": "images/pois/rusty-anchor.jpg",
     "map": {
       "x": 611,
       "y": 638,
@@ -421,7 +448,8 @@
         "room-common"
       ],
       "games": [
-        "knucklebones"
+        "knucklebones",
+        "crown-and-dagger"
       ]
     }
   },
@@ -433,7 +461,7 @@
     "codex": "Athenaeum's History Wing",
     "summary": "Also known as H-wing, it is the place Order of the Lens Sages spend the most time in.",
     "body": "The History Wing, also known as the H-wing contains everything thing about the history of the Realms, as well as workspaces for Historian Sages of the Order of the Lens. ",
-    "image": "images/Lemerolai.jpeg",
+    "image": "images/pois/athenaeum-lib.jpeg",
     "map": {
       "x": 1092,
       "y": 232,
@@ -459,7 +487,11 @@
     "name": "Great Readers Office",
     "parent": "caeraotrom-athenaeum",
     "subtitle": "Administrative and Scholarly Department",
-    "image": "images/Lemerolai.jpeg",
+    "codex": "The Great Readers",
+    "summary": "Filled to the brim with books and reports, the room feels cold, yet soothing.",
+    "body": "Caeraotrom maintains a council of eight Great Readers, senior Avowed who oversee day-to-day operations. These erudite scholars and gifted spellcasters are chosen from the ranks of Master Readers. Each is acknowledged as Caeraotrom's foremost expert on a particular area of study. Many of them use the Master Sage stat block presented earlier in this section.\n\nAs of now, the Great Readers are:\n\n- A'lai Aivenmore, an elf master sage and worshiper of Oghma. Primary expertise: divinity (the gods and the nature of the divine).\n- Alkrist, a bronze dragonborn master sage. Primary expertise: politics, military strategy, and significant battles of Maltona.\n- Derrek Yashenti, a human master sage and poet. Primary expertise: music, poetry, and literature.\n- Fheminor Scrivenbark, a lightfoot halfling master sage. Primary expertise: history, folklore, and the cultures of Eraldom (past and present).\n- Erin Nyantani, a human master sage. Primary expertise: the natural world and celestial navigation.\n- Sylvira Savikas, a tiefling archmage. Primary expertise: the Planes of Existence.\n- Telos Ahvoste, a human archmage. Primary expertise: magic items, curses, and Ethyria.\n - V'ziir-Ag, a githzerai master sage. Primary expertise: all things unnatural (including aberrations, undead, and the Void).",
+    "image": "images/pois/grand-readers.jpg",
+    "typeLabel": "OFFICE",
     "map": {
       "x": 912,
       "y": 253
@@ -492,7 +524,8 @@
       ],
       "rumourDraws": 2,
       "games": [
-        "knucklebones"
+        "knucklebones",
+        "crown-and-dagger"
       ]
     }
   }

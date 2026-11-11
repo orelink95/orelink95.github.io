@@ -9,7 +9,7 @@
     "cover": "images/pre-oph-gram.png",
     "cleanCover": true,
     "tone": "primary",
-    "body": "It has been well established that the wound of the Ophrasian war will not close in our lifetimes, yet it is our durty as scholars to document it and the world before it shattered. This collection is meant to be the reference on pre-Ophrasian linguistics, covering matters of syntax, semantics, phonology and lexicography of various languages now gone. The last part of this volume deals with the question of dialectal variation: some of these found(again) languages might actually be related even if they don't share isoglosses. While some call the proof inconsistent or far-fetched, both viewpoints are explored here."
+    "body": "It has been well established that the wound of the Ophrasian War will not close in our lifetimes, yet it is our duty as scholars to document it and the world before it shattered. This collection is meant to be the reference on pre-Ophrasian linguistics, covering matters of syntax, semantics, phonology and lexicography of various languages now gone. The last part of this volume deals with the question of dialectal variation: some of these found(again) languages might actually be related even if they don't share isoglosses. While some call the proof inconsistent or far-fetched, both viewpoints are explored here."
   },
   {
     "id": "rune-comp-occ-lore",
@@ -21,6 +21,35 @@
     "cleanCover": true,
     "tone": "error",
     "body": "This comprehensive volume, sanctioned by the Runebridge Oversight Committee, serves as the definitive academic survey of \"extra-Ethyrian\" phenomena within the Boundless Vale. While Ethyria—the interconnected threads of reality born from the fallen goddess Mystara—remains the primary medium for modern spellcraft, this Companion delves into the \"liminal spaces\" that exist beyond traditional arcane schools, but focuses mostly on the history and beliefs that surround these practices of what the laymen call \"magick\"."
+  },
+  {
+    "id": "sleepers-oath",
+    "name": "The Sleeper's Oath",
+    "author": "Blythe Olinsher &  Ellia Runefoot",
+    "kind": "Book",
+    "category": "Philosophy",
+    "cover": "images/bookcovers/penguin cover parody dnd.png",
+    "cleanCover": true,
+    "body": "Written during the Doleris era, The Sleeper’s Oath is a cosmological treatise on the Dreamlands, which the text refers to exclusively as the Saoghal. Rather than framing the dreamscape as a separate or parallel plane, the author posits a suffocating metaphysics: reality is composed of superimposed layers occupying the exact same physical coordinates. Material existence, the Saoghal, and deeper planar strata exist simultaneously beneath, above, and directly within the identical space.\n\nThe core of the treatise explores the hypothesis of something that exists through and beyond the Saoghal—a singular, terrifying presence or state of being that pierces all layers at once. As the work progresses, the author’s academic composure collapses into obsession. The phrase \"through and beyond\" begins as a technical descriptor for dimensional overlap, but gradually infects the entire work, interrupting formal proofs and recurring like an inescapable mental echo. To study its contents is to invite a profound cognitive vertigo, stripping away the boundary between waking and dreaming until physical space feels perforated by infinite, concurrent realities."
+  },
+  {
+    "id": "third-silence",
+    "name": "The Third Silence",
+    "kind": "Book",
+    "category": "Linguistics",
+    "spineText": "The Third Silence",
+    "cover": "images/bookcovers/green_leather.png",
+    "tone": "secondary"
+  },
+  {
+    "id": "memory-as-mechanism",
+    "name": "Memory as Mechanism",
+    "author": "Unknown",
+    "kind": "Book",
+    "category": "Philosophy",
+    "cover": "images/bookcovers/memory_as_mechanism.png",
+    "cleanCover": true,
+    "body": "This old tome is an impenetrable philosophical treatise that approaches consciousness through a lens of cold, arcane determinism. Rejecting the notion of the mind as an ethereal soul or fluid spirit, the text treats the psyche as an immense, interlocking apparatus — a delicate clockwork of cognitive gears, escapements, and conduits where every thought, emotion, and perception is merely the output of an underlying structural process. Because it views consciousness as an engineered system, the work argues that the self is fundamentally modular: every component of the mind can be measured, calibrated, forcibly reconfigured, or irrevocably broken.\n\nThe core of the text focuses on the mechanics of memory, presenting it not as passive recollection, but as physical architecture. The author outlines exhaustive— and deeply unsettling — theories on how sensory experiences are engraved into mental substrates, how recall operates as a mechanical retrieval cycle, and how those impressions can be altered. Through dense, esoteric jargon and cryptic axiomatic proofs, the work details methods for splicing synthetic recollections into existing cognitive frameworks, shearing away specific memories without destabilizing the whole, or deliberately introducing stress fractures that cause a subject’s identity to suffer catastrophic systemic failure. For those who can parse its arcane syntax, the book reads less like traditional philosophy and more like a user’s manual for dissecting the sentient psyche."
   },
   {
     "id": "notes-arawan",

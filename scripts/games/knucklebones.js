@@ -45,6 +45,7 @@
 
     function mount(el, ctx) {
         const { esc, dice: D, avatarHtml } = ctx;
+        const bank = ctx.bank || ATH.games.noBank;   // the purse and the pot (table.js)
         const bot = { ...ctx.opponents[0], care: 0.8 + Math.random() * 1.2 };
         const S = { you: [[], [], []], bot: [[], [], []], turn: 'you', die: 0, message: '', over: false, landed: null };
         let alive = true;
@@ -52,6 +53,13 @@
         const later = (fn, ms) => timers.push(setTimeout(() => alive && fn(), ms));
 
         function start() {
+            // Each match costs the blind; the winner takes the pot
+            if (!bank.ante()) {
+                S.over = true;
+                S.message = 'You can’t cover the blind. Lower the stakes, or play for fun.';
+                render();
+                return;
+            }
             S.you = [[], [], []]; S.bot = [[], [], []]; S.over = false; S.landed = null;
             S.turn = Math.random() < 0.5 ? 'you' : 'bot';
             nextTurn();
@@ -85,7 +93,7 @@
             const a = boardScore(S.you), b = boardScore(S.bot);
             const result = a > b ? 'win' : a < b ? 'loss' : 'draw';
             S.message = result === 'win' ? `You win, ${a} to ${b}!` : result === 'loss' ? `${bot.name} wins, ${b} to ${a}.` : `A draw at ${a}.`;
-            ctx.onEnd(result);
+            ctx.onEnd(result, { share: 2 });   // a draw splits the pot with the regular
             render();
         }
 
@@ -144,7 +152,8 @@
             <p>Each player has a board of <b>three columns</b>, three dice deep.</p>
             <p>On your turn you roll one die and place it in a column of your board that is not full. A column scores the sum of its dice, but <b>matching dice multiply</b>: a die that appears twice counts double, three times triple. Two 4s are worth 16, three 5s are worth 45.</p>
             <p>Placing a die also <b>knocks out</b> every die of the same value in your opponent’s facing column.</p>
-            <p>The game ends as soon as one board is full. The higher total wins.</p>`,
+            <p>The game ends as soon as one board is full. The higher total wins.</p>
+            <p>Each match, you and your rival put the blind in the pot. The winner takes it; a draw returns each their stake.</p>`,
         mount,
         _test: { columnScore, boardScore, place, botColumn, isFull },
     });

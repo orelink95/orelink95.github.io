@@ -63,14 +63,15 @@
 
     ATH.games.register({
         id: 'crown-and-dagger',
-        kind: 'cards',
         blurb: 'Draw close to 21 without busting. Aces run high or low; face cards cut deep.',
+        kind: 'cards',
         rules: `
             <p><strong>Goal:</strong> Get closer to 21 than your opponents without going over (busting).</p>
             <ul>
                 <li><strong>Values:</strong> Number cards are face value. Court cards (Knave, Lady, Lord) are worth 10. Aces count as 1 or 11.</li>
                 <li><strong>The Deal:</strong> Everyone receives two cards. Regulars keep one card hidden until their turn.</li>
                 <li><strong>Play:</strong> Choose <em>Hit</em> to draw another card, or <em>Stand</em> to hold your count.</li>
+                <li><strong>The Pot:</strong> Every seat puts the blind in the pot when the hand is dealt. The best hand takes the pot; a tie splits it. Once per hand you can <em>Double Down</em>: you add another blind from your purse and the regulars match it.</li>
                 <li><strong>Special Hands:</strong>
                     <ul>
                         <li><strong>Royal Cut:</strong> An Ace paired with a Blade or Crown court card is a Natural 21.</li>
@@ -82,6 +83,9 @@
 
         mount(el, ctx) {
             const { you, opponents, onEnd, esc, avatarHtml } = ctx;
+            const bank = ctx.bank || ATH.games.noBank;            // the purse and the pot (table.js)
+            const coin = ctx.coin || (n => `${n} cp`);
+            const MAX_RAISES = 1;                                  // one Double Down per hand
             const seats = [
                 ...opponents.map(o => ({ ...o, isYou: false })),
                 { ...you, isYou: true }
@@ -156,6 +160,9 @@
                 const youScore = calcHand(youHand.map(c => c.card));
 
                 const canPlay = state === 'player-turn' && !youScore.isBust && !youScore.isNatural && youHand.length < 5;
+                // Double Down: one more blind from your purse into the pot, matched by the regulars
+                const showRaise = canPlay && bank.enabled && bank.raises < MAX_RAISES;
+                const canRaise = showRaise && bank.canRaise(MAX_RAISES);
 
                 el.innerHTML = `
                     <div class="gt-table gt-table--cards">
@@ -173,8 +180,9 @@
                                 ${canPlay ? `
                                     <button type="button" class="gt-btn gt-btn--hit" data-action="hit">Hit</button>
                                     <button type="button" class="gt-btn gt-btn--stand" data-action="stand">Stand</button>
+                                    ${showRaise ? `<button type="button" class="gt-btn gt-btn--raise" data-action="raise" ${canRaise ? '' : 'disabled'} ${canRaise ? '' : 'title="Not enough coin in your purse"'}>Double Down <small>+${esc(coin(bank.blind))}</small></button>` : ''}
                                 ` : `
-                                    <button type="button" class="gt-btn gt-btn--deal" data-action="deal">
+                                    <button type="button" class="gt-btn gt-btn--deal" data-action="deal" ${state === 'idle' || state === 'resolved' ? '' : 'disabled'}>
                                         ${state === 'idle' ? 'Deal Hand' : 'Next Hand'}
                                     </button>
                                 `}
@@ -184,6 +192,13 @@
             }
 
             function dealRound() {
+                // A hand in progress can't be abandoned for a fresh deal (the Deal button is disabled then too)
+                if (state === 'player-turn' || state === 'bots-turn') return;
+                // Every seat puts the blind in the pot
+                if (!bank.ante()) {
+                    updateUI(`You can’t cover the ${coin(bank.blind)} blind. Lower the stakes or play for fun.`);
+                    return;
+                }
                 clearTimers();
                 deck = createDeck();
                 hands = new Map();
@@ -234,6 +249,13 @@
                 } else {
                     updateUI('Hit or stand?');
                 }
+            }
+
+            function playerRaise() {
+                if (state !== 'player-turn') return;
+                const extra = bank.canRaise(MAX_RAISES) ? bank.raise() : 0;
+                if (!extra) return;
+                updateUI(`You double down: ${coin(extra)} more. The regulars match it, and the pot is now ${coin(bank.pot)}.`);
             }
 
             function playerStand() {
@@ -343,7 +365,8 @@
 
                 if (!roundEnded) {
                     roundEnded = true;
-                    onEnd(outcome);
+                    // On a standoff the pot is split between you and everyone you tied with
+                    onEnd(outcome, { share: bestBots.length + 1 });
                 }
                 updateUI(message);
             }
@@ -355,6 +378,7 @@
                 if (act === 'deal') dealRound();
                 else if (act === 'hit') playerHit();
                 else if (act === 'stand') playerStand();
+                else if (act === 'raise') playerRaise();
             });
 
             // Initial view

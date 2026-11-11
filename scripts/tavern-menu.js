@@ -116,6 +116,38 @@
         return `Bill of Fare · Folio ${hash(`folio|${code}|${poiId}`) % 900 + 100}`;
     }
 
+    /* ---------- gaming stakes (scripts/games/table.js and the dashboard) ---------- */
+    const DEFAULT_PURSE = 500; // cp, when settings.startingPurse is empty
+    const FALLBACK_STAKES = [
+        { id: 'low', label: 'Low stakes', blind: 5 },
+        { id: 'standard', label: 'Standard stakes', blind: 10 },
+        { id: 'high', label: 'High stakes', blind: 50 },
+    ];
+
+    // Exact coin text: 155 cp -> "1 gp 5 sp 5 cp". (formatPrice rounds to the nearest sp and never shows 0.)
+    function formatCoin(cp) {
+        cp = Math.max(0, Math.round(Number(cp) || 0));
+        if (!cp) return '0 cp';
+        const gp = Math.floor(cp / 100), sp = Math.floor((cp % 100) / 10), rest = cp % 10;
+        return [gp && `${gp} gp`, sp && `${sp} sp`, rest && `${rest} cp`].filter(Boolean).join(' ');
+    }
+
+    // What a player starts with at the gaming tables (cp): settings.startingPurse, else 500
+    function startingPurse(store) {
+        const raw = store.settings && store.settings.startingPurse;
+        const n = raw === undefined || raw === null || raw === '' ? NaN : Number(raw);
+        return Number.isFinite(n) && n >= 0 ? Math.round(n) : DEFAULT_PURSE;
+    }
+
+    /* The stakes a tavern offers -> [{id, label, base, blind}]
+       blind (cp per seat) = the stakes' base blind (enum gameStakes) x the tavern's tier multiplier. */
+    function stakes(store, tavern) {
+        const listed = store.enumOptions('gameStakes').filter(s => s && typeof s.blind === 'number');
+        const mult = (tavern && tierOf(store, tavern).mult) || 1;
+        return (listed.length ? listed : FALLBACK_STAKES)
+            .map(s => ({ id: s.id, label: s.label, base: s.blind, blind: Math.max(1, Math.round(s.blind * mult)) }));
+    }
+
     // hash, mulberry32 and seededPick are shared with scripts/market.js (shops, temples, rumours)
-    ATH.tavern = { buildMenu, buildServices, folioLabel, formatPrice, normaliseCode, tierOf, hash, mulberry32, seededPick };
+    ATH.tavern = { buildMenu, buildServices, folioLabel, formatPrice, formatCoin, startingPurse, stakes, normaliseCode, tierOf, hash, mulberry32, seededPick };
 })(typeof window !== 'undefined' ? window : globalThis);

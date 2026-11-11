@@ -9,8 +9,19 @@
     font-family: var(--font-body);
     color: var(--color-on-surface);
 }
-.dust-layer { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-.header-slot { position: relative; z-index: 50; }
+
+.dust-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.header-slot {
+    position: relative;
+    z-index: 50;
+}
 
 .pantheon-main {
     position: relative;
@@ -20,9 +31,16 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 6rem 1rem 4rem;
-    overflow-x: clip;   /* the cards' rays and glow never widen the page */
+    overflow-x: clip;
+    /* the cards' rays and glow never widen the page */
 }
-@media (min-width: 768px) { .pantheon-main { padding-left: 2rem; padding-right: 2rem; } }
+
+@media (min-width: 768px) {
+    .pantheon-main {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+}
 
 /* --- Head --- */
 .pantheon-head {
@@ -33,28 +51,67 @@
     gap: 1rem 2rem;
     margin-bottom: 3.5rem;
 }
-.pantheon-head__text { max-width: 44rem; }
+
+.pantheon-head__text {
+    max-width: 44rem;
+}
+
 .breadcrumbs {
-    display: flex; align-items: center; gap: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-bottom: 1rem;
-    font-family: var(--font-label); font-size: 10px;
-    text-transform: uppercase; letter-spacing: 0.1em;
+    font-family: var(--font-label);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     color: rgb(255 255 255 / 0.4);
 }
-.breadcrumbs__link { transition: color 150ms var(--ease); }
-.breadcrumbs__link:hover { color: var(--color-secondary); }
-.breadcrumbs__separator { font-size: 12px; }
-.breadcrumbs__current { font-weight: 700; color: var(--color-secondary); }
+
+.breadcrumbs__link {
+    transition: color 150ms var(--ease);
+}
+
+.breadcrumbs__link:hover {
+    color: var(--color-secondary);
+}
+
+.breadcrumbs__separator {
+    font-size: 12px;
+}
+
+.breadcrumbs__current {
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
 .pantheon-head__title {
     margin: 0 0 1rem;
     font-family: var(--font-headline);
-    font-size: 3rem; line-height: 1; font-weight: 700;
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 700;
     color: #fff;
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
-@media (min-width: 768px) { .pantheon-head__title { font-size: 4.5rem; } }
-.pantheon-head__lede { margin: 0; font-size: 1.15rem; font-style: italic; color: var(--color-on-surface-variant); }
-.pantheon-empty { font-style: italic; color: var(--color-outline); }
+
+@media (min-width: 768px) {
+    .pantheon-head__title {
+        font-size: 4.5rem;
+    }
+}
+
+.pantheon-head__lede {
+    margin: 0;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--color-on-surface-variant);
+}
+
+.pantheon-empty {
+    font-style: italic;
+    color: var(--color-outline);
+}
 
 /* Campaign drop-down (same look as Dramatis Personae's) */
 .pantheon-picker {
@@ -76,14 +133,30 @@
     appearance: none;
     transition: border-color 150ms var(--ease);
 }
-.pantheon-picker:hover, .pantheon-picker:focus { border-color: var(--color-secondary); }
+
+.pantheon-picker:hover,
+.pantheon-picker:focus {
+    border-color: var(--color-secondary);
+}
+
 @media (max-width: 767.98px) {
+
     /* 16px: below that, iPhones zoom the page on focus */
-    .pantheon-picker { width: 100%; font-size: 1rem; text-transform: none; letter-spacing: normal; }
+    .pantheon-picker {
+        width: 100%;
+        font-size: 1rem;
+        text-transform: none;
+        letter-spacing: normal;
+    }
 }
 
 /* --- Tiers --- */
-.pantheon-tiers { display: flex; flex-direction: column; gap: 4.5rem; }
+.pantheon-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 4.5rem;
+}
+
 .pantheon-tier {
     /* each tier sets these */
     --tier-ink: #e9c176;
@@ -96,9 +169,24 @@
     align-items: center;
     gap: 2rem;
 }
-.pantheon-tier__head { display: flex; align-items: center; gap: 1.25rem; width: 100%; }
-.pantheon-tier__rule { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--tier-line)); }
-.pantheon-tier__rule:last-child { background: linear-gradient(to left, transparent, var(--tier-line)); }
+
+.pantheon-tier__head {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    width: 100%;
+}
+
+.pantheon-tier__rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--tier-line));
+}
+
+.pantheon-tier__rule:last-child {
+    background: linear-gradient(to left, transparent, var(--tier-line));
+}
+
 .pantheon-tier__title {
     margin: 0;
     font-family: var(--font-headline);
@@ -107,6 +195,7 @@
     color: var(--tier-ink);
     text-align: center;
 }
+
 .pantheon-tier__cards {
     display: flex;
     flex-wrap: wrap;
@@ -115,25 +204,87 @@
     width: 100%;
     max-width: var(--row-max);
     margin: 0;
-    padding: 1.5rem 0 0;   /* room for the medallion's rays */
+    padding: 1.5rem 0 0;
+    /* room for the medallion's rays */
     list-style: none;
 }
-.pantheon-tier__cards > li { width: var(--card-w); }
 
-.pantheon-tier--creator { --tier-ink: #f4ead2; --tier-line: #f4ead2; --card-w: 280px; --gap: 40px; --row-max: 1000px; }
-.pantheon-tier--creator .pantheon-tier__title { font-size: 2.25rem; }
-.pantheon-tier--great { --tier-ink: #e9c176; --tier-line: #e9c176; --card-w: 196px; --gap: 20px; --row-max: 1080px; }
-.pantheon-tier--minor { --tier-ink: #d9a676; --tier-line: #c8915c; --card-w: 154px; --gap: 12px; --row-max: 1160px; }
-.pantheon-tier--minor .pantheon-tier__title { font-size: 1.6rem; }
-.pantheon-tier--primordial { --tier-ink: #b9cf8e; --tier-line: #94b35a; --card-w: 174px; --gap: 16px; --row-max: 1160px; }
-.pantheon-tier--elder { --tier-ink: #e07aa6; --tier-line: #8e3cc9; --card-w: 154px; --gap: 12px; --row-max: 830px; }
+.pantheon-tier__cards>li {
+    width: var(--card-w);
+}
+
+.pantheon-tier--creator {
+    --tier-ink: #f4ead2;
+    --tier-line: #f4ead2;
+    --card-w: 280px;
+    --gap: 40px;
+    --row-max: 1000px;
+}
+
+.pantheon-tier--creator .pantheon-tier__title {
+    font-size: 2.25rem;
+}
+
+.pantheon-tier--great {
+    --tier-ink: #e9c176;
+    --tier-line: #e9c176;
+    --card-w: 225px;
+    --gap: 20px;
+    --row-max: 1080px;
+}
+
+.pantheon-tier--minor {
+    --tier-ink: #d9a676;
+    --tier-line: #c8915c;
+    --card-w: 200px;
+    --gap: 12px;
+    --row-max: 1160px;
+}
+
+.pantheon-tier--minor .pantheon-tier__title {
+    font-size: 1.6rem;
+}
+
+.pantheon-tier--primordial {
+    --tier-ink: #b9cf8e;
+    --tier-line: #94b35a;
+    --card-w: 174px;
+    --gap: 16px;
+    --row-max: 1160px;
+}
+
+.pantheon-tier--elder {
+    --tier-ink: #e07aa6;
+    --tier-line: #8e3cc9;
+    --card-w: 200px;
+    --gap: 12px;
+    --row-max: 830px;
+}
 
 /* Phones: two cards a row, whatever the tier */
 @media (max-width: 639.98px) {
-    .pantheon-tiers { gap: 3rem; }
-    .pantheon-tier { gap: 1.25rem; }
-    .pantheon-tier__title { font-size: 1.5rem; }
-    .pantheon-tier--creator .pantheon-tier__title { font-size: 1.75rem; }
-    .pantheon-tier__cards { gap: 22px 12px; }
-    .pantheon-tier__cards > li { width: calc((100% - 12px) / 2); max-width: 200px; }
+    .pantheon-tiers {
+        gap: 3rem;
+    }
+
+    .pantheon-tier {
+        gap: 1.25rem;
+    }
+
+    .pantheon-tier__title {
+        font-size: 1.5rem;
+    }
+
+    .pantheon-tier--creator .pantheon-tier__title {
+        font-size: 1.75rem;
+    }
+
+    .pantheon-tier__cards {
+        gap: 22px 12px;
+    }
+
+    .pantheon-tier__cards>li {
+        width: calc((100% - 12px) / 2);
+        max-width: 200px;
+    }
 }

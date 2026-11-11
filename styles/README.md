@@ -9,7 +9,7 @@ Plain CSS, no build step. Every page loads, in this order:
 | `components.css` | Pieces used on every page: header, atlas sidebar, footer, mobile orb menu. |
 | `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. One exception: `pages/atlas-index.css` serves the four Atlas list pages (see below). |
 | `loot-card.css` | The item cards (front and opened, rarity colours), shared by the Vault and the dashboard preview. Markup: `scripts/loot-card.js`. |
-| `games.css` | The gaming table of a tavern (Games tab): bone dice, the game picker, Liar's Dice (`.ld-*`) and Knucklebones (`.kb-*`). Scripts: `scripts/games/`. |
+| `games.css` | The gaming table of a tavern (Games tab): bone dice, the game picker, the purse bar and stakes screen, Liar's Dice (`.ld-*`) and Knucklebones (`.kb-*`). Scripts: `scripts/games/`. |
 | `notice-board.css` | The cork board and its pinned notes, shared by the settlement Town Board, the POI Board tab and the dashboard preview. Markup: `scripts/notice-board.js`. |
 | `spell-card.css` | The spell cards (one hue per school, symbols, materials tooltip) and their pop-ups, shared by the Book of Shadows and the heroes page. Also declares the Rieven Uncial font. Markup: `scripts/spell-card.js`. |
 | `deity-card.css` | The gods' cards, one frame per tier (gold, pearl, bronze, living wood, obsidian, sealed), shared by the Pantheon, a god's page and the dashboard preview. The card scales with its box (sizes in % and `cqw`). Markup and SVG frames: `scripts/deity-card.js`. |

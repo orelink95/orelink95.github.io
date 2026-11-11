@@ -50,6 +50,7 @@
 
     function mount(el, ctx) {
         const { esc, dice: D, avatarHtml } = ctx;
+        const bank = ctx.bank || ATH.games.noBank;   // the purse and the pot (table.js)
         const players = [
             { ...ctx.you, isYou: true },
             ...ctx.opponents.map(o => ({ ...o, doubt: 0.2 + Math.random() * 0.15, bluff: 0.08 + Math.random() * 0.25 })),
@@ -184,6 +185,13 @@
         });
 
         function start() {
+            // The whole table plays for one pot: every seat puts the blind in, the last with dice takes it
+            if (!bank.ante()) {
+                S.over = true;
+                S.message = 'You can’t cover the blind. Lower the stakes, or play for fun.';
+                render();
+                return;
+            }
             S.over = false;
             for (const p of players) p.dice = Array(START_DICE).fill(1);
             newRound(Math.floor(Math.random() * players.length));
@@ -200,7 +208,8 @@
             <p>Everyone shakes five dice under a cup and looks only at their own.</p>
             <p>In turn, each player <b>raises the bid</b>: a claim about <em>all</em> the dice on the table, such as “at least four 5s”. A raise names more dice, or the same number of a higher face. <b>Ones are wild</b>: they count as any face, so you bid on 2 to 6 only.</p>
             <p>Instead of raising, you can call the last bidder a <b>liar</b>. Everyone shows their dice. If the bid holds, the caller loses a die; if not, the bidder does. The loser opens the next round.</p>
-            <p>A player with no dice left is out. The last one with dice wins.</p>`,
+            <p>A player with no dice left is out. The last one with dice wins.</p>
+            <p>Every seat puts the blind in the pot when the game starts. The last player with dice takes the whole pot.</p>`,
         mount,
         _test: { botMove, atLeast, higher },
     });

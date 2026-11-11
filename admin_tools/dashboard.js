@@ -1415,6 +1415,13 @@
             out.push(`<div class="box menu-prev"><h4>Menu preview</h4>
                 <p class="hint" style="margin:0 0 4px">${esc(ATH.tavern.folioLabel(code, rec.id))}</p>
                 ${priceRows(ATH.tavern.buildMenu(S.store, poi, code))}</div>`);
+            // The gaming table: what each stake costs per seat in this tavern, and what players start with
+            if ((poi.tavern.games || []).length) {
+                const T = ATH.tavern, tier = T.tierOf(S.store, poi.tavern);
+                out.push(`<div class="box menu-prev"><h4>Gaming stakes · ${esc(tier.label)}</h4>
+                    ${priceRows([{ label: 'Blind per seat', items: T.stakes(S.store, poi.tavern).map(s => ({ name: s.label, priceLabel: T.formatCoin(s.blind) })) }])}
+                    ${hint(`Base blind × the tier (×${tier.mult}). Every seat puts one in the pot each hand; a raise adds one more. Players start with ${esc(T.formatCoin(T.startingPurse(S.store)))} (Settings → Gaming purse).`)}</div>`);
+            }
             out.push(`<div class="box mkt-prev"><h4>Rumours heard here</h4>${rumourList(poi, code)}<div class="stack">${addHere('rumour', rec.id, 'Rumour for this tavern only')}
                 ${poi.parent ? addHere('rumour', (S.store.ancestors(poi).find(p => S.store.typeOf(p) === 'settlement') || {}).id || poi.parent, 'Rumour for the whole settlement') : ''}</div></div>`);
         }

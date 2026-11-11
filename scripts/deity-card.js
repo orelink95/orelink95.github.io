@@ -9,6 +9,8 @@
        options.picture  src => attributes of the <img>s (default: src="…")
    Athenaeum.deityCard.sealed(options)       -> a sealed slot (an Elder god
                                                  not revealed yet): no name
+       options.sealImage  path to the occult seal image (default:
+                          'images/Eraldom Gods Symbols/occult-seal.png')
    Athenaeum.deityCard.tierOf(deity)         -> 'creator' | 'great' | 'minor' |
                                                  'primordial' | 'elder'
 
@@ -28,6 +30,7 @@
 
     const TIERS = ['creator', 'great', 'minor', 'primordial', 'elder'];
     const tierOf = d => (d && TIERS.includes(d.tier) ? d.tier : 'great');
+    const DEFAULT_SEAL_IMG = 'images/occult-seal.jpg';
 
     /* ------------------------------------------------------------ geometry */
     const CX = 140, CY = 144;      // centre of the arch ellipses
@@ -169,18 +172,30 @@
     /* ------------------------------------------------------------ the tiers */
     // edge: dark outline · light: highlight · fillet: thin line round the portrait
     const STYLE = {
-        creator: { edge: '#8f7d57', light: '#ffffff', fillet: '#fff6e0', disc: 30,
-            stops: [[0, '#fffdf6'], [0.18, '#e9dcba'], [0.34, '#f8eeff'], [0.48, '#fff8e6'], [0.6, '#e2f4f5'], [0.76, '#f0e3c2'], [1, '#c2ae82']] },
-        great: { edge: '#3d2a05', light: '#fff1c9', fillet: '#f3d58f', disc: 30,
-            stops: [[0, '#6e4c14'], [0.16, '#f3d58f'], [0.3, '#b8892f'], [0.48, '#fbe9b4'], [0.64, '#a77b2c'], [0.82, '#f0cf86'], [1, '#7a561a']] },
-        minor: { edge: '#3f2614', light: '#f0c89c', fillet: '#d9a676', disc: 23,
-            stops: [[0, '#5e3b1f'], [0.25, '#c8915c'], [0.5, '#8c5a33'], [0.7, '#d9a676'], [1, '#6e4526']] },
-        primordial: { edge: '#1b120a', light: '#a37a4a', fillet: '#8a6238', disc: 26,
-            stops: [[0, '#2c1e12'], [0.28, '#6b4a2b'], [0.52, '#3a2716'], [0.78, '#7a5532'], [1, '#2a1c10']] },
-        elder: { edge: '#000000', light: '#5a2a6e', fillet: '#8e2a5e', disc: 27,
-            stops: [[0, '#09070c'], [0.22, '#2a1b33'], [0.45, '#0d0a12'], [0.68, '#241629'], [1, '#07050a']] },
-        sealed: { edge: '#000000', light: '#3d2450', fillet: '#4a2a5a', disc: 27,
-            stops: [[0, '#070509'], [0.22, '#1c1222'], [0.45, '#0a080d'], [0.68, '#18101c'], [1, '#050307']] },
+        creator: {
+            edge: '#8f7d57', light: '#ffffff', fillet: '#fff6e0', disc: 30,
+            stops: [[0, '#fffdf6'], [0.18, '#e9dcba'], [0.34, '#f8eeff'], [0.48, '#fff8e6'], [0.6, '#e2f4f5'], [0.76, '#f0e3c2'], [1, '#c2ae82']]
+        },
+        great: {
+            edge: '#3d2a05', light: '#fff1c9', fillet: '#f3d58f', disc: 30,
+            stops: [[0, '#6e4c14'], [0.16, '#f3d58f'], [0.3, '#b8892f'], [0.48, '#fbe9b4'], [0.64, '#a77b2c'], [0.82, '#f0cf86'], [1, '#7a561a']]
+        },
+        minor: {
+            edge: '#3f2614', light: '#f0c89c', fillet: '#d9a676', disc: 23,
+            stops: [[0, '#5e3b1f'], [0.25, '#c8915c'], [0.5, '#8c5a33'], [0.7, '#d9a676'], [1, '#6e4526']]
+        },
+        primordial: {
+            edge: '#1b120a', light: '#a37a4a', fillet: '#8a6238', disc: 26,
+            stops: [[0, '#2c1e12'], [0.28, '#6b4a2b'], [0.52, '#3a2716'], [0.78, '#7a5532'], [1, '#2a1c10']]
+        },
+        elder: {
+            edge: '#000000', light: '#5a2a6e', fillet: '#8e2a5e', disc: 27,
+            stops: [[0, '#09070c'], [0.22, '#2a1b33'], [0.45, '#0d0a12'], [0.68, '#241629'], [1, '#07050a']]
+        },
+        sealed: {
+            edge: '#000000', light: '#3d2450', fillet: '#4a2a5a', disc: 27,
+            stops: [[0, '#070509'], [0.22, '#1c1222'], [0.45, '#0a080d'], [0.68, '#18101c'], [1, '#050307']]
+        },
     };
 
     // Shared gradients and patterns (ids prefixed dc-)
@@ -200,6 +215,28 @@
     function ensureDefs() {
         if (typeof document === 'undefined' || !document.body || document.querySelector('.deity-card-defs')) return;
         document.body.insertAdjacentHTML('afterbegin', defs());
+
+        document.addEventListener('pointermove', e => {
+            const card = e.target.closest('a.deity-card');
+            if (!card) return;
+            const r = card.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width;
+            const py = (e.clientY - r.top) / r.height;
+            card.style.setProperty('--rx', `${((0.5 - py) * 26).toFixed(2)}deg`);
+            card.style.setProperty('--ry', `${((px - 0.5) * 26).toFixed(2)}deg`);
+            card.style.setProperty('--gx', `${(px * 100).toFixed(1)}%`);
+            card.style.setProperty('--gy', `${(py * 100).toFixed(1)}%`);
+        });
+
+        document.addEventListener('pointerout', e => {
+            const card = e.target.closest('a.deity-card');
+            if (card && !card.contains(e.relatedTarget)) {
+                card.style.removeProperty('--rx');
+                card.style.removeProperty('--ry');
+                card.style.removeProperty('--gx');
+                card.style.removeProperty('--gy');
+            }
+        });
     }
 
     // Material, edges and fillets: drawn over the portrait
@@ -449,7 +486,7 @@
         return s;
     }
 
-    // A sealed slot: chains across the window and an unbroken wax seal
+    // A sealed slot: chains across the window (the occult seal image sits on top)
     function chainsAndSeal() {
         const sx = 140, sy = 250;
         let s = '';
@@ -467,17 +504,6 @@
             s += `<g fill="none" stroke="#120d16" stroke-width="5">${links}</g><g fill="none" stroke="#6d5a73" stroke-width="2.2">${links}</g>` +
                 `<g fill="none" stroke="#b9a6c0" stroke-width="0.6" opacity="0.6">${links}</g>`;
         }
-        const pts = [];
-        for (let k = 0; k < 48; k++) {
-            const tt = 2 * Math.PI * k / 48, r = k % 2 === 0 ? 38 : 34.5;
-            pts.push(`${n1(sx + r * Math.cos(tt))},${n1(sy + r * Math.sin(tt))}`);
-        }
-        s += `<polygon points="${pts.join(' ')}" fill="#7a1840" stroke="#3a0a20" stroke-width="1.5"/>`;
-        s += `<circle cx="${sx}" cy="${sy}" r="27" fill="#8e1f4c" stroke="#5a0f2e" stroke-width="2"/>`;
-        s += `<circle cx="${sx}" cy="${sy}" r="21.5" fill="none" stroke="#c0457a" stroke-width="1" opacity="0.7"/>`;
-        s += `<circle cx="${sx}" cy="${sy}" r="19.5" fill="none" stroke="#c0457a" stroke-width="2.4" stroke-dasharray="0.8 2.4" opacity="0.6"/>`;
-        s += `<path d="M${sx} ${sy - 13} L${sx} ${sy + 13} M${sx - 8} ${sy - 6} L${sx} ${sy - 13} L${sx + 8} ${sy - 6} M${sx - 7} ${sy + 7} L${sx + 7} ${sy + 7}" fill="none" stroke="#f0b0cf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
-        s += `<ellipse cx="${sx - 10}" cy="${sy - 12}" rx="8" ry="3" fill="#ffffff" opacity="0.18" transform="rotate(-30 ${sx - 10} ${sy - 12})"/>`;
         return s;
     }
 
@@ -518,6 +544,7 @@
             '<span class="deity-card__plaque-ground"></span>' +
             layer(f.frame, ' deity-card__frame') +
             layer(f.extra) +
+            (parts.seal || '') +
             `<span class="deity-card__plaque">${parts.plaque}</span>` +
             layer(f.front) +
             `<span class="deity-card__medallion">${parts.medallion}</span>` +
@@ -558,9 +585,12 @@
         '<path d="M15 5 L13 12 L17 16 L14 25 M17 16 L22 18" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>';
 
     function sealed(options = {}) {
+        const pic = options.picture || srcAttr;
+        const sealSrc = options.sealImage || DEFAULT_SEAL_IMG;
         return shell('sealed', null, { tag: 'div', ...options }, {
             label: 'A sealed god, not yet revealed',
             window: '<span class="deity-card__mist"></span>',
+            seal: `<img class="deity-card__seal-img" ${pic(sealSrc)} alt="" loading="lazy">`,
             plaque: `${SEAL_RUNES}<span class="deity-card__sealed-label">Sealed</span>`,
             medallion: CRACKED,
         });

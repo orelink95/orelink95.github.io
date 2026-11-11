@@ -110,6 +110,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 file: 'data/settings.json',
                 fields: {
                     tavernCode: { kind: 'text', label: 'Market code', help: 'Tavern menus, shop wares, the order of rumours and the blessings are drawn from it, the same for every player. Change it to change them all.' },
+                    startingPurse: { kind: 'number', label: 'Gaming purse (cp)', help: 'What every player starts with at the gaming tables (1 gp = 10 sp = 100 cp). Empty = 500 cp. The purse is kept in each player’s browser; changing this number gives everyone a fresh purse.' },
                     currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Current campaign', help: 'What every campaign drop-down opens on (NPCs, Heroes, Factions, Pantheon, boards, scriptorium) and which Elder gods are sealed by default. In the dashboard: the ✓ of rumour lists and the campaign of new rumours and notices.' },
                 },
             },
@@ -201,6 +202,13 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'liars-dice', label: 'Liar’s Dice' },
                 { id: 'knucklebones', label: 'Knucklebones' },
                 { id: 'crown-and-dagger', label: 'Crown and dagger' }
+            ],
+            /* The stakes a player can sit down at (gaming table). `blind` is what each seat puts in the
+               pot per hand, in cp, at a Modest tavern: the tavern's tier multiplier (tavernTier) scales it. */
+            gameStakes: [
+                { id: 'low', label: 'Low stakes', blind: 5 },
+                { id: 'standard', label: 'Standard stakes', blind: 10 },
+                { id: 'high', label: 'High stakes', blind: 50 }
             ],
             /* Shops (poi.shop). Goods are sorted in these shelves, in this order. */
             shopCategory: [

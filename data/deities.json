@@ -40,5 +40,106 @@
     "colour": "#fee543",
     "worshippers": "Scholars, Spellcasters, Sages",
     "body": "Oghma, *the All-Knowing*, is revered as the divine patron of scholars, artisans, and sages. Also known as the \"Whisperer of Truths\", Oghma governs the realms of knowledge, eloquence, and craftsmanship, blessing those who pursue understanding and creation. Temples dedicated to Oghma often double as libraries or workshops, called Scriptoriums, where his followers catalog discoveries, refine their crafts, and promote free speech. His followers also set up Lodges of Candor for those who seek arbitrations."
+  },
+  {
+    "id": "banem",
+    "name": "Banem",
+    "tier": "minor",
+    "epithet": "The Earthmother",
+    "domains": [
+      "Life",
+      "Creation",
+      "Fertility"
+    ],
+    "portrait": "images/banem.jpg",
+    "portraitFocus": "68% 0%",
+    "portraitZoom": 138,
+    "icon": "spa",
+    "colour": "#8ee6d8"
+  },
+  {
+    "id": "syr-rion",
+    "name": "Syr-Rion",
+    "aliases": [
+      "The Great Faun"
+    ],
+    "tier": "great",
+    "epithet": "The Great Faun",
+    "domains": [
+      "Nature",
+      "Luck",
+      "Entropy",
+      "Trickery",
+      "Eldritch",
+      "Labyrinth"
+    ],
+    "portrait": "images/Syr-Rion.jpg",
+    "portraitFocus": "50% 0%",
+    "portraitZoom": 108,
+    "symbol": "images/Eraldom Gods Symbols/SyrRion Symbol.png",
+    "symbolText": "A deer head melded with an oak",
+    "colour": "#20c70a",
+    "worshippers": "Wanderers, wayfarers, tricksters, gamblers, druid, shapeshifters, satyrs",
+    "body": "Syr-Rion dances in that wild space where nature gets tangled with pure chance, where things fall apart as easily as they bloom. Imagine an elven figure, graceful but with the wild touch of deer horns and legs, a god who can shift like the very landscape. They’re rooted in overgrown forests and the confusing paths of a labyrinth, a patron of strange, almost otherworldly creatures and the kind of luck that can turn on a dime. Neither truly good nor bad, Syr-Rion is the untamed force beneath the surface of the natural world, the unpredictable twist in fate, and that voice in your dreams – sometimes playful, sometimes unsettling – asking riddles that seem to come from beyond understanding. When the forest grows impossibly thick, when luck feels too chaotic, when you’re lost in a maze with no clear way out (or too many deceptive turns), that’s where you might feel Syr-Rion’s presence nearby."
+  },
+  {
+    "id": "gagiel",
+    "name": "Gagiel",
+    "tier": "minor",
+    "epithet": "The Great Dragon",
+    "domains": [
+      "Dragons",
+      "Sky",
+      "Power",
+      "War"
+    ],
+    "portrait": "images/Gagiel.jpg",
+    "portraitFocus": "93% 30%",
+    "colour": "#dab52f"
+  },
+  {
+    "id": "white-elk",
+    "name": "The White Elk",
+    "tier": "primordial",
+    "domains": [
+      "Life",
+      "Nature",
+      "Secret"
+    ],
+    "portrait": "images/white-elk.jpg",
+    "portraitFocus": "50% 16%",
+    "portraitZoom": 120,
+    "symbol": "images/Eraldom Gods Symbols/White-Elk Symbol.png",
+    "colour": "#df5d5d"
+  },
+  {
+    "id": "shub-niggurath",
+    "name": "Shub-Niggurath",
+    "tier": "elder",
+    "epithet": "The Thousand-Young Mother",
+    "domains": [
+      "Fertility",
+      "Eldritch",
+      "Void",
+      "Life"
+    ],
+    "portrait": "images/Shub-Niggurath.jpg",
+    "symbol": "images/Eraldom Gods Symbols/necronomicon-seal.png",
+    "colour": "#952af8"
+  },
+  {
+    "id": "eldur",
+    "name": "Eldur",
+    "aliases": [
+      "Eldur"
+    ],
+    "tier": "creator",
+    "epithet": "The Allfather",
+    "summary": "Creator of Life, First Spark of the Multiverse",
+    "portrait": "images/eldur.jpg",
+    "portraitFocus": "50% 0%",
+    "portraitZoom": 135,
+    "icon": "panorama_photosphere",
+    "colour": "#4c91cd"
   }
 ]

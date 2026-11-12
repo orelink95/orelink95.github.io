@@ -14,6 +14,7 @@
     <link href="../styles/notice-board.css" rel="stylesheet" />
     <link href="../styles/spell-card.css" rel="stylesheet" />
     <link href="../styles/deity-card.css" rel="stylesheet" />
+    <link href="../styles/fortune-card.css" rel="stylesheet" />
     <link href="../styles/looks.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -628,6 +629,22 @@
         .card-prev .spell-card--open { width: 100%; max-width: 310px; }
         .card-prev .spell-card:hover { transform: none; }
         .card-prev__stage--deity { padding-top: 26px; }
+        /* divination (../styles/fortune-card.css): a card, a deck's fan, a spread or a prophecy */
+        .card-prev .fcard { width: 150px; }
+        .fan-prev { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .fan-prev .fcard { width: 52px; cursor: pointer; }
+        .fortune-prev .fread { padding: 8px 0 2px; }
+        .fortune-prev .fread__head { padding: 0; margin-bottom: 10px; }
+        .fortune-prev .fread__title { font-size: 1.05rem; }
+        .fortune-prev .fread__intro { font-size: .9rem; margin-bottom: 10px; }
+        .fortune-prev .fread__spread { --fcard-w: 74px; --gap: 8px; }
+        .fortune-prev .fread__spread--row[data-n="1"] .fread__slot { width: 110px; }
+        .fortune-prev .fread__spread--omen .fcard { width: 110px; }
+        .fortune-prev .fread__meanings { gap: 6px; margin-top: 10px; }
+        .fortune-prev .fread__meaning { padding: 6px 8px; }
+        .fortune-prev .fread__card { font-size: .9rem; }
+        .fortune-prev .fread__text { font-size: .85rem; }
+        .fortune-prev .fread__hint { display: none; }
         /* Bestiary window preview: same shape as the pop-up's picture on a computer (about 1:2) */
         .frame-prev { position: relative; width: 170px; aspect-ratio: 427 / 832; margin: 10px auto 0; overflow: hidden; border-radius: 6px; background: #000; border: 1px solid var(--line, #333); }
         .frame-prev img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -781,6 +798,8 @@
     <script src="../scripts/core/seal.js"></script>
     <script src="../scripts/tavern-menu.js"></script>
     <script src="../scripts/market.js"></script>
+    <script src="../scripts/divination.js"></script>
+    <script src="../scripts/fortune-card.js"></script>
     <script src="../scripts/institution.js"></script>
     <script src="../scripts/notice-board.js"></script>
     <script src="../scripts/loot-card.js"></script>

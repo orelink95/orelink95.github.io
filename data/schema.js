@@ -111,6 +111,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 fields: {
                     tavernCode: { kind: 'text', label: 'Market code', help: 'Tavern menus, shop wares, the order of rumours and the blessings are drawn from it, the same for every player. Change it to change them all.' },
                     startingPurse: { kind: 'number', label: 'Gaming purse (cp)', help: 'What every player starts with at the gaming tables (1 gp = 10 sp = 100 cp). Empty = 500 cp. The purse is kept in each player’s browser; changing this number gives everyone a fresh purse.' },
+                    loanInterest: { kind: 'number', label: 'House loan interest (%)', help: 'A player who can’t cover the lowest blind borrows a starting purse from the house and owes it back with this interest; half of every win goes to the loan until it is repaid. Empty = 10. 0 = no loan: a free fresh purse instead.' },
                     currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Current campaign', help: 'What every campaign drop-down opens on (NPCs, Heroes, Factions, Pantheon, boards, scriptorium) and which Elder gods are sealed by default. In the dashboard: the ✓ of rumour lists and the campaign of new rumours and notices.' },
                 },
             },
@@ -204,7 +205,8 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'crown-and-dagger', label: 'Crown and dagger' }
             ],
             /* The stakes a player can sit down at (gaming table). `blind` is what each seat puts in the
-               pot per hand, in cp, at a Modest tavern: the tavern's tier multiplier (tavernTier) scales it. */
+               pot per hand, in cp, at a Modest tavern: the tavern's tier multiplier (tavernTier) scales it.
+               A tavern can drop the lowest ones (minStake) and lock the highest (highTableWins). */
             gameStakes: [
                 { id: 'low', label: 'Low stakes', blind: 5 },
                 { id: 'standard', label: 'Standard stakes', blind: 10 },
@@ -397,6 +399,17 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 { id: 'taken', label: 'Taken (by the party or someone else)' },
                 { id: 'done', label: 'Done / closed' },
             ],
+            /* Divination (poi.divination): how a practice answers */
+            divinationMethod: [
+                { id: 'cards', label: 'Cards (drawn from a deck, laid in a spread)' },
+                { id: 'omen', label: 'Omen (one sign drawn from its own pool)' },
+            ],
+            /* How a spread lays its cards: a row (wraps on phones), or a cross of five
+               (1 centre, 2 left, 3 right, 4 above, 5 below; any other count = a row) */
+            spreadLayout: [
+                { id: 'row', label: 'Row' },
+                { id: 'cross', label: 'Cross (five cards)' },
+            ],
         },
 
         types: {
@@ -478,7 +491,7 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                 /* parent 'poi': a key location inside an institution (a hall of the university),
                    pinned on one of the institution's own maps (map.on = that map's id). */
                 place: true, parent: ['district', 'settlement', 'country', 'poi'], autolink: true,
-                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Temple', 'Look'],
+                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Temple', 'Divination', 'Look'],
                 fields: {
                     ...PLACE_FIELDS,
                     subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: page header, map pop-up, POIs list.' },
@@ -524,6 +537,9 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                             },
                             rumourDraws: { kind: 'number', label: 'Rumours per player', help: 'How many a player can hear per market code. Empty = 3; 0 = no Rumours tab.' },
                             games: { kind: 'list', enum: 'tavernGame', label: 'Gaming table', help: 'Adds a Games tab: played against the regulars.' },
+                            minStake: { kind: 'enum', enum: 'gameStakes', label: 'Lowest stakes', showIf: { key: 'games', set: true }, help: 'The cheapest stakes this table takes; lower ones are not offered. Empty = all of them. Playing for fun is always possible.' },
+                            houseCut: { kind: 'number', label: 'House cut (%)', showIf: { key: 'games', set: true }, help: 'The share of every pot the house keeps when it is paid out (0 to 50). Empty = none.' },
+                            highTableWins: { kind: 'number', label: 'Wins to open the high table', showIf: { key: 'games', set: true }, help: 'Staked hands a player must win in this tavern before its highest stakes can be picked. Empty or 0 = open to all.' },
                         },
                     },
                     /* A POI can be a tavern AND a shop AND a temple: each block adds its tab to the page. */
@@ -570,6 +586,19 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                                 }
                             },
                             noPrayer: { kind: 'boolean', label: 'No prayer button', help: 'No blessing is drawn here.' },
+                        },
+                    },
+                    /* A seer's table: card readings and other practices (data/practices.json).
+                       One reading per player per day; a campaign's prophecies come first. */
+                    divination: {
+                        kind: 'object', label: 'Divination', optional: true, section: 'Divination',
+                        help: 'Gives the page a Readings tab: the practices offered here, and one reading per player per day.',
+                        fields: {
+                            practices: { kind: 'refs', to: ['practice'], label: 'Practices offered', required: true, help: 'Card reading, bone casting… The first one is chosen by default.' },
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Reading the signs', help: 'Shown on the Readings tab. Any NPC; the people who live here are listed apart.' },
+                            title: { kind: 'text', label: 'Heading of the tab', help: 'Empty = “The Seer’s Table”.' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Wealth', help: 'Sets the prices. Empty = the tavern’s, else Modest.' },
+                            hours: { kind: 'text', label: 'Hours' },
                         },
                     },
                     /* A university, a great library…: its own maps, its key locations and its people.
@@ -1045,6 +1074,105 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     issuerText: { kind: 'text', label: 'Signature', help: 'When the poster is not on the site, or as a signature.' },
                     posted: { kind: 'text', label: 'Posted on', help: 'In-world date.' },
                     image: { kind: 'image', label: 'Picture', help: 'Wanted posters…' },
+                },
+            },
+
+            /*-------------------------------------======= DIVINATION =======-------------------------------------*/
+            /* A POI with a divination block offers practices. A card practice draws from a
+               deck into a spread the player picks; an omen practice draws one sign from its
+               own pool. One reading per player, per seer, per day (kept in the browser).
+               A prophecy is a reading fixed by the DM: the next reading at its POI, in its
+               campaign, is that one instead of a random draw. Scripts: scripts/divination.js
+               (draws) and scripts/fortune-card.js (markup, styles/fortune-card.css). */
+            practice: {
+                label: 'Practice', plural: 'Practices', icon: 'visibility', group: 'Divination',
+                file: 'data/practices.json',
+                fields: {
+                    method: { kind: 'enum', enum: 'divinationMethod', label: 'Method', required: true },
+                    desc: { kind: 'text', label: 'Description', width: 'full', help: 'Under its name on the Readings tab.' },
+                    basePrice: { kind: 'number', label: 'Base price (cp)', help: '× the seer’s wealth. Empty = “Donation”.' },
+                    unit: { kind: 'text', label: 'Unit', help: 'per reading, per question…' },
+                    icon: { kind: 'text', label: 'Icon', icon: true, help: 'Material Symbols name, on the omen tile. Empty = visibility.' },
+                    deck: { kind: 'ref', to: ['deck'], label: 'Deck', help: 'The cards it draws from.', showIf: { key: 'method', is: ['cards'] } },
+                    spreads: { kind: 'refs', to: ['spread'], label: 'Spreads offered', help: 'The player picks one. None = every spread.', showIf: { key: 'method', is: ['cards'] } },
+                },
+            },
+            deck: {
+                label: 'Deck', plural: 'Decks', icon: 'style', group: 'Divination',
+                file: 'data/decks.json',
+                fields: {
+                    desc: { kind: 'text', label: 'Description', width: 'full' },
+                    back: { kind: 'image', label: 'Back of the cards', help: 'Tarot size, upright (70 × 120). Empty = a plain patterned back.' },
+                    noReversals: { kind: 'boolean', label: 'No reversed cards', help: 'Cards are always drawn upright.' },
+                },
+            },
+            fortuneCard: {
+                label: 'Card', plural: 'Cards', icon: 'playing_cards', group: 'Divination',
+                file: 'data/fortune-cards.json',
+                order: { by: 'number', within: 'deck' },
+                sections: ['Card', 'Meanings'],
+                fields: {
+                    deck: { kind: 'ref', to: ['deck'], label: 'Deck', required: true },
+                    number: { kind: 'number', label: 'Number', help: 'Its place in the deck (0 = The Fool). Shown as a Roman numeral when there is no picture.' },
+                    image: { kind: 'image', label: 'Picture', help: 'The whole face of the card, tarot size, upright (70 × 120).' },
+                    keywords: { kind: 'list', label: 'Keywords', help: 'Shown over its meaning (upright).' },
+                    upright: { kind: 'text', label: 'Upright meaning', long: true, required: true, section: 'Meanings' },
+                    reversedKeywords: { kind: 'list', label: 'Keywords (reversed)', section: 'Meanings' },
+                    reversed: { kind: 'text', label: 'Reversed meaning', long: true, section: 'Meanings', help: 'Empty = the upright meaning, marked reversed.' },
+                },
+            },
+            spread: {
+                label: 'Spread', plural: 'Spreads', icon: 'view_column', group: 'Divination',
+                file: 'data/spreads.json',
+                fields: {
+                    desc: { kind: 'text', label: 'Description', width: 'full', help: 'Under the spread’s name in the player’s choice.' },
+                    layout: { kind: 'enum', enum: 'spreadLayout', label: 'Layout', help: 'Empty = a row.' },
+                    positions: {
+                        kind: 'objects', label: 'Positions', itemLabel: 'name', required: true,
+                        help: 'One per card, in the order they are laid and turned.',
+                        fields: {
+                            name: { kind: 'text', label: 'Name', required: true, help: 'Past, Present, Future…' },
+                            desc: { kind: 'text', label: 'What it speaks of', long: true },
+                        },
+                    },
+                },
+            },
+            /* The pool of an omen practice: one is drawn per reading */
+            omen: {
+                label: 'Omen', plural: 'Omens', icon: 'flare', group: 'Divination',
+                file: 'data/omens.json',
+                fields: {
+                    practice: { kind: 'ref', to: ['practice'], label: 'Practice', required: true, help: 'An omen practice (bone casting, tea leaves…).' },
+                    text: { kind: 'text', label: 'What the seer sees', long: true, required: true },
+                    meaning: { kind: 'text', label: 'What it means', long: true, help: 'Shown under it.' },
+                    image: { kind: 'image', label: 'Picture', help: 'Square. Empty = the practice’s icon.' },
+                },
+            },
+            /* A reading fixed by the DM for a campaign. A player of that campaign gets it at
+               their next reading at `where` (first prophecy first), then draws go back to random. */
+            prophecy: {
+                label: 'Prophecy', plural: 'Prophecies', icon: 'auto_awesome', group: 'Divination',
+                file: 'data/prophecies.json',
+                sections: ['Prophecy', 'The reading', 'DM only'],
+                fields: {
+                    where: { kind: 'ref', to: ['poi'], label: 'Read at', required: true, help: 'A POI with a divination block.' },
+                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Campaigns', required: true },
+                    practice: { kind: 'ref', to: ['practice'], label: 'Practice', required: true, help: 'One the seer offers. Whatever the player chose, this is the reading they get.' },
+                    spread: { kind: 'ref', to: ['spread'], label: 'Spread', help: 'Card practices: its positions take the cards below, in order.' },
+                    intro: { kind: 'text', label: 'Before the reading', long: true, section: 'The reading', help: 'What the seer says first (optional).' },
+                    cards: {
+                        kind: 'objects', label: 'The cards', itemLabel: 'card', section: 'The reading',
+                        help: 'One per position of the spread, in order.',
+                        fields: {
+                            card: { kind: 'ref', to: ['fortuneCard'], label: 'Card', required: true },
+                            reversed: { kind: 'boolean', label: 'Reversed' },
+                            reading: { kind: 'text', label: 'What the seer reads in it', long: true, help: 'Empty = the card’s own meaning.' },
+                        },
+                    },
+                    omen: { kind: 'text', label: 'The omen', long: true, section: 'The reading', help: 'Omen practices: what the seer sees.' },
+                    omenMeaning: { kind: 'text', label: 'What the omen means', long: true, section: 'The reading' },
+                    closing: { kind: 'text', label: 'After the reading', long: true, section: 'The reading', help: 'Shown once every card is turned (optional).' },
+                    meaning: { kind: 'text', label: 'What it really foretells', long: true, private: true, section: 'DM only' },
                 },
             },
         },

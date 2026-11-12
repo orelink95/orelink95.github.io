@@ -25,6 +25,7 @@
     <link href="styles/poi-style.css" rel="stylesheet" />
     <link href="styles/notice-board.css" rel="stylesheet" />
     <link href="styles/games.css" rel="stylesheet" />
+    <link href="styles/fortune-card.css" rel="stylesheet" />
     <!-- the page's own look (record.look): last, so it wins -->
     <link href="styles/looks.css" rel="stylesheet" />
 
@@ -37,6 +38,8 @@
     <script src="scripts/institution.js"></script>
     <script src="scripts/tavern-menu.js"></script>
     <script src="scripts/market.js"></script>
+    <script src="scripts/divination.js"></script>
+    <script src="scripts/fortune-card.js"></script>
     <script src="scripts/notice-board.js"></script>
     <script src="scripts/personae.js"></script>
     <script src="scripts/games/table.js"></script>
@@ -115,7 +118,7 @@
 
                 <!-- RIGHT (first on phones): one tab per role of the place
                      Map · Locations · People (institution) · Fare (tavern) · Wares (shop) · Shrine (temple)
-                     · Rumours · Games (tavern) · Board (notices) -->
+                     · Readings (divination) · Rumours · Games (tavern) · Board (notices) -->
                 <section id="poi-ledger" class="poi-menu-card poi-ledger" hidden>
                     <div id="poi-tabs" class="poi-tabs" role="tablist" aria-label="What this place offers"></div>
 
@@ -174,6 +177,16 @@
                         <div id="poi-rites" class="poi-menu"></div>
                     </div>
 
+                    <!-- Divination: the practices offered, and today's reading (opens in the dialog below) -->
+                    <div id="tab-readings" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">Behind the Veil</p>
+                        <h3 id="poi-readings-heading" class="poi-menu-heading">The Seer’s Table</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-seer-keepers" class="poi-keepers" hidden></div>
+                        <div id="poi-reading"></div>
+                        <div id="poi-practices" class="poi-menu"></div>
+                    </div>
+
                     <div id="tab-rumours" class="poi-tabpanel" role="tabpanel" hidden>
                         <p class="poi-eyebrow poi-center">Overheard</p>
                         <h3 class="poi-menu-heading">Word Around the Hearth</h3>
@@ -198,6 +211,15 @@
             </div>
         </div>
     </main>
+
+    <!-- A reading: the spread and what the turned cards say (scripts/fortune-card.js) -->
+    <dialog id="fortune-dialog" class="fortune-dialog" aria-label="Your reading">
+        <button type="button" class="fortune-dialog__close" data-close aria-label="Close">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+        <div id="fortune-body" class="fread"></div>
+        <div id="fortune-zoom" class="fortune-dialog__zoom" hidden></div>
+    </dialog>
 
     <div id="footer-placeholder"></div>
 </body>

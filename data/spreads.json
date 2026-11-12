@@ -1,0 +1,53 @@
+[
+  {
+    "id": "spread-single",
+    "name": "A Single Card",
+    "desc": "One card, one answer.",
+    "layout": "row",
+    "positions": [
+      {
+        "name": "The Answer"
+      }
+    ]
+  },
+  {
+    "id": "spread-three",
+    "name": "Past, Present, Future",
+    "desc": "Three cards laid left to right.",
+    "layout": "row",
+    "positions": [
+      {
+        "name": "The Past"
+      },
+      {
+        "name": "The Present"
+      },
+      {
+        "name": "The Future"
+      }
+    ]
+  },
+  {
+    "id": "spread-cross",
+    "name": "The Cross",
+    "desc": "Five cards: the matter, what lies behind and ahead, above and below.",
+    "layout": "cross",
+    "positions": [
+      {
+        "name": "The Heart of the Matter"
+      },
+      {
+        "name": "What Lies Behind"
+      },
+      {
+        "name": "What Lies Ahead"
+      },
+      {
+        "name": "What Crowns It"
+      },
+      {
+        "name": "What Lies Beneath"
+      }
+    ]
+  }
+]

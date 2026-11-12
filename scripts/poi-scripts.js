@@ -1,5 +1,5 @@
 /* =====================================================================
-   POINT OF INTEREST PAGE  —  poi.html?id=<poi id>[#map|#places|#people|#fare|#wares|#shrine|#rumours|#games|#board]
+   POINT OF INTEREST PAGE  —  poi.html?id=<poi id>[#map|#places|#people|#fare|#wares|#shrine|#readings|#rumours|#games|#board]
    Any POI: image, location, lore, the NPCs whose home it is.
    A POI can be several things at once; each adds a tab to the ledger card:
      institution   -> Map (its own maps, one per floor or wing, with the places
@@ -11,6 +11,8 @@
                       Games when tavern.games lists some (scripts/games/)
      shop block    -> Wares          (scripts/market.js)
      temple block  -> Shrine         (services, offerings, a prayer)
+     divination    -> Readings       (the practices, and one reading per day, in a
+                                      dialog: scripts/divination.js, scripts/fortune-card.js)
      notices here  -> Board          (scripts/notice-board.js)
    Menus, wares and the rumour order come from the market code
    (settings.tavernCode); the DM can preview another with ?code=XYZ (not saved).
@@ -44,6 +46,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tavern = poi.tavern && poi.tavern.tier ? poi.tavern : null;
     const shop = poi.shop && poi.shop.kind ? poi.shop : null;
     const temple = poi.temple || null;
+    const D = Athenaeum.divination, F = Athenaeum.fortuneCard;
+    const seer = D ? D.block(poi) : null;
     // Institution: maps, the POIs that sit in it, its people by function
     const I = Athenaeum.institution;
     const inst = I.block(poi);
@@ -61,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     root.classList.toggle('is-danger', !!poi.danger);
 
     /* ---------- Hero ---------- */
-    const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', shop && M.shopKind(store, shop).label, temple && 'Temple'].filter(Boolean);
+    const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', shop && M.shopKind(store, shop).label, temple && 'Temple', seer && 'Seer'].filter(Boolean);
     $('poi-image').src = poi.image || 'images/pois/placeholder.png';
     $('poi-image').alt = poi.name;
     // Roles (institution, tavern, shop, temple) name the place; otherwise the label set by hand,
@@ -89,6 +93,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ['Bar', tavern && tavern.hours],
         ['Shop', shop && (shop.hours || (tavern && tavern.hours))],
         ['Worship', temple && temple.hours],
+        ['Readings', seer && seer.hours],
     ].filter(([, h]) => h);
     const distinct = [...new Set(hoursOf.map(([, h]) => h))];
     if (distinct.length === 1) fact('hours', esc(distinct[0]));
@@ -100,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (deities.length) fact('deities', deities.map(d => `<a class="poi-link" href="${store.url(d)}">${esc(d.name)}</a>`).join(', '));
 
     /* ---------- Lore & people ---------- */
-    $('poi-body-title').textContent = inst ? `The ${instKind.label}` : tavern ? 'The Establishment' : temple ? 'The Sanctuary' : shop ? 'The Shop' : 'Archive Entry';
+    $('poi-body-title').textContent = inst ? `The ${instKind.label}` : tavern ? 'The Establishment' : temple ? 'The Sanctuary' : shop ? 'The Shop' : seer ? 'The Seer' : 'Archive Entry';
     $('poi-body').innerHTML = poi.body
         ? store.autolink(store.md(poi.body, { dropCap: true }), { exclude: poi.id })
         : '<p class="poi-muted">No lore recorded for this landmark yet.</p>';
@@ -139,17 +144,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             <ul>${cat.items.map(priceItem).join('')}</ul>
         </section>`).join('');
 
-    /* ---------- Campaign (rumours and notices) ---------- */
+    /* ---------- Campaign (rumours, notices and prophecies) ---------- */
     const heardAll = tavern ? M.rumoursHeard(store, poi, 'all') : [];
     const postedAll = M.notices(store, poi.id, 'all');
+    const foretold = seer ? D.prophecies(store, poi.id) : [];
     let campaign = 'all';
-    const withCampaigns = M.campaignsWith(store, [...heardAll, ...postedAll]);
+    const withCampaigns = M.campaignsWith(store, [...heardAll, ...postedAll, ...foretold]);
     if (Athenaeum.personae && withCampaigns.campaigns.length) {
         const campaigns = store.all('campaign');
         campaign = Athenaeum.personae.choose(store, { campaigns });
         Athenaeum.personae.picker($('poi-campaign'), {
             campaigns, value: campaign,
-            onChange: value => { campaign = value; renderRumours(); renderBoard(); },
+            onChange: value => { campaign = value; renderRumours(); renderBoard(); renderReading(); },
         });
         $('poi-campaign-fact').hidden = $('poi-campaign').classList.contains('hidden');
     }
@@ -162,6 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (tavern) tabs.push({ id: 'fare', label: 'Fare', icon: 'restaurant' });
     if (shop) tabs.push({ id: 'wares', label: 'Wares', icon: 'storefront' });
     if (temple) tabs.push({ id: 'shrine', label: 'Shrine', icon: 'brightness_7' });
+    if (seer && D.practices(store, poi).length) tabs.push({ id: 'readings', label: 'Readings', icon: 'visibility' });
     if (tavern && M.drawLimit(poi) > 0 && heardAll.length) tabs.push({ id: 'rumours', label: 'Rumours', icon: 'record_voice_over' });
     const games = tavern && Athenaeum.games ? Athenaeum.games.gameNames(store, poi) : [];
     if (games.length) tabs.push({ id: 'games', label: 'Games', icon: 'casino' });
@@ -259,6 +266,124 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderPrayer(false);
         const rites = M.buildRites(store, poi);
         $('poi-rites').innerHTML = rites.length ? priceList(rites) : '';
+    }
+
+    /* Readings: choose a practice (and a spread), then today's reading opens in the dialog */
+    const dialog = $('fortune-dialog'), dialogBody = $('fortune-body'), zoom = $('fortune-zoom');
+    function renderReading() {
+        if (!tabs.some(t => t.id === 'readings')) return;
+        const box = $('poi-reading');
+        const today = D.current(store, poi, campaign);
+        if (today) {
+            const fan = today.method === 'omen'
+                ? F.omen(today.omen, { tag: 'div', faceDown: !today.turned.has(0) })
+                : today.slots.map((s, i) => F.card(s.card, today.deck, { tag: 'div', faceDown: !today.turned.has(i), reversed: s.reversed })).join('');
+            const total = today.method === 'omen' ? 1 : today.slots.length;
+            box.innerHTML = `
+                <div class="poi-reading-done">
+                    <div class="poi-reading-done__fan" aria-hidden="true">${fan}</div>
+                    <p class="poi-reading-done__title">${esc(today.method === 'omen' || !today.spread ? today.practice.name : today.spread.name)}</p>
+                    <button type="button" id="poi-reading-open" class="poi-button">
+                        <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
+                        ${today.turned.size >= total ? 'See your reading' : 'Back to your reading'}
+                    </button>
+                    <p class="poi-blessing__note">The seer will read for you again tomorrow.</p>
+                </div>`;
+            $('poi-reading-open').addEventListener('click', openReading);
+            return;
+        }
+        const offered = D.practices(store, poi).filter(p => D.ready(store, p));
+        const fated = D.pendingProphecies(store, poi, campaign).length > 0;
+        if (!offered.length && !fated) { box.innerHTML = '<p class="poi-muted poi-center">The seer is not reading today.</p>'; return; }
+        box.innerHTML = `
+            <div class="poi-reading-ask">
+                <p class="poi-prayer__lede">Cross the seer’s palm, ask your question, and see what answers.</p>
+                <div class="poi-reading-ask__fields">
+                    ${offered.length > 1 ? `<span class="poi-reading-ask__field">
+                        <label class="poi-prayer__label" for="poi-practice">Practice</label>
+                        <select id="poi-practice" class="poi-select">${offered.map(p => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('')}</select>
+                    </span>` : ''}
+                    <span id="poi-spread-field" class="poi-reading-ask__field"></span>
+                </div>
+                <p id="poi-spread-desc" class="poi-reading-ask__spread-desc" hidden></p>
+                <button type="button" id="poi-seek" class="poi-button">
+                    <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span> Seek a reading
+                </button>
+            </div>`;
+        const practiceId = () => ($('poi-practice') ? $('poi-practice').value : (offered[0] || {}).id);
+        // The spreads of the chosen practice (cards only); one spread = no choice to make
+        function spreadField() {
+            const practice = offered.find(p => p.id === practiceId());
+            const cards = practice ? D.cardsOf(store, practice.deck).length : 0;
+            const spreads = D.spreadsFor(store, practice).filter(sp => sp.positions.length <= cards);
+            $('poi-spread-field').innerHTML = spreads.length > 1 ? `
+                <label class="poi-prayer__label" for="poi-spread">Spread</label>
+                <select id="poi-spread" class="poi-select">${spreads.map(sp => `<option value="${esc(sp.id)}">${esc(sp.name)} (${sp.positions.length})</option>`).join('')}</select>` : '';
+            $('poi-spread-field').hidden = spreads.length < 2;
+            const describe = () => {
+                const sp = spreads.find(x => x.id === ($('poi-spread') ? $('poi-spread').value : '')) || spreads[0];
+                $('poi-spread-desc').textContent = (sp && sp.desc) || (practice && practice.desc) || '';
+                $('poi-spread-desc').hidden = !$('poi-spread-desc').textContent;
+            };
+            describe();
+            if ($('poi-spread')) $('poi-spread').addEventListener('change', describe);
+        }
+        spreadField();
+        if ($('poi-practice')) $('poi-practice').addEventListener('change', spreadField);
+        $('poi-seek').addEventListener('click', () => {
+            const view = D.draw(store, poi, campaign, practiceId(), $('poi-spread') ? $('poi-spread').value : '');
+            renderReading();
+            if (view) openReading();
+        });
+    }
+
+    // The dialog: turning a card flips it, then its meaning is added under the spread
+    let settle = null;
+    function drawDialog(fresh) {
+        const view = D.current(store, poi, campaign);
+        if (!view) { if (dialog.open) dialog.close(); return; }
+        dialogBody.innerHTML = F.reading(view, { fresh });
+        const added = fresh != null && document.getElementById(`fread-meaning-${fresh}`);
+        if (added) added.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    }
+    function openReading() {
+        if (!D.current(store, poi, campaign)) return;
+        drawDialog();
+        zoom.hidden = true;
+        if (!dialog.open) dialog.showModal();
+    }
+    if (seer && dialog) {
+        dialog.addEventListener('click', e => {
+            // A click on the backdrop (outside the dialog's box) closes it too
+            const r = dialog.getBoundingClientRect();
+            const outside = e.target === dialog && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom);
+            if (e.target.closest('[data-close]') || outside) { dialog.close(); return; }
+            if (e.target.closest('#fortune-zoom')) { zoom.hidden = true; return; }
+            const btn = e.target.closest('[data-turn]');
+            if (!btn) return;
+            const i = Number(btn.dataset.turn);
+            const view = D.current(store, poi, campaign);
+            if (!view) return;
+            if (!view.turned.has(i)) {
+                D.turn(poi, campaign, i);
+                btn.classList.remove('is-down');          // the flip plays on the card in place
+                clearTimeout(settle);
+                settle = setTimeout(() => drawDialog(i), matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 700);
+            } else if (view.method === 'cards') {
+                const s = view.slots[i];
+                zoom.innerHTML = F.card(s.card, view.deck, { tag: 'div', reversed: s.reversed });
+                zoom.hidden = false;
+            }
+        });
+        // Esc closes the big card first
+        dialog.addEventListener('cancel', e => { if (!zoom.hidden) { e.preventDefault(); zoom.hidden = true; } });
+        dialog.addEventListener('close', () => { clearTimeout(settle); renderReading(); });
+    }
+    if (seer) {
+        showKeepers('poi-seer-keepers', seer, 'Reading the signs');
+        if (seer.title) $('poi-readings-heading').textContent = seer.title;
+        const prices = D.priceList(store, poi);
+        $('poi-practices').innerHTML = prices.length ? priceList(prices) : '';
     }
 
     /* Rumours: buy a round, hear one more */
@@ -512,6 +637,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     renderRumours();
     renderBoard();
+    renderReading();
     if (games.length) Athenaeum.games.mountTable($('poi-games'), store, poi);
 
     /* Tab strip (hidden when there is a single tab) */

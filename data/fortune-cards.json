@@ -1,0 +1,792 @@
+[
+  {
+    "id": "elder-the-fool",
+    "name": "The Fool",
+    "deck": "elder-tarot",
+    "number": 0,
+    "keywords": [
+      "new beginnings",
+      "a leap of faith",
+      "innocence"
+    ],
+    "upright": "New beginnings, a leap of faith, innocence.",
+    "reversedKeywords": [
+      "recklessness",
+      "hesitation",
+      "a foolish risk"
+    ],
+    "reversed": "Recklessness, hesitation, a foolish risk."
+  },
+  {
+    "id": "elder-the-magician",
+    "name": "The Magician",
+    "deck": "elder-tarot",
+    "number": 1,
+    "keywords": [
+      "will",
+      "skill",
+      "the power to make things happen"
+    ],
+    "upright": "Will, skill, the power to make things happen.",
+    "reversedKeywords": [
+      "trickery",
+      "untapped talent",
+      "manipulation"
+    ],
+    "reversed": "Trickery, untapped talent, manipulation."
+  },
+  {
+    "id": "elder-the-high-priestess",
+    "name": "The High Priestess",
+    "deck": "elder-tarot",
+    "number": 2,
+    "keywords": [
+      "intuition",
+      "hidden knowledge",
+      "secrets"
+    ],
+    "upright": "Intuition, hidden knowledge, secrets.",
+    "reversedKeywords": [
+      "secrets kept",
+      "ignored instincts",
+      "confusion"
+    ],
+    "reversed": "Secrets kept, ignored instincts, confusion."
+  },
+  {
+    "id": "elder-the-empress",
+    "name": "The Empress",
+    "deck": "elder-tarot",
+    "number": 3,
+    "keywords": [
+      "abundance",
+      "nurture",
+      "fertility"
+    ],
+    "upright": "Abundance, nurture, fertility.",
+    "reversedKeywords": [
+      "dependence",
+      "smothering",
+      "creative block"
+    ],
+    "reversed": "Dependence, smothering, creative block."
+  },
+  {
+    "id": "elder-the-emperor",
+    "name": "The Emperor",
+    "deck": "elder-tarot",
+    "number": 4,
+    "keywords": [
+      "authority",
+      "order",
+      "a firm hand"
+    ],
+    "upright": "Authority, order, a firm hand.",
+    "reversedKeywords": [
+      "tyranny",
+      "rigidity",
+      "loss of control"
+    ],
+    "reversed": "Tyranny, rigidity, loss of control."
+  },
+  {
+    "id": "elder-the-hierophant",
+    "name": "The Hierophant",
+    "deck": "elder-tarot",
+    "number": 5,
+    "keywords": [
+      "tradition",
+      "teaching",
+      "institutions"
+    ],
+    "upright": "Tradition, teaching, institutions.",
+    "reversedKeywords": [
+      "rebellion",
+      "dogma",
+      "breaking with custom"
+    ],
+    "reversed": "Rebellion, dogma, breaking with custom."
+  },
+  {
+    "id": "elder-the-lovers",
+    "name": "The Lovers",
+    "deck": "elder-tarot",
+    "number": 6,
+    "keywords": [
+      "union",
+      "a choice of the heart",
+      "harmony"
+    ],
+    "upright": "Union, a choice of the heart, harmony.",
+    "reversedKeywords": [
+      "discord",
+      "a hard choice",
+      "misalignment"
+    ],
+    "reversed": "Discord, a hard choice, misalignment."
+  },
+  {
+    "id": "elder-the-chariot",
+    "name": "The Chariot",
+    "deck": "elder-tarot",
+    "number": 7,
+    "keywords": [
+      "victory through will",
+      "momentum"
+    ],
+    "upright": "Victory through will, momentum.",
+    "reversedKeywords": [
+      "lack of direction",
+      "defeat",
+      "being pulled apart"
+    ],
+    "reversed": "Lack of direction, defeat, being pulled apart."
+  },
+  {
+    "id": "elder-strength",
+    "name": "Strength",
+    "deck": "elder-tarot",
+    "number": 8,
+    "keywords": [
+      "courage",
+      "patience",
+      "gentle mastery"
+    ],
+    "upright": "Courage, patience, gentle mastery.",
+    "reversedKeywords": [
+      "self-doubt",
+      "weakness",
+      "raw temper"
+    ],
+    "reversed": "Self-doubt, weakness, raw temper."
+  },
+  {
+    "id": "elder-the-hermit",
+    "name": "The Hermit",
+    "deck": "elder-tarot",
+    "number": 9,
+    "keywords": [
+      "solitude",
+      "searching",
+      "inner light"
+    ],
+    "upright": "Solitude, searching, inner light.",
+    "reversedKeywords": [
+      "isolation",
+      "withdrawal",
+      "a path lost"
+    ],
+    "reversed": "Isolation, withdrawal, a path lost."
+  },
+  {
+    "id": "elder-wheel-of-fortune",
+    "name": "Wheel of Fortune",
+    "deck": "elder-tarot",
+    "number": 10,
+    "keywords": [
+      "fate",
+      "cycles",
+      "a turn of luck"
+    ],
+    "upright": "Fate, cycles, a turn of luck.",
+    "reversedKeywords": [
+      "bad luck",
+      "resistance to change",
+      "broken cycles"
+    ],
+    "reversed": "Bad luck, resistance to change, broken cycles."
+  },
+  {
+    "id": "elder-justice",
+    "name": "Justice",
+    "deck": "elder-tarot",
+    "number": 11,
+    "keywords": [
+      "fairness",
+      "truth",
+      "consequences"
+    ],
+    "upright": "Fairness, truth, consequences.",
+    "reversedKeywords": [
+      "injustice",
+      "dishonesty",
+      "a debt unpaid"
+    ],
+    "reversed": "Injustice, dishonesty, a debt unpaid."
+  },
+  {
+    "id": "elder-the-hanged-man",
+    "name": "The Hanged Man",
+    "deck": "elder-tarot",
+    "number": 12,
+    "keywords": [
+      "surrender",
+      "a new perspective",
+      "waiting"
+    ],
+    "upright": "Surrender, a new perspective, waiting.",
+    "reversedKeywords": [
+      "stalling",
+      "needless sacrifice",
+      "indecision"
+    ],
+    "reversed": "Stalling, needless sacrifice, indecision."
+  },
+  {
+    "id": "elder-death",
+    "name": "Death",
+    "deck": "elder-tarot",
+    "number": 13,
+    "keywords": [
+      "an ending",
+      "transformation",
+      "clearing the way"
+    ],
+    "upright": "An ending, transformation, clearing the way.",
+    "reversedKeywords": [
+      "clinging to the past",
+      "stagnation",
+      "a change resisted"
+    ],
+    "reversed": "Clinging to the past, stagnation, a change resisted."
+  },
+  {
+    "id": "elder-temperance",
+    "name": "Temperance",
+    "deck": "elder-tarot",
+    "number": 14,
+    "keywords": [
+      "balance",
+      "moderation",
+      "patience"
+    ],
+    "upright": "Balance, moderation, patience.",
+    "reversedKeywords": [
+      "excess",
+      "imbalance",
+      "haste"
+    ],
+    "reversed": "Excess, imbalance, haste."
+  },
+  {
+    "id": "elder-the-devil",
+    "name": "The Devil",
+    "deck": "elder-tarot",
+    "number": 15,
+    "keywords": [
+      "bondage",
+      "temptation",
+      "appetite"
+    ],
+    "upright": "Bondage, temptation, appetite.",
+    "reversedKeywords": [
+      "release",
+      "breaking chains",
+      "facing a vice"
+    ],
+    "reversed": "Release, breaking chains, facing a vice."
+  },
+  {
+    "id": "elder-the-tower",
+    "name": "The Tower",
+    "deck": "elder-tarot",
+    "number": 16,
+    "keywords": [
+      "sudden upheaval",
+      "revelation",
+      "collapse"
+    ],
+    "upright": "Sudden upheaval, revelation, collapse.",
+    "reversedKeywords": [
+      "disaster averted",
+      "fear of change",
+      "delayed ruin"
+    ],
+    "reversed": "Disaster averted, fear of change, delayed ruin."
+  },
+  {
+    "id": "elder-the-star",
+    "name": "The Star",
+    "deck": "elder-tarot",
+    "number": 17,
+    "keywords": [
+      "hope",
+      "renewal",
+      "guidance"
+    ],
+    "upright": "Hope, renewal, guidance.",
+    "reversedKeywords": [
+      "despair",
+      "lost faith",
+      "disconnection"
+    ],
+    "reversed": "Despair, lost faith, disconnection."
+  },
+  {
+    "id": "elder-the-moon",
+    "name": "The Moon",
+    "deck": "elder-tarot",
+    "number": 18,
+    "keywords": [
+      "illusion",
+      "fear",
+      "the unseen"
+    ],
+    "upright": "Illusion, fear, the unseen.",
+    "reversedKeywords": [
+      "truth surfacing",
+      "confusion lifting",
+      "deception revealed"
+    ],
+    "reversed": "Truth surfacing, confusion lifting, deception revealed."
+  },
+  {
+    "id": "elder-the-sun",
+    "name": "The Sun",
+    "deck": "elder-tarot",
+    "number": 19,
+    "keywords": [
+      "joy",
+      "success",
+      "clarity"
+    ],
+    "upright": "Joy, success, clarity.",
+    "reversedKeywords": [
+      "clouded joy",
+      "delay",
+      "a dimmed light"
+    ],
+    "reversed": "Clouded joy, delay, a dimmed light."
+  },
+  {
+    "id": "elder-judgement",
+    "name": "Judgement",
+    "deck": "elder-tarot",
+    "number": 20,
+    "keywords": [
+      "reckoning",
+      "awakening",
+      "a calling"
+    ],
+    "upright": "Reckoning, awakening, a calling.",
+    "reversedKeywords": [
+      "self-doubt",
+      "a call ignored",
+      "harsh judgement"
+    ],
+    "reversed": "Self-doubt, a call ignored, harsh judgement."
+  },
+  {
+    "id": "elder-the-world",
+    "name": "The World",
+    "deck": "elder-tarot",
+    "number": 21,
+    "keywords": [
+      "completion",
+      "fulfilment",
+      "a journey's end"
+    ],
+    "upright": "Completion, fulfilment, a journey's end.",
+    "reversedKeywords": [
+      "unfinished business",
+      "a missing piece",
+      "delay"
+    ],
+    "reversed": "Unfinished business, a missing piece, delay."
+  },
+  {
+    "id": "star-the-fool",
+    "name": "The Fool",
+    "deck": "wandering-star-tarot",
+    "number": 0,
+    "keywords": [
+      "new beginnings",
+      "a leap of faith",
+      "innocence"
+    ],
+    "upright": "New beginnings, a leap of faith, innocence.",
+    "reversedKeywords": [
+      "recklessness",
+      "hesitation",
+      "a foolish risk"
+    ],
+    "reversed": "Recklessness, hesitation, a foolish risk."
+  },
+  {
+    "id": "star-the-magician",
+    "name": "The Magician",
+    "deck": "wandering-star-tarot",
+    "number": 1,
+    "keywords": [
+      "will",
+      "skill",
+      "the power to make things happen"
+    ],
+    "upright": "Will, skill, the power to make things happen.",
+    "reversedKeywords": [
+      "trickery",
+      "untapped talent",
+      "manipulation"
+    ],
+    "reversed": "Trickery, untapped talent, manipulation."
+  },
+  {
+    "id": "star-the-high-priestess",
+    "name": "The High Priestess",
+    "deck": "wandering-star-tarot",
+    "number": 2,
+    "keywords": [
+      "intuition",
+      "hidden knowledge",
+      "secrets"
+    ],
+    "upright": "Intuition, hidden knowledge, secrets.",
+    "reversedKeywords": [
+      "secrets kept",
+      "ignored instincts",
+      "confusion"
+    ],
+    "reversed": "Secrets kept, ignored instincts, confusion."
+  },
+  {
+    "id": "star-the-empress",
+    "name": "The Empress",
+    "deck": "wandering-star-tarot",
+    "number": 3,
+    "keywords": [
+      "abundance",
+      "nurture",
+      "fertility"
+    ],
+    "upright": "Abundance, nurture, fertility.",
+    "reversedKeywords": [
+      "dependence",
+      "smothering",
+      "creative block"
+    ],
+    "reversed": "Dependence, smothering, creative block."
+  },
+  {
+    "id": "star-the-emperor",
+    "name": "The Emperor",
+    "deck": "wandering-star-tarot",
+    "number": 4,
+    "keywords": [
+      "authority",
+      "order",
+      "a firm hand"
+    ],
+    "upright": "Authority, order, a firm hand.",
+    "reversedKeywords": [
+      "tyranny",
+      "rigidity",
+      "loss of control"
+    ],
+    "reversed": "Tyranny, rigidity, loss of control."
+  },
+  {
+    "id": "star-the-hierophant",
+    "name": "The Hierophant",
+    "deck": "wandering-star-tarot",
+    "number": 5,
+    "keywords": [
+      "tradition",
+      "teaching",
+      "institutions"
+    ],
+    "upright": "Tradition, teaching, institutions.",
+    "reversedKeywords": [
+      "rebellion",
+      "dogma",
+      "breaking with custom"
+    ],
+    "reversed": "Rebellion, dogma, breaking with custom."
+  },
+  {
+    "id": "star-the-lovers",
+    "name": "The Lovers",
+    "deck": "wandering-star-tarot",
+    "number": 6,
+    "keywords": [
+      "union",
+      "a choice of the heart",
+      "harmony"
+    ],
+    "upright": "Union, a choice of the heart, harmony.",
+    "reversedKeywords": [
+      "discord",
+      "a hard choice",
+      "misalignment"
+    ],
+    "reversed": "Discord, a hard choice, misalignment."
+  },
+  {
+    "id": "star-the-chariot",
+    "name": "The Chariot",
+    "deck": "wandering-star-tarot",
+    "number": 7,
+    "keywords": [
+      "victory through will",
+      "momentum"
+    ],
+    "upright": "Victory through will, momentum.",
+    "reversedKeywords": [
+      "lack of direction",
+      "defeat",
+      "being pulled apart"
+    ],
+    "reversed": "Lack of direction, defeat, being pulled apart."
+  },
+  {
+    "id": "star-strength",
+    "name": "Strength",
+    "deck": "wandering-star-tarot",
+    "number": 8,
+    "keywords": [
+      "courage",
+      "patience",
+      "gentle mastery"
+    ],
+    "upright": "Courage, patience, gentle mastery.",
+    "reversedKeywords": [
+      "self-doubt",
+      "weakness",
+      "raw temper"
+    ],
+    "reversed": "Self-doubt, weakness, raw temper."
+  },
+  {
+    "id": "star-the-hermit",
+    "name": "The Hermit",
+    "deck": "wandering-star-tarot",
+    "number": 9,
+    "keywords": [
+      "solitude",
+      "searching",
+      "inner light"
+    ],
+    "upright": "Solitude, searching, inner light.",
+    "reversedKeywords": [
+      "isolation",
+      "withdrawal",
+      "a path lost"
+    ],
+    "reversed": "Isolation, withdrawal, a path lost."
+  },
+  {
+    "id": "star-wheel-of-fortune",
+    "name": "Wheel of Fortune",
+    "deck": "wandering-star-tarot",
+    "number": 10,
+    "keywords": [
+      "fate",
+      "cycles",
+      "a turn of luck"
+    ],
+    "upright": "Fate, cycles, a turn of luck.",
+    "reversedKeywords": [
+      "bad luck",
+      "resistance to change",
+      "broken cycles"
+    ],
+    "reversed": "Bad luck, resistance to change, broken cycles."
+  },
+  {
+    "id": "star-justice",
+    "name": "Justice",
+    "deck": "wandering-star-tarot",
+    "number": 11,
+    "keywords": [
+      "fairness",
+      "truth",
+      "consequences"
+    ],
+    "upright": "Fairness, truth, consequences.",
+    "reversedKeywords": [
+      "injustice",
+      "dishonesty",
+      "a debt unpaid"
+    ],
+    "reversed": "Injustice, dishonesty, a debt unpaid."
+  },
+  {
+    "id": "star-the-hanged-man",
+    "name": "The Hanged Man",
+    "deck": "wandering-star-tarot",
+    "number": 12,
+    "keywords": [
+      "surrender",
+      "a new perspective",
+      "waiting"
+    ],
+    "upright": "Surrender, a new perspective, waiting.",
+    "reversedKeywords": [
+      "stalling",
+      "needless sacrifice",
+      "indecision"
+    ],
+    "reversed": "Stalling, needless sacrifice, indecision."
+  },
+  {
+    "id": "star-death",
+    "name": "Death",
+    "deck": "wandering-star-tarot",
+    "number": 13,
+    "keywords": [
+      "an ending",
+      "transformation",
+      "clearing the way"
+    ],
+    "upright": "An ending, transformation, clearing the way.",
+    "reversedKeywords": [
+      "clinging to the past",
+      "stagnation",
+      "a change resisted"
+    ],
+    "reversed": "Clinging to the past, stagnation, a change resisted."
+  },
+  {
+    "id": "star-temperance",
+    "name": "Temperance",
+    "deck": "wandering-star-tarot",
+    "number": 14,
+    "keywords": [
+      "balance",
+      "moderation",
+      "patience"
+    ],
+    "upright": "Balance, moderation, patience.",
+    "reversedKeywords": [
+      "excess",
+      "imbalance",
+      "haste"
+    ],
+    "reversed": "Excess, imbalance, haste."
+  },
+  {
+    "id": "star-the-devil",
+    "name": "The Devil",
+    "deck": "wandering-star-tarot",
+    "number": 15,
+    "keywords": [
+      "bondage",
+      "temptation",
+      "appetite"
+    ],
+    "upright": "Bondage, temptation, appetite.",
+    "reversedKeywords": [
+      "release",
+      "breaking chains",
+      "facing a vice"
+    ],
+    "reversed": "Release, breaking chains, facing a vice."
+  },
+  {
+    "id": "star-the-tower",
+    "name": "The Tower",
+    "deck": "wandering-star-tarot",
+    "number": 16,
+    "keywords": [
+      "sudden upheaval",
+      "revelation",
+      "collapse"
+    ],
+    "upright": "Sudden upheaval, revelation, collapse.",
+    "reversedKeywords": [
+      "disaster averted",
+      "fear of change",
+      "delayed ruin"
+    ],
+    "reversed": "Disaster averted, fear of change, delayed ruin."
+  },
+  {
+    "id": "star-the-star",
+    "name": "The Star",
+    "deck": "wandering-star-tarot",
+    "number": 17,
+    "keywords": [
+      "hope",
+      "renewal",
+      "guidance"
+    ],
+    "upright": "Hope, renewal, guidance.",
+    "reversedKeywords": [
+      "despair",
+      "lost faith",
+      "disconnection"
+    ],
+    "reversed": "Despair, lost faith, disconnection."
+  },
+  {
+    "id": "star-the-moon",
+    "name": "The Moon",
+    "deck": "wandering-star-tarot",
+    "number": 18,
+    "keywords": [
+      "illusion",
+      "fear",
+      "the unseen"
+    ],
+    "upright": "Illusion, fear, the unseen.",
+    "reversedKeywords": [
+      "truth surfacing",
+      "confusion lifting",
+      "deception revealed"
+    ],
+    "reversed": "Truth surfacing, confusion lifting, deception revealed."
+  },
+  {
+    "id": "star-the-sun",
+    "name": "The Sun",
+    "deck": "wandering-star-tarot",
+    "number": 19,
+    "keywords": [
+      "joy",
+      "success",
+      "clarity"
+    ],
+    "upright": "Joy, success, clarity.",
+    "reversedKeywords": [
+      "clouded joy",
+      "delay",
+      "a dimmed light"
+    ],
+    "reversed": "Clouded joy, delay, a dimmed light."
+  },
+  {
+    "id": "star-judgement",
+    "name": "Judgement",
+    "deck": "wandering-star-tarot",
+    "number": 20,
+    "keywords": [
+      "reckoning",
+      "awakening",
+      "a calling"
+    ],
+    "upright": "Reckoning, awakening, a calling.",
+    "reversedKeywords": [
+      "self-doubt",
+      "a call ignored",
+      "harsh judgement"
+    ],
+    "reversed": "Self-doubt, a call ignored, harsh judgement."
+  },
+  {
+    "id": "star-the-world",
+    "name": "The World",
+    "deck": "wandering-star-tarot",
+    "number": 21,
+    "keywords": [
+      "completion",
+      "fulfilment",
+      "a journey's end"
+    ],
+    "upright": "Completion, fulfilment, a journey's end.",
+    "reversedKeywords": [
+      "unfinished business",
+      "a missing piece",
+      "delay"
+    ],
+    "reversed": "Unfinished business, a missing piece, delay."
+  }
+]

@@ -5,6 +5,9 @@
    The loser of a challenge loses a die; the last with dice wins.
    The bot logic is in botMove(): it weighs the odds of a bid from its own
    dice, with a little doubt and a little bluff of its own.
+   Stakes (table.js): every seat antes the blind. Once a game, on your turn,
+   you can raise the stakes: each regular still in matches it or throws in
+   its dice (botStays), and the pot goes to the last player with dice.
    ===================================================================== */
 (function (root) {
     const ATH = root.Athenaeum;
@@ -48,12 +51,20 @@
         return best ? { qty: best.qty, face: best.face } : { call: true };
     }
 
+    /* Does a regular match your raise? One that has as many dice as you always does; the further
+       behind it is, the likelier it throws its dice in (and leaves its blind in the pot). */
+    function botStays(botDice, yourDice, nerve = Math.random()) {
+        if (botDice >= yourDice) return true;
+        return nerve < 0.35 + 0.65 * botDice / Math.max(1, yourDice);
+    }
+
     function mount(el, ctx) {
         const { esc, dice: D, avatarHtml } = ctx;
         const bank = ctx.bank || ATH.games.noBank;   // the purse and the pot (table.js)
+        const temper = o => ({ ...o, doubt: 0.2 + Math.random() * 0.15, bluff: 0.08 + Math.random() * 0.25 });
         const players = [
             { ...ctx.you, isYou: true },
-            ...ctx.opponents.map(o => ({ ...o, doubt: 0.2 + Math.random() * 0.15, bluff: 0.08 + Math.random() * 0.25 })),
+            ...ctx.opponents.map(temper),
         ].map((p, i) => ({ ...p, i, dice: [], said: null }));
         const S = { turn: 0, bid: null, phase: 'bidding', reveal: null, message: '', qty: 1, face: 2, over: false };
         let alive = true;
@@ -111,8 +122,37 @@
                 S.over = true;
                 const won = left.length === 1 && left[0].isYou;
                 S.message += won ? ' You are the last with dice: you win the table!' : !you.dice.length ? ' You are out of dice.' : '';
-                ctx.onEnd(won ? 'win' : 'loss');
+                endGame(won);
             }
+            render();
+        }
+        // The pot goes to the last with dice; if you are out first, to the regular(s) holding the most
+        function endGame(won) {
+            S.over = true;
+            const most = Math.max(...players.slice(1).map(p => p.dice.length));
+            ctx.onEnd(won ? 'win' : 'loss', { winners: won ? [] : players.slice(1).filter(p => p.dice.length === most).map(p => p.i - 1) });
+        }
+        // Raise the stakes: one more blind from you; each regular still in matches it or throws in its dice
+        function raiseStakes() {
+            if (S.over || S.phase !== 'bidding' || S.turn !== 0 || !bank.canRaise()) return;
+            const inPlay = players.slice(1).filter(p => p.dice.length);
+            const callers = inPlay.filter(p => bank.botCan(p.i - 1) && botStays(p.dice.length, you.dice.length));
+            const extra = bank.raise(callers.map(p => p.i - 1));
+            if (!extra) return;
+            const out = inPlay.filter(p => !callers.includes(p));
+            out.forEach(p => { p.dice = []; p.said = null; });
+            const names = list => ATH.games.andList(list.map(p => p.name));
+            S.message = `You raise the stakes by ${ctx.coin(extra)}.` +
+                (callers.length ? ` ${names(callers)} match${callers.length === 1 ? 'es' : ''} it.` : '') +
+                (out.length ? ` ${names(out)} throw${out.length === 1 ? 's' : ''} in their dice.` : '');
+            if (!callers.length) {
+                S.message += ' The table is yours!';
+                endGame(true);
+                return render();
+            }
+            // A bid made by someone who has just left the game no longer stands
+            if (S.bid && !players[S.bid.by].dice.length) { S.bid = null; S.message += ' The bidding starts over.'; }
+            suggest();
             render();
         }
         // Default your bid controls to the smallest valid raise
@@ -132,7 +172,7 @@
                 : D.html(0, { cls: 'die--sm' })).join('');
             const said = p.said ? (p.said.liar ? '<span class="ld-said ld-said--liar">Liar!</span>' : `<span class="ld-said">${bidHtml(p.said, true)}</span>`) : '';
             return `<div class="ld-seat${mine ? ' ld-seat--you' : ''}${turn ? ' is-turn' : ''}${!p.dice.length ? ' is-out' : ''}${isLoser ? ' is-loser' : ''}">
-                <div class="ld-seat__who">${avatarHtml(p)}<span class="ld-seat__label"><span class="ld-seat__name">${esc(p.name)}</span>${turn && !mine ? '<span class="ld-thinking" aria-hidden="true"><i></i><i></i><i></i></span>' : ''}${said}</span></div>
+                <div class="ld-seat__who">${avatarHtml(p)}<span class="ld-seat__label"><span class="ld-seat__name">${esc(p.name)}</span>${mine || !ctx.purseHtml ? '' : ctx.purseHtml(p.i - 1)}${turn && !mine ? '<span class="ld-thinking" aria-hidden="true"><i></i><i></i><i></i></span>' : ''}${said}</span></div>
                 <div class="ld-dice" data-dice="${p.i}">${p.dice.length ? diceRow : '<span class="ld-out">out</span>'}</div>
             </div>`;
         }
@@ -154,6 +194,7 @@
                 <div class="ld-actions">
                     <button type="button" class="poi-button" data-act="bid" ${yours && valid ? '' : 'disabled'}>Bid</button>
                     <button type="button" class="poi-button ld-liar" data-act="liar" ${yours && S.bid ? '' : 'disabled'}>Liar!</button>
+                    ${bank.enabled && bank.raises < bank.maxRaises ? `<button type="button" class="poi-button ld-raise" data-act="raise" ${yours && bank.canRaise() ? '' : 'disabled'} title="${esc(yours && !bank.canRaise() ? bank.raiseWhy() : 'Once a game: add a blind. Each regular matches it or throws in their dice.')}">Raise <small>+${esc(ctx.coin(bank.blind))}</small></button>` : ''}
                 </div>
             </div>`;
         }
@@ -180,6 +221,7 @@
             else if (act === 'more') { S.qty++; render(); }
             else if (act === 'bid' && S.turn === 0) placeBid(you, { qty: S.qty, face: S.face });
             else if (act === 'liar' && S.turn === 0) challenge(you);
+            else if (act === 'raise') raiseStakes();
             else if (act === 'next') newRound(S.reveal.loser);
             else if (act === 'again') start();
         });
@@ -193,6 +235,8 @@
                 return;
             }
             S.over = false;
+            // The regulars are re-read every game: one who is cleaned out has left the table
+            ctx.opponents.forEach((o, k) => { if (players[k + 1].name !== o.name) players[k + 1] = { ...temper(o), i: k + 1, dice: [], said: null }; });
             for (const p of players) p.dice = Array(START_DICE).fill(1);
             newRound(Math.floor(Math.random() * players.length));
         }
@@ -209,8 +253,9 @@
             <p>In turn, each player <b>raises the bid</b>: a claim about <em>all</em> the dice on the table, such as “at least four 5s”. A raise names more dice, or the same number of a higher face. <b>Ones are wild</b>: they count as any face, so you bid on 2 to 6 only.</p>
             <p>Instead of raising, you can call the last bidder a <b>liar</b>. Everyone shows their dice. If the bid holds, the caller loses a die; if not, the bidder does. The loser opens the next round.</p>
             <p>A player with no dice left is out. The last one with dice wins.</p>
-            <p>Every seat puts the blind in the pot when the game starts. The last player with dice takes the whole pot.</p>`,
+            <p>Every seat puts the blind in the pot when the game starts. The last player with dice takes the whole pot. Once a game, on your turn, you can <b>raise the stakes</b>: you add another blind, and each regular must match it or throw in their dice and leave the game.</p>`,
+        bet: { raises: 1 },   // one raise per game
         mount,
-        _test: { botMove, atLeast, higher },
+        _test: { botMove, atLeast, higher, botStays },
     });
 })(typeof window !== 'undefined' ? window : globalThis);

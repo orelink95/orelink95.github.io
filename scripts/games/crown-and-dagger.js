@@ -4,6 +4,9 @@
    A fantasy push-your-luck card game played against tavern regulars.
    Players aim for 21 without busting. Aces count as 1 or 11.
    A natural 21 (Ace + Crown/Blade court card) is a "Royal Cut".
+   Stakes (table.js): every seat antes the blind; once a hand the player can
+   Double Down, and each regular then calls or folds on the strength of its
+   own two cards (botCalls). If everyone goes bust the pot stays on the table.
    ===================================================================== */
 (function (root) {
     const ATH = root.Athenaeum = root.Athenaeum || {};
@@ -61,8 +64,17 @@
         };
     }
 
+    /* Does a regular match your Double Down? It knows its own two cards and sees yours.
+       It calls with a made hand, with a hand that already matches yours, or with a low
+       hand that can't bust on the next card; otherwise it mostly folds. */
+    function botCalls(botTotal, youTotal, nerve = Math.random()) {
+        if (botTotal >= 18 || botTotal >= youTotal || botTotal <= 11) return true;
+        return nerve < 0.25;
+    }
+
     ATH.games.register({
         id: 'crown-and-dagger',
+        bet: { raises: 1 },   // one Double Down per hand
         blurb: 'Draw close to 21 without busting. Aces run high or low; face cards cut deep.',
         kind: 'cards',
         rules: `
@@ -71,7 +83,7 @@
                 <li><strong>Values:</strong> Number cards are face value. Court cards (Knave, Lady, Lord) are worth 10. Aces count as 1 or 11.</li>
                 <li><strong>The Deal:</strong> Everyone receives two cards. Regulars keep one card hidden until their turn.</li>
                 <li><strong>Play:</strong> Choose <em>Hit</em> to draw another card, or <em>Stand</em> to hold your count.</li>
-                <li><strong>The Pot:</strong> Every seat puts the blind in the pot when the hand is dealt. The best hand takes the pot; a tie splits it. Once per hand you can <em>Double Down</em>: you add another blind from your purse and the regulars match it.</li>
+                <li><strong>The Pot:</strong> Every seat puts the blind in the pot when the hand is dealt. The best hand takes the pot; a tie splits it. Once per hand you can <em>Double Down</em>: you add another blind from your purse, and each regular must match it or <em>fold</em> and leave their blind in the pot. If everyone folds, the pot is yours; if everyone goes bust, it stays on the table for the next hand.</li>
                 <li><strong>Special Hands:</strong>
                     <ul>
                         <li><strong>Royal Cut:</strong> An Ace paired with a Blade or Crown court card is a Natural 21.</li>
@@ -80,16 +92,17 @@
                 </li>
             </ul>`,
         opponents: 2,
+        _test: { botCalls, calcHand },
 
         mount(el, ctx) {
             const { you, opponents, onEnd, esc, avatarHtml } = ctx;
             const bank = ctx.bank || ATH.games.noBank;            // the purse and the pot (table.js)
             const coin = ctx.coin || (n => `${n} cp`);
-            const MAX_RAISES = 1;                                  // one Double Down per hand
-            const seats = [
-                ...opponents.map(o => ({ ...o, isYou: false })),
-                { ...you, isYou: true }
-            ];
+            const youSeat = { ...you, isYou: true };
+            // The regulars are re-read from ctx.opponents every hand: one who is cleaned out leaves the table
+            let seats = [];
+            const sitDown = () => { seats = [...opponents.map((o, i) => ({ ...o, i, isYou: false, folded: false })), youSeat]; };
+            sitDown();
 
             let deck = [];
             let state = 'idle'; // 'idle' | 'player-turn' | 'bots-turn' | 'resolved'
@@ -130,7 +143,8 @@
                 const fullInfo = calcHand(cards.map(c => c.card));
 
                 let badge = '';
-                if (isAllRevealed) {
+                if (seat.folded) badge = '<span class="gt-tag gt-tag--subtle">Folded</span>';
+                else if (isAllRevealed) {
                     if (fullInfo.isBust) badge = '<span class="gt-tag gt-tag--bust">Bust!</span>';
                     else if (fullInfo.isNatural) badge = '<span class="gt-tag gt-tag--gold">Royal Cut!</span>';
                     else if (fullInfo.isFiveCard) badge = '<span class="gt-tag gt-tag--gold">5-Card Hand</span>';
@@ -140,12 +154,13 @@
                 }
 
                 return `
-                    <div class="gt-seat ${seat.isYou ? 'gt-seat--you' : 'gt-seat--opp'} ${seat.isActing ? 'is-active' : ''}">
+                    <div class="gt-seat ${seat.isYou ? 'gt-seat--you' : 'gt-seat--opp'} ${seat.isActing ? 'is-active' : ''} ${seat.folded ? 'is-folded' : ''}">
                         <div class="gt-seat__header">
                             ${avatarHtml(seat)}
                             <div class="gt-seat__meta">
                                 <span class="gt-seat__name">${esc(seat.name)}</span>
                                 ${badge}
+                                ${seat.isYou || !ctx.purseHtml ? '' : ctx.purseHtml(seat.i)}
                             </div>
                         </div>
                         <div class="gt-hand">
@@ -155,14 +170,13 @@
             }
 
             function updateUI(statusMsg = '') {
-                const youSeat = seats.find(s => s.isYou);
                 const youHand = hands.get(youSeat) || [];
                 const youScore = calcHand(youHand.map(c => c.card));
 
                 const canPlay = state === 'player-turn' && !youScore.isBust && !youScore.isNatural && youHand.length < 5;
-                // Double Down: one more blind from your purse into the pot, matched by the regulars
-                const showRaise = canPlay && bank.enabled && bank.raises < MAX_RAISES;
-                const canRaise = showRaise && bank.canRaise(MAX_RAISES);
+                // Double Down: one more blind from your purse into the pot; each regular calls or folds
+                const showRaise = canPlay && bank.enabled && bank.raises < bank.maxRaises;
+                const canRaise = showRaise && bank.canRaise();
 
                 el.innerHTML = `
                     <div class="gt-table gt-table--cards">
@@ -180,7 +194,7 @@
                                 ${canPlay ? `
                                     <button type="button" class="gt-btn gt-btn--hit" data-action="hit">Hit</button>
                                     <button type="button" class="gt-btn gt-btn--stand" data-action="stand">Stand</button>
-                                    ${showRaise ? `<button type="button" class="gt-btn gt-btn--raise" data-action="raise" ${canRaise ? '' : 'disabled'} ${canRaise ? '' : 'title="Not enough coin in your purse"'}>Double Down <small>+${esc(coin(bank.blind))}</small></button>` : ''}
+                                    ${showRaise ? `<button type="button" class="gt-btn gt-btn--raise" data-action="raise" ${canRaise ? '' : 'disabled'} title="${esc(canRaise ? 'Add a blind: each regular must match it or fold' : bank.raiseWhy())}">Double Down <small>+${esc(coin(bank.blind))}</small></button>` : ''}
                                 ` : `
                                     <button type="button" class="gt-btn gt-btn--deal" data-action="deal" ${state === 'idle' || state === 'resolved' ? '' : 'disabled'}>
                                         ${state === 'idle' ? 'Deal Hand' : 'Next Hand'}
@@ -200,11 +214,11 @@
                     return;
                 }
                 clearTimers();
+                sitDown();
                 deck = createDeck();
                 hands = new Map();
                 roundEnded = false;
                 state = 'player-turn';
-                seats.forEach(s => { s.isActing = false; });
 
                 seats.forEach(s => {
                     if (s.isYou) {
@@ -220,7 +234,6 @@
                     }
                 });
 
-                const youSeat = seats.find(s => s.isYou);
                 const youScore = calcHand(hands.get(youSeat).map(c => c.card));
 
                 if (youScore.isNatural) {
@@ -233,7 +246,6 @@
 
             function playerHit() {
                 if (state !== 'player-turn') return;
-                const youSeat = seats.find(s => s.isYou);
                 const hand = hands.get(youSeat);
                 hand.push({ card: deck.pop(), hidden: false });
 
@@ -253,9 +265,25 @@
 
             function playerRaise() {
                 if (state !== 'player-turn') return;
-                const extra = bank.canRaise(MAX_RAISES) ? bank.raise() : 0;
+                if (!bank.canRaise()) return;
+                // Each regular looks at its own two cards and yours, then matches the raise or folds
+                const youTotal = calcHand(hands.get(youSeat).map(c => c.card)).total;
+                const bots = seats.filter(s => !s.isYou);
+                const callers = bots.filter(b => bank.botCan(b.i) && botCalls(calcHand(hands.get(b).map(c => c.card)).total, youTotal));
+                const extra = bank.raise(callers.map(b => b.i));
                 if (!extra) return;
-                updateUI(`You double down: ${coin(extra)} more. The regulars match it, and the pot is now ${coin(bank.pot)}.`);
+                bots.forEach(b => { b.folded = !callers.includes(b); });
+                const names = list => ATH.games.andList(list.map(b => b.name));
+                const folded = bots.filter(b => b.folded);
+                if (!callers.length) {
+                    // Nobody will pay to see your hand: the pot is yours
+                    state = 'resolved';
+                    roundEnded = true;
+                    onEnd('win', { winners: [] });
+                    updateUI(`You double down. ${names(folded)} fold${folded.length === 1 ? 's' : ''}: the pot is yours.`);
+                    return;
+                }
+                updateUI(`You double down: ${coin(extra)} more. ${names(callers)} match${callers.length === 1 ? 'es' : ''} it${folded.length ? `, ${names(folded)} fold${folded.length === 1 ? 's' : ''}` : ''}. The pot is now ${coin(bank.pot)}.`);
             }
 
             function playerStand() {
@@ -271,7 +299,7 @@
             }
 
             function runNextBot() {
-                const opps = seats.filter(s => !s.isYou);
+                const opps = seats.filter(s => !s.isYou && !s.folded);   // a regular who folded is out of the hand
                 if (activeBotIndex >= opps.length) {
                     resolveRound();
                     return;
@@ -291,7 +319,6 @@
             function botDecision(bot) {
                 const hand = hands.get(bot);
                 const score = calcHand(hand.map(c => c.card));
-                const youSeat = seats.find(s => s.isYou);
                 const youScore = calcHand(hands.get(youSeat).map(c => c.card));
 
                 // Bot AI logic:
@@ -325,11 +352,10 @@
                     if (h) h.forEach(c => { c.hidden = false; });
                 });
 
-                const youSeat = seats.find(s => s.isYou);
                 const youHand = hands.get(youSeat).map(c => c.card);
                 const youScore = calcHand(youHand);
 
-                const botRankings = seats.filter(s => !s.isYou).map(b => ({
+                const botRankings = seats.filter(s => !s.isYou && !s.folded).map(b => ({
                     seat: b,
                     score: calcHand(hands.get(b).map(c => c.card))
                 }));
@@ -343,7 +369,7 @@
                 }
 
                 const youPower = getPower(youScore);
-                const maxBotPower = Math.max(...botRankings.map(b => getPower(b.score)));
+                const maxBotPower = Math.max(-1, ...botRankings.map(b => getPower(b.score)));
                 const bestBots = botRankings.filter(b => getPower(b.score) === maxBotPower && maxBotPower > 0);
 
                 let outcome = 'loss';
@@ -351,22 +377,24 @@
 
                 if (youPower < 0) {
                     outcome = 'loss';
-                    message = 'You went bust. The table takes your stake.';
+                    message = !bestBots.length ? 'Everyone went bust. The pot stays on the table for the next hand.'
+                        : `You went bust. ${ATH.games.andList(bestBots.map(b => b.seat.name))} take${bestBots.length === 1 ? 's' : ''} the pot.`;
                 } else if (youPower > maxBotPower) {
                     outcome = 'win';
                     message = `You win the pot! (${youScore.isNatural ? 'Royal Cut' : youScore.total})`;
                 } else if (youPower === maxBotPower) {
                     outcome = 'draw';
-                    message = `A standoff! You and ${bestBots.map(b => b.seat.name).join(', ')} split the coins.`;
+                    message = `A standoff! You and ${ATH.games.andList(bestBots.map(b => b.seat.name))} split the coins.`;
                 } else {
                     outcome = 'loss';
-                    message = `${bestBots[0].seat.name} takes the pot with ${bestBots[0].score.isNatural ? 'a Royal Cut' : bestBots[0].score.total}.`;
+                    message = `${ATH.games.andList(bestBots.map(b => b.seat.name))} take${bestBots.length === 1 ? 's' : ''} the pot with ${bestBots[0].score.isNatural ? 'a Royal Cut' : bestBots[0].score.total}.`;
                 }
 
                 if (!roundEnded) {
                     roundEnded = true;
-                    // On a standoff the pot is split between you and everyone you tied with
-                    onEnd(outcome, { share: bestBots.length + 1 });
+                    // On a standoff the pot is split between you and everyone you tied with;
+                    // on a loss it goes to the best regular(s), or stays on the table if they all went bust
+                    onEnd(outcome, { share: bestBots.length + 1, winners: outcome === 'win' ? [] : bestBots.map(b => b.seat.i) });
                 }
                 updateUI(message);
             }

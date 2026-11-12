@@ -6,6 +6,8 @@
    out the opponent's dice of the same value in their facing column.
    When a board is full, the higher total wins.
    The bot (botColumn) weighs what a column gains it and costs you.
+   Stakes (table.js): both put the blind in the pot. Once a match, on your
+   turn, you can double: the regular matches it or concedes (botAccepts).
    ===================================================================== */
 (function (root) {
     const ATH = root.Athenaeum;
@@ -43,10 +45,17 @@
         return best ? best.c : -1;
     }
 
+    /* Does the regular accept your double? `lead` = your score minus its own. It plays on while
+       the match is close, and mostly concedes (leaving you the pot as it stands) when well behind. */
+    function botAccepts(lead, nerve = Math.random()) {
+        return lead <= 8 || nerve < 0.25;
+    }
+
     function mount(el, ctx) {
         const { esc, dice: D, avatarHtml } = ctx;
         const bank = ctx.bank || ATH.games.noBank;   // the purse and the pot (table.js)
-        const bot = { ...ctx.opponents[0], care: 0.8 + Math.random() * 1.2 };
+        const sit = () => ({ ...ctx.opponents[0], care: 0.8 + Math.random() * 1.2 });
+        let bot = sit();
         const S = { you: [[], [], []], bot: [[], [], []], turn: 'you', die: 0, message: '', over: false, landed: null };
         let alive = true;
         const timers = [];
@@ -60,6 +69,7 @@
                 render();
                 return;
             }
+            if (bot.name !== ctx.opponents[0].name) bot = sit();   // a regular who is cleaned out leaves; another sits down
             S.you = [[], [], []]; S.bot = [[], [], []]; S.over = false; S.landed = null;
             S.turn = Math.random() < 0.5 ? 'you' : 'bot';
             nextTurn();
@@ -93,7 +103,23 @@
             const a = boardScore(S.you), b = boardScore(S.bot);
             const result = a > b ? 'win' : a < b ? 'loss' : 'draw';
             S.message = result === 'win' ? `You win, ${a} to ${b}!` : result === 'loss' ? `${bot.name} wins, ${b} to ${a}.` : `A draw at ${a}.`;
-            ctx.onEnd(result, { share: 2 });   // a draw splits the pot with the regular
+            // A draw splits the pot with the regular; a loss gives it the pot
+            ctx.onEnd(result, { share: 2, winners: result === 'win' ? [] : [0] });
+            render();
+        }
+        // Double: one more blind from you. The regular matches it, or concedes the match and the pot.
+        function double() {
+            if (S.over || S.turn !== 'you' || !S.die || !bank.canRaise()) return;
+            const accepts = bank.botCan(0) && botAccepts(boardScore(S.you) - boardScore(S.bot));
+            const extra = bank.raise(accepts ? [0] : []);
+            if (!extra) return;
+            if (accepts) {
+                S.message = `You double: ${ctx.coin(extra)} more. ${bot.name} matches it. Choose a column.`;
+                return render();
+            }
+            S.over = true;
+            S.message = `You double. ${bot.name} won’t match it and concedes the match.`;
+            ctx.onEnd('win', { winners: [] });
             render();
         }
 
@@ -121,14 +147,14 @@
             if (!alive) return;
             const you = { ...ctx.you };
             el.innerHTML = `<div class="kb${S.turn === 'you' && !S.over ? ' is-your-turn' : ''}">
-                <div class="kb-player">${avatarHtml(bot)}<span class="kb-player__name">${esc(bot.name)}</span><span class="kb-total">${boardScore(S.bot)}</span></div>
+                <div class="kb-player">${avatarHtml(bot)}<span class="kb-player__name">${esc(bot.name)}</span>${ctx.purseHtml ? ctx.purseHtml(0) : ''}<span class="kb-total">${boardScore(S.bot)}</span></div>
                 ${board('bot')}
                 <div class="kb-mid">
                     <span class="kb-hand kb-hand--${S.turn}">${S.die ? D.html(S.die, { cls: 'kb-hand__die' }) : '<span class="die die--empty"></span>'}</span>
                     <p class="kb-message" aria-live="polite">${esc(S.message)}</p>
                 </div>
                 ${board('you')}
-                <div class="kb-player kb-player--you">${avatarHtml(you)}<span class="kb-player__name">You</span><span class="kb-total">${boardScore(S.you)}</span></div>
+                <div class="kb-player kb-player--you">${avatarHtml(you)}<span class="kb-player__name">You</span>${!S.over && bank.enabled && bank.raises < bank.maxRaises ? `<button type="button" class="poi-button kb-double" data-act="double" ${S.turn === 'you' && S.die && bank.canRaise() ? '' : 'disabled'} title="${esc(S.turn === 'you' && !bank.canRaise() ? bank.raiseWhy() : 'Once a match: add a blind. Your rival matches it or concedes.')}">Double <small>+${esc(ctx.coin(bank.blind))}</small></button>` : ''}<span class="kb-total">${boardScore(S.you)}</span></div>
                 ${S.over ? '<div class="ld-controls ld-controls--end"><button type="button" class="poi-button" data-act="again">Play again</button></div>' : ''}
             </div>`;
             if (rolling && S.die) D.tumble(el.querySelector('.kb-hand__die'), S.die);
@@ -138,6 +164,7 @@
             const b = e.target.closest('button');
             if (!b || b.disabled || !el.contains(b)) return;
             if (b.dataset.col !== undefined && S.turn === 'you' && S.die) put('you', +b.dataset.col);
+            if (b.dataset.act === 'double') double();
             if (b.dataset.act === 'again') start();
         });
         start();
@@ -153,8 +180,9 @@
             <p>On your turn you roll one die and place it in a column of your board that is not full. A column scores the sum of its dice, but <b>matching dice multiply</b>: a die that appears twice counts double, three times triple. Two 4s are worth 16, three 5s are worth 45.</p>
             <p>Placing a die also <b>knocks out</b> every die of the same value in your opponent’s facing column.</p>
             <p>The game ends as soon as one board is full. The higher total wins.</p>
-            <p>Each match, you and your rival put the blind in the pot. The winner takes it; a draw returns each their stake.</p>`,
+            <p>Each match, you and your rival put the blind in the pot. The winner takes it; a draw returns each their stake. Once a match, on your turn, you can <b>double</b>: you add another blind, and your rival must match it or concede the match.</p>`,
+        bet: { raises: 1 },   // one double per match
         mount,
-        _test: { columnScore, boardScore, place, botColumn, isFull },
+        _test: { columnScore, boardScore, place, botColumn, isFull, botAccepts },
     });
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -1,5 +1,6 @@
 /* The gaming table of a tavern (Games tab of poi.html): bone dice, the game
-   picker, the purse bar and stakes screen (.gt-bank, .gt-stake, .gt-gate), Liar's Dice (.ld-*) and Knucklebones (.kb-*).
+   picker, the purse bar and stakes screen (.gt-bank, .gt-stake, .gt-gate), the pot on the
+   table and the hand summary (.gt-pot, .gt-coin, .gt-sum), the ledger (.gt-ledger), Liar's Dice (.ld-*) and Knucklebones (.kb-*).
    Scripts: scripts/games/. Buttons reuse .poi-button (poi-style.css). */
 
 /* ---------- Dice ---------- */
@@ -1072,21 +1073,31 @@ button.kb-col:not(:disabled):focus-visible {
     color: var(--poi-ink);
 }
 
-.gt-bank__note {
-    margin-left: auto;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--poi-outline);
-}
-
-.gt-bank__note--win {
-    color: #8fd3a4;
-}
-
-.gt-bank__note--loss {
+.gt-bank__item--debt b {
     color: #e08a8a;
+}
+
+.gt-bank__news,
+.gt-bank__hint {
+    margin: 0.5rem 0 0;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: var(--poi-ink-dim);
+}
+
+.gt-bank__hint {
+    color: #e0b48a;
+}
+
+.gt-bank__news:empty,
+.gt-bank__hint:empty {
+    display: none;
+}
+
+.gt-bank__refill {
+    margin-left: auto;
 }
 
 .gt-bank__refill,
@@ -1142,7 +1153,7 @@ button.kb-col:not(:disabled):focus-visible {
     color: var(--poi-outline);
 }
 
-.gt-stake:hover:not(:disabled),
+.gt-stake:hover:not(.is-off),
 .gt-stake:focus-visible {
     border-color: rgba(233, 193, 118, 0.6);
 }
@@ -1153,10 +1164,22 @@ button.kb-col:not(:disabled):focus-visible {
     color: var(--poi-gold);
 }
 
-.gt-stake:disabled,
-.gt-pick:disabled {
+/* Stakes that can't be picked stay focusable (aria-disabled) and say why when tapped */
+.gt-stake.is-off {
     opacity: 0.45;
+    cursor: help;
+}
+
+.gt-pick:disabled {
+    opacity: 0.6;
     cursor: not-allowed;
+}
+
+.gt-pick__why {
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #e0a08a;
 }
 
 .gt-gate {
@@ -1192,4 +1215,366 @@ button.kb-col:not(:disabled):focus-visible {
     opacity: 0.45;
     cursor: not-allowed;
     filter: none;
+}
+
+/* ---------- The pot on the table ---------- */
+.gt-purseline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: -0.5rem 0 1.25rem;
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--poi-outline);
+}
+
+.gt-purseline .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--poi-gold);
+}
+
+.gt-purseline b {
+    color: var(--poi-gold);
+}
+
+.gt-pot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem 1.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(233, 193, 118, 0.18);
+    border-radius: 0.5rem;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(233, 193, 118, 0.1), transparent 70%),
+        linear-gradient(180deg, #20301f, #182418);
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.45);
+    font-family: 'Manrope', sans-serif;
+    overflow: hidden;
+}
+
+.gt-pot[hidden] {
+    display: none;
+}
+
+.gt-pot__plate {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    min-height: 2.5rem;
+}
+
+.gt-pot__plate[hidden] {
+    display: none;
+}
+
+.gt-pot__pile {
+    display: flex;
+    align-items: flex-end;
+    min-width: 1.4rem;
+    height: 2.2rem;
+    padding-left: 0.5rem;
+}
+
+.gt-pot__amount {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.gt-pot__amount b {
+    font-family: 'Noto Serif', serif;
+    font-size: 1.35rem;
+    color: var(--poi-gold);
+}
+
+/* One coin per blind in the pot; they overlap like a spilled stack */
+.gt-coin {
+    --i: 0;
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-left: -0.5rem;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fbe7a6, #d9a441 55%, #8a6a1f);
+    box-shadow: inset 0 0 0 2px rgba(120, 84, 20, 0.55), 0 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.gt-pot__pile .gt-coin:nth-child(3n+2) {
+    margin-bottom: 0.22rem;
+}
+
+.gt-pot__pile .gt-coin:nth-child(3n) {
+    margin-bottom: 0.44rem;
+}
+
+.gt-coin--tiny {
+    width: 0.7rem;
+    height: 0.7rem;
+    margin: 0 0.3rem 0 0;
+    box-shadow: inset 0 0 0 1px rgba(120, 84, 20, 0.55);
+    vertical-align: -1px;
+}
+
+.gt-coin--in-top {
+    animation: gt-coin-top 0.45s cubic-bezier(.2, .8, .3, 1.2) backwards;
+    animation-delay: calc(var(--i) * 45ms);
+}
+
+.gt-coin--in-bottom {
+    animation: gt-coin-bottom 0.45s cubic-bezier(.2, .8, .3, 1.2) backwards;
+    animation-delay: calc(var(--i) * 45ms);
+}
+
+@keyframes gt-coin-top {
+    from { transform: translateY(-3.5rem) rotate(-120deg); opacity: 0; }
+}
+
+@keyframes gt-coin-bottom {
+    from { transform: translateY(3.5rem) rotate(120deg); opacity: 0; }
+}
+
+/* The pot slides to whoever took it: down to you, up to the regulars, apart on a split */
+.gt-pot__pile.is-won {
+    animation: gt-pot-won 0.5s ease-in forwards;
+}
+
+.gt-pot__pile.is-lost {
+    animation: gt-pot-lost 0.5s ease-in forwards;
+}
+
+.gt-pot__pile.is-split {
+    animation: gt-pot-split 0.5s ease-in forwards;
+}
+
+@keyframes gt-pot-won {
+    to { transform: translateY(4rem) scale(1.15); opacity: 0; }
+}
+
+@keyframes gt-pot-lost {
+    to { transform: translateY(-4rem) scale(0.85); opacity: 0; }
+}
+
+@keyframes gt-pot-split {
+    to { transform: scaleX(1.8); opacity: 0; }
+}
+
+/* A regular's purse next to their name */
+.gt-purse {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Manrope', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    color: var(--poi-gold-soft, #dab36a);
+}
+
+/* How the last hand went */
+.gt-sum {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+}
+
+.gt-sum:empty {
+    display: none;
+}
+
+.gt-sum__head {
+    font-family: 'Noto Serif', serif;
+    font-size: 1rem;
+    color: var(--poi-ink);
+}
+
+.gt-sum__head--win { color: #8fd3a4; }
+.gt-sum__head--loss { color: #e08a8a; }
+
+.gt-sum__rows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 1rem;
+    margin: 0;
+}
+
+.gt-sum__rows div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+}
+
+.gt-sum__rows dt {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--poi-outline);
+}
+
+.gt-sum__rows dd {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--poi-ink);
+}
+
+.gt-sum__net--win dd { color: #8fd3a4; }
+.gt-sum__net--loss dd { color: #e08a8a; }
+
+/* Leaving a live hand: asked in the page */
+.gt-leave {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.75rem;
+    margin-bottom: 1rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid rgba(224, 138, 138, 0.45);
+    border-radius: 0.375rem;
+    background: rgba(138, 20, 20, 0.18);
+}
+
+.gt-leave[hidden] {
+    display: none;
+}
+
+.gt-leave p {
+    flex: 1 1 14rem;
+    margin: 0;
+    font-family: 'Newsreader', serif;
+    font-style: italic;
+    color: var(--poi-ink);
+}
+
+.gt-link--danger {
+    color: #e08a8a;
+}
+
+/* A regular who folded (Crown and Dagger); the raise buttons of the dice games */
+.gt-seat.is-folded .gt-hand {
+    opacity: 0.35;
+    filter: grayscale(1);
+}
+
+.ld-raise,
+.kb-double {
+    border-color: #8a6a1f;
+    color: var(--poi-gold);
+}
+
+.ld-raise small,
+.kb-double small {
+    margin-left: 0.35rem;
+    font-size: 0.75em;
+    font-weight: 500;
+    opacity: 0.85;
+}
+
+.kb-double {
+    min-height: 36px;
+    padding: 0.3rem 0.7rem;
+}
+
+/* ---------- The ledger ---------- */
+.gt-ledger[hidden] {
+    display: none;
+}
+
+.gt-ledger__table {
+    width: 100%;
+    margin-top: 0.6rem;
+    border-collapse: collapse;
+    font-family: 'Manrope', sans-serif;
+    font-size: 0.8rem;
+}
+
+.gt-ledger__table th,
+.gt-ledger__table td {
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid rgba(233, 193, 118, 0.1);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.gt-ledger__table th:first-child {
+    text-align: left;
+    white-space: normal;
+}
+
+.gt-ledger__table thead th {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--poi-outline);
+}
+
+.gt-ledger__table tbody th {
+    font-weight: 600;
+    color: var(--poi-ink);
+}
+
+.gt-ledger__net--win { color: #8fd3a4; }
+.gt-ledger__net--loss { color: #e08a8a; }
+
+.gt-ledger__peak b {
+    color: var(--poi-gold);
+}
+
+@media (max-width: 639px) {
+    .gt-pot {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.6rem 0.75rem;
+    }
+
+    .gt-pot__plate {
+        justify-content: center;
+    }
+
+    .gt-sum {
+        align-items: center;
+        text-align: center;
+    }
+
+    .gt-sum__rows {
+        justify-content: center;
+    }
+
+    .gt-bank__refill {
+        margin-left: 0;
+    }
+
+    .gt-bank__stakes .gt-stake {
+        flex: 1 1 40%;
+        min-height: 44px;
+    }
+
+    .gt-ledger__table {
+        font-size: 0.72rem;
+    }
+
+    .gt-ledger__table th,
+    .gt-ledger__table td {
+        padding: 0.3rem 0.25rem;
+    }
+
+    .ld-actions {
+        flex-wrap: wrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gt-coin,
+    .gt-pot__pile {
+        animation: none !important;
+    }
 }

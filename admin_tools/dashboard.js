@@ -374,6 +374,12 @@
             case 'deity': return r.epithet || (r.domains || []).join(', ');
             case 'rumour': return [r.truth ? enumLabel('rumourTruth', r.truth) : 'Truth not set', r.source].filter(Boolean).join(' · ');
             case 'notice': return [enumLabel('noticeKind', r.kind), enumLabel('noticeStatus', r.status || 'open').split(' (')[0]].filter(Boolean).join(' · ');
+            case 'practice': return [r.method === 'omen' ? 'Omens' : r.deck ? nameOf(r.deck) : 'Cards, no deck', typeof r.basePrice === 'number' ? `${r.basePrice} cp` : 'Donation'].join(' · ');
+            case 'deck': { const n = S.data.fortuneCard.filter(c => c.deck === r.id).length; return `${n} card${n === 1 ? '' : 's'}${r.noReversals ? ' · upright only' : ''}`; }
+            case 'fortuneCard': return [ATH.fortuneCard ? ATH.fortuneCard.roman(r.number) : r.number, r.image ? '' : 'no picture'].filter(Boolean).join(' · ');
+            case 'spread': { const n = (r.positions || []).length; return `${n} card${n === 1 ? '' : 's'}${r.layout === 'cross' ? ' · cross' : ''}`; }
+            case 'omen': return r.meaning || '';
+            case 'prophecy': return [(r.campaigns || []).map(nameOf).join(', ') || 'No campaign', r.practice ? nameOf(r.practice) : ''].filter(Boolean).join(' · ');
         }
         return r.subtitle || '';
     }
@@ -398,7 +404,9 @@
             case 'templeService': return byEnum('templeCategory', r.category, 'No kind');
             case 'lore': return byEnum('loreKind', r.kind, 'No kind');
             case 'tome': return byEnum('tomeKind', r.kind, 'No kind');
-            case 'rumour': case 'notice': return r.where ? { key: r.where, label: nameOf(r.where) } : { key: '~', label: 'Nowhere', rank: 999 };
+            case 'rumour': case 'notice': case 'prophecy': return r.where ? { key: r.where, label: nameOf(r.where) } : { key: '~', label: 'Nowhere', rank: 999 };
+            case 'fortuneCard': return r.deck ? { key: r.deck, label: nameOf(r.deck) } : { key: '~', label: 'No deck', rank: 999 };
+            case 'omen': return r.practice ? { key: r.practice, label: nameOf(r.practice) } : { key: '~', label: 'No practice', rank: 999 };
         }
         return null;
     }
@@ -489,7 +497,7 @@
        NAV & LIST
        ================================================================= */
     // Menu colour of each group. A group added to the schema takes one of the spare colours.
-    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5' };
+    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5', Divination: '#c4a3f7' };
     const SPARE_COLOURS = ['#4fd1c5', '#f48fb1', '#d4d86a'];
     function renderNav() {
         $('#app').classList.toggle('nav-open', S.navOpen);
@@ -578,6 +586,7 @@
         Card: 'style', Description: 'subject', Story: 'auto_stories', Quests: 'flag', Party: 'groups', Allegiances: 'handshake', Spellbooks: 'webhook', Overview: 'summarize',
         Transcript: 'history_edu', 'People & places': 'diversity_3', 'Loot & leads': 'explore', Backstory: 'menu_book', Statistics: 'monitoring', Secret: 'key', Artifact: 'diamond',
         Rumour: 'record_voice_over', Notice: 'push_pin', 'Homepage cards': 'event_upcoming', Settings: 'tune',
+        Divination: 'visibility', Meanings: 'menu_book', Prophecy: 'auto_awesome', 'The reading': 'style',
     };
     // Lists of tags whose suggestions come from a pool's tags rather than from the same field
     const TAG_SOURCES = {
@@ -1082,6 +1091,7 @@
             if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
             if (S.view.key === 'deity' && ATH.deityCard) parts.unshift(deityPreview(rec), sealStatus(rec));
             if (S.view.key === 'item' && ATH.deityCard) parts.unshift(artifactOf(rec));
+            if (ATH.fortuneCard && ATH.divination) parts.unshift(...divinationPreview(rec));
             if ((S.view.key === 'poi' || S.view.key === 'creature') && ATH.look && lookOf(rec).look) parts.unshift(lookPreview(rec));
             if (S.view.key === 'creature' && rec.image) parts.unshift(beastFramePreview(rec));
         }
@@ -1089,7 +1099,7 @@
         side.innerHTML = html ? `<div class="side-head"><span>Previews & links</span><button class="btn icon" data-action="toggle-side" title="Close"><span class="material-symbols-outlined">close</span></button></div>${html}` : '';
         $('.ed-wrap').classList.toggle('no-side', !html);
         const sb = $('#side-btn'); if (sb) sb.hidden = !html;
-        if (S.view.key === 'item' || S.view.key === 'deity' || S.view.key === 'creature') loadThumbs();
+        if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen'].includes(S.view.key)) loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
         if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
     }
@@ -1420,7 +1430,8 @@
                 const T = ATH.tavern, tier = T.tierOf(S.store, poi.tavern);
                 out.push(`<div class="box menu-prev"><h4>Gaming stakes · ${esc(tier.label)}</h4>
                     ${priceRows([{ label: 'Blind per seat', items: T.stakes(S.store, poi.tavern).map(s => ({ name: s.label, priceLabel: T.formatCoin(s.blind) })) }])}
-                    ${hint(`Base blind × the tier (×${tier.mult}). Every seat puts one in the pot each hand; a raise adds one more. Players start with ${esc(T.formatCoin(T.startingPurse(S.store)))} (Settings → Gaming purse).`)}</div>`);
+                    ${hint(`Base blind × the tier (×${tier.mult}). Every seat puts one in the pot each hand; a raise adds one more. Players start with ${esc(T.formatCoin(T.startingPurse(S.store)))} (Settings → Gaming purse).`)}
+                    ${(house => hint(`House cut: ${house.houseCut ? `${house.houseCut}% of every pot` : 'none'}. Highest stakes: ${house.highTableWins ? `open after ${house.highTableWins} staked win${house.highTableWins === 1 ? '' : 's'} here` : 'open to all'}. A broke player ${house.loanInterest ? `borrows a purse at ${house.loanInterest}% (Settings → House loan interest)` : 'gets a free fresh purse'}.`))(T.gaming(S.store, poi.tavern))}</div>`);
             }
             out.push(`<div class="box mkt-prev"><h4>Rumours heard here</h4>${rumourList(poi, code)}<div class="stack">${addHere('rumour', rec.id, 'Rumour for this tavern only')}
                 ${poi.parent ? addHere('rumour', (S.store.ancestors(poi).find(p => S.store.typeOf(p) === 'settlement') || {}).id || poi.parent, 'Rumour for the whole settlement') : ''}</div></div>`);
@@ -1438,6 +1449,7 @@
                 ${rites.length ? priceRows(rites) : '<p class="muted">No services listed.</p>'}
                 ${temple.noPrayer ? hint('No prayer button.') : blessings.length ? hint(`“Pray” draws one of ${blessings.length} blessing${blessings.length === 1 ? '' : 's'} (once per code, per player).`) : '<p class="warn">No blessing fits these deities: no prayer button.</p>'}</div>`);
         }
+        if (poi.divination && ATH.divination) out.push(seerPreview(poi));
         out.push(`<div class="box mkt-prev"><h4>Notice board</h4>${noticeList(rec.id)}${addHere('notice', rec.id, 'Notice on this board')}</div>`);
         return out;
     }
@@ -1474,6 +1486,63 @@
         const n = S.store.get(rec.id);
         if (!n) return '';
         return `<div class="box notice-prev"><h4>Preview</h4><div class="notice-board" style="padding:14px 10px">${ATH.noticeBoard.render(S.store, [n])}</div></div>`;
+    }
+    /* ---------- divination (scripts/divination.js, scripts/fortune-card.js) ---------- */
+    const thumb = src => `data-thumb="${esc(src)}"`;
+    // A seer (POI): its price list, and the prophecies waiting there, campaign by campaign
+    function seerPreview(poi) {
+        const D = ATH.divination, M = ATH.market;
+        const prices = D.priceList(S.store, poi);
+        const list = D.prophecies(S.store, poi.id);
+        const dead = D.practices(S.store, poi).filter(p => !D.ready(S.store, p));
+        return `<div class="box menu-prev"><h4>Readings · ${esc(M.tierFor(S.store, poi, poi.divination).label)}</h4>
+            ${prices.length ? priceRows(prices) : '<p class="warn">No practice offered: no Readings tab.</p>'}
+            ${dead.map(p => `<p class="warn">${esc(p.name)} gives no reading yet (no cards, spread or omen fits).</p>`).join('')}
+            ${hint('One reading per player, per day. A prophecy below takes the place of the next one, in its campaign.')}</div>
+            <div class="box mkt-prev"><h4>Prophecies here <span>${list.length}</span></h4>
+            ${list.length ? `<ol class="mkt-list">${list.map(p => `<li data-jump="${esc(p.id)}"><span>${esc(p.name)}</span><span class="truth">${esc(p.practice ? nameOf(p.practice) : '')}</span>
+                <small>${esc((p.campaigns || []).map(nameOf).join(', ') || 'No campaign')}</small></li>`).join('')}</ol>
+                ${hint('In this order: a player gets the first they have not had yet.')}` : '<p class="muted">None yet: every reading here is drawn at random.</p>'}
+            ${addHere('prophecy', poi.id, 'Prophecy read here')}</div>`;
+    }
+    function divinationPreview(rec) {
+        const F = ATH.fortuneCard, D = ATH.divination, type = S.view.key;
+        const r = S.store.get(rec.id) || rec;
+        if (type === 'fortuneCard') {
+            const deck = S.store.get(r.deck) || null;
+            const side = ['reversed', 'back'].includes(S.cardSide) ? S.cardSide : 'front';
+            const btn = (key, label) => `<button data-action="card-side" data-side="${key}" class="${side === key ? 'on' : ''}">${label}</button>`;
+            return [`<div class="box card-prev"><div class="box-head"><h4>Card preview</h4>
+                <span class="seg">${btn('front', 'Upright')}${btn('reversed', 'Reversed')}${btn('back', 'Back')}</span></div>
+                <div class="card-prev__stage">${F.card(r, deck, { tag: 'div', faceDown: side === 'back', reversed: side === 'reversed', picture: thumb })}</div></div>`];
+        }
+        if (type === 'deck') {
+            const cards = S.store.all('fortuneCard').filter(c => c.deck === r.id);
+            const used = S.store.all('practice').filter(p => p.deck === r.id);
+            return [`<div class="box card-prev"><h4>Back</h4><div class="card-prev__stage">${F.card({ name: '' }, r, { tag: 'div', faceDown: true, picture: thumb })}</div></div>`,
+                `<div class="box"><h4>Cards <span>${cards.length}</span></h4>
+                ${cards.length ? `<div class="fan-prev">${cards.map(c => `<span data-jump="${esc(c.id)}" title="${esc(c.name)}">${F.card(c, r, { tag: 'div', picture: thumb })}</span>`).join('')}</div>` : '<p class="muted">No card yet.</p>'}
+                ${used.length ? '' : '<p class="warn">No practice draws from this deck yet.</p>'}
+                <button class="btn add-here" data-action="add-here" data-type="fortuneCard" data-field="deck" data-where="${esc(r.id)}">+ Card in this deck</button></div>`];
+        }
+        if (type === 'spread') {
+            const positions = r.positions || [];
+            if (!positions.length) return [];
+            const view = {
+                practice: { name: 'Spread' }, method: 'cards', spread: r, deck: null, prophecy: false, intro: '', closing: '',
+                layout: r.layout === 'cross' && positions.length === 5 ? 'cross' : 'row',
+                slots: positions.map((pos, i) => ({ position: pos, card: { name: pos.name, number: i + 1 }, reversed: false, keywords: [], reading: '' })),
+                turned: new Set(),
+            };
+            return [`<div class="box fortune-prev"><h4>As it is laid</h4><div class="fread">${F.reading(view, { tag: 'div' })}</div></div>`];
+        }
+        if (type === 'prophecy') {
+            const view = D.view(S.store, D.fromProphecy(S.store, r));
+            return [`<div class="box fortune-prev"><h4>The reading, every card turned</h4>
+                ${view ? `<div class="fread">${F.reading(view, { tag: 'div', allTurned: true, picture: thumb })}</div>` : '<p class="muted">Choose a practice and its cards (or write the omen) to see it.</p>'}
+                ${hint('A player of these campaigns gets it at their next reading here, whatever they asked for. Then readings go back to random.')}</div>`];
+        }
+        return [];
     }
     async function thumbUrl(src) {
         if (!src) return '';
@@ -1596,7 +1665,17 @@
             const whereSel = $('#nr-where', dlg);
             if (whereSel && whereSel.value) rec.where = whereSel.value;
             if (type === 'notice') { rec.kind = 'job'; rec.status = 'open'; }
-            if ((type === 'rumour' || type === 'notice') && S.store.settings.currentCampaign) rec.campaigns = [S.store.settings.currentCampaign];
+            if ((type === 'rumour' || type === 'notice' || type === 'prophecy') && S.store.settings.currentCampaign) rec.campaigns = [S.store.settings.currentCampaign];
+            if (type === 'fortuneCard' && preset.deck) {
+                rec.deck = preset.deck;
+                const nums = S.data.fortuneCard.filter(c => c.deck === preset.deck && typeof c.number === 'number').map(c => c.number);
+                rec.number = nums.length ? Math.max(...nums) + 1 : 0;
+            }
+            if (type === 'prophecy' && rec.where) {
+                const seer = S.store.get(rec.where);
+                const first = seer && ((seer.divination || {}).practices || [])[0];
+                if (first) rec.practice = first;
+            }
             if (type === 'session') Object.assign(rec, nextSession());
             S.data[type].push(rec);
             const found = $('#nr-found', dlg);
@@ -1948,9 +2027,10 @@
             case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
             case 'add-here': {
                 // "+ Rumour / + Notice" from a POI or settlement: open the new-record dialog on that type
+                // (data-field: the field it fills, e.g. a new card's deck; default where)
                 S.search = ''; $('#search').value = '';
                 select({ kind: 'type', key: t.dataset.type }, null);
-                newRecord(t.dataset.type === 'poi' ? { parent: t.dataset.where } : { where: t.dataset.where });
+                newRecord(t.dataset.type === 'poi' ? { parent: t.dataset.where } : { [t.dataset.field || 'where']: t.dataset.where });
                 break;
             }
             case 'found-add': {

@@ -553,6 +553,48 @@
                     errors.push(`[poi] ${p.id}.map.on: "${on}" is not a map of ${host.id}`);
                 }
             }
+            // Divination: practices, seers and the prophecies read at them
+            const spreadSize = sp => ((sp && sp.positions) || []).length;
+            for (const pr of byType.practice || []) {
+                if (pr.method === 'cards') {
+                    if (!pr.deck) { warnings.push(`[practice] ${pr.id}.deck: a card practice needs a deck`); continue; }
+                    const deckSize = (byType.fortuneCard || []).filter(c => c.deck === pr.deck).length;
+                    const spreads = (pr.spreads || []).length ? pr.spreads.map(resolve).filter(Boolean) : (byType.spread || []);
+                    if (!spreads.some(sp => spreadSize(sp) && spreadSize(sp) <= deckSize)) warnings.push(`[practice] ${pr.id}: no spread fits its deck (${deckSize} card${deckSize === 1 ? '' : 's'}), so it gives no reading`);
+                } else if (pr.method === 'omen' && !(byType.omen || []).some(o => o.practice === pr.id)) {
+                    warnings.push(`[practice] ${pr.id}: no omen in its pool, so it gives no reading`);
+                }
+            }
+            for (const o of byType.omen || []) {
+                const pr = resolve(o.practice);
+                if (pr && pr.method !== 'omen') warnings.push(`[omen] ${o.id}.practice: "${o.practice}" draws cards, so this omen is never drawn`);
+            }
+            for (const p of byType.poi || []) {
+                if (p.divination && !(p.divination.practices || []).length) warnings.push(`[poi] ${p.id}.divination: no practice offered, so the page has no Readings tab`);
+            }
+            for (const pp of byType.prophecy || []) {
+                const where = `[prophecy] ${pp.id}`;
+                const seer = resolve(pp.where);
+                const pr = resolve(pp.practice);
+                if (!(pp.campaigns || []).length) warnings.push(`${where}.campaigns: no campaign, so no one gets it`);
+                if (seer && !((seer.divination || {}).practices || []).includes(pp.practice)) warnings.push(`${where}.practice: "${pp.practice}" is not offered at ${seer.id}, so no one gets it`);
+                if (!pr) continue;
+                if (pr.method === 'omen') {
+                    if (!pp.omen) warnings.push(`${where}.omen: an omen practice, but no omen is written`);
+                    continue;
+                }
+                const cards = (pp.cards || []).filter(c => c && c.card);
+                if (!cards.length) { warnings.push(`${where}.cards: no card chosen`); continue; }
+                const sp = resolve(pp.spread);
+                if (!pp.spread) warnings.push(`${where}.spread: no spread, so its cards have no positions`);
+                else if (sp && spreadSize(sp) !== cards.length) warnings.push(`${where}.cards: ${cards.length} card${cards.length === 1 ? '' : 's'} for a spread of ${spreadSize(sp)}`);
+                const ids = cards.map(c => c.card);
+                if (new Set(ids).size !== ids.length) warnings.push(`${where}.cards: the same card is laid twice`);
+                cards.forEach((c, i) => {
+                    const card = resolve(c.card);
+                    if (card && pr.deck && card.deck !== pr.deck) warnings.push(`${where}.cards[${i}]: "${c.card}" is not in the deck of ${pr.id}`);
+                });
+            }
             for (const r of byType.rumour || []) {
                 const w = resolve(r.where);
                 if (!w) continue;

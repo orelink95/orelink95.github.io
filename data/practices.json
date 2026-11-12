@@ -1,0 +1,24 @@
+[
+  {
+    "id": "elder-tarot-reading",
+    "name": "Elder Tarot Reading",
+    "method": "cards",
+    "desc": "The cards of the Elder Tarot are shuffled, cut and laid out.",
+    "basePrice": 50,
+    "unit": "per reading",
+    "deck": "elder-tarot"
+  },
+  {
+    "id": "wandering-star-reading",
+    "name": "Wandering Star Reading",
+    "method": "cards",
+    "desc": "The cards of the Wandering Star are shuffled, cut and laid out.",
+    "basePrice": 50,
+    "unit": "per reading",
+    "icon": "star",
+    "deck": "wandering-star-tarot",
+    "spreads": [
+      "spread-three"
+    ]
+  }
+]

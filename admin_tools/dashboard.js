@@ -356,6 +356,7 @@
         if (def.place) return r.subtitle || '';
         switch (type) {
             case 'npc': return r.role || r.whereabouts || '';
+            case 'folio': return r.recipe && r.recipe.seed ? `Seed ${r.recipe.seed}` : 'No circle yet';
             case 'faction': return r.stub ? 'Stub' : S.store.standing(r.id);
             case 'lore': return r.kind || '';
             case 'tome': return [r.draft ? 'Draft' : '', r.kind, r.category].filter(Boolean).join(' · ');
@@ -497,7 +498,7 @@
        NAV & LIST
        ================================================================= */
     // Menu colour of each group. A group added to the schema takes one of the spare colours.
-    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5', Divination: '#c4a3f7' };
+    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5', Divination: '#c4a3f7', Generators: '#8fd6a8' };
     const SPARE_COLOURS = ['#4fd1c5', '#f48fb1', '#d4d86a'];
     function renderNav() {
         $('#app').classList.toggle('nav-open', S.navOpen);
@@ -587,6 +588,7 @@
         Transcript: 'history_edu', 'People & places': 'diversity_3', 'Loot & leads': 'explore', Backstory: 'menu_book', Statistics: 'monitoring', Secret: 'key', Artifact: 'diamond',
         Rumour: 'record_voice_over', Notice: 'push_pin', 'Homepage cards': 'event_upcoming', Settings: 'tune',
         Divination: 'visibility', Meanings: 'menu_book', Prophecy: 'auto_awesome', 'The reading': 'style',
+        Circle: 'radio_button_checked', 'Left page': 'article', 'Right page': 'image', Book: 'menu_book',
     };
     // Lists of tags whose suggestions come from a pool's tags rather than from the same field
     const TAG_SOURCES = {
@@ -1094,6 +1096,7 @@
             if (ATH.fortuneCard && ATH.divination) parts.unshift(...divinationPreview(rec));
             if ((S.view.key === 'poi' || S.view.key === 'creature') && ATH.look && lookOf(rec).look) parts.unshift(lookPreview(rec));
             if (S.view.key === 'creature' && rec.image) parts.unshift(beastFramePreview(rec));
+            if (S.view.key === 'folio' && ATH.sigil) parts.unshift(folioPreview(rec));
         }
         const html = parts.filter(Boolean).join('');
         side.innerHTML = html ? `<div class="side-head"><span>Previews & links</span><button class="btn icon" data-action="toggle-side" title="Close"><span class="material-symbols-outlined">close</span></button></div>${html}` : '';
@@ -1102,6 +1105,7 @@
         if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen'].includes(S.view.key)) loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
         if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
+        if (S.view.key === 'folio' && ATH.sigil) drawFolioPreview(rec);
     }
 
     /* ---------- page look (POIs, creatures): a small mock of the page ---------- */
@@ -1157,6 +1161,94 @@
         const urls = new Map(await Promise.all(paths.map(async p => [p, await thumbUrl(p)])));
         if (!el.isConnected) return;
         ATH.look.apply(el, look, S.view.key, { url: p => urls.get(p) || '' });
+    }
+
+    /* ---------- folios (Sigil Maker, DM only): the book with the DM's own words ----------
+       Drawn by scripts/sigil-engine.js, the Sigil Maker's own engine: what the preview
+       shows is what the PDF and PNG get. The circle is the record's `recipe` (a file
+       saved with “Save recipe” in the Sigil Maker); its uploaded alphabets travel inside it. */
+    const folioCache = { key: '', url: '', busy: false, again: false };
+    function folioState(rec) {
+        const SG = ATH.sigil;
+        if (!rec.recipe || !SG.validState(rec.recipe)) return null;
+        return SG.normalise(JSON.parse(JSON.stringify(rec.recipe)));
+    }
+    async function folioFonts(rec) {
+        const fonts = rec.recipe && Array.isArray(rec.recipe.fonts) ? rec.recipe.fonts : [];
+        for (const f of fonts) if (!ATH.sigil.USER_FONTS.find(x => x.id === f.id)) { try { await ATH.sigil.registerFont(f); } catch (e) { /* not a font */ } }
+    }
+    function folioPreview(rec) {
+        const ok = !!folioState(rec);
+        const btn = (what, icon, label) => `<button class="btn" data-action="folio-export" data-what="${what}"${ok ? '' : ' disabled'}><span class="material-symbols-outlined">${icon}</span>${label}</button>`;
+        return `<div class="box"><div class="box-head"><h4>The folio</h4>${ok ? '<button class="btn sm" data-action="folio-big">Open large</button>' : ''}</div>
+            ${ok ? `<div class="folio-prev" id="folio-prev">${folioCache.url ? `<img src="${folioCache.url}" alt="The folio">` : '<p class="muted">Drawing the book…</p>'}</div>`
+                : `<p class="muted">No circle yet. Make one in the Sigil Maker (<code>sigil-maker.html</code>), click <b>Save recipe</b>, then import that file here.</p>`}
+            <div class="row wrap"><button class="btn${ok ? '' : ' primary'}" data-action="folio-import"><span class="material-symbols-outlined">upload_file</span>${ok ? 'Replace the circle…' : 'Import a recipe…'}</button></div>
+            <p class="hint">Text fields left empty keep the generated text; a single “-” leaves that part blank.</p></div>
+            <div class="box"><h4>Export</h4>
+            <div class="row wrap">${btn('pdf-spread', 'picture_as_pdf', 'PDF · A3 spread')}${btn('pdf-pages', 'picture_as_pdf', 'PDF · two A4 pages')}</div>
+            <div class="row wrap">${btn('png-book', 'image', 'Book PNG')}${btn('png-plate', 'radio_button_checked', 'Circle PNG')}${btn('recipe', 'download', 'Recipe')}</div>
+            <p class="hint">DM only: <code>data/folios.json</code> is git-ignored and the site never reads it. The PDF library loads from the web.</p></div>`;
+    }
+    async function drawFolioPreview(rec) {
+        const st = folioState(rec);
+        if (!st) return;
+        const key = JSON.stringify(rec);
+        if (key === folioCache.key && folioCache.url) return;
+        if (folioCache.busy) { folioCache.again = true; return; }
+        folioCache.busy = true;
+        try {
+            await folioFonts(rec);
+            const cv = await ATH.sigil.renderBook(st, 0.42, { which: 'spread', text: rec });
+            folioCache.key = key; folioCache.url = cv.toDataURL('image/jpeg', 0.85);
+            const box = document.getElementById('folio-prev');
+            if (box) box.innerHTML = `<img src="${folioCache.url}" alt="The folio">`;
+        } catch (e) { console.error(e); }
+        folioCache.busy = false;
+        if (folioCache.again) { folioCache.again = false; const r = curRecord(); if (r && S.view.key === 'folio') drawFolioPreview(r); }
+    }
+    function folioImport(rec) {
+        const input = document.createElement('input');
+        input.type = 'file'; input.accept = '.json,application/json';
+        input.onchange = async () => {
+            const file = input.files[0]; if (!file) return;
+            let o;
+            try { o = JSON.parse(await file.text()); } catch (e) { toast('That file is not JSON.'); return; }
+            if (!ATH.sigil.validState(o)) { toast('That file is not a Sigil Maker recipe.'); return; }
+            rec.recipe = o;
+            const st = ATH.sigil.normalise(JSON.parse(JSON.stringify(o)));
+            if (!rec.name || /^new /i.test(rec.name) || rec.name === rec.id) rec.name = ATH.sigil.buildLore(st).titleLa;
+            folioCache.key = ''; edited(true); toast('Circle imported — not saved yet');
+        };
+        input.click();
+    }
+    async function folioBig(rec, which) {
+        const st = folioState(rec); if (!st) return;
+        const dlg = modal(`<h3>${esc(rec.name || 'Folio')}</h3>
+            <div class="row wrap">${['spread', 'verso', 'recto'].map(w => `<button class="btn sm${w === which ? ' primary' : ''}" data-action="folio-big" data-which="${w}">${{ spread: 'Spread', verso: 'Left page', recto: 'Right page' }[w]}</button>`).join('')}</div>
+            <div class="folio-big"><p class="muted">Drawing the book…</p></div>
+            <div class="foot"><button class="btn" data-action="close-modal">Close</button></div>`, 'wide folio');
+        await folioFonts(rec);
+        const cv = await ATH.sigil.renderBook(st, which === 'spread' ? 0.9 : 1.2, { which, text: rec });
+        const box = $('.folio-big', dlg); if (!box || !box.isConnected) return;
+        box.innerHTML = `<img src="${cv.toDataURL('image/jpeg', 0.9)}" alt="">`;
+    }
+    function downloadBlob(name, blob) {
+        const url = URL.createObjectURL(blob); const a = document.createElement('a');
+        a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+    }
+    async function folioExport(rec, what) {
+        const SG = ATH.sigil, st = folioState(rec); if (!st) return;
+        const stem = slug(rec.name || rec.id) || 'folio';
+        try {
+            await folioFonts(rec);
+            if (what === 'recipe') { downloadBlob(`${stem}.json`, new Blob([JSON.stringify(rec.recipe, null, 1)], { type: 'application/json' })); return; }
+            toast('Drawing…');
+            if (what === 'pdf-spread' || what === 'pdf-pages') downloadBlob(`${stem}.pdf`, await SG.bookPDF(st, { layout: what === 'pdf-spread' ? 'spread' : 'pages', text: rec }));
+            else if (what === 'png-book') downloadBlob(`${stem}-book.png`, await SG.bookPNG(st, { text: rec }));
+            else if (what === 'png-plate') downloadBlob(`${stem}-circle.png`, await SG.platePNG(st, { size: 2048, bg: 'parchment' }));
+        } catch (e) { console.error(e); toast(what.startsWith('pdf') ? 'The PDF could not be made: the PDF library loads from the web.' : 'The image could not be drawn.'); }
     }
 
     /* ---------- upcoming sessions (homepage): preview and tools ---------- */
@@ -2078,6 +2170,9 @@
             case 'read-size': readSize(path); break;
             case 'move-record': moveRecord(Number(t.dataset.dir)); break;
             case 'schedule-add': scheduleAdd(); break;
+            case 'folio-import': folioImport(rec); break;
+            case 'folio-big': folioBig(rec, t.dataset.which || 'spread'); break;
+            case 'folio-export': folioExport(rec, t.dataset.what); break;
             case 'schedule-sort': scheduleSort(); break;
             case 'schedule-prune': schedulePrune(); break;
             case 'rename': renameRecord(); break;

@@ -2,9 +2,9 @@
 
 # DM-only data (NPC secrets, later hero secrets). Never published.
 /data/private.json
+# DM-only types (schema: dmOnly), e.g. the Folios of the Sigil Maker
+/data/folios.json
 
 /styles/README.md
-
-/admin_tools
 
 /tools

@@ -67,6 +67,7 @@
         for (const [type, def] of Object.entries(types)) {
             const list = datasets[type];
             raw[type] = list;
+            if (list === undefined && def.dmOnly) { raw[type] = []; byType[type] = []; continue; } // DM-only file absent (the site)
             if (list === undefined) { loadIssues.push(`[${type}] ${def.file} was not loaded`); byType[type] = []; continue; }
             if (!Array.isArray(list)) { loadIssues.push(`[${type}] ${def.file} must be a JSON array`); byType[type] = []; continue; }
             byType[type] = list.map(r => ({ ...r }));
@@ -637,6 +638,7 @@
         ATH.ready = (async () => {
             if (!ATH.schema) throw new Error('Load data/schema.js before scripts/core/store.js');
             const entries = await Promise.all(Object.entries(ATH.schema.types).map(async ([type, def]) => {
+                if (def.dmOnly) return [type, undefined];   // DM-only types never reach the site
                 try { return [type, await getJSON(def.file)]; }
                 catch (e) { console.error('[Athenaeum]', e.message); return [type, undefined]; }
             }));

@@ -1,4 +1,6 @@
 {
   "tavernCode": "1324",
+  "startingPurse": 80,
+  "loanInterest": 8,
   "currentCampaign": "echoes-from-the-void"
 }

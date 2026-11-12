@@ -16,6 +16,8 @@
     <link href="../styles/deity-card.css" rel="stylesheet" />
     <link href="../styles/fortune-card.css" rel="stylesheet" />
     <link href="../styles/looks.css" rel="stylesheet" />
+    <!-- folios: the Sigil Maker's book and circle fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=UnifrakturMaguntia&family=MedievalSharp&family=Uncial+Antiqua&family=Metamorphous&family=Noto+Sans+Runic&family=Noto+Sans+Ogham&family=Noto+Sans+Symbols&family=Noto+Sans+Symbols+2&family=Noto+Sans+Glagolitic&family=Noto+Sans+Gothic&family=Noto+Sans+Phoenician&family=Noto+Sans+Old+Italic&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -576,6 +578,9 @@
         .box h4 span { color: var(--ink-faint); font-weight: 500; margin-left: 4px; }
         .box-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .box-head h4 { margin: 0; }
+        .folio-prev img, .folio-big img { display: block; width: 100%; height: auto; border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.45); }
+        .folio-prev { margin: 6px 0 10px; }
+        .folio-big { margin-top: 12px; max-height: 75vh; overflow: auto; }
         .box input { height: 34px !important; }
         .box--issues { border-color: #ff9f9440; background: #ff9f940a; }
         .issues { margin: 0; padding-left: 18px; }
@@ -716,6 +721,7 @@
             box-shadow: 0 30px 80px #000;
         }
         #modal .dlg.wide { width: min(820px, 100%); }
+        #modal .dlg.wide.folio { width: min(1240px, 100%); }
         #modal .dlg.xwide { width: min(1100px, 100%); }
         #modal h3 { margin: 0 0 14px; font: 600 22px 'Newsreader', serif; color: var(--gold); }
         #modal .foot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 20px; }
@@ -806,6 +812,7 @@
     <script src="../scripts/spell-card.js"></script>
     <script src="../scripts/deity-card.js"></script>
     <script src="../scripts/upcoming-sessions.js"></script>
+    <script src="../scripts/sigil-engine.js"></script>
 </head>
 
 <body>

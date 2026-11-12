@@ -42,6 +42,7 @@ noPin     help shown instead of the pin when the parent has no map of its own
 order  { by, desc, within }  store.all(type) returns the records sorted by `by` (descending if `desc`), grouped by `within` if given;
 records missing `by` come last. Otherwise: file order.
 sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writes it from a private plain-text field (`from`) and a private password field (`password`)
+dmOnly  the whole type is DM only: its file is git-ignored and the site never loads it (only the dashboard and the tools read it)
 =========================================================================== */
 
 (function (root) {
@@ -144,6 +145,14 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
 
         /* Value lists shared by several fields. */
         enums: {
+            /* Folios (Sigil Maker): colours of the binding and of the illuminated initial.
+               Same ids as BOOK_COLOURS in scripts/sigil-engine.js. */
+            bookColour: [
+                { id: 'verdigris', label: 'Verdigris' }, { id: 'oxblood', label: 'Oxblood' }, { id: 'lapis', label: 'Lapis' },
+                { id: 'sable', label: 'Sable' }, { id: 'tyrian', label: 'Tyrian purple' }, { id: 'indigo', label: 'Indigo' },
+                { id: 'teal', label: 'Teal' }, { id: 'slate', label: 'Slate' }, { id: 'umber', label: 'Umber' },
+                { id: 'vermilion', label: 'Vermilion' }, { id: 'saffron', label: 'Saffron' }, { id: 'vellum', label: 'Vellum' },
+            ],
             relation: ['Ally', 'Ally (Friendly)', 'Neutral', 'Displeased', 'Hostile', 'Hostile (Threat)', 'Enemy', 'Killed', 'Unknown'],
             factionStatus: ['Allied', 'Neutral', 'Hostile', 'Unknown'],
             threatLevel: ['Low', 'Moderate', 'Severe', 'Omega'],
@@ -1173,6 +1182,44 @@ sealed  text encrypted with a password ({v, salt, iv, data}); the dashboard writ
                     omenMeaning: { kind: 'text', label: 'What the omen means', long: true, section: 'The reading' },
                     closing: { kind: 'text', label: 'After the reading', long: true, section: 'The reading', help: 'Shown once every card is turned (optional).' },
                     meaning: { kind: 'text', label: 'What it really foretells', long: true, private: true, section: 'DM only' },
+                },
+            },
+            /* A grimoire folio of the Sigil Maker with the DM's own words. DM only: the whole
+               file is git-ignored, the site never loads it (dmOnly), the dashboard previews and
+               exports it (scripts/sigil-engine.js). Text fields: empty = the generated text,
+               a single "-" = leave that part blank. */
+            folio: {
+                label: 'Folio', plural: 'Folios', icon: 'import_contacts', group: 'Generators',
+                file: 'data/folios.json',
+                dmOnly: true,
+                sections: ['Left page', 'Right page', 'Book', 'Circle'],
+                fields: {
+                    recipe: { kind: 'json', label: 'Circle (recipe)', section: 'Circle', help: 'Made in the Sigil Maker with “Save recipe”. Use “Import a recipe” in the previews panel rather than pasting it here.' },
+                    note: { kind: 'text', label: 'DM note', long: true, section: 'Circle', help: 'For you: never printed.' },
+                    folioLeft: { kind: 'text', label: 'Folio number', section: 'Left page', width: 'third', help: 'Top left, in italics.' },
+                    chapter: { kind: 'text', label: 'Running head', section: 'Left page', width: 'third', help: 'Top right of the left page.' },
+                    marginal: { kind: 'text', label: 'Margin note', section: 'Left page', width: 'third', help: 'Written up the left margin.' },
+                    title: { kind: 'text', label: 'Title', section: 'Left page', width: 'half', help: 'Also the caption under the circle, unless you write one.' },
+                    subtitle: { kind: 'text', label: 'Subtitle', section: 'Left page', width: 'half', help: 'In italics under the title.' },
+                    body: { kind: 'text', label: 'Text', long: true, section: 'Left page', help: 'A blank line starts a new paragraph · *italic* · **small capitals**. The first letter becomes the illuminated initial.' },
+                    noInitial: { kind: 'boolean', label: 'No illuminated initial', section: 'Left page' },
+                    rubricLabel: { kind: 'text', label: 'Rubric heading', section: 'Left page', width: 'third', help: 'In red small capitals. Empty = “Rubrica.”' },
+                    rubric: { kind: 'text', label: 'Rubric', long: true, section: 'Left page', help: 'The red instruction in italics. “-” removes the whole rubric.' },
+                    table: {
+                        kind: 'objects', label: 'Table', itemLabel: 'label', section: 'Left page',
+                        help: 'Replaces the generated table (Purpose, Rings, Points, Inks, Rite, Peril).',
+                        fields: {
+                            label: { kind: 'text', label: 'Label' },
+                            value: { kind: 'text', label: 'Value' },
+                        },
+                    },
+                    hideTable: { kind: 'boolean', label: 'No table', section: 'Left page' },
+                    plateNumber: { kind: 'text', label: 'Plate heading', section: 'Right page', width: 'half', help: 'Top left of the right page (“Tabula …”).' },
+                    folioRight: { kind: 'text', label: 'Folio number', section: 'Right page', width: 'half', help: 'Top right, in italics.' },
+                    caption: { kind: 'text', label: 'Caption', section: 'Right page', width: 'half', help: 'Under the circle. Empty = the title.' },
+                    captionNote: { kind: 'text', label: 'Caption note', section: 'Right page', width: 'half', help: 'Small capitals under the caption.' },
+                    coverColour: { kind: 'enum', enum: 'bookColour', label: 'Cover', section: 'Book', width: 'half', help: 'The leather of the book PNG. Empty = the circle’s own (picked in the Sigil Maker).' },
+                    initialColour: { kind: 'enum', enum: 'bookColour', label: 'Illuminated initial', section: 'Book', width: 'half', help: 'Empty = the circle’s own (picked in the Sigil Maker).' },
                 },
             },
         },

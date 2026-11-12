@@ -29,7 +29,7 @@ function loadStore() {
     const datasets = {};
     const problems = [];
     for (const [type, def] of Object.entries(ATH.schema.types)) {
-        try { datasets[type] = readJSON(def.file); }
+        try { datasets[type] = readJSON(def.file, !!def.dmOnly); }
         catch (e) { problems.push(e.message); }
     }
     let privateData;

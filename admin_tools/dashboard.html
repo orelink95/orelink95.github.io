@@ -722,6 +722,52 @@
         }
         #modal .dlg.wide { width: min(820px, 100%); }
         #modal .dlg.wide.folio { width: min(1240px, 100%); }
+
+        /* ---------- potions (scripts/alchemy-engine.js): the item's panel and the brewer ---------- */
+        .potion-sum { display: flex; gap: 12px; align-items: flex-start; }
+        .potion-art { flex: none; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 1px solid var(--line-2);
+            background: radial-gradient(circle at 50% 62%, #232823 0%, #0b0d0b 78%); }
+        .potion-sum .potion-art { width: 84px; height: 106px; }
+        .potion-art svg { width: auto; height: 94%; }
+        .potion-sum b { display: block; font: 600 15px 'Newsreader', serif; color: var(--gold); line-height: 1.25; }
+        .potion-sum p { margin: 4px 0 0; font-size: 12.5px; color: var(--ink-dim); line-height: 1.45; }
+        .potion-parts { margin-top: 10px; }
+        .potion-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-top: 1px solid var(--line); }
+        .potion-row:first-of-type { border-top: 0; }
+        .potion-row .potion-art { width: 52px; height: 66px; }
+        .potion-row b { display: block; font: 600 14px 'Newsreader', serif; color: var(--gold); line-height: 1.25; }
+        .potion-row p { margin: 2px 0 6px; font-size: 12px; color: var(--ink-dim); line-height: 1.4; }
+        .rx { display: block; margin: 6px 0 0; padding: 6px 9px; border-radius: 8px; border: 1px solid var(--line-2); font-size: 12.5px; line-height: 1.45; color: var(--ink-dim); }
+        .rx b { display: inline; font: 600 12.5px 'Manrope', sans-serif; color: var(--ink); }
+        .rx small { margin-left: 6px; font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+        .rx--boon { border-color: #e9c17655; background: #e9c1760d; } .rx--boon b { color: var(--gold); }
+        .rx--bane { border-color: #ff9f9455; background: #ff9f940d; } .rx--bane b { color: var(--red); }
+        .rx--quirk { border-color: #86d39a44; background: #86d39a0a; } .rx--quirk b { color: var(--green); }
+        /* the dialog doesn't scroll: its two columns do, so the bottle's controls and the footer stay in reach */
+        #modal .dlg.xwide.potion { width: min(1180px, 100%); max-height: 92vh; overflow: hidden; display: flex; flex-direction: column; }
+        .pb { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); gap: 22px; }
+        .pb-left { display: flex; flex-direction: column; gap: 12px; overflow: auto; padding-right: 6px; }
+        .pb-stage { flex: none; height: 270px; }
+        .pb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .pb-wide { grid-column: 1 / -1; }
+        .pb-left select, .pb-left input:not([type]) { width: 100%; }
+        .pb-left details { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+        .pb-left summary { cursor: pointer; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim); }
+        .pb-left details[open] summary { margin-bottom: 10px; }
+        .pb-left input[type="color"] { width: 44px; height: 30px; padding: 0; border: 1px solid var(--line-2); border-radius: 6px; background: none; }
+        .pb-left input[type="range"] { width: 100%; accent-color: var(--gold); }
+        .pb-rec { overflow: auto; padding-right: 6px; }
+        .pb-rec h4 { margin: 0; font: 600 24px/1.2 'Newsreader', serif; color: var(--gold); }
+        .pb-rec .pb-meta { margin: 6px 0 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-dim); }
+        .pb-rec .pb-meta b { color: var(--ink); }
+        .pb-rec h5 { margin: 16px 0 4px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+        .pb-rec p { margin: 0 0 6px; font: 15px/1.55 'Newsreader', serif; color: var(--ink); }
+        .pb-rec p.pb-flavour { font-style: italic; color: var(--ink-dim); }
+        .pb-rec .rx { font: 14px/1.5 'Newsreader', serif; color: var(--ink); }
+        .pb-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .pb-tags span { padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line-2); font-size: 11px; color: var(--ink-dim); }
+        .pb-foot-left { margin-right: auto; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; font-size: 12.5px; color: var(--ink-dim); }
+        .pb-foot-left label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
         #modal .dlg.xwide { width: min(1100px, 100%); }
         #modal h3 { margin: 0 0 14px; font: 600 22px 'Newsreader', serif; color: var(--gold); }
         #modal .foot { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 20px; }
@@ -808,6 +854,7 @@
     <script src="../scripts/fortune-card.js"></script>
     <script src="../scripts/institution.js"></script>
     <script src="../scripts/notice-board.js"></script>
+    <script src="../scripts/alchemy-engine.js"></script>
     <script src="../scripts/loot-card.js"></script>
     <script src="../scripts/spell-card.js"></script>
     <script src="../scripts/deity-card.js"></script>

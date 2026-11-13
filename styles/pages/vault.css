@@ -299,6 +299,14 @@
     object-fit: cover;
 }
 
+.vault-modal__picture--potion {
+    background: radial-gradient(circle at 50% 62%, #232823 0%, #0b0d0b 78%);
+}
+.vault-modal__picture--potion svg {
+    width: auto;
+    height: 92%;
+}
+
 .vault-modal__placeholder {
     font-size: min(160px, 30vw);
     color: var(--rarity);

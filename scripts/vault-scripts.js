@@ -86,7 +86,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         const hero = item.attunedBy && store.get(item.attunedBy);
         document.getElementById('sheet').innerHTML = Athenaeum.lootCard.sheet(item, store);
         document.getElementById('sheet-note').textContent = hero ? `Attuned to ${hero.name}` : '';
-        document.getElementById('sheet-picture').innerHTML = item.image
+        // A potion shows its bottle (drawn from the recipe) instead of a picture
+        const bottle = Athenaeum.lootCard.potionArt(item, store, {
+            uid: 'open', title: item.name, width: 300, height: 390,
+            animate: !window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+        });
+        const picture = document.getElementById('sheet-picture');
+        picture.classList.toggle('vault-modal__picture--potion', !!bottle);
+        picture.innerHTML = bottle ? bottle
+            : item.image
             ? `<img src="${esc(item.image)}" alt="${esc(item.name)}">`
             : `<span class="vault-modal__placeholder material-symbols-outlined ${RARITY_CLASS(item.rarity)}">diamond</span>`;
         modal.classList.remove('hidden');

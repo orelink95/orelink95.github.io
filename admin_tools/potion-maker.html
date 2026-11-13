@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Potion maker — DM</title>
+    <link rel="icon" type="image/png" href="../images/EA-favicon.png" />
+    <!-- DM only: linked from the dashboard (Alchemy), nowhere on the site. It reads the
+         site's files, so open it through the live server, not from disk. -->
+
+    <!-- Noto Sans Symbols: the alchemical glyphs (☿ 🜍 🜔…) that system fonts lack -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&family=Noto+Sans+Symbols:wght@400;700&family=Noto+Sans+Symbols+2&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <link href="../styles/tokens.css" rel="stylesheet" />
+    <link href="../styles/base.css" rel="stylesheet" />
+    <link href="../styles/components.css" rel="stylesheet" />
+    <link href="potion-maker.css" rel="stylesheet" />
+    <link href="../styles/main-style.css" rel="stylesheet" />
+
+    <script src="../scripts/general-scripts.js"></script>
+    <script src="../data/schema.js"></script>
+    <script src="../scripts/core/markdown.js"></script>
+    <script src="../scripts/core/store.js"></script>
+    <script src="../scripts/market.js"></script>
+    <script src="../scripts/alchemy-engine.js"></script>
+    <script src="potion-maker.js"></script>
+</head>
+
+<body class="page mystical-bg">
+
+    <div class="alch-dmbar">
+        <a href="dashboard.html"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Dashboard</a>
+        <span class="alch-dmbar__badge">DM only · not on the site</span>
+    </div>
+
+    <main class="alch-main">
+
+        <div class="alch-head">
+            <div class="alch-head__intro">
+                <h1 class="alch-head__title">The Potion Maker</h1>
+                <p class="alch-head__lede">Every potion of the archive, with what it does, what it is worth and how hard it
+                    is to brew. Turn one into a Vault card from the dashboard (an item’s “Brew a potion”).</p>
+            </div>
+
+            <!-- The seed: the same word always distills the same potion -->
+            <div class="alch-seed">
+                <label class="alch-label" for="seed-input">Formula seed</label>
+                <div class="alch-seed__row">
+                    <div class="alch-seed__field">
+                        <span class="alch-seed__icon material-symbols-outlined" aria-hidden="true">science</span>
+                        <input type="text" id="seed-input" class="alch-seed__input" maxlength="60" autocomplete="off"
+                            spellcheck="false" placeholder="Any word or phrase...">
+                    </div>
+                    <button type="button" id="btn-roll" class="alch-btn alch-btn--gold">Distill</button>
+                    <button type="button" id="btn-random" class="alch-btn alch-btn--icon" title="Roll a random seed"
+                        aria-label="Roll a random seed">
+                        <span class="material-symbols-outlined" aria-hidden="true">casino</span>
+                    </button>
+                </div>
+                <p class="alch-hint">The same seed always distills the same potion.</p>
+            </div>
+        </div>
+
+        <div class="alch-bench">
+
+            <!-- Left: the bottle and its controls -->
+            <section class="alch-panel alch-stage" aria-label="The bottle">
+                <div class="alch-alcove" id="specimen-alcove">
+                    <svg class="alch-alcove__astrolabe" aria-hidden="true" viewBox="0 0 240 240"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="120" cy="120" r="112" fill="none" stroke="currentColor" stroke-width="0.6" stroke-dasharray="2 5" opacity="0.5" />
+                        <circle cx="120" cy="120" r="98" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.4" />
+                        <circle cx="120" cy="120" r="92" fill="none" stroke="currentColor" stroke-width="0.4" opacity="0.4" />
+                        <polygon points="120,28 199.7,166 40.3,166" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.3" />
+                        <polygon points="120,212 199.7,74 40.3,74" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.3" />
+                        <circle cx="120" cy="120" r="46" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.3" />
+                        <path d="M8,120 H232 M120,8 V232" stroke="currentColor" stroke-width="0.4" opacity="0.25" />
+                        <g fill="currentColor" opacity="0.55">
+                            <circle cx="120" cy="22" r="2" /><circle cx="120" cy="218" r="2" />
+                            <circle cx="22" cy="120" r="2" /><circle cx="218" cy="120" r="2" />
+                        </g>
+                    </svg>
+                    <div id="potion-stage" class="alch-bottle"></div>
+                </div>
+
+                <div class="alch-toggles">
+                    <label class="alch-check">
+                        <input type="checkbox" id="toggle-seal" checked>
+                        <span>Wax seal</span>
+                    </label>
+                    <label class="alch-check">
+                        <input type="checkbox" id="toggle-label" checked>
+                        <span>Label</span>
+                    </label>
+                </div>
+
+                <div class="alch-tabs" role="tablist" aria-label="Potion controls">
+                    <button type="button" id="tab-workbench" class="alch-tab is-active" role="tab" aria-selected="true"
+                        aria-controls="panel-workbench">
+                        <span class="material-symbols-outlined" aria-hidden="true">experiment</span>Recipe
+                    </button>
+                    <button type="button" id="tab-studio" class="alch-tab" role="tab" aria-selected="false"
+                        aria-controls="panel-studio">
+                        <span class="material-symbols-outlined" aria-hidden="true">palette</span>Bottle
+                    </button>
+                </div>
+
+                <!-- Tab 1: the recipe -->
+                <div id="panel-workbench" role="tabpanel" class="alch-controls">
+                    <label class="alch-field">
+                        <span class="alch-label">Vessel</span>
+                        <select id="sel-vessel"></select>
+                    </label>
+                    <label class="alch-field">
+                        <span class="alch-label"><span class="alch-glyph" aria-hidden="true">☿</span> Menstruum · the solvent</span>
+                        <select id="sel-solvent"></select>
+                    </label>
+                    <label class="alch-field">
+                        <span class="alch-label"><span class="alch-glyph" aria-hidden="true">🜍</span> Nigredo · the active principle</span>
+                        <select id="sel-active"></select>
+                    </label>
+                    <label class="alch-field">
+                        <span class="alch-label"><span class="alch-glyph" aria-hidden="true">🜔</span> Fixative · the catalyst</span>
+                        <select id="sel-catalyst"></select>
+                    </label>
+                </div>
+
+                <!-- Tab 2: how the bottle looks -->
+                <div id="panel-studio" role="tabpanel" class="alch-controls hidden">
+                    <div class="alch-grid">
+                        <label class="alch-field">
+                            <span class="alch-label">Glass tint</span>
+                            <select id="cust-glass">
+                                <option value="auto">Auto (from recipe)</option>
+                                <option value="clear">Clear crystal</option>
+                                <option value="smoked">Smoked glass</option>
+                                <option value="green">Seafoam green</option>
+                                <option value="amber">Apothecary amber</option>
+                                <option value="cobalt">Deep cobalt</option>
+                            </select>
+                        </label>
+                        <label class="alch-field">
+                            <span class="alch-label">Stopper</span>
+                            <select id="cust-stopper">
+                                <option value="auto">Auto (from recipe)</option>
+                                <option value="cork">Cork bung</option>
+                                <option value="crystal">Faceted crystal</option>
+                                <option value="brass">Turned brass cap</option>
+                                <option value="skull">Carved bone skull</option>
+                            </select>
+                        </label>
+                        <label class="alch-field">
+                            <span class="alch-label">Wax colour</span>
+                            <select id="cust-wax">
+                                <option value="auto">Auto (from recipe)</option>
+                                <option value="crimson">Crimson</option>
+                                <option value="verdigris">Verdigris</option>
+                                <option value="gold">Imperial gold</option>
+                                <option value="obsidian">Obsidian pitch</option>
+                                <option value="violet">Arcane violet</option>
+                                <option value="cobalt">Sapphire cobalt</option>
+                                <option value="ivory">Bone ivory</option>
+                                <option value="copper">Burnished bronze</option>
+                            </select>
+                        </label>
+                        <label class="alch-field">
+                            <span class="alch-label">Seal stamp</span>
+                            <select id="cust-stamp">
+                                <option value="auto">Auto (from recipe)</option>
+                                <option value="triquetra">Triquetra</option>
+                                <option value="skull">Skull</option>
+                                <option value="eye">All-seeing eye</option>
+                                <option value="sun">Sun</option>
+                                <option value="serpent">Ouroboros</option>
+                                <option value="none">Unstamped</option>
+                            </select>
+                        </label>
+                        <label class="alch-field">
+                            <span class="alch-label">Neck</span>
+                            <select id="cust-neck">
+                                <option value="auto">Auto (from recipe)</option>
+                                <option value="twine">Hemp twine</option>
+                                <option value="chain">Brass chain &amp; charm</option>
+                                <option value="strap">Buckled leather collar</option>
+                                <option value="talisman">Crow skull &amp; beads</option>
+                                <option value="tag">Hanging tag</option>
+                                <option value="none">Bare glass</option>
+                            </select>
+                        </label>
+                        <label class="alch-field">
+                            <span class="alch-label">Label paper</span>
+                            <select id="cust-vellum">
+                                <option value="auto">Auto (from recipe)</option>
+                                <option value="aged">Aged ochre vellum</option>
+                                <option value="bleached">Bleached parchment</option>
+                                <option value="charred">Soot-charred rag</option>
+                                <option value="blood">Crimson-stained hide</option>
+                                <option value="mold">Damp verdigris vellum</option>
+                                <option value="midnight">Midnight velour</option>
+                            </select>
+                        </label>
+                        <label class="alch-field alch-field--wide">
+                            <span class="alch-label">Liquid</span>
+                            <select id="cust-texture">
+                                <option value="auto">Auto (from the active principle)</option>
+                                <option value="gradient">Smooth blend</option>
+                                <option value="layered">Unmixed layers</option>
+                                <option value="suspended">Floating flakes</option>
+                                <option value="marbled">Swirling threads</option>
+                                <option value="voltaic">Captive lightning</option>
+                                <option value="rainbow">Prismatic bands</option>
+                                <option value="astral">Starry void</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <label class="alch-field">
+                        <span class="alch-label">Fill level · <span id="fill-readout">Auto</span></span>
+                        <input type="range" id="cust-fill" class="alch-range" min="20" max="92" value="65">
+                    </label>
+
+                    <div class="alch-colours">
+                        <label class="alch-check">
+                            <input type="checkbox" id="cust-color-enable">
+                            <span>Choose the liquid's colours</span>
+                        </label>
+                        <div class="alch-colours__swatches">
+                            <input type="color" id="cust-col-primary" class="alch-swatch" value="#e74c3c"
+                                title="Top colour" aria-label="Top colour of the liquid">
+                            <input type="color" id="cust-col-secondary" class="alch-swatch" value="#f39c12"
+                                title="Bottom colour" aria-label="Bottom colour of the liquid">
+                        </div>
+                    </div>
+
+                    <div class="alch-grid">
+                        <label class="alch-field">
+                            <span class="alch-label">Label · line 1</span>
+                            <input type="text" id="cust-label-text" maxlength="14" placeholder="Auto (index code)">
+                        </label>
+                        <label class="alch-field">
+                            <span class="alch-label">Label · line 2</span>
+                            <input type="text" id="cust-label-sub" maxlength="16" placeholder="Auto (glyphs)">
+                        </label>
+                    </div>
+
+                    <button type="button" id="btn-reset-studio" class="alch-btn alch-btn--quiet">
+                        <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>Reset the bottle to auto
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right: the potion's record -->
+            <section class="alch-panel alch-folio" aria-label="The potion's record">
+                <div id="output-panel" aria-live="polite">
+                    <p class="alch-loading">Opening the apothecary's archives...</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- The shelf: saved potions, kept in this browser -->
+        <section class="alch-panel alch-shelf" aria-labelledby="shelf-title">
+            <div class="alch-shelf__head">
+                <div>
+                    <h2 class="alch-shelf__title" id="shelf-title">The Cabinet Shelf</h2>
+                    <p class="alch-shelf__lede">Kept in this browser. Export to keep a copy; “Import” also takes a recipe saved below, or by the dashboard.</p>
+                </div>
+                <div class="alch-shelf__tools">
+                    <span class="alch-shelf__count" id="shelf-count">0 specimens</span>
+                    <button type="button" id="btn-export-shelf" class="alch-btn alch-btn--quiet">
+                        <span class="material-symbols-outlined" aria-hidden="true">download</span>Export
+                    </button>
+                    <button type="button" id="btn-import-shelf" class="alch-btn alch-btn--quiet">
+                        <span class="material-symbols-outlined" aria-hidden="true">upload</span>Import
+                    </button>
+                    <input type="file" id="shelf-file-input" accept=".json,application/json" hidden>
+                    <button type="button" id="btn-clear-shelf" class="alch-btn alch-btn--quiet alch-btn--danger">
+                        <span class="material-symbols-outlined" aria-hidden="true">delete</span>Clear
+                    </button>
+                </div>
+            </div>
+            <div class="alch-shelf__grid" id="potion-shelf-grid"></div>
+        </section>
+
+    </main>
+
+    <!-- potion-maker.js moves the toast out of <body>, whose filter would pin a
+         fixed element to the page instead of the screen -->
+    <div id="toast" class="alch-toast" role="status" aria-live="polite"></div>
+
+</body>
+
+</html>

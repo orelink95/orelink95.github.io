@@ -1,0 +1,261 @@
+[
+  {
+    "id": "witch-hazel",
+    "name": "Witch-Hazel Ash",
+    "prefix": "Cloaked",
+    "tag": "luminous",
+    "rarity": "common",
+    "color": "#f39c12",
+    "lore": "Witch-hazel burnt to grey ash in a hedge-witch's hearth.",
+    "modifier": "While the potion's effect lasts, you can't be targeted by Divination spells or perceived through magical scrying sensors."
+  },
+  {
+    "id": "phoenix-soot",
+    "name": "Phoenix Pinion Soot",
+    "prefix": "Purifying",
+    "tag": "luminous",
+    "rarity": "rare",
+    "color": "#f1c40f",
+    "dcMod": 2,
+    "lore": "Soot from a phoenix's pyre, gathered before the rebirth.",
+    "modifier": "When you drink it, you also lose 1 Exhaustion level, and the Charmed and Frightened conditions end on you."
+  },
+  {
+    "id": "petrified-ambergris",
+    "name": "Leviathan Ambergris",
+    "prefix": "Preserved",
+    "tag": "viscous",
+    "rarity": "common",
+    "color": "#7d6608",
+    "lore": "Ambergris from a leviathan, hardened by centuries at sea.",
+    "modifier": "The potion never spoils, and it can be split into two half-doses: each has half the dice, bonuses and duration (round down)."
+  },
+  {
+    "id": "gorgon-scale",
+    "name": "Pulverized Gorgon Scale",
+    "prefix": "Ironbound",
+    "tag": "viscous",
+    "rarity": "uncommon",
+    "color": "#7f8c8d",
+    "dcMod": 1,
+    "lore": "A gorgon's iron scale, filed to dust.",
+    "modifier": "For 1 minute, you have Resistance to Bludgeoning, Piercing and Slashing damage from nonmagical attacks, but your Speed decreases by 10 feet."
+  },
+  {
+    "id": "alchemical-silver",
+    "name": "Powdered Alchemical Silver",
+    "prefix": "Vaporous",
+    "form": "Inhalant",
+    "tag": "volatile",
+    "rarity": "uncommon",
+    "color": "#d6eaf8",
+    "dcMod": 1,
+    "lore": "Silver ground finer than flour; it hangs in the air like smoke.",
+    "modifier": "The potion becomes an inhalant: it is breathed as a vapour instead of being drunk (see Use)."
+  },
+  {
+    "id": "fulgurite-splinters",
+    "name": "Fulgurite Splinters",
+    "prefix": "Thunderous",
+    "tag": "volatile",
+    "rarity": "uncommon",
+    "color": "#74b9ff",
+    "dcMod": 1,
+    "lore": "Glass made where lightning struck sand.",
+    "modifier": "When the potion's effect ends, it does so with a thunderclap: each creature within 10 feet of you makes a DC 13 Constitution saving throw or takes 2d6 Thunder damage and is pushed 10 feet away from you."
+  },
+  {
+    "id": "quickling-dust",
+    "name": "Quickling Dust",
+    "prefix": "Swift",
+    "tag": "volatile",
+    "rarity": "common",
+    "color": "#ffeaa7",
+    "lore": "Dust shaken from a quickling's boots. It won't stay in the jar.",
+    "modifier": "For 1 minute after drinking, your Speed increases by 10 feet."
+  },
+  {
+    "id": "rust-spores",
+    "name": "Rust-Monster Antennae",
+    "prefix": "Caustic",
+    "tag": "corrosive",
+    "rarity": "rare",
+    "color": "#78281f",
+    "dcMod": 2,
+    "lore": "Antennae from a rust monster. Keep them away from your buckles.",
+    "modifier": "The vial dissolves 1 round after it's opened, so the potion must be used at once. For 1 minute after, your touch rusts small nonmagical metal objects (a key, a lock, a nail) to flakes."
+  },
+  {
+    "id": "gray-ooze-residue",
+    "name": "Gray Ooze Residue",
+    "prefix": "Dissolving",
+    "tag": "corrosive",
+    "rarity": "uncommon",
+    "color": "#95a5a6",
+    "dcMod": 1,
+    "lore": "What a gray ooze leaves on the flagstones.",
+    "modifier": "While the potion's effect lasts (up to 1 hour), your skin turns slick and stinging: you have Advantage on checks and saving throws to avoid or escape the Grappled and Restrained conditions."
+  },
+  {
+    "id": "void-salt",
+    "name": "Void Salt",
+    "prefix": "Void-Touched",
+    "tag": "necrotic",
+    "rarity": "rare",
+    "color": "#4a235a",
+    "dcMod": 2,
+    "lore": "Salt that crystallises around a tear in the world.",
+    "modifier": "The duration of the potion's effect is doubled. For 24 hours, you cast no shadow."
+  },
+  {
+    "id": "lich-phylactery-wax",
+    "name": "Grave-Tallow Drippings",
+    "prefix": "Sepulchral",
+    "tag": "necrotic",
+    "rarity": "rare",
+    "color": "#145a32",
+    "dcMod": 2,
+    "lore": "Tallow from candles that burned beside a lich's sarcophagus.",
+    "modifier": "While the potion's effect lasts, magic that detects creature types registers you as Undead, and Undead with an Intelligence of 3 or lower ignore you unless you harm them."
+  },
+  {
+    "id": "ghoul-claw",
+    "name": "Ghoul Claw Scrapings",
+    "prefix": "Numbing",
+    "tag": "necrotic",
+    "rarity": "uncommon",
+    "color": "#6c7a89",
+    "dcMod": 1,
+    "lore": "Scraped from under a ghoul's nails. Gloves are advised.",
+    "modifier": "Once within the next hour, when you're reduced to 0 Hit Points but not killed outright, you can make a DC 10 Constitution saving throw. On a success, you drop to 1 Hit Point instead."
+  },
+  {
+    "id": "powdered-nihilium",
+    "name": "Powdered Nihilium",
+    "prefix": "Voidcursed",
+    "tag": "necrotic",
+    "rarity": "rare",
+    "color": "#190b60",
+    "dcMod": 5,
+    "stabilizes": true,
+    "modifier": "Stabilizes the alchemical matrix: none of the reagents react with one another, whatever their properties."
+  },
+  {
+    "id": "rime-iron",
+    "name": "Rime-Iron Filings",
+    "prefix": "Rime-Forged",
+    "tag": "cryogenic",
+    "rarity": "uncommon",
+    "color": "#1b4f72",
+    "dcMod": 1,
+    "lore": "Iron filings that never warm, even in a forge.",
+    "modifier": "While the potion's effect lasts (up to 1 hour), you have a +2 bonus to Armor Class, but your Speed decreases by 10 feet."
+  },
+  {
+    "id": "yeti-frost-hair",
+    "name": "Yeti Frost-Hair",
+    "prefix": "Chilled",
+    "tag": "cryogenic",
+    "rarity": "common",
+    "color": "#e3f2fd",
+    "lore": "Hair from a yeti's coat, still glittering with frost.",
+    "modifier": "The potion stays ice-cold: you can drink it as a Reaction when you take Fire damage, instead of as a Bonus Action."
+  },
+  {
+    "id": "dream-amber",
+    "name": "Dream-Amber Resin",
+    "prefix": "Contingent",
+    "tag": "psychoactive",
+    "rarity": "rare",
+    "color": "#8e44ad",
+    "dcMod": 2,
+    "lore": "Resin that holds a dream the way amber holds a fly.",
+    "modifier": "The potion lies dormant once drunk. If you're reduced to 0 Hit Points within the next 24 hours, it takes effect at that moment; otherwise it is wasted."
+  },
+  {
+    "id": "displacer-tuft",
+    "name": "Displacer Beast Whisker",
+    "prefix": "Shifting",
+    "tag": "psychoactive",
+    "rarity": "uncommon",
+    "color": "#2c3e50",
+    "dcMod": 1,
+    "lore": "A whisker from a displacer beast, which is never quite where it seems to be.",
+    "modifier": "For 1 minute, attack rolls against you have Disadvantage. This benefit ends early if you're hit by an attack."
+  },
+  {
+    "id": "cinder-wraith",
+    "name": "Cinder-Wraith Dust",
+    "prefix": "Smoldering",
+    "tag": "igneous",
+    "rarity": "uncommon",
+    "color": "#d35400",
+    "dcMod": 1,
+    "lore": "Dust swept up where a fire spirit was banished.",
+    "modifier": "The effect begins 1d4 rounds after you drink it, with a burst of sparks: each creature within 5 feet of you makes a DC 12 Constitution saving throw or has the Blinded condition until the end of its next turn."
+  },
+  {
+    "id": "efreeti-ember-glass",
+    "name": "Efreeti Ember-Glass",
+    "prefix": "Blazing",
+    "tag": "igneous",
+    "rarity": "rare",
+    "color": "#ff6f00",
+    "dcMod": 2,
+    "lore": "Glass blown from sand an efreeti once walked across.",
+    "modifier": "For 1 minute, you have Resistance to Fire damage, and a creature that hits you with a melee attack takes 1d6 Fire damage."
+  },
+  {
+    "id": "fire-beetle-paste",
+    "name": "Fire Beetle Gland Paste",
+    "prefix": "Glowing",
+    "tag": "igneous",
+    "rarity": "common",
+    "color": "#ffb142",
+    "lore": "The glowing glands of a fire beetle, which shine for days after.",
+    "modifier": "While the potion's effect lasts, you shed Dim Light in a 10-foot radius."
+  },
+  {
+    "id": "mandrake-root-hair",
+    "name": "Mandrake Root-Hair",
+    "prefix": "Hale",
+    "tag": "verdant",
+    "rarity": "common",
+    "color": "#8bc34a",
+    "lore": "Root-hairs combed from a mandrake while it sleeps.",
+    "modifier": "When you drink it, you also gain 1d4 + 1 Temporary Hit Points."
+  },
+  {
+    "id": "moonlit-mistletoe",
+    "name": "Moonlit Mistletoe",
+    "prefix": "Lifebound",
+    "tag": "verdant",
+    "rarity": "uncommon",
+    "color": "#c5e1a5",
+    "dcMod": 1,
+    "lore": "Mistletoe cut with a golden sickle under a full moon.",
+    "modifier": "When the potion's effect ends, you regain 2d4 Hit Points."
+  },
+  {
+    "id": "powdered-moonstone",
+    "name": "Powdered Moonstone",
+    "prefix": "Lucid",
+    "tag": "arcane",
+    "rarity": "uncommon",
+    "color": "#dfe6e9",
+    "dcMod": 1,
+    "lore": "Moonstone ground under starlight, said to steady a wandering mind.",
+    "modifier": "While the potion's effect lasts (up to 1 hour), you have Advantage on Constitution saving throws to maintain Concentration."
+  },
+  {
+    "id": "rune-bone-chips",
+    "name": "Rune-Etched Bone Chips",
+    "prefix": "Warded",
+    "tag": "arcane",
+    "rarity": "rare",
+    "color": "#f5f0e1",
+    "dcMod": 2,
+    "lore": "Knucklebones carved with warding runes, then broken on purpose.",
+    "modifier": "For 1 minute after drinking, you have Advantage on saving throws against spells."
+  }
+]

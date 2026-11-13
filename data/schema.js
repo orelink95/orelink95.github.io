@@ -141,6 +141,37 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     },
                 },
             },
+            /* The potion maker (admin_tools/potion-maker.html, DM only): what it needs besides its
+               reagents. scripts/alchemy-engine.js reads it through Alchemy.dbFromStore(). */
+            alchemy: {
+                label: 'Alchemy', icon: 'science', group: 'Generators',
+                file: 'data/alchemy.json',
+                page: 'admin_tools/potion-maker.html',
+                sections: ['Properties', 'Forms', 'Oddities'],
+                fields: {
+                    tags: {
+                        kind: 'objects', label: 'Properties (tags)', itemLabel: 'id',
+                        help: 'One entry per property of the “potionTag” list. The glyph sits on the tag; the description is its hover text.',
+                        fields: {
+                            id: { kind: 'enum', enum: 'potionTag', label: 'Property', width: 'third' },
+                            glyph: { kind: 'text', label: 'Glyph', width: 'quarter', help: 'One alchemical symbol.' },
+                            description: { kind: 'text', label: 'Description', help: 'What players read when they hover the tag.' },
+                        },
+                    },
+                    forms: {
+                        kind: 'objects', label: 'How each form is used', itemLabel: 'form', section: 'Forms',
+                        help: 'The “Use” line of a potion, in 5.5e wording. A form with no entry is drunk as a Bonus Action.',
+                        fields: {
+                            form: { kind: 'enum', enum: 'potionForm', label: 'Form', width: 'third' },
+                            use: { kind: 'text', label: 'Use', long: true },
+                        },
+                    },
+                    oddities: {
+                        kind: 'list', label: 'Oddities', lines: true, section: 'Oddities',
+                        help: 'One per line. Every potion gets one, picked by its seed: harmless flavour that players see, never a rule.',
+                    },
+                },
+            },
         },
 
         /* Value lists shared by several fields. */
@@ -413,6 +444,35 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 { id: 'cards', label: 'Cards (drawn from a deck, laid in a spread)' },
                 { id: 'omen', label: 'Omen (one sign drawn from its own pool)' },
             ],
+            /* The potion maker (scripts/alchemy-engine.js). A property (tag) says how a reagent
+               behaves: two reagents react through their properties (see the Reaction type).
+               The engine draws something for each of these ten ids; a new id works, undrawn. */
+            potionTag: [
+                { id: 'luminous', label: 'Luminous' }, { id: 'viscous', label: 'Viscous' }, { id: 'volatile', label: 'Volatile' },
+                { id: 'corrosive', label: 'Corrosive' }, { id: 'necrotic', label: 'Necrotic' }, { id: 'cryogenic', label: 'Cryogenic' },
+                { id: 'psychoactive', label: 'Psychoactive' }, { id: 'igneous', label: 'Igneous' }, { id: 'verdant', label: 'Verdant' },
+                { id: 'arcane', label: 'Arcane' },
+            ],
+            potionRarity: [
+                { id: 'common', label: 'Common' }, { id: 'uncommon', label: 'Uncommon' },
+                { id: 'rare', label: 'Rare' }, { id: 'very-rare', label: 'Very rare' },
+            ],
+            potionForm: ['Draught', 'Elixir', 'Philter', 'Tincture', 'Decoction', 'Oil', 'Inhalant'],
+            /* Same ids as TEXTURES in scripts/alchemy-engine.js */
+            potionTexture: [
+                { id: 'gradient', label: 'Smooth blend' }, { id: 'layered', label: 'Unmixed layers' },
+                { id: 'suspended', label: 'Floating flakes' }, { id: 'marbled', label: 'Swirling threads' },
+                { id: 'voltaic', label: 'Captive lightning' }, { id: 'rainbow', label: 'Prismatic bands' },
+                { id: 'astral', label: 'Starry void' },
+            ],
+            potionKit: [
+                { id: 'alchemist', label: 'Alchemist’s Supplies' }, { id: 'herbalism', label: 'Herbalism Kit' },
+                { id: 'poisoner', label: 'Poisoner’s Kit' },
+            ],
+            reactionKind: [
+                { id: 'boon', label: 'Synergy (helps)' }, { id: 'bane', label: 'Adverse reaction (harms)' },
+                { id: 'quirk', label: 'Oddity (neither)' },
+            ],
             /* How a spread lays its cards: a row (wraps on phones), or a cross of five
                (1 centre, 2 left, 3 right, 4 above, 5 below; any other count = a row) */
             spreadLayout: [
@@ -500,7 +560,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 /* parent 'poi': a key location inside an institution (a hall of the university),
                    pinned on one of the institution's own maps (map.on = that map's id). */
                 place: true, parent: ['district', 'settlement', 'country', 'poi'], autolink: true,
-                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Temple', 'Divination', 'Look'],
+                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Alchemist', 'Temple', 'Divination', 'Look'],
                 fields: {
                     ...PLACE_FIELDS,
                     subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: page header, map pop-up, POIs list.' },
@@ -565,6 +625,9 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                             markup: { kind: 'number', label: 'Price level (%)', help: 'Empty = 100; 80 = cheap, 130 = gouging.' },
                             includeTags: { kind: 'list', label: 'Only pool goods tagged', help: 'Empty = any tag.' },
                             excludeTags: { kind: 'list', label: 'Never pool goods tagged' },
+                            potions: { kind: 'number', label: 'Brewed potions', width: 'third', help: 'How many potions of the potion maker the shelf holds, drawn with the market code: players see the bottle, the name and the price. Empty = none.' },
+                            potionRarity: { kind: 'enum', enum: 'potionRarity', label: 'Up to', width: 'third', showIf: { key: 'potions', set: true }, help: 'The rarest potion it stocks. Empty = Uncommon.' },
+                            potionPrinciples: { kind: 'refs', to: ['principle'], label: 'Only potions of', showIf: { key: 'potions', set: true }, help: 'Active principles it brews from. Empty = any (up to the rarity).' },
                             signature: {
                                 kind: 'objects', label: 'Signature wares', help: 'Always in stock. Price in cp, fixed (not scaled by the tier).', itemLabel: 'name', fields: {
                                     category: { kind: 'enum', enum: 'shopCategory', label: 'Shelf' },
@@ -595,6 +658,22 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                                 }
                             },
                             noPrayer: { kind: 'boolean', label: 'No prayer button', help: 'No blessing is drawn here.' },
+                        },
+                    },
+                    /* An alchemist's bench (Workbench tab): players combine what is stocked here and
+                       see only the craft DC, the tool and the price, plus a brew mark they read out
+                       to the DM, who finds the potion with it in the dashboard (“Brew a potion”). */
+                    alchemist: {
+                        kind: 'object', label: 'Alchemist’s bench', optional: true, section: 'Alchemist',
+                        help: 'Gives the page a Workbench tab where players mix the reagents stocked here. They never see what the brew does.',
+                        fields: {
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Minding the bench', help: 'Shown on the Workbench tab.' },
+                            hours: { kind: 'text', label: 'Opening hours', width: 'half', help: 'Empty = the shop’s, else the tavern’s.' },
+                            fee: { kind: 'number', label: 'Brewing cost (% of value)', width: 'half', range: [10, 100], help: 'What brewing it here costs, as a share of the potion’s market value. Empty = 50 (the 2024 crafting cost).' },
+                            vessels: { kind: 'refs', to: ['vessel'], label: 'Vessels', help: 'Empty = every vessel.' },
+                            solvents: { kind: 'refs', to: ['solvent'], label: 'Solvents', required: true },
+                            principles: { kind: 'refs', to: ['principle'], label: 'Active principles', required: true },
+                            catalysts: { kind: 'refs', to: ['catalyst'], label: 'Catalysts', required: true },
                         },
                     },
                     /* A seer's table: card readings and other practices (data/practices.json).
@@ -842,7 +921,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 file: 'data/items.json',
                 page: 'vault.html?item={id}',
                 autolink: true,   // only items found somewhere (else the Vault link leads nowhere)
-                sections: ['Card', 'Description'],
+                sections: ['Card', 'Description', 'Potion'],
                 fields: {
                     image: { kind: 'image', label: 'Picture' },
                     type: { kind: 'text', label: 'Type', help: 'e.g. Wondrous item, Weapon (dagger)' },
@@ -853,6 +932,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     attunedBy: { kind: 'ref', to: ['hero'], label: 'Attuned to' },
                     summary: { kind: 'text', label: 'One-line description', long: true, help: 'Front of the card.' },
                     body: { kind: 'markdown', label: 'Full description', section: 'Description', help: 'The opened card.' },
+                    potion: { kind: 'json', label: 'Potion (recipe)', section: 'Potion', help: 'Draws the bottle on the card instead of a picture. Use “Brew a potion” in the previews panel rather than writing it here; empty it to go back to the picture.' },
                 },
             },
 
@@ -1220,6 +1300,87 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     captionNote: { kind: 'text', label: 'Caption note', section: 'Right page', width: 'half', help: 'Small capitals under the caption.' },
                     coverColour: { kind: 'enum', enum: 'bookColour', label: 'Cover', section: 'Book', width: 'half', help: 'The leather of the book PNG. Empty = the circle’s own (picked in the Sigil Maker).' },
                     initialColour: { kind: 'enum', enum: 'bookColour', label: 'Illuminated initial', section: 'Book', width: 'half', help: 'Empty = the circle’s own (picked in the Sigil Maker).' },
+                },
+            },
+            /*-------------------------------------======= POTION MAKER =======-------------------------------------*/
+            /* A potion = one vessel + three reagents: a solvent (the base), an active principle (what
+               it does) and a catalyst (how it is changed). scripts/alchemy-engine.js brews and draws
+               them. Players meet potions only in shops (poi.shop.potions: bottle, name, price) and at
+               an alchemist's bench (poi.alchemist: craft DC, tool, price); they never see `effect`,
+               `modifier` or a reaction's effect. The DM brews in the dashboard (“Brew a potion”)
+               and on admin_tools/potion-maker.html. */
+            solvent: {
+                label: 'Solvent', plural: 'Solvents', icon: 'water_drop', group: 'Generators',
+                file: 'data/solvents.json',
+                sections: ['Reagent', 'Senses'],
+                fields: {
+                    tag: { kind: 'enum', enum: 'potionTag', label: 'Property', required: true, width: 'half', help: 'Reacts with the active principle’s property.' },
+                    viscosity: { kind: 'text', label: 'Body', section: 'Senses', width: 'third', help: 'e.g. syrupy, watery, frothy' },
+                    shelfLife: { kind: 'text', label: 'Keeps for', section: 'Senses', width: 'third', help: 'e.g. 6 months, indefinite' },
+                    smell: { kind: 'text', label: 'Smell', section: 'Senses', help: 'After “exhaling notes of…”' },
+                    taste: { kind: 'text', label: 'Taste', section: 'Senses', help: 'After “It tastes of…”' },
+                    dcMod: { kind: 'number', label: 'Craft DC', width: 'half', choices: [[-1, '−1 (forgiving)'], [1, '+1'], [2, '+2'], [3, '+3 (treacherous)']], help: 'Added to the potion’s craft DC. Empty = 0.' },
+                    lore: { kind: 'text', label: 'Lore', long: true, help: 'One line players can read: where it comes from.' },
+                },
+            },
+            principle: {
+                label: 'Active principle', plural: 'Active principles', icon: 'local_florist', group: 'Generators',
+                file: 'data/principles.json',
+                sections: ['Reagent', 'Potion', 'Bottle'],
+                fields: {
+                    epithet: { kind: 'text', label: 'Title ending', section: 'Potion', width: 'half', help: 'e.g. “of Vital Mending”' },
+                    form: { kind: 'enum', enum: 'potionForm', label: 'Form', section: 'Potion', width: 'quarter', help: 'Empty = Draught.' },
+                    code: { kind: 'text', label: 'Index code', section: 'Bottle', width: 'quarter', help: 'On the label, e.g. HEL-01' },
+                    biome: { kind: 'text', label: 'Found in', width: 'half' },
+                    tag: { kind: 'enum', enum: 'potionTag', label: 'Property', required: true, width: 'half', help: 'Reacts with the solvent’s and with the catalyst’s.' },
+                    rarity: { kind: 'enum', enum: 'potionRarity', label: 'Rarity', section: 'Potion', width: 'quarter', help: 'Sets the potion’s rarity, value and base craft DC.' },
+                    color: { kind: 'text', color: true, label: 'Colour (top of the liquid)', section: 'Bottle', width: 'third' },
+                    texture: { kind: 'enum', enum: 'potionTexture', label: 'Liquid', section: 'Bottle', width: 'third' },
+                    kit: { kind: 'enum', enum: 'potionKit', label: 'Crafted with', section: 'Potion', width: 'half', help: 'Empty = Alchemist’s Supplies.' },
+                    dcMod: { kind: 'number', label: 'Craft DC', width: 'half', choices: [[1, '+1'], [2, '+2'], [3, '+3 (treacherous)']], help: 'Added to the potion’s craft DC. Empty = 0.' },
+                    lore: { kind: 'text', label: 'Lore', long: true, help: 'One line players can read: what it is.' },
+                    effect: { kind: 'text', label: 'Effect', long: true, section: 'Potion', help: 'What the potion does, in 5.5e wording. DM only: the site never shows it; it goes on an item card when you make one.' },
+                },
+            },
+            catalyst: {
+                label: 'Catalyst', plural: 'Catalysts', icon: 'bolt', group: 'Generators',
+                file: 'data/catalysts.json',
+                sections: ['Reagent', 'Potion'],
+                fields: {
+                    prefix: { kind: 'text', label: 'Title beginning', section: 'Potion', width: 'half', help: 'e.g. “Void-Touched”' },
+                    form: { kind: 'enum', enum: 'potionForm', label: 'Changes the form to', section: 'Potion', width: 'half', help: 'Empty = keeps the active principle’s form.' },
+                    tag: { kind: 'enum', enum: 'potionTag', label: 'Property', required: true, width: 'half', help: 'Reacts with the active principle’s property.' },
+                    rarity: { kind: 'enum', enum: 'potionRarity', label: 'Grade', width: 'half', help: 'Raises the value; two grades above the active principle, it also lifts the potion’s rarity one step.' },
+                    color: { kind: 'text', color: true, label: 'Colour (bottom of the liquid)', width: 'third' },
+                    dcMod: { kind: 'number', label: 'Craft DC', width: 'third', choices: [[1, '+1'], [2, '+2'], [3, '+3'], [5, '+5 (masterwork)']], help: 'Added to the potion’s craft DC. Empty = 0.' },
+                    stabilizes: { kind: 'boolean', label: 'Stops every reaction', help: 'With this catalyst the reagents never react, whatever their properties.' },
+                    lore: { kind: 'text', label: 'Lore', long: true, help: 'One line players can read: what it is.' },
+                    modifier: { kind: 'text', label: 'What it changes', long: true, section: 'Potion', help: 'In 5.5e wording. DM only, like an active principle’s effect.' },
+                },
+            },
+            vessel: {
+                label: 'Vessel', plural: 'Vessels', icon: 'science', group: 'Generators',
+                file: 'data/vessels.json',
+                fields: {
+                    slots: { kind: 'number', label: 'Carrying slots', width: 'third', help: 'Empty = 1.' },
+                    faceted: { kind: 'boolean', label: 'Flat-sided glass', help: 'Straight label and facet lines instead of round shading.' },
+                    glass: { kind: 'text', label: 'Outline (SVG path)', long: true, required: true, help: 'One closed outline in a 200 × 260 box, centred on x = 100, with absolute M L H V C Q Z only. The mouth is the same on every vessel (lip 81–119 at y 54–60, neck 85–115). tools/make-vessels.js writes these from half-profiles.' },
+                },
+            },
+            /* What happens when two properties meet. The active principle reacts with the solvent and
+               with the catalyst; when all three reagents share one property, its triad (if any)
+               replaces the pair reactions. One reaction per pair of properties. */
+            reaction: {
+                label: 'Reaction', plural: 'Reactions', icon: 'bubble_chart', group: 'Generators',
+                file: 'data/reactions.json',
+                fields: {
+                    first: { kind: 'enum', enum: 'potionTag', label: 'Property', required: true, width: 'third' },
+                    second: { kind: 'enum', enum: 'potionTag', label: 'Meets', required: true, width: 'third', help: 'The same property twice = two reagents that share it.' },
+                    triad: { kind: 'boolean', label: 'Triad: all three reagents share that property' },
+                    kind: { kind: 'enum', enum: 'reactionKind', label: 'Kind', required: true, width: 'third', help: 'A synergy adds 20% to the value and 1 to the craft DC; an adverse reaction takes 20% off and adds 2.' },
+                    effect: { kind: 'text', label: 'Effect', long: true, help: 'In 5.5e wording. DM only, like an active principle’s effect.' },
+                    dc: { kind: 'number', label: 'Craft DC (instead)', width: 'third', help: 'Empty = by kind.' },
+                    value: { kind: 'number', label: 'Value × (instead)', width: 'third', help: 'e.g. 1.5. Empty = by kind.' },
                 },
             },
         },

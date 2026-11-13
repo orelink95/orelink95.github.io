@@ -1,0 +1,227 @@
+[
+  {
+    "id": "abyssal-brine",
+    "name": "Distilled Abyssal Brine",
+    "tag": "corrosive",
+    "viscosity": "thin",
+    "shelfLife": "6 months",
+    "smell": "ozone and rotting kelp",
+    "taste": "salt, rust and something bitter underneath",
+    "dcMod": 1,
+    "lore": "Seawater boiled down from the deepest trenches, where nothing should live."
+  },
+  {
+    "id": "wyvern-fat",
+    "name": "Rendered Wyvern Fat",
+    "tag": "viscous",
+    "viscosity": "syrupy",
+    "shelfLife": "2 years",
+    "smell": "charred tallow and sulfur",
+    "taste": "smoke and tallow",
+    "lore": "Rendered slowly over a peat fire; a wyvern's fat never fully sets."
+  },
+  {
+    "id": "bog-dew",
+    "name": "Bog-Lantern Dew",
+    "tag": "luminous",
+    "viscosity": "watery",
+    "shelfLife": "14 days",
+    "smell": "wet moss and cold iron",
+    "taste": "cold, clean and faintly metallic",
+    "lore": "Gathered at dawn from moss where marsh-lights were seen the night before."
+  },
+  {
+    "id": "glacial-ichor",
+    "name": "Thawed Glacial Ichor",
+    "tag": "cryogenic",
+    "viscosity": "thin",
+    "shelfLife": "30 days",
+    "smell": "crushed hail and pine resin",
+    "taste": "nothing at all, then a deep ache in the teeth",
+    "dcMod": 1,
+    "lore": "Melted from blue ice older than any kingdom."
+  },
+  {
+    "id": "ether-wine",
+    "name": "Twice-Distilled Ether Wine",
+    "tag": "psychoactive",
+    "viscosity": "watery",
+    "shelfLife": "1 year",
+    "smell": "sweet rot and temple incense",
+    "taste": "honeyed and dizzying",
+    "dcMod": 1,
+    "lore": "Wine distilled twice, the second time under a new moon."
+  },
+  {
+    "id": "black-vitriol",
+    "name": "Fuming Black Vitriol",
+    "tag": "corrosive",
+    "viscosity": "oily",
+    "shelfLife": "5 years",
+    "smell": "burnt copper and sharp vinegar",
+    "taste": "metal and burning",
+    "dcMod": 2,
+    "lore": "Oil of vitriol, left to fume until it blackens."
+  },
+  {
+    "id": "hellhound-saliva",
+    "name": "Condensed Hellhound Saliva",
+    "tag": "igneous",
+    "viscosity": "frothy",
+    "shelfLife": "7 days",
+    "smell": "brimstone and wet hearth-ash",
+    "taste": "ash and black pepper",
+    "dcMod": 1,
+    "lore": "Collected from a hellhound's bowl. The bowl was iron; it is now slag."
+  },
+  {
+    "id": "feywild-nectar",
+    "name": "Fermented Feywild Nectar",
+    "tag": "verdant",
+    "viscosity": "effervescent",
+    "shelfLife": "90 days",
+    "smell": "crushed peaches and summer lightning",
+    "taste": "peach, honey and a spark on the tongue",
+    "dcMod": 1,
+    "lore": "Nectar from flowers that bloom only where the fey have danced."
+  },
+  {
+    "id": "alchemical-mercury",
+    "name": "Sublimated Quicksilver",
+    "tag": "viscous",
+    "viscosity": "heavy metallic",
+    "shelfLife": "indefinite",
+    "smell": "hot tin and static electricity",
+    "taste": "cold metal (it should not be tasted)",
+    "dcMod": 2,
+    "lore": "Quicksilver sublimated seven times until it remembers it was once a vapour."
+  },
+  {
+    "id": "celestial-tears",
+    "name": "Condensate of Solar Tears",
+    "tag": "luminous",
+    "viscosity": "crystalline",
+    "shelfLife": "10 years",
+    "smell": "frankincense and warm linen",
+    "taste": "warm bread and sunlight",
+    "dcMod": 2,
+    "lore": "Dew collected from a temple roof at the solstice sunrise."
+  },
+  {
+    "id": "grave-milk",
+    "name": "Clarified Barrow-Milk",
+    "tag": "necrotic",
+    "viscosity": "chalky",
+    "shelfLife": "40 days",
+    "smell": "graveyard loam and bitter almond",
+    "taste": "chalk and cold earth",
+    "dcMod": 1,
+    "lore": "The white seep that gathers in the lowest chamber of a barrow."
+  },
+  {
+    "id": "astral-condensate",
+    "name": "Liquid Silver Sea Mist",
+    "tag": "psychoactive",
+    "viscosity": "weightless",
+    "shelfLife": "1 year",
+    "smell": "old parchment and cold starlight",
+    "taste": "like remembering something you never saw",
+    "dcMod": 2,
+    "lore": "Mist from the Astral Sea, caught in a bottle and slowly made heavy."
+  },
+  {
+    "id": "void-tainted-dinosaur-blood",
+    "name": "Void-Tainted Dinosaur Blood",
+    "tag": "necrotic",
+    "viscosity": "syrupy",
+    "shelfLife": "1 month",
+    "smell": "rot and moldy earth",
+    "taste": "old iron and nothing",
+    "dcMod": 3
+  },
+  {
+    "id": "dryad-spring",
+    "name": "Dryad's Spring Water",
+    "tag": "verdant",
+    "viscosity": "clear",
+    "shelfLife": "60 days",
+    "smell": "wet bark and violets",
+    "taste": "sweet and green",
+    "lore": "Drawn from a spring at the roots of a dryad's tree, with her leave."
+  },
+  {
+    "id": "fermented-mossbrew",
+    "name": "Fermented Mossbrew",
+    "tag": "verdant",
+    "viscosity": "cloudy",
+    "shelfLife": "90 days",
+    "smell": "loam and barley",
+    "taste": "earthy and slightly sour",
+    "lore": "A hedge-alchemist's base: moss and barley left to work in a cellar."
+  },
+  {
+    "id": "storm-rain",
+    "name": "Storm-Bottled Rainwater",
+    "tag": "volatile",
+    "viscosity": "fizzing",
+    "shelfLife": "3 months",
+    "smell": "ozone and wet slate",
+    "taste": "sharp, like licking a coin in a thunderstorm",
+    "dcMod": 1,
+    "lore": "Rain caught in an open jar on a rooftop during a lightning storm."
+  },
+  {
+    "id": "gale-essence",
+    "name": "Distilled Gale Essence",
+    "tag": "volatile",
+    "viscosity": "weightless",
+    "shelfLife": "30 days",
+    "smell": "cold heights and feathers",
+    "taste": "like a gasp of mountain air",
+    "dcMod": 2,
+    "lore": "Wind from a mountain pass, distilled until it can be poured."
+  },
+  {
+    "id": "moonwell-water",
+    "name": "Moonwell Water",
+    "tag": "arcane",
+    "viscosity": "silky",
+    "shelfLife": "1 year",
+    "smell": "night-blooming jasmine and chalk",
+    "taste": "cool and faintly sweet",
+    "dcMod": 1,
+    "lore": "Water from a well that reflects the moon even on moonless nights."
+  },
+  {
+    "id": "leyline-brine",
+    "name": "Leyline-Seep Brine",
+    "tag": "arcane",
+    "viscosity": "prickling",
+    "shelfLife": "6 months",
+    "smell": "struck flint and old paper",
+    "taste": "pins and needles",
+    "dcMod": 2,
+    "lore": "Salt water seeping from rock where lines of magic cross."
+  },
+  {
+    "id": "brimstone-spirit",
+    "name": "Smelter's Brimstone Spirit",
+    "tag": "igneous",
+    "viscosity": "oily",
+    "shelfLife": "2 years",
+    "smell": "sulfur and hot iron",
+    "taste": "hot and acrid",
+    "dcMod": 1,
+    "lore": "Spirit condensed from the chimneys of a smelter."
+  },
+  {
+    "id": "yeti-snowmelt",
+    "name": "Yeti-Den Snowmelt",
+    "tag": "cryogenic",
+    "viscosity": "watery",
+    "shelfLife": "60 days",
+    "smell": "musk and clean snow",
+    "taste": "icy and faintly gamey",
+    "lore": "Snow melted from the mouth of a yeti's den — quickly."
+  }
+]

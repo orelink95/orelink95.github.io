@@ -42,6 +42,12 @@ One file per type. Every record has an `id` (never renamed), a `name` and option
 | Site settings | `settings.json` | one object: `tavernCode` (the market code), `startingPurse` (the players' gaming purse, in cp), `currentCampaign` |
 | Upcoming sessions | `schedule.json` | one object: `sessions`, the homepage cards in order |
 | Folio (Sigil Maker) | `folios.json` | — DM only: git-ignored, never loaded by the site |
+| Solvent | `solvents.json` | — (potion maker: the base of a potion) |
+| Active principle | `principles.json` | — (potion maker: what a potion does) |
+| Catalyst | `catalysts.json` | — (potion maker: how it is changed) |
+| Vessel | `vessels.json` | — (potion maker: the bottle's outline) |
+| Reaction | `reactions.json` | — (potion maker: what two properties do when they meet) |
+| Alchemy | `alchemy.json` | one object: the properties' glyphs, how each form is used, the oddities |
 | DM-only fields | `private.json` | git-ignored; only your local copy has it |
 
 - **Links are ids.** Write `"home": "gilded-goldfinch"`, never a display name. Lists such as a POI's residents or a faction's members are worked out by the site.
@@ -83,3 +89,12 @@ One file per type. Every record has an `id` (never renamed), a `name` and option
 - **Drafts.** A tome or handout with `"draft": true` stays off the site.
 - **Check your edits** with `node tools/validate.js` (broken links, unknown values, missing images and map icons).
 - **The dashboard's forms come from the schema.** Each field's `label` (short), `help`, `section` (the card it sits in; a type lists its cards in `sections`), `width` and `showIf` (shown only when another field has a value) are read by the dashboard only. Shortcuts: **Ctrl K** finds any record, **Alt ↑ / ↓** opens the previous / next one, **Ctrl S** saves. A gold dot marks what is not saved yet.
+- **Potions** (`scripts/alchemy-engine.js`). A potion is a vessel and three reagents: a solvent, an active principle and a catalyst. Each reagent has a property (`tag`); the active principle reacts with the solvent and with the catalyst through the Reaction records (one per pair of properties; three reagents sharing a property use that property's triad instead).
+  - **Players** meet potions on POI pages only, and never see what one does (`effect`, `modifier`, a reaction's `effect`):
+    - **Shops**: `shop.potions` (a number) shelves that many potions on the Wares tab, drawn with the market code, up to `shop.potionRarity` (default Uncommon), optionally only from `shop.potionPrinciples`. Players see the bottle, the name and the price (the value × the shop's price level).
+    - **Alchemists**: a POI with an `alchemist` block gets a Workbench tab. Players pick a vessel and one of each reagent among what it stocks (`vessels`, empty = all; `solvents`, `principles`, `catalysts`) and see only the craft DC, the tool, the price (`fee` % of the value, default 50) and a six-letter **brew mark** they read out to you.
+  - **You**: the dashboard shows each shop's potions with their effects (**Make it a card…**), and each Workbench's stock; a brew mark typed in **Brew a potion** (or under the Workbench box) finds the mix. **Brew a potion** on an item writes the card: name, type, rarity, cost, weight, both descriptions. The description is what players read once the card is in their Vault, so edit it freely.
+  - **The potion maker** (`admin_tools/potion-maker.html`, DM only, opened from the dashboard's Alchemy page through the live server) shows any potion with its effect, value, craft DC and brew mark, and keeps a shelf in the browser.
+  - A potion card keeps only `potion: {seed, recipe, studio}`; its bottle is drawn from that wherever the card shows (Vault, dashboard). Deleting a reagent or vessel a card uses leaves it without a bottle: `node tools/validate.js` and the dashboard warn about it.
+  - Rarity comes from the active principle (a catalyst two grades above it lifts it one step). Value = the 2024 DMG value halved for a consumable (50 / 200 / 2,000 / 20,000 gp), +10% per catalyst grade, ×1.2 per synergy, ×0.8 per adverse reaction. Craft DC = 8 / 11 / 14 / 17 by rarity, plus each reagent's `dcMod`, +1 per synergy, +2 per adverse reaction.
+  - A new property: add it to the `potionTag` list in `data/schema.js`, then give it a glyph in Alchemy. The engine draws something special for the ten it knows; a new one works, undrawn.

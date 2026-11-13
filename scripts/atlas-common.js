@@ -43,6 +43,7 @@
         }
         if (type === 'poi' && rec.tavern && rec.tavern.tier) return 'Enter the tavern';
         if (type === 'poi' && rec.shop && rec.shop.kind) return 'Enter the shop';
+        if (type === 'poi' && rec.alchemist) return 'Enter the laboratory';
         if (type === 'poi' && rec.temple) return 'Enter the temple';
         if (type === 'poi' && rec.divination && (rec.divination.practices || []).length) return 'Consult the seer';
         return (LABELS[type] || LABELS.poi).cta;

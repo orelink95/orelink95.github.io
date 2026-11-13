@@ -447,6 +447,18 @@
                 }
             }
 
+            // Potion cards (item.potion, made by the dashboard's “Brew a potion”): the four
+            // parts of the recipe must still exist, or the card can't draw its bottle
+            for (const rec of byType.item || []) {
+                const recipe = rec.potion && typeof rec.potion === 'object' ? rec.potion.recipe : null;
+                if (!rec.potion) continue;
+                if (!recipe || typeof recipe !== 'object') { warnings.push(`[item] ${rec.id}.potion: no recipe, so the card shows no bottle`); continue; }
+                for (const [part, type] of [['vessel', 'vessel'], ['solvent', 'solvent'], ['active', 'principle'], ['catalyst', 'catalyst']]) {
+                    const target = byId.get(recipe[part]);
+                    if (!target || typeOfRec.get(target) !== type) warnings.push(`[item] ${rec.id}.potion: its ${types[type] ? types[type].label.toLowerCase() : part} "${recipe[part] ?? ''}" no longer exists, so the card shows no bottle`);
+                }
+            }
+
             // Private overlay
             for (const [type, entries] of Object.entries(privateData || {})) {
                 if (!types[type]) { errors.push(`[private] unknown type "${type}"`); continue; }

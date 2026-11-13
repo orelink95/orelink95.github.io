@@ -94,6 +94,17 @@
     object-fit: cover;
 }
 
+/* A potion's bottle, drawn live from its recipe (scripts/alchemy-engine.js):
+   it stands in a dark alcove, lit by its own liquid */
+.loot-card__picture--potion {
+    border-color: #6b3730;
+    background: radial-gradient(circle at 50% 62%, #232823 0%, #0b0d0b 78%);
+}
+.loot-card__picture--potion svg {
+    width: auto;
+    height: 96%;
+}
+
 .loot-card__placeholder {
     font-size: 22cqw;
     color: var(--rarity);

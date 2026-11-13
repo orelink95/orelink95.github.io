@@ -38,6 +38,7 @@
     <script src="scripts/institution.js"></script>
     <script src="scripts/tavern-menu.js"></script>
     <script src="scripts/market.js"></script>
+    <script src="scripts/alchemy-engine.js"></script>
     <script src="scripts/divination.js"></script>
     <script src="scripts/fortune-card.js"></script>
     <script src="scripts/notice-board.js"></script>
@@ -166,6 +167,25 @@
                         <div class="poi-rule"></div>
                         <div id="poi-shop-keepers" class="poi-keepers" hidden></div>
                         <div id="poi-wares" class="poi-menu"></div>
+                        <!-- Brewed potions (shop.potions): bottle, name, price; scripts/alchemy-engine.js -->
+                        <section id="poi-potions" class="poi-menu-cat poi-potions" hidden>
+                            <h3 class="poi-menu-cat-title">Brewed Potions</h3>
+                            <ul id="poi-potion-list" class="poi-potion-list"></ul>
+                        </section>
+                    </div>
+
+                    <!-- An alchemist's bench (poi.alchemist): players mix what is stocked; they see the
+                         craft DC, the tool and the price, never what the brew does -->
+                    <div id="tab-bench" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">At the Alembic</p>
+                        <h3 class="poi-menu-heading">The Workbench</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-bench-keepers" class="poi-keepers" hidden></div>
+                        <p class="poi-bench-intro">Choose a vessel and one of each reagent from the shelves.
+                            The alchemist names the difficulty of the work and the price of the bench and materials;
+                            what the brew will do, no one can say until it is made.</p>
+                        <form id="poi-bench" class="poi-bench" autocomplete="off"></form>
+                        <div id="poi-bench-quote" class="poi-bench-quote" aria-live="polite"></div>
                     </div>
 
                     <div id="tab-shrine" class="poi-tabpanel" role="tabpanel" hidden>

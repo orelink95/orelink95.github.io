@@ -1,5 +1,5 @@
 /* =====================================================================
-   POINT OF INTEREST PAGE  —  poi.html?id=<poi id>[#map|#places|#people|#fare|#wares|#shrine|#readings|#rumours|#games|#board]
+   POINT OF INTEREST PAGE  —  poi.html?id=<poi id>[#map|#places|#people|#fare|#wares|#bench|#shrine|#readings|#rumours|#games|#board]
    Any POI: image, location, lore, the NPCs whose home it is.
    A POI can be several things at once; each adds a tab to the ledger card:
      institution   -> Map (its own maps, one per floor or wing, with the places
@@ -9,7 +9,10 @@
      POIs inside   -> Locations (any POI that other POIs sit in)
      tavern block  -> Fare (bill of fare), a Services panel beside it, Rumours, and
                       Games when tavern.games lists some (scripts/games/)
-     shop block    -> Wares          (scripts/market.js)
+     shop block    -> Wares          (scripts/market.js), with brewed potions when
+                                      shop.potions is set (scripts/alchemy-engine.js)
+     alchemist     -> Workbench      players mix the stocked reagents and get the craft
+                                      DC, tool, price and a brew mark for the DM
      temple block  -> Shrine         (services, offerings, a prayer)
      divination    -> Readings       (the practices, and one reading per day, in a
                                       dialog: scripts/divination.js, scripts/fortune-card.js)
@@ -46,6 +49,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tavern = poi.tavern && poi.tavern.tier ? poi.tavern : null;
     const shop = poi.shop && poi.shop.kind ? poi.shop : null;
     const temple = poi.temple || null;
+    // An alchemist's bench with something to mix (needs the potion engine)
+    const bench = poi.alchemist ? Athenaeum.market.bench(store, poi) : null;
     const D = Athenaeum.divination, F = Athenaeum.fortuneCard;
     const seer = D ? D.block(poi) : null;
     // Institution: maps, the POIs that sit in it, its people by function
@@ -65,7 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     root.classList.toggle('is-danger', !!poi.danger);
 
     /* ---------- Hero ---------- */
-    const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', shop && M.shopKind(store, shop).label, temple && 'Temple', seer && 'Seer'].filter(Boolean);
+    const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', shop && M.shopKind(store, shop).label, bench && 'Alchemist', temple && 'Temple', seer && 'Seer'].filter(Boolean);
     $('poi-image').src = poi.image || 'images/pois/placeholder.png';
     $('poi-image').alt = poi.name;
     // Roles (institution, tavern, shop, temple) name the place; otherwise the label set by hand,
@@ -92,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         ['Open', inst && inst.hours],
         ['Bar', tavern && tavern.hours],
         ['Shop', shop && (shop.hours || (tavern && tavern.hours))],
+        ['Bench', bench && (poi.alchemist.hours || (shop && shop.hours) || (tavern && tavern.hours))],
         ['Worship', temple && temple.hours],
         ['Readings', seer && seer.hours],
     ].filter(([, h]) => h);
@@ -105,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (deities.length) fact('deities', deities.map(d => `<a class="poi-link" href="${store.url(d)}">${esc(d.name)}</a>`).join(', '));
 
     /* ---------- Lore & people ---------- */
-    $('poi-body-title').textContent = inst ? `The ${instKind.label}` : tavern ? 'The Establishment' : temple ? 'The Sanctuary' : shop ? 'The Shop' : seer ? 'The Seer' : 'Archive Entry';
+    $('poi-body-title').textContent = inst ? `The ${instKind.label}` : tavern ? 'The Establishment' : temple ? 'The Sanctuary' : shop ? 'The Shop' : bench ? 'The Laboratory' : seer ? 'The Seer' : 'Archive Entry';
     $('poi-body').innerHTML = poi.body
         ? store.autolink(store.md(poi.body, { dropCap: true }), { exclude: poi.id })
         : '<p class="poi-muted">No lore recorded for this landmark yet.</p>';
@@ -167,6 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (hasRoster) tabs.push({ id: 'people', label: 'People', icon: 'groups' });
     if (tavern) tabs.push({ id: 'fare', label: 'Fare', icon: 'restaurant' });
     if (shop) tabs.push({ id: 'wares', label: 'Wares', icon: 'storefront' });
+    if (bench) tabs.push({ id: 'bench', label: 'Workbench', icon: 'science' });
     if (temple) tabs.push({ id: 'shrine', label: 'Shrine', icon: 'brightness_7' });
     if (seer && D.practices(store, poi).length) tabs.push({ id: 'readings', label: 'Readings', icon: 'visibility' });
     if (tavern && M.drawLimit(poi) > 0 && heardAll.length) tabs.push({ id: 'rumours', label: 'Rumours', icon: 'record_voice_over' });
@@ -222,7 +229,70 @@ document.addEventListener('DOMContentLoaded', async () => {
         $('poi-shop-kind').textContent = `${M.shopKind(store, shop).label} · On the Shelves Today`;
         $('poi-ledger-label').textContent = M.waresLabel(code, poi.id);
         showKeepers('poi-shop-keepers', shop, 'Behind the counter');
-        $('poi-wares').innerHTML = wares.length ? priceList(wares) : '<p class="poi-muted poi-center">The shelves are bare today.</p>';
+        const potions = M.buildPotions(store, poi, code);
+        $('poi-wares').innerHTML = wares.length ? priceList(wares) : potions.length ? '' : '<p class="poi-muted poi-center">The shelves are bare today.</p>';
+        // Brewed potions: the bottle, the name and the price; what it does is for the DM to say
+        if (potions.length) {
+            const A = window.Alchemy;
+            $('poi-potion-list').innerHTML = potions.map(({ potion, priceLabel }, i) => `
+                <li class="poi-potion">
+                    <span class="poi-potion__art">${A.renderSVG(potion, {}, { uid: `shop-${i}`, width: 62, height: 81 })}</span>
+                    <span class="poi-potion__text">
+                        <span class="poi-item-line">
+                            <span class="poi-item-name">${esc(potion.title)}</span>
+                            <span class="poi-leader" aria-hidden="true"></span>
+                            <span class="poi-item-price">${esc(priceLabel)}</span>
+                        </span>
+                        <span class="poi-item-desc">${esc(A.summaryText(potion, potion.active.texture))}</span>
+                    </span>
+                </li>`).join('');
+            $('poi-potions').hidden = false;
+        }
+    }
+
+    /* Workbench: pick a vessel and three reagents; the quote shows the craft DC, the
+       tool, the price and a brew mark (scripts/market.js quoteBrew). Never the result. */
+    if (bench) {
+        showKeepers('poi-bench-keepers', poi.alchemist, 'Minding the bench');
+        const parts = [
+            ['vessel', 'Vessel', bench.vessels, null],
+            ['solvent', 'Solvent', bench.solvents, '☿'],
+            ['active', 'Active principle', bench.actives, '🜍'],
+            ['catalyst', 'Catalyst', bench.catalysts, '🜔'],
+        ];
+        $('poi-bench').innerHTML = parts.map(([key, label, list, glyph]) => `
+            <label class="poi-bench__field">
+                <span class="poi-bench__label">${glyph ? `<span class="poi-bench__glyph" aria-hidden="true">${glyph}</span> ` : ''}${label}</span>
+                <select data-part="${key}">
+                    <option value="">Choose…</option>
+                    ${list.map(x => `<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('')}
+                </select>
+                <span class="poi-bench__lore" data-lore="${key}"></span>
+            </label>`).join('');
+        const loreOf = (key, id) => {
+            const list = parts.find(p => p[0] === key)[2];
+            const rec = list.find(x => x.id === id);
+            return rec ? (rec.lore || (key === 'active' && rec.biome ? `Found in ${rec.biome}.` : '')) : '';
+        };
+        const quote = () => {
+            const recipe = {};
+            for (const sel of $('poi-bench').querySelectorAll('select')) {
+                recipe[sel.dataset.part] = sel.value;
+                $('poi-bench').querySelector(`[data-lore="${sel.dataset.part}"]`).textContent = loreOf(sel.dataset.part, sel.value);
+            }
+            const missing = parts.filter(([key]) => !recipe[key]).length;
+            const q = missing ? null : M.quoteBrew(store, poi, recipe);
+            $('poi-bench-quote').innerHTML = q ? `
+                <div class="poi-bench-quote__grid">
+                    <div class="poi-bench-quote__stat"><span>Craft DC</span><b>${q.dc}</b><small>${esc(q.kit)}</small></div>
+                    <div class="poi-bench-quote__stat"><span>Bench &amp; materials</span><b>${esc(q.priceLabel)}</b><small>paid whether it works or not</small></div>
+                </div>
+                <p class="poi-bench-quote__mark">Brew mark <b>${esc(q.mark)}</b></p>
+                <p class="poi-muted poi-center">Read the mark to your Dungeon Master when you brew it.</p>`
+                : `<p class="poi-muted poi-center">${missing === parts.length ? 'Nothing on the bench yet.' : `${missing} more to choose.`}</p>`;
+        };
+        $('poi-bench').addEventListener('change', quote);
+        quote();
     }
 
     /* Shrine: the prayer, then the price list */
@@ -433,6 +503,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         I.block(p) && I.kind(store, p).label,
         p.tavern && p.tavern.tier && 'Tavern',
         p.shop && p.shop.kind && M.shopKind(store, p.shop).label,
+        p.alchemist && 'Alchemist',
         p.temple && 'Temple',
         p.danger && 'Danger',
     ].filter(Boolean);

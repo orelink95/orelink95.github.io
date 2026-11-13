@@ -589,6 +589,7 @@
         Rumour: 'record_voice_over', Notice: 'push_pin', 'Homepage cards': 'event_upcoming', Settings: 'tune',
         Divination: 'visibility', Meanings: 'menu_book', Prophecy: 'auto_awesome', 'The reading': 'style',
         Circle: 'radio_button_checked', 'Left page': 'article', 'Right page': 'image', Book: 'menu_book',
+        Reagent: 'science', Senses: 'air', Potion: 'science', Bottle: 'palette', Properties: 'label', Forms: 'category', Oddities: 'auto_awesome',
     };
     // Lists of tags whose suggestions come from a pool's tags rather than from the same field
     const TAG_SOURCES = {
@@ -1077,6 +1078,7 @@
         const clean = e => esc(e.replace(/^\[[^\]]+\] /, ''));
         if (errs.length || warns.length) parts.push(`<div class="box box--issues"><h4>To fix</h4><ul class="issues">${errs.map(e => `<li>${clean(e)}</li>`).join('')}${warns.map(e => `<li class="w">${clean(e)}</li>`).join('')}</ul></div>`);
         if (isSingle() && S.view.key === 'schedule' && ATH.upcoming) parts.push(schedulePreview(rec));
+        if (isSingle() && S.view.key === 'alchemy') parts.push(alchemyPanel());
         if (!isSingle()) {
             const crumbs = S.store.ancestors(rec.id);
             if (crumbs.length) parts.push(`<div class="box"><h4>Sits in</h4>${chips(crumbs)}</div>`);
@@ -1089,7 +1091,8 @@
             if (S.view.key === 'settlement' && ATH.market) parts.push(...townPreview(rec));
             if (S.view.key === 'rumour' && ATH.market) parts.unshift(rumourPlaces(rec));
             if (S.view.key === 'notice' && ATH.noticeBoard) parts.unshift(noticePreview(rec));
-            if (S.view.key === 'item' && ATH.lootCard) parts.unshift(cardPreview(rec), foundIn(rec));
+            if (S.view.key === 'item' && ATH.lootCard) parts.unshift(cardPreview(rec), potionPanel(rec), foundIn(rec));
+            if (['solvent', 'principle', 'catalyst', 'vessel'].includes(S.view.key)) parts.unshift(reagentPanel(rec, S.view.key));
             if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
             if (S.view.key === 'deity' && ATH.deityCard) parts.unshift(deityPreview(rec), sealStatus(rec));
             if (S.view.key === 'item' && ATH.deityCard) parts.unshift(artifactOf(rec));
@@ -1251,6 +1254,296 @@
         } catch (e) { console.error(e); toast(what.startsWith('pdf') ? 'The PDF could not be made: the PDF library loads from the web.' : 'The image could not be drawn.'); }
     }
 
+    /* ---------- potions (the Apothecary's Crucible, DM side) ----------
+       scripts/alchemy-engine.js brews and draws; the reagents are records like any
+       others (Solvents, Active principles, Catalysts, Vessels, Reactions). Players
+       never see what a potion does on the site: this
+       is where the DM reads them, and turns a potion into a card of the Vault.
+       (Players meet potions in shops, poi.shop.potions, and at an alchemist's Workbench,
+       poi.alchemist: see scripts/market.js.)
+       The card keeps only the recipe (item.potion = {seed, recipe, studio}); its
+       bottle is drawn from it wherever the card is shown. */
+    const ALC = window.Alchemy;
+    const alcDb = () => (ALC ? ALC.dbFromStore(S.store) : null);
+    const POTION_TEXT = ['name', 'type', 'rarity', 'cost', 'weight', 'summary', 'body'];
+    const KIND_WORD = { boon: 'Synergy', bane: 'Adverse reaction', quirk: 'Oddity' };
+    const cap = s => String(s).charAt(0).toUpperCase() + String(s).slice(1);
+
+    // The potion of a card: {potion, studio}, {missing: [...]} or null (no potion)
+    function potionOf(rec) {
+        const r = rec && rec.potion, db = alcDb();
+        if (!r || typeof r !== 'object' || !db) return null;
+        const potion = ALC.brew(db, r.recipe, typeof r.seed === 'string' && r.seed ? r.seed : undefined);
+        return potion ? { potion, studio: r.studio } : { missing: ALC.resolveRecipe(db, r.recipe).missing };
+    }
+    const potionArt = (potion, studio, uid, h) => `<span class="potion-art">${ALC.renderSVG(potion, studio, { uid, width: Math.round(h / 1.3), height: h })}</span>`;
+    const reactionList = potion => potion.reactions.length
+        ? potion.reactions.map(r => `<span class="rx rx--${r.kind}"><b>${esc(r.name)}</b><small>${KIND_WORD[r.kind]}</small><br>${esc(r.effect || 'No effect written yet.')}</span>`).join('')
+        : `<span class="rx"><b>${potion.stabilized ? 'Stabilized' : 'Stable'}</b><br>${potion.stabilized ? 'The catalyst keeps the reagents from reacting.' : 'The reagents don’t react with one another.'}</span>`;
+    const potionLine = p => `Potion, ${esc(ALC.rarityLabel(p.rarity))} · ${p.gpValue.toLocaleString('en')} gp · craft DC ${p.brewDC} (${esc(p.kit)})`;
+    const recipeChips = p => chips([p.vessel, p.solvent, p.active, p.catalyst].map(x => S.store.get(x.id)).filter(Boolean));
+    // Item cards whose potion uses this reagent or vessel
+    const potionCardsUsing = id => S.data.item.filter(i => i.potion && i.potion.recipe && Object.values(i.potion.recipe).includes(id));
+
+    // Side panel of an item: its potion, or the way to give it one
+    function potionPanel(rec) {
+        if (!ALC) return '';
+        const got = potionOf(rec);
+        const brewBtn = (label, primary) => `<button class="btn${primary ? ' primary' : ''}" data-action="potion-brew"><span class="material-symbols-outlined">science</span>${label}</button>`;
+        const importBtn = `<button class="btn" data-action="potion-import"><span class="material-symbols-outlined">upload_file</span>Import a recipe…</button>`;
+        if (!rec.potion) {
+            return `<div class="box"><h4>Potion</h4>
+                <p class="muted">No potion: the card shows its picture.</p>
+                <div class="row wrap">${brewBtn('Brew a potion…', !rec.image && !rec.summary)}${importBtn}</div>
+                <p class="hint">Brewing fills the card (name, rarity, cost, description) and draws the bottle in place of a picture. “Import” takes a file saved with <b>Save recipe</b> on the potion maker page.</p></div>`;
+        }
+        if (!got || got.missing) {
+            return `<div class="box"><h4>Potion</h4>
+                <p class="warn">${got ? `This potion can’t be drawn: ${esc(got.missing.join(', '))} no longer exist${got.missing.length > 1 ? '' : 's'}.` : 'This potion’s recipe can’t be read.'}</p>
+                <div class="row wrap">${brewBtn('Brew another…', true)}<button class="btn" data-action="potion-clear">Remove the potion</button></div></div>`;
+        }
+        const { potion, studio } = got;
+        return `<div class="box"><h4>Potion</h4>
+            <div class="potion-sum">${potionArt(potion, studio, 'panel', 100)}
+                <div><b>${esc(potion.title)}</b><p>${potionLine(potion)}</p></div></div>
+            <div class="potion-parts">${recipeChips(potion)}</div>
+            ${reactionList(potion)}
+            <div class="row wrap">${brewBtn('Change…')}${importBtn}
+                <button class="btn" data-action="potion-refill" title="Rewrites name, type, rarity, cost, weight and both descriptions from the potion">Rewrite the card’s text</button>
+                <button class="btn" data-action="potion-clear">Remove</button></div>
+            <p class="hint">The line above is for you: players read only what the card says. Seed <code>${esc(potion.seed)}</code>.</p></div>`;
+    }
+
+    // Side panel of a solvent, active principle, catalyst or vessel: a sample bottle and its cards
+    function reagentPanel(rec, type) {
+        const db = alcDb();
+        if (!db) return '';
+        const R = db.reagents, first = list => (list[0] || {}).id;
+        const recipe = { vessel: first(db.vessels), solvent: first(R.solvents), active: first(R.actives), catalyst: first(R.catalysts) };
+        recipe[{ vessel: 'vessel', solvent: 'solvent', principle: 'active', catalyst: 'catalyst' }[type]] = rec.id;
+        const potion = ALC.brew(db, recipe);
+        const cards = potionCardsUsing(rec.id);
+        return `<div class="box"><h4>In a potion</h4>
+            ${potion ? `<div class="potion-sum">${potionArt(potion, {}, 'sample', 100)}
+                <div><b>${esc(potion.title)}</b><p>A sample with the first ${type === 'vessel' ? 'reagents' : 'vessel and reagents'} of the lists.<br>${potionLine(potion)}</p></div></div>`
+                : '<p class="warn">This record can’t be brewed yet: check its required fields.</p>'}
+            <div class="row wrap"><button class="btn" data-action="potion-new" data-part="${type}"><span class="material-symbols-outlined">science</span>Brew a card with it…</button></div>
+            ${cards.length ? `<h4 style="margin-top:14px">On the cards <span>${cards.length}</span></h4>${chips(cards.map(c => S.store.get(c.id)).filter(Boolean))}
+                <p class="hint">Deleting this record leaves these cards without a bottle.</p>` : ''}</div>`;
+    }
+
+    // Side panel of the Alchemy settings: every potion card, and a way to make one
+    function alchemyPanel() {
+        if (!ALC) return '';
+        const cards = S.data.item.filter(i => i.potion);
+        return `<div class="box"><h4>Potion cards <span>${cards.length}</span></h4>
+            ${cards.length ? chips(cards.map(c => S.store.get(c.id)).filter(Boolean)) : '<p class="muted">None yet.</p>'}
+            <div class="row wrap"><button class="btn primary" data-action="potion-new"><span class="material-symbols-outlined">science</span>Brew a new potion card…</button></div>
+            <p class="hint">Players meet potions in shops (bottle, name, price) and at an alchemist’s Workbench (craft DC, tool, price and a brew mark). Effects show only here, on the potion maker and on the cards you make.</p></div>
+            <div class="box"><h4>Potion maker</h4>
+            <p class="muted">The full page: seeds, recipes, the bottle’s look, effects, values and DCs, and a shelf kept in this browser.</p>
+            <div class="row wrap"><a class="btn" href="potion-maker.html" target="_blank" rel="noopener"><span class="material-symbols-outlined">open_in_new</span>Open the potion maker</a></div>
+            <p class="hint">It reads the site’s files, so open it through the live server (like the other pages), not from disk. Not linked anywhere on the site.</p></div>`;
+    }
+
+    // The brewer. rec = the item to give the potion to, or null to make a new card;
+    // preset = {part, id} starts from one reagent or vessel.
+    function potionBrewer(rec, preset) {
+        const db = alcDb();
+        if (!db || !db.vessels.length || !db.reagents.solvents.length || !db.reagents.actives.length || !db.reagents.catalysts.length) {
+            alertBox('Nothing to brew with', '<p>A potion needs at least one vessel, one solvent, one active principle and one catalyst (group “Generators”).</p>'); return;
+        }
+        const R = db.reagents;
+        const had = rec ? potionOf(rec) : null;
+        const st = { seed: '', recipe: null, studio: ALC.normaliseStudio(had && had.potion ? had.studio : {}) };
+        if (had && had.potion) { st.seed = had.potion.seed; st.recipe = ALC.recipeOf(had.potion); }
+        else if (preset && preset.recipe && ALC.brew(db, preset.recipe, preset.seed || undefined)) {
+            st.recipe = { ...preset.recipe }; st.seed = preset.seed || '';
+        } else {
+            st.seed = Math.random().toString(36).slice(2, 8).toUpperCase();
+            st.recipe = ALC.recipeFromSeed(db, st.seed);
+            if (preset && preset.id) { st.recipe[preset.part] = preset.id; st.seed = ''; }
+        }
+        const typed = seed => !!seed && seed !== ALC.recipeSeed(st.recipe);   // a seed the DM typed or rolled, not a recipe's own
+        const tagName = id => (R.tags.find(t => t.id === id) || { name: id }).name;
+        const opt = (list, cur, text) => list.map(x => `<option value="${esc(x.id)}"${x.id === cur ? ' selected' : ''}>${esc(text(x))}</option>`).join('');
+        const lookSel = (key, label, ids, name) => `<div class="fld"><label for="pb-${key}">${label}</label><select id="pb-${key}" data-look="${key}">
+            <option value="auto">Auto (from the recipe)</option>${ids.map(id => `<option value="${id}"${st.studio[key] === id ? ' selected' : ''}>${esc(name ? name(id) : cap(id))}</option>`).join('')}</select></div>`;
+        const textures = S.store.enumOptions('potionTexture');
+        const willFill = !rec || !(had && had.potion);
+        const dlg = modal(`<h3>${rec ? 'Brew a potion for this card' : 'Brew a new potion card'}</h3>
+            <div class="pb">
+                <div class="pb-left">
+                    <div class="potion-art pb-stage" id="pb-stage"></div>
+                    <div class="row"><input id="pb-seed" placeholder="Seed (any word)" value="${esc(typed(st.seed) ? st.seed : '')}" aria-label="Seed">
+                        <button class="btn" id="pb-distill">Distill</button>
+                        <button class="btn icon" id="pb-roll" title="Roll a random seed"><span class="material-symbols-outlined">casino</span></button></div>
+                    <div class="row"><input id="pb-mark" placeholder="…or a brew mark from a Workbench" value="${esc(preset && preset.mark ? preset.mark : '')}" aria-label="Brew mark">
+                        <button class="btn" id="pb-find">Find</button></div>
+                    <p id="pb-mark-out" class="hint" style="margin:-4px 0 0" hidden></p>
+                    <div class="pb-grid">
+                        <div class="fld pb-wide"><label for="pb-vessel">Vessel</label><select id="pb-vessel" data-part="vessel">${opt(db.vessels, st.recipe.vessel, v => v.name)}</select></div>
+                        <div class="fld pb-wide"><label for="pb-solvent">Solvent</label><select id="pb-solvent" data-part="solvent">${opt(R.solvents, st.recipe.solvent, s => `${s.name} — ${tagName(s.tag)}`)}</select></div>
+                        <div class="fld pb-wide"><label for="pb-active">Active principle</label><select id="pb-active" data-part="active">${opt(R.actives, st.recipe.active, a => `${a.name} — ${ALC.rarityLabel(a.rarity)}, ${tagName(a.tag)}`)}</select></div>
+                        <div class="fld pb-wide"><label for="pb-catalyst">Catalyst</label><select id="pb-catalyst" data-part="catalyst">${opt(R.catalysts, st.recipe.catalyst, c => `${c.name} — ${ALC.rarityLabel(c.rarity)}, ${tagName(c.tag)}`)}</select></div>
+                    </div>
+                    <details><summary>Look of the bottle</summary>
+                        <div class="pb-grid">
+                            ${lookSel('glass', 'Glass', Object.keys(ALC.GLASS_TINTS))}
+                            ${lookSel('stopper', 'Stopper', ALC.STOPPERS)}
+                            ${lookSel('wax', 'Wax', Object.keys(ALC.WAX_PALETTES), id => ALC.WAX_PALETTES[id].name)}
+                            ${lookSel('stamp', 'Seal stamp', ALC.STAMPS)}
+                            ${lookSel('neck', 'Neck', ALC.NECKS)}
+                            ${lookSel('vellum', 'Label paper', Object.keys(ALC.VELLUM_PALETTES), id => ALC.VELLUM_PALETTES[id].name)}
+                            ${lookSel('texture', 'Liquid', textures.map(o => o.id), id => (textures.find(o => o.id === id) || {}).label || id)}
+                            <div class="fld"><label for="pb-fill">Fill level · <span id="pb-fill-read"></span></label><input type="range" id="pb-fill" min="${ALC.FILL_MIN}" max="${ALC.FILL_MAX}"></div>
+                            <div class="fld"><label for="pb-label1">Label, line 1</label><input id="pb-label1" maxlength="14" placeholder="Auto (index code)" value="${esc(st.studio.labelText)}"></div>
+                            <div class="fld"><label for="pb-label2">Label, line 2</label><input id="pb-label2" maxlength="16" placeholder="Auto (glyphs)" value="${esc(st.studio.labelSub)}"></div>
+                            <div class="fld pb-wide"><div class="row wrap" style="margin:0">
+                                <label class="row"><input type="checkbox" id="pb-seal"${st.studio.showSeal ? ' checked' : ''}> Wax seal</label>
+                                <label class="row"><input type="checkbox" id="pb-label"${st.studio.showLabel ? ' checked' : ''}> Label</label>
+                                <label class="row"><input type="checkbox" id="pb-colours"${st.studio.colorEnable ? ' checked' : ''}> Own colours</label>
+                                <input type="color" id="pb-col1" value="${esc(st.studio.col1)}" aria-label="Top colour"><input type="color" id="pb-col2" value="${esc(st.studio.col2)}" aria-label="Bottom colour">
+                                <button class="btn sm" id="pb-reset">Reset the look</button></div></div>
+                        </div></details>
+                </div>
+                <div class="pb-rec" id="pb-rec"></div>
+            </div>
+            <div class="foot">
+                <span class="pb-foot-left">
+                    ${rec ? `<label title="Name, type, rarity, cost, weight and both descriptions"><input type="checkbox" id="pb-text"${willFill ? ' checked' : ''}> Write the card’s text from this potion</label>`
+                        : `<label for="pb-found">Found in</label><select id="pb-found"><option value="">Nowhere yet</option>${foundOptions('', newestSessionOption())}</select>`}
+                </span>
+                <button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="pb-ok">${rec ? 'Use this potion' : 'Create the card'}</button>
+            </div>`, 'xwide potion');
+
+        const q = sel => $(sel, dlg);
+        let potion = null;
+        const draw = () => {
+            potion = ALC.brew(db, st.recipe, st.seed || undefined);
+            const look = ALC.resolveStudio(potion, st.studio);
+            q('#pb-stage').innerHTML = ALC.renderSVG(potion, st.studio, { uid: 'brewer', width: 220, height: 286, animate: true });
+            q('#pb-fill').value = st.studio.fillOverrideActive ? st.studio.fillValue : Math.round(potion.baseFill * 100);
+            q('#pb-fill-read').textContent = st.studio.fillOverrideActive ? `${st.studio.fillValue}%` : 'auto';
+            if (!st.studio.colorEnable) { q('#pb-col1').value = potion.active.color; q('#pb-col2').value = potion.catalyst.color; }
+            const lore = x => (x.lore ? ` <span class="muted">${esc(x.lore)}</span>` : '');
+            q('#pb-rec').innerHTML = `
+                <h4>${esc(potion.title)}</h4>
+                <p class="pb-meta"><b>${potionLine(potion)}</b> · ${esc(potion.form)} · ${potion.vessel.slots} slot${potion.vessel.slots === 1 ? '' : 's'} · mark ${esc(ALC.brewMark(st.recipe))}</p>
+                <div class="pb-tags">${[...new Set(potion.tags)].map(t => `<span>${esc(tagName(t))}</span>`).join('')}</div>
+                <h5>Use</h5><p>${esc(potion.use)}</p>
+                <h5>Effect · ${esc(potion.active.name)}</h5><p>${esc(potion.active.effect || 'No effect written yet (Active principles → Effect).')}</p>
+                <h5>Catalyst · ${esc(potion.catalyst.name)}</h5><p>${esc(potion.catalyst.modifier || 'No change written yet (Catalysts → What it changes).')}</p>
+                <h5>Reactions</h5>${reactionList(potion)}
+                <h5>What players see</h5>
+                <p class="pb-flavour">${ALC.sensoryHTML(potion, look.texture)}</p>
+                ${potion.oddity ? `<p class="pb-flavour">${esc(potion.oddity)}</p>` : ''}
+                <h5>Reagents</h5>
+                <p><b>${esc(potion.solvent.name)}.</b>${lore(potion.solvent)}</p>
+                <p><b>${esc(potion.active.name)}</b> (${esc(potion.active.biome)}).${lore(potion.active)}</p>
+                <p><b>${esc(potion.catalyst.name)}.</b>${lore(potion.catalyst)}</p>`;
+        };
+        const distill = seed => {
+            st.seed = seed; st.recipe = ALC.recipeFromSeed(db, seed);
+            for (const part of ['vessel', 'solvent', 'active', 'catalyst']) q(`#pb-${part}`).value = st.recipe[part];
+            draw();
+        };
+        q('#pb-distill').addEventListener('click', () => { const v = q('#pb-seed').value.trim(); if (v) distill(v); else q('#pb-seed').focus(); });
+        q('#pb-roll').addEventListener('click', () => { const v = Math.random().toString(36).slice(2, 8).toUpperCase(); q('#pb-seed').value = v; distill(v); });
+        q('#pb-seed').addEventListener('keydown', e => { if (e.key === 'Enter' && q('#pb-seed').value.trim()) { e.preventDefault(); distill(q('#pb-seed').value.trim()); } });
+        // A brew mark: the alchemists' stocks first (a mark is unique there), then the whole archive
+        const useRecipe = recipe => {
+            st.recipe = { ...recipe }; st.seed = ''; q('#pb-seed').value = '';
+            for (const part of ['vessel', 'solvent', 'active', 'catalyst']) q(`#pb-${part}`).value = st.recipe[part];
+            draw();
+        };
+        const findMark = () => {
+            const mark = q('#pb-mark').value, out = q('#pb-mark-out');
+            let found = ALC.findByMark(db, mark, ATH.market ? ATH.market.allBenches(S.store) : []);
+            const where = found.length ? 'at an alchemist' : 'in the whole archive';
+            if (!found.length) found = ALC.findByMark(db, mark);
+            out.hidden = false;
+            if (!found.length) { out.innerHTML = '<span class="warn">No mix has this mark. Six letters, like LR7-YR9.</span>'; return; }
+            useRecipe(found[0]);
+            out.innerHTML = found.length === 1 ? `Found ${where}.`
+                : `${found.length} mixes share this mark (${where}): ${found.map((r, i) => `<a href="#" data-alt="${i}">${esc(ALC.brew(db, r).title)}</a>`).join(' · ')}`;
+            $$('[data-alt]', out).forEach(a => a.addEventListener('click', e => { e.preventDefault(); useRecipe(found[Number(a.dataset.alt)]); }));
+        };
+        q('#pb-find').addEventListener('click', findMark);
+        q('#pb-mark').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); findMark(); } });
+        // A hand-picked recipe is its own seed
+        $$('[data-part]', dlg).forEach(sel => sel.addEventListener('change', () => { st.recipe[sel.dataset.part] = sel.value; st.seed = ''; q('#pb-seed').value = ''; draw(); }));
+        $$('[data-look]', dlg).forEach(sel => sel.addEventListener('change', () => { st.studio[sel.dataset.look] = sel.value; draw(); }));
+        q('#pb-fill').addEventListener('input', () => { st.studio.fillOverrideActive = true; st.studio.fillValue = Number(q('#pb-fill').value); draw(); });
+        q('#pb-label1').addEventListener('input', () => { st.studio.labelText = q('#pb-label1').value.trim(); draw(); });
+        q('#pb-label2').addEventListener('input', () => { st.studio.labelSub = q('#pb-label2').value.trim(); draw(); });
+        q('#pb-seal').addEventListener('change', () => { st.studio.showSeal = q('#pb-seal').checked; draw(); });
+        q('#pb-label').addEventListener('change', () => { st.studio.showLabel = q('#pb-label').checked; draw(); });
+        q('#pb-colours').addEventListener('change', () => { st.studio.colorEnable = q('#pb-colours').checked; draw(); });
+        for (const [id, key] of [['#pb-col1', 'col1'], ['#pb-col2', 'col2']]) {
+            q(id).addEventListener('input', () => { st.studio[key] = q(id).value; st.studio.colorEnable = true; q('#pb-colours').checked = true; draw(); });
+        }
+        q('#pb-reset').addEventListener('click', () => {
+            st.studio = ALC.normaliseStudio({});
+            $$('[data-look]', dlg).forEach(sel => { sel.value = 'auto'; });
+            q('#pb-label1').value = ''; q('#pb-label2').value = ''; q('#pb-seal').checked = true; q('#pb-label').checked = true; q('#pb-colours').checked = false;
+            draw();
+        });
+        q('#pb-ok').addEventListener('click', () => {
+            const record = ALC.potionRecord(potion, st.studio), fields = ALC.cardFields(potion, st.studio);
+            if (rec) {
+                rec.potion = record;
+                if (q('#pb-text').checked) Object.assign(rec, fields);
+                closeModal(); edited(true); toast('Potion set — not saved yet');
+                return;
+            }
+            // A new card: id from the potion's name, numbered if that id is taken
+            const ids = allIds(), base = slug(fields.name) || 'potion';
+            let id = base;
+            for (let n = 2; ids.has(id); n++) id = `${base}-${n}`;
+            S.data.item.push({ id, ...fields, potion: record });
+            const found = q('#pb-found').value;
+            if (found) addFoundIn(id, found);
+            closeModal(); rebuild();
+            S.search = ''; $('#search').value = '';
+            select({ kind: 'type', key: 'item' }, id);
+            refreshChrome(); toast(`“${fields.name}” created — not saved yet`);
+        });
+        draw();
+        if (preset && preset.mark) findMark();
+    }
+
+    // A file saved with “Save recipe” on the potion maker page (or the first potion of a shelf export)
+    function potionImport(rec) {
+        const input = document.createElement('input');
+        input.type = 'file'; input.accept = '.json,application/json';
+        input.onchange = async () => {
+            const file = input.files[0]; if (!file) return;
+            let o;
+            try { o = JSON.parse(await file.text()); } catch (e) { toast('That file is not JSON.'); return; }
+            if (o && Array.isArray(o.specimens)) o = o.specimens[0];
+            const db = alcDb();
+            if (!o || typeof o.recipe !== 'object' || !o.recipe) { toast('That file is not a potion recipe.'); return; }
+            const potion = ALC.brew(db, o.recipe, typeof o.seed === 'string' && o.seed ? o.seed : undefined);
+            if (!potion) { alertBox('That potion can’t be brewed here', `<p>Missing: ${esc(ALC.resolveRecipe(db, o.recipe).missing.join(', '))}.</p>`); return; }
+            const fresh = !rec.potion && !rec.summary && !rec.body;
+            rec.potion = ALC.potionRecord(potion, o.studio);
+            if (fresh) {
+                Object.assign(rec, ALC.cardFields(potion, o.studio));
+                if (typeof o.title === 'string' && o.title.trim()) rec.name = o.title.trim().slice(0, 120);
+            }
+            edited(true); toast(fresh ? 'Potion imported and card written — not saved yet' : 'Potion imported (the card’s text is unchanged) — not saved yet');
+        };
+        input.click();
+    }
+    function potionRefill(rec) {
+        const got = potionOf(rec);
+        if (!got || !got.potion) return;
+        if (POTION_TEXT.some(k => rec[k]) && !confirm('Rewrite the card’s name, type, rarity, cost, weight and descriptions from the potion?')) return;
+        Object.assign(rec, ALC.cardFields(got.potion, got.studio));
+        edited(true); toast('Card rewritten — not saved yet');
+    }
+
     /* ---------- upcoming sessions (homepage): preview and tools ---------- */
     const STATUS_COLOURS = { next: 'var(--gold)', scheduled: '#4ade80', tbd: '#c084fc', postponed: '#fbbf24', cancelled: '#f87171' };
     function schedulePreview(rec) {
@@ -1335,7 +1628,7 @@
         const sheet = S.cardSide === 'sheet';
         const card = sheet
             ? ATH.lootCard.sheet(item, S.store, { autolink: false })
-            : ATH.lootCard.front(item, { tag: 'div', picture: src => `data-thumb="${esc(src)}"` });
+            : ATH.lootCard.front(item, { tag: 'div', picture: src => `data-thumb="${esc(src)}"`, store: S.store, uid: 'preview' });
         return `<div class="box card-prev">
             <div class="box-head"><h4>Card preview</h4>
                 <span class="seg"><button data-action="card-side" data-side="front" class="${sheet ? '' : 'on'}">Front</button><button data-action="card-side" data-side="sheet" class="${sheet ? 'on' : ''}">Opened</button></span></div>
@@ -1533,6 +1826,34 @@
             out.push(`<div class="box menu-prev"><h4>Wares · ${esc(M.shopKind(S.store, poi.shop).label)} · ${esc(M.tierFor(S.store, poi, poi.shop).label)}</h4>
                 ${wares.length ? priceRows(wares) : '<p class="warn">No goods match: check the shelves, tier and tags.</p>'}
                 ${hint('Shelves: ' + esc(M.shelvesOf(S.store, poi.shop).map(c => c.label).join(', ')))}</div>`);
+        }
+        if (shop && ALC && poi.shop.potions > 0) {
+            const potions = M.buildPotions(S.store, poi, code);
+            out.push(`<div class="box"><h4>Brewed potions <span>${potions.length}</span></h4>
+                ${potions.length ? potions.map(({ potion, priceLabel }, i) => `<div class="potion-row">
+                    ${potionArt(potion, {}, `shop-${i}`, 64)}
+                    <div><b>${esc(potion.title)}</b><p>${potionLine(potion).replace(/ · [\d,]+ gp/, ` · sold at ${esc(priceLabel)}`)}</p>
+                        <p class="muted">${esc(potion.active.effect || 'No effect written.')}</p>
+                        <button class="btn sm" data-action="potion-new" data-recipe="${esc(JSON.stringify(ALC.recipeOf(potion)))}" data-seed="${esc(potion.seed)}">Make it a card…</button></div>
+                </div>`).join('') : '<p class="warn">No potion fits: check the rarity and the active principles.</p>'}
+                ${hint('Players see the bottle, the name and the price (its value × the shop’s price level). Same market code = same shelf. When they buy one, “Make it a card” turns it into a Vault card.')}</div>`);
+        }
+        if (poi.alchemist && ALC) {
+            const b = M.bench(S.store, poi);
+            if (!b) out.push(`<div class="box"><h4>Workbench</h4><p class="warn">Stock at least one solvent, one active principle and one catalyst: no Workbench tab until then.</p></div>`);
+            else {
+                const combos = b.vessels.length * b.solvents.length * b.actives.length * b.catalysts.length;
+                const quotes = [];
+                for (const s of b.solvents) for (const a of b.actives) for (const c of b.catalysts) quotes.push(M.quoteBrew(S.store, poi, { vessel: b.vessels[0].id, solvent: s.id, active: a.id, catalyst: c.id }));
+                const dcs = quotes.map(q => q.dc), gps = quotes.map(q => q.cp / 100);
+                const range = (xs, f) => (Math.min(...xs) === Math.max(...xs) ? f(Math.min(...xs)) : `${f(Math.min(...xs))}–${f(Math.max(...xs))}`);
+                out.push(`<div class="box"><h4>Workbench</h4>
+                    <p>${b.vessels.length} vessel${b.vessels.length === 1 ? '' : 's'} · ${b.solvents.length} solvent${b.solvents.length === 1 ? '' : 's'} · ${b.actives.length} active principle${b.actives.length === 1 ? '' : 's'} · ${b.catalysts.length} catalyst${b.catalysts.length === 1 ? '' : 's'}: ${combos.toLocaleString('en')} mixes.</p>
+                    <p class="muted">Craft DC ${range(dcs, x => x)} · brewing ${range(gps, x => `${x.toLocaleString('en')} gp`)} (${b.fee > 0 ? b.fee : 50}% of the value)</p>
+                    <div class="row wrap"><input id="mark-in" placeholder="Brew mark, e.g. LR7-YR9" aria-label="Brew mark" style="flex:1;min-width:0">
+                        <button class="btn" data-action="mark-find"><span class="material-symbols-outlined">search</span>Find</button></div>
+                    ${hint('Players see the reagents’ names and lore, the craft DC, the tool and the price, and a brew mark to read out to you. Type it here, or in “Brew a potion”, to get the potion.')}</div>`);
+            }
         }
         if (temple) {
             const rites = M.buildRites(S.store, poi);
@@ -2170,6 +2491,14 @@
             case 'read-size': readSize(path); break;
             case 'move-record': moveRecord(Number(t.dataset.dir)); break;
             case 'schedule-add': scheduleAdd(); break;
+            case 'potion-brew': potionBrewer(rec); break;
+            case 'potion-new': potionBrewer(null,
+                t.dataset.recipe ? { recipe: JSON.parse(t.dataset.recipe), seed: t.dataset.seed }
+                : t.dataset.part ? { part: t.dataset.part === 'principle' ? 'active' : t.dataset.part, id: rec.id } : null); break;
+            case 'mark-find': potionBrewer(null, { mark: ($('#mark-in') || {}).value || '' }); break;
+            case 'potion-import': potionImport(rec); break;
+            case 'potion-refill': potionRefill(rec); break;
+            case 'potion-clear': delete rec.potion; edited(true); toast('Potion removed (the card’s text is unchanged) — not saved yet'); break;
             case 'folio-import': folioImport(rec); break;
             case 'folio-big': folioBig(rec, t.dataset.which || 'spread'); break;
             case 'folio-export': folioExport(rec, t.dataset.what); break;

@@ -5,6 +5,10 @@
    (scripts/tavern-menu.js, loaded first: this file reuses its seeded RNG).
 
      poi.shop      -> buildWares()        seeded goods per shelf (data/shop-goods.json)
+                      buildPotions()      seeded potions (shop.potions; needs
+                                          scripts/alchemy-engine.js on the page)
+     poi.alchemist -> bench()             what its Workbench stocks, and what a
+                      quoteBrew()         mix costs (craft DC, tool, price, brew mark)
      poi.temple    -> buildRites()        services (data/temple-services.json + custom)
                       prayer / pray()     a blessing (data/blessings.json), drawn once
                                           per market code, per browser, per temple
@@ -91,6 +95,55 @@
         code = T().normaliseCode(code);
         return code ? `Stock Ledger · Page ${T().hash(`ledger|${code}|${poiId}`) % 900 + 100}` : 'Stock Ledger';
     }
+
+    /* ---------- potions (scripts/alchemy-engine.js) ----------
+       A shop with `potions` shelves that many seeded potions; an alchemist's bench
+       lets players mix its stock. Players see a shop potion's bottle, name and price,
+       and only the craft DC, tool and price of their own mix: never what it does. */
+    const alchemy = () => root.Alchemy || null;
+    const potionDb = store => (alchemy() ? alchemy().dbFromStore(store) : null);
+
+    /* -> [{potion, priceLabel, cp}] in price order; [] without the engine */
+    function buildPotions(store, poi, code) {
+        const A = alchemy(), shop = poi.shop, db = potionDb(store);
+        if (!A || !db || !shop || !(shop.potions > 0)) return [];
+        const markup = (typeof shop.markup === 'number' && shop.markup > 0 ? shop.markup : 100) / 100;
+        return A.shopPotions(db, {
+            code: T().normaliseCode(code), poiId: poi.id, count: shop.potions,
+            maxRarity: shop.potionRarity || 'uncommon', principles: shop.potionPrinciples,
+        }).map(potion => {
+            const cp = Math.round(potion.gpValue * 100 * markup);
+            return { potion, cp, priceLabel: T().formatPrice(cp) };
+        });
+    }
+
+    /* An alchemist's stock -> {vessels, solvents, actives, catalysts} (records, in the
+       archive's order) and `stock` (ids, for Alchemy.findByMark); null if it can't brew */
+    function bench(store, poi) {
+        const A = alchemy(), block = poi.alchemist, db = potionDb(store);
+        if (!A || !db || !block) return null;
+        const stock = { vessels: block.vessels || [], solvents: block.solvents || [], actives: block.principles || [], catalysts: block.catalysts || [] };
+        // Only what is stocked: an empty reagent list stocks nothing (vessels: empty = all)
+        const pick = (list, ids, all) => (ids.length ? list.filter(x => ids.includes(x.id)) : all ? list : []);
+        const out = {
+            vessels: pick(db.vessels, stock.vessels, true),
+            solvents: pick(db.reagents.solvents, stock.solvents),
+            actives: pick(db.reagents.actives, stock.actives),
+            catalysts: pick(db.reagents.catalysts, stock.catalysts),
+            stock, fee: block.fee,
+        };
+        return out.vessels.length && out.solvents.length && out.actives.length && out.catalysts.length ? out : null;
+    }
+    /* A player's mix -> {dc, kit, cp, priceLabel, mark}, or null if a part is unknown */
+    function quoteBrew(store, poi, recipe) {
+        const A = alchemy(), db = potionDb(store), b = bench(store, poi);
+        const potion = A && db && b ? A.brew(db, recipe) : null;
+        if (!potion) return null;
+        const gp = A.brewCost(potion, b.fee);
+        return { dc: potion.brewDC, kit: potion.kit, cp: gp * 100, priceLabel: T().formatPrice(gp * 100), mark: A.brewMark(recipe) };
+    }
+    // Every alchemist's stock, for the DM's mark lookup
+    const allBenches = store => store.all('poi').map(p => bench(store, p)).filter(Boolean).map(b => b.stock);
 
     /* ---------- temples ---------- */
     /* -> [{id, label, items: [{name, desc, unit, priceLabel}]}] */
@@ -197,6 +250,7 @@
 
     ATH.market = {
         tierFor, shopKind, shelvesOf, buildWares, waresLabel,
+        buildPotions, bench, quoteBrew, allBenches,
         buildRites, deitiesOf, blessingsFor, prayer, pray,
         rumoursHeard, rumourOrder, rumours, drawRumour, drawLimit,
         notices, boardsUnder, inCampaign, campaignsWith,

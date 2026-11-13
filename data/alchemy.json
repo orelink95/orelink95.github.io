@@ -1,0 +1,110 @@
+{
+  "tags": [
+    {
+      "id": "luminous",
+      "glyph": "☉",
+      "description": "Holds light: mends flesh, reveals what hides, steadies the heart."
+    },
+    {
+      "id": "viscous",
+      "glyph": "🜃",
+      "description": "Heavy and slow: binds, endures, draws every effect out."
+    },
+    {
+      "id": "volatile",
+      "glyph": "🜁",
+      "description": "Restless humours: speed, storms, and a temper to match."
+    },
+    {
+      "id": "corrosive",
+      "glyph": "🜖",
+      "description": "Eats what it touches: dissolves, purges, cuts through."
+    },
+    {
+      "id": "necrotic",
+      "glyph": "♄",
+      "description": "Drawn from the grave: shadow, silence, the borrowed strength of death."
+    },
+    {
+      "id": "cryogenic",
+      "glyph": "🜄",
+      "description": "Cold that keeps: wards, preserves, numbs."
+    },
+    {
+      "id": "psychoactive",
+      "glyph": "☽",
+      "description": "Speaks to the mind: visions, senses, other people's thoughts."
+    },
+    {
+      "id": "igneous",
+      "glyph": "🜂",
+      "description": "Fire in a bottle: breath, warmth and courage."
+    },
+    {
+      "id": "verdant",
+      "glyph": "♀",
+      "description": "Living sap and root: healing, growth, the goodwill of beasts."
+    },
+    {
+      "id": "arcane",
+      "glyph": "☿",
+      "description": "Raw spellwork, barely bottled: blinking, vanishing, remembering magic."
+    }
+  ],
+  "forms": [
+    {
+      "form": "Draught",
+      "use": "As a Bonus Action, you can drink it or administer it to a creature within 5 feet of you."
+    },
+    {
+      "form": "Elixir",
+      "use": "As a Bonus Action, you can drink it or administer it to a creature within 5 feet of you."
+    },
+    {
+      "form": "Philter",
+      "use": "As a Bonus Action, you can drink it or administer it to a creature within 5 feet of you."
+    },
+    {
+      "form": "Tincture",
+      "use": "As a Bonus Action, you can drink it or administer it to a creature within 5 feet of you."
+    },
+    {
+      "form": "Decoction",
+      "use": "As a Bonus Action, you can drink it or administer it to a creature within 5 feet of you."
+    },
+    {
+      "form": "Oil",
+      "use": "Applying it takes 1 minute: one creature, one weapon, or up to three pieces of ammunition can be coated with a single vial."
+    },
+    {
+      "form": "Inhalant",
+      "use": "As a Utilize action, you can shatter the vial at a point within 20 feet. It bursts into a 5-foot-radius cloud, and the first creature to breathe it (normally one inside the cloud, DM's choice) gains the effect."
+    }
+  ],
+  "oddities": [
+    "The liquid always settles level, however the bottle is tilted.",
+    "It hums a single low note when shaken.",
+    "It leaves the drinker's tongue violet for an hour.",
+    "For a minute after drinking, your reflection lags a heartbeat behind you.",
+    "A faint smell of rain follows the drinker for the rest of the day.",
+    "The vial is warm to the touch, even buried in snow.",
+    "The stopper bears a tiny thumbprint that matches no one in the party.",
+    "The bubbles inside rise in time with the holder's heartbeat.",
+    "Cats find the empty bottle irresistible.",
+    "The bottle casts a shadow a shade too dark.",
+    "Swirled, it shows for an instant a word in a language no one can name.",
+    "It tastes different to every person who sips it.",
+    "The drinker's voice drops an octave for ten minutes.",
+    "The empty vial rings like a small bell when tapped.",
+    "For an hour after drinking, nearby candle flames lean towards you.",
+    "A single hair on the drinker's head turns silver, for good.",
+    "It refuses to pour faster than a slow trickle.",
+    "Moths gather on the bottle at night.",
+    "The drinker dreams that night of the same unfamiliar door.",
+    "The liquid inside never quite stops moving.",
+    "The drinker hiccups a few harmless motes of light for a minute.",
+    "Held to the ear, the vial sounds like distant surf.",
+    "It smells faintly of whatever the drinker last ate.",
+    "Whoever drinks it remembers, briefly and clearly, their earliest memory."
+  ]
+}

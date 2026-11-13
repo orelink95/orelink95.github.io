@@ -6,6 +6,13 @@
        options.tag       'button' (default) or 'div'
        options.faceDown  show the back (a new find)
        options.picture   src => attributes of the <img> (default: src="…")
+       options.store     the store to read reagents from (default: Athenaeum.store)
+   An item with a `potion` ({seed, recipe, studio}: made with the dashboard's
+   “Brew a potion”) shows its bottle instead of a picture, drawn by
+   scripts/alchemy-engine.js when the page loads that script.
+   Athenaeum.lootCard.potionArt(item, store, options) -> the bottle's SVG, or ''
+       options.uid       keeps the ids of two bottles of one item apart
+       options.animate   gentle motion (the opened card)
    Athenaeum.lootCard.sheet(item, store, options) -> the printed card, filled in
    Athenaeum.lootCard.rarityClass(rarity)   -> 'rarity--very-rare' etc.
    ===================================================================== */
@@ -15,11 +22,20 @@
     const rarityClass = r => 'rarity--' + String(r || 'none').toLowerCase().replace(/\s+/g, '-');
     const srcAttr = src => `src="${esc(src)}"`;
 
+    function potionArt(item, store, options = {}) {
+        const A = root.Alchemy;
+        if (!A || !item || !item.potion) return '';
+        try { return A.itemArt(item, store || ATH.store, options); }
+        catch (e) { return ''; }   // a damaged recipe must not break the gallery
+    }
+
     function front(item, options = {}) {
         const tag = options.tag || 'button';
         const picAttr = options.picture || srcAttr;
         const faceDown = !!options.faceDown;
-        const picture = item.image
+        const bottle = potionArt(item, options.store, { uid: options.uid || 'front' });
+        const picture = bottle ? bottle
+            : item.image
             ? `<img ${picAttr(item.image)} alt="" class="loot-card__img" loading="lazy">`
             : `<span class="loot-card__placeholder material-symbols-outlined">diamond</span>`;
         const meta = item.type || item.rarity
@@ -30,7 +46,7 @@
         <${tag}${tag === 'button' ? ' type="button"' : ''} class="loot-card ${rarityClass(item.rarity)}${faceDown ? ' is-face-down' : ''}" data-id="${esc(item.id)}" aria-label="${esc(label)}">
             <span class="loot-card__inner">
                 <span class="loot-card__face loot-card__front">
-                    <span class="loot-card__picture">${picture}</span>
+                    <span class="loot-card__picture${bottle ? ' loot-card__picture--potion' : ''}">${picture}</span>
                     <span class="loot-card__name">${esc(item.name)}</span>
                     ${meta}
                     ${item.summary ? `<span class="loot-card__summary">${esc(item.summary)}</span>` : ''}
@@ -61,5 +77,5 @@
         </article>`;
     }
 
-    ATH.lootCard = { front, sheet, rarityClass };
+    ATH.lootCard = { front, sheet, rarityClass, potionArt };
 })(typeof window !== 'undefined' ? window : globalThis);

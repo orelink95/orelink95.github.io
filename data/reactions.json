@@ -1,0 +1,316 @@
+[
+  {
+    "id": "reaction-radiant-clarity",
+    "name": "Radiant Clarity",
+    "first": "luminous",
+    "second": "luminous",
+    "kind": "boon",
+    "effect": "Any Hit Points the potion restores gain a +2 bonus, and you shed Dim Light in a 5-foot radius for 1 hour."
+  },
+  {
+    "id": "reaction-slow-release",
+    "name": "Slow Release",
+    "first": "viscous",
+    "second": "viscous",
+    "kind": "boon",
+    "effect": "Every duration of the potion's effect is doubled."
+  },
+  {
+    "id": "reaction-critical-instability",
+    "name": "Critical Instability",
+    "first": "volatile",
+    "second": "volatile",
+    "kind": "bane",
+    "effect": "If the vial is shaken hard, or its carrier takes 10 or more Bludgeoning damage in one hit, it bursts: each creature within 5 feet makes a DC 13 Dexterity saving throw, taking 2d6 Thunder damage on a failed save or half as much on a success."
+  },
+  {
+    "id": "reaction-purging",
+    "name": "Purging",
+    "first": "corrosive",
+    "second": "corrosive",
+    "kind": "boon",
+    "effect": "Drinking it also ends the Poisoned condition on you."
+  },
+  {
+    "id": "reaction-grave-pallor",
+    "name": "Grave Pallor",
+    "first": "necrotic",
+    "second": "necrotic",
+    "kind": "quirk",
+    "effect": "Your skin turns ashen for 24 hours: you have Disadvantage on Charisma (Persuasion) checks but Advantage on saving throws against disease."
+  },
+  {
+    "id": "reaction-deep-chill",
+    "name": "Deep Chill",
+    "first": "cryogenic",
+    "second": "cryogenic",
+    "kind": "boon",
+    "effect": "The potion never spoils, and you have Resistance to Cold damage for 1 hour after drinking it."
+  },
+  {
+    "id": "reaction-lucid-dreaming",
+    "name": "Lucid Dreaming",
+    "first": "psychoactive",
+    "second": "psychoactive",
+    "kind": "boon",
+    "effect": "While the potion's effect lasts (up to 1 hour), you have Advantage on Wisdom saving throws."
+  },
+  {
+    "id": "reaction-banked-embers",
+    "name": "Banked Embers",
+    "first": "igneous",
+    "second": "igneous",
+    "kind": "boon",
+    "effect": "You gain 1d6 Temporary Hit Points, and you ignore the effects of extreme cold for 8 hours."
+  },
+  {
+    "id": "reaction-wholesome",
+    "name": "Wholesome",
+    "first": "verdant",
+    "second": "verdant",
+    "kind": "boon",
+    "effect": "When you drink it, you also regain 1d6 Hit Points."
+  },
+  {
+    "id": "reaction-attuned-weave",
+    "name": "Attuned Weave",
+    "first": "arcane",
+    "second": "arcane",
+    "kind": "boon",
+    "effect": "Dispel Magic can't end the potion's effect (an antimagic field still suppresses it)."
+  },
+  {
+    "id": "reaction-sunlit-draught",
+    "name": "Sunlit Draught",
+    "first": "luminous",
+    "second": "luminous",
+    "triad": true,
+    "kind": "boon",
+    "effect": "Any dice the potion rolls to restore Hit Points use their maximum value, and you shed Bright Light in a 20-foot radius for 1 hour."
+  },
+  {
+    "id": "reaction-ironwrought",
+    "name": "Ironwrought",
+    "first": "viscous",
+    "second": "viscous",
+    "triad": true,
+    "kind": "quirk",
+    "effect": "Every duration of the potion's effect is tripled, but the brew is so thick that swallowing it takes an action instead of a Bonus Action."
+  },
+  {
+    "id": "reaction-bottled-thunderstorm",
+    "name": "Bottled Thunderstorm",
+    "first": "volatile",
+    "second": "volatile",
+    "triad": true,
+    "kind": "bane",
+    "effect": "When the vial is opened, roll a d6. On a 1, it explodes: each creature within 10 feet makes a DC 14 Dexterity saving throw, taking 4d6 Thunder damage on a failed save or half as much on a success, and the potion is lost. Otherwise, any dice the potion rolls use their maximum value."
+  },
+  {
+    "id": "reaction-liquid-ruin",
+    "name": "Liquid Ruin",
+    "first": "corrosive",
+    "second": "corrosive",
+    "triad": true,
+    "kind": "bane",
+    "effect": "So caustic it must be drunk through a glass straw. Drinking it any other way deals 3d6 Acid damage to the drinker."
+  },
+  {
+    "id": "reaction-deathly-communion",
+    "name": "Deathly Communion",
+    "first": "necrotic",
+    "second": "necrotic",
+    "triad": true,
+    "kind": "bane",
+    "effect": "While the potion's effect lasts, you count as Undead for spells and effects (including Turn Undead), and you can't regain Hit Points except from this potion."
+  },
+  {
+    "id": "reaction-heart-of-winter",
+    "name": "Heart of Winter",
+    "first": "cryogenic",
+    "second": "cryogenic",
+    "triad": true,
+    "kind": "boon",
+    "effect": "You have Immunity to Cold damage for 1 hour, and the potion never spoils."
+  },
+  {
+    "id": "reaction-mindstorm",
+    "name": "Mindstorm",
+    "first": "psychoactive",
+    "second": "psychoactive",
+    "triad": true,
+    "kind": "bane",
+    "effect": "Visions pour in: make a DC 14 Wisdom saving throw. On a failure, you have the Incapacitated condition for 1 minute before the effect begins. Either way, the DM grants you one cryptic vision."
+  },
+  {
+    "id": "reaction-pyre-heart",
+    "name": "Pyre-Heart",
+    "first": "igneous",
+    "second": "igneous",
+    "triad": true,
+    "kind": "boon",
+    "effect": "Once within the next hour, when you drop to 0 Hit Points, you drop to 1 Hit Point instead and erupt in flame: each creature within 5 feet takes 2d6 Fire damage."
+  },
+  {
+    "id": "reaction-wildbloom",
+    "name": "Wildbloom",
+    "first": "verdant",
+    "second": "verdant",
+    "triad": true,
+    "kind": "boon",
+    "effect": "You also regain 2d8 Hit Points, and you're cured of one disease or of the Poisoned condition."
+  },
+  {
+    "id": "reaction-wild-weave",
+    "name": "Wild Weave",
+    "first": "arcane",
+    "second": "arcane",
+    "triad": true,
+    "kind": "quirk",
+    "effect": "When you drink it, roll on the Wild Magic Surge table (Player's Handbook, Sorcerer)."
+  },
+  {
+    "id": "reaction-phase-separation",
+    "name": "Phase Separation",
+    "first": "luminous",
+    "second": "necrotic",
+    "kind": "bane",
+    "effect": "It must be shaken for a full round (Utilize action) before use. Drunk unshaken, the bright top layer gives you the Blinded condition until the end of your next turn."
+  },
+  {
+    "id": "reaction-aurora-breath",
+    "name": "Aurora Breath",
+    "first": "luminous",
+    "second": "cryogenic",
+    "kind": "quirk",
+    "effect": "For 1 hour, your breath trails ribbons of green and violet light, giving you Disadvantage on Dexterity (Stealth) checks in Dim Light or darkness."
+  },
+  {
+    "id": "reaction-sunfire",
+    "name": "Sunfire",
+    "first": "luminous",
+    "second": "igneous",
+    "kind": "boon",
+    "effect": "For 1 minute, your weapon attacks deal an extra 1d4 Radiant damage."
+  },
+  {
+    "id": "reaction-photosynthesis",
+    "name": "Photosynthesis",
+    "first": "luminous",
+    "second": "verdant",
+    "kind": "boon",
+    "effect": "If you drink it in sunlight, you also regain 2d4 Hit Points."
+  },
+  {
+    "id": "reaction-dampened",
+    "name": "Dampened",
+    "first": "viscous",
+    "second": "volatile",
+    "kind": "boon",
+    "effect": "The syrup binds the restless humours: the potion never bursts or explodes from rough handling, and it keeps twice as long."
+  },
+  {
+    "id": "reaction-sludge-congealment",
+    "name": "Sludge Congealment",
+    "first": "viscous",
+    "second": "corrosive",
+    "kind": "bane",
+    "effect": "Forcing it down takes an action instead of a Bonus Action, and when the effect ends you gain 1 Exhaustion level."
+  },
+  {
+    "id": "reaction-flash-gelation",
+    "name": "Flash-Gelation",
+    "first": "viscous",
+    "second": "cryogenic",
+    "kind": "bane",
+    "effect": "It sets into a thick jelly in the vial and must be warmed over a flame for 1 minute before it can be drunk."
+  },
+  {
+    "id": "reaction-soul-scorch",
+    "name": "Soul-Scorch",
+    "first": "volatile",
+    "second": "necrotic",
+    "kind": "bane",
+    "effect": "Your Hit Point maximum decreases by 1d8 until you finish a Long Rest."
+  },
+  {
+    "id": "reaction-thermal-shock",
+    "name": "Thermal Shock",
+    "first": "volatile",
+    "second": "cryogenic",
+    "kind": "bane",
+    "effect": "If the vial is dropped or thrown, it shatters violently: each creature within 10 feet makes a DC 13 Dexterity saving throw, taking 2d6 Cold damage on a failed save or half as much on a success."
+  },
+  {
+    "id": "reaction-spore-burst",
+    "name": "Spore Burst",
+    "first": "volatile",
+    "second": "verdant",
+    "kind": "quirk",
+    "effect": "Uncorking it releases a puff of harmless spores: every creature within 5 feet, you included, sneezes loudly."
+  },
+  {
+    "id": "reaction-grave-chill",
+    "name": "Grave-Chill",
+    "first": "necrotic",
+    "second": "cryogenic",
+    "kind": "boon",
+    "effect": "The potion never spoils, and you have Resistance to Necrotic damage for 1 hour after drinking it."
+  },
+  {
+    "id": "reaction-ancestral-haunting",
+    "name": "Ancestral Haunting",
+    "first": "necrotic",
+    "second": "psychoactive",
+    "kind": "bane",
+    "effect": "You hear the whispers of the dead: make a DC 13 Wisdom saving throw or have the Stunned condition until the end of your next turn."
+  },
+  {
+    "id": "reaction-blight",
+    "name": "Blight",
+    "first": "necrotic",
+    "second": "verdant",
+    "kind": "bane",
+    "effect": "Life and rot fight each other: Hit Points the potion restores are halved, and you have the Poisoned condition for 1 minute."
+  },
+  {
+    "id": "reaction-cold-clarity",
+    "name": "Cold Clarity",
+    "first": "cryogenic",
+    "second": "psychoactive",
+    "kind": "boon",
+    "effect": "For 10 minutes, you have Advantage on saving throws against the Charmed and Frightened conditions."
+  },
+  {
+    "id": "reaction-tepid-spent",
+    "name": "Tepid & Spent",
+    "first": "cryogenic",
+    "second": "igneous",
+    "kind": "bane",
+    "effect": "Heat and cold cancel out: the potion's dice and numerical bonuses are halved (round down)."
+  },
+  {
+    "id": "reaction-fey-reverie",
+    "name": "Fey Reverie",
+    "first": "psychoactive",
+    "second": "verdant",
+    "kind": "quirk",
+    "effect": "For 1 hour, you hear distant music no one else can, and small birds and beasts follow you around."
+  },
+  {
+    "id": "reaction-lucid-weave",
+    "name": "Lucid Weave",
+    "first": "psychoactive",
+    "second": "arcane",
+    "kind": "boon",
+    "effect": "For 1 minute, you sense the presence of magic within 30 feet of you, as with Detect Magic (no Concentration required)."
+  },
+  {
+    "id": "reaction-wellspring",
+    "name": "Wellspring",
+    "first": "verdant",
+    "second": "arcane",
+    "kind": "boon",
+    "effect": "When you drink it, you also regain one expended Hit Point Die."
+  }
+]

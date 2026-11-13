@@ -1,10 +1,16 @@
 /* =====================================================================
    ATHENAEUM DASHBOARD
    ---------------------------------------------------------------------
-   Everything on screen is generated from data/schema.js: the nav, the
-   lists and the forms. Add a type or a field to the schema and it shows
-   up here with no change to this file. How a field looks is said in the
-   schema too: section, width, help, showIf… (see its header).
+   Everything on screen is generated from data/schema.js: the workspaces,
+   the lists and the forms. Add a type or a field to the schema and it
+   shows up here with no change to this file. Where a type sits is its
+   `workspace` (Atlas, Cast, Chronicle, Codex, Tables, Site); how a field
+   looks is said there too: section, width, help, showIf… (see its header).
+
+   Layout: a rail of workspaces · the list of the workspace (a tree of
+   every place for the Atlas, the pools for Tables) · the main area: the
+   form of a record, the home page, or a board (the grid of a table, the
+   gallery of the map icons) with the open record beside it.
 
    Files are read and written through the linked project folder (File
    System Access API), so the page also works opened straight from disk.
@@ -53,6 +59,10 @@
             await w.write(text);
             await w.close();
         },
+        async remove(path) {
+            try { await (await dirOf(path, false)).removeEntry(path.split('/').pop()); }
+            catch (e) { if (e.name !== 'NotFoundError') throw e; }
+        },
         async url(path) {
             const fh = await (await dirOf(path, false)).getFileHandle(path.split('/').pop());
             return URL.createObjectURL(await fh.getFile());
@@ -80,7 +90,11 @@
             return res.ok ? res.text() : null;
         },
         async write(path, text) { this.writes[path] = text; },
-        async url(path) { return '../' + path; },
+        async remove(path) { this.writes[path] = null; },
+        async url(path) {
+            if (typeof this.writes[path] === 'string') return URL.createObjectURL(new Blob([this.writes[path]], { type: path.endsWith('.svg') ? 'image/svg+xml' : 'text/plain' }));
+            return '../' + path;
+        },
         async list() { return null; },
         async pick() { return null; },
         name: () => 'test mode (writes kept in memory)',
@@ -121,20 +135,29 @@
         },
     };
 
-    // Comes back on the tool and record last used, unless they no longer exist.
+    // Comes back on the workspace, tool and record last used, unless they no longer exist.
     function rememberUI() {
-        if (!TEST) kv.set('ui', { view: S.view, sel: S.sel, listCollapsed: $('#app').classList.contains('list-collapsed'), navOpen: S.navOpen });
+        if (TEST) return;
+        kv.set('ui', {
+            view: S.view, sel: S.sel, page: S.page, listCollapsed: $('#app').classList.contains('list-collapsed'),
+            wsLast: S.wsLast, lastSel: S.lastSel, open: [...S.open], camp: S.camp, recent: S.recent,
+        });
     }
     async function restoreUI() {
         const ui = TEST ? null : await kv.get('ui');
         if (!ui) return;
-        S.navOpen = !!ui.navOpen;
         $('#app').classList.toggle('list-collapsed', !!ui.listCollapsed);
-        if (!ui.view) return;
-        const known = ui.view.kind === 'single' ? SINGLES[ui.view.key] : TYPES[ui.view.key];
-        if (!known) return;
+        const known = v => v && (v.kind === 'single' ? SINGLES[v.key] : TYPES[v.key]);
+        S.wsLast = {};
+        for (const [ws, last] of Object.entries(ui.wsLast || {})) if (known(last && last.view)) S.wsLast[ws] = last;
+        S.lastSel = ui.lastSel || {};
+        S.open = new Set(ui.open || []);
+        if (ui.camp) S.camp = ui.camp;
+        S.recent = Array.isArray(ui.recent) ? ui.recent : [];
+        if (!known(ui.view)) return;
         S.view = { kind: ui.view.kind, key: ui.view.key };
-        S.sel = ui.view.kind === 'type' && S.data[ui.view.key].some(r => r.id === ui.sel) ? ui.sel : null;
+        S.sel = ui.view.kind === 'type' ? (S.data[ui.view.key].some(r => r.id === ui.sel) ? ui.sel : null) : (ui.sel || null);
+        S.page = ui.page === 'home' ? 'home' : null;
     }
 
     /* =================================================================
@@ -149,7 +172,21 @@
         store: null,     // rebuilt from the working data
         issues: { errors: [], warnings: [] },
         view: { kind: 'type', key: firstType },
-        sel: null,
+        sel: null,         // the open record (for the map icons: the open icon's id)
+        page: 'home',      // 'home', or null when a tool is open
+        wsLast: {},        // workspace -> {view, sel} last open there
+        lastSel: {},       // "type:key" -> the record last open in that tool
+        open: new Set(),   // Atlas tree: the places shown open
+        camp: null,        // the campaign the lists show (null: settings.currentCampaign, 'all': every one)
+        recent: [],        // [{type, id}] last opened, newest first (home page)
+        gridQ: {},         // table -> the grid's filter
+        gridSort: {},      // table -> {key, dir}
+        assets: {},        // path -> text of a file to write on save (map icon pictures)
+        removals: new Set(), // paths of files to delete on save
+        scrollTo: null,    // id of a section to bring into view after the next render
+        boardShown: null,  // "kind:key" of the board on screen (kept as it is when only the selection changes)
+        iconQ: '',         // the map icons' filter
+        loadedIcons: new Set(), // map icons whose picture is in the folder (as loaded / saved)
         search: '',
         collapsed: new Set(),
         previews: new Set(),
@@ -158,7 +195,6 @@
         menuCode: null,
         sealed: new Map(), // "type:id:key" -> the {text, password} its encrypted copy was made from
         cardSide: 'front', // item, spell and deity previews: 'front', 'sheet', 'back' or 'sealed'
-        navOpen: false,    // nav with its labels (else an icon rail)
         sideToggled: false, // previews panel: hidden on wide screens / shown on narrow ones
         refocus: null,     // data-path of the tag / link input to focus again after a re-render
     };
@@ -209,9 +245,14 @@
         for (const [type, def] of Object.entries(TYPES)) files[def.file] = JSON.stringify(publicRecords(type), null, 2) + '\n';
         for (const [name, def] of Object.entries(SINGLES)) files[def.file] = JSON.stringify(tidy(def.fields, S.singles[name] || {}, [], false, true), null, 2) + '\n';
         files[PRIVATE_FILE] = JSON.stringify(privateOverlay(), null, 2) + '\n';
+        for (const [p, t] of Object.entries(S.assets)) files[p] = t;
         return files;
     }
-    const dirtyFiles = () => Object.entries(serializeAll()).filter(([p, t]) => S.base[p] !== t);
+    // [path, text] to write, and [path, null] to delete
+    const dirtyFiles = () => [
+        ...Object.entries(serializeAll()).filter(([p, t]) => S.base[p] !== t),
+        ...[...S.removals].filter(p => !(p in S.assets)).map(p => [p, null]),
+    ];
 
     // One record as it would be saved (private fields included): spots unsaved records
     const recSnap = (type, r) => JSON.stringify(tidy(TYPES[type].fields, r, BASE_KEYS));
@@ -310,13 +351,19 @@
         const files = dirtyFiles();
         if (!files.length) { toast('Nothing to save'); return; }
         try {
-            for (const [path, text] of files) { await io.write(path, text); S.base[path] = text; }
+            for (const [path, text] of files) {
+                const icon = path.match(/^images\/atlas_icons\/(.+)\.svg$/);
+                if (text === null) { await io.remove(path); S.removals.delete(path); delete S.base[path]; if (icon) S.loadedIcons.delete(icon[1]); continue; }
+                await io.write(path, text); S.base[path] = text;
+                if (icon) S.loadedIcons.add(icon[1]);
+            }
             snapshotRecords();
-            toast(`Saved ${files.map(([p]) => p.split('/').pop()).join(', ')}`);
+            await listIcons();
+            toast(`Saved ${files.map(([p, t]) => (t === null ? 'deleted ' : '') + p.split('/').pop()).join(', ')}`);
         } catch (e) {
             alertBox('Saving failed', `<p>${esc(e.message)}</p><p>Files written before the error are saved; the rest are not.</p>`);
         }
-        renderNav(); renderList(); refreshChrome(); updateHeader();
+        renderNav(); renderList(); refreshChrome(); updateHeader(); if (S.page === 'home') renderHome(); else if (isBoard()) syncBoard();
     }
 
     /* =================================================================
@@ -347,6 +394,8 @@
     const enumOpts = f => (f.enum ? S.store.enumOptions(f.enum) : (f.options || []).map(o => ({ id: o, label: o })));
     const enumLabel = (name, id) => (S.store.enumOptions(name).find(o => o.id === id) || {}).label || id || '';
     const typeLabel = t => (TYPES[t] ? TYPES[t].label : t);
+    // lowercase, except names that start with an acronym (NPC, POI)
+    const lc = s => (/^[A-Z]{2}/.test(String(s || '')) ? String(s) : String(s || '').toLowerCase());
 
     // Second line of a record in the list
     function subtitle(type, r) {
@@ -476,12 +525,17 @@
         closeMenu();
         const m = document.createElement('div');
         m.className = 'menu'; m.id = 'menu';
-        m.innerHTML = items.map(i => i ? `<button data-action="${i.action}" ${i.dir ? `data-dir="${i.dir}"` : ''} class="${i.danger ? 'danger' : ''}" ${i.disabled ? 'disabled' : ''}>
-            <span class="material-symbols-outlined">${i.icon}</span>${esc(i.label)}</button>` : '<hr>').join('');
+        m.setAttribute('role', 'menu');
+        // an item: {action, icon, label, dir, data: {k: v}, danger, disabled, on} · {head} · {note} · null (a rule)
+        m.innerHTML = items.map(i => !i ? '<hr>' : i.head ? `<div class="menu-h">${esc(i.head)}</div>` : i.note ? `<div class="menu-note">${esc(i.note)}</div>`
+            : `<button role="menuitem" data-action="${i.action}" ${i.dir ? `data-dir="${i.dir}"` : ''} ${Object.entries(i.data || {}).map(([k, v]) => `data-${k}="${esc(v)}"`).join(' ')}
+                class="${i.danger ? 'danger' : ''} ${i.on ? 'on' : ''}" ${i.disabled ? 'disabled' : ''}>
+            <span class="material-symbols-outlined">${i.icon}</span>${esc(i.label)}</button>`).join('');
         document.body.appendChild(m);
         const r = btn.getBoundingClientRect();
         m.style.top = `${r.bottom + 6}px`;
-        m.style.left = `${Math.max(8, r.right - m.offsetWidth)}px`;
+        m.style.left = `${Math.max(8, Math.min(window.innerWidth - m.offsetWidth - 8, btn.dataset.menuLeft ? r.left : r.right - m.offsetWidth))}px`;
+        const first = $('button:not(:disabled)', m); if (first) first.focus({ preventScroll: true });
     }
     function closeMenu() { const m = $('#menu'); if (m) m.remove(); }
     // Labels of the icon rail, and other [data-tip] elements
@@ -495,58 +549,192 @@
     }
 
     /* =================================================================
-       NAV & LIST
+       WORKSPACES
        ================================================================= */
-    // Menu colour of each group. A group added to the schema takes one of the spare colours.
-    const GROUP_COLOURS = { Site: '#b4bac2', Places: '#6aa9fa', People: '#66c488', Library: '#b79cf5', Campaigns: '#f28b82', Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5', Divination: '#c4a3f7', Generators: '#8fd6a8' };
+    // The rail. Each type and one-object file says its workspace in the schema (`workspace`);
+    // one that says none (or an unknown one) lands in Tables, under its `group`.
+    const WS = [
+        { id: 'home', label: 'Home', icon: 'home', color: '#e9c176' },
+        { id: 'atlas', label: 'Atlas', icon: 'travel_explore', color: '#6aa9fa', blurb: 'Every place in one tree: continents, countries, settlements, districts, points of interest and the places inside them.' },
+        { id: 'cast', label: 'Cast', icon: 'groups', color: '#66c488', blurb: 'NPCs, factions, heroes and the Pantheon.' },
+        { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, rumours and notice boards, filtered by the campaign in the top bar.' },
+        { id: 'codex', label: 'Codex', icon: 'menu_book', color: '#b79cf5', blurb: 'Glossary, tomes, handouts, bestiary, spellbook and items.' },
+        { id: 'tables', label: 'Tables', icon: 'table_view', color: '#f0a35e', blurb: 'The pools the site draws from, each one a grid: markets, faith, divination, alchemy, folios.' },
+        { id: 'site', label: 'Site', icon: 'settings', color: '#b4bac2', bottom: true, blurb: 'World map, settings, upcoming sessions and the map icons.' },
+    ];
+    const WS_BY = Object.fromEntries(WS.map(w => [w.id, w]));
+    const wsOfDef = d => (d && d.workspace && WS_BY[d.workspace] && d.workspace !== 'home' ? d.workspace : 'tables');
+    const curWs = () => (S.page === 'home' ? 'home' : wsOfDef(curDef()));
+    const ALL_ENTRIES = [
+        ...Object.entries(TYPES).map(([key, d]) => ({ kind: 'type', key, d })),
+        ...Object.entries(SINGLES).map(([key, d]) => ({ kind: 'single', key, d })),
+    ];
+    const wsEntries = ws => ALL_ENTRIES.filter(e => wsOfDef(e.d) === ws);
+    const entryDirty = e => (e.kind === 'type' ? S.data[e.key].some(r => isDirtyRec(e.key, r)) : isDirtySingle(e.key));
+    const entryLabel = e => e.d.navLabel || e.d.plural || e.d.label;
+    // Colour of a type: its workspace's, or its group's among the tables
+    const GROUP_COLOURS = { Markets: '#f0a35e', Faith: '#f3dc9b', 'Town life': '#4fd1c5', Divination: '#c4a3f7', Alchemy: '#8fd6a8', Generators: '#d4d86a' };
     const SPARE_COLOURS = ['#4fd1c5', '#f48fb1', '#d4d86a'];
-    function renderNav() {
-        $('#app').classList.toggle('nav-open', S.navOpen);
-        const entries = [
-            ...Object.entries(TYPES).map(([key, d]) => ({ kind: 'type', key, d })),
-            ...Object.entries(SINGLES).map(([key, d]) => ({ kind: 'single', key, d })),
-        ];
-        const groups = [...new Set(entries.map(e => e.d.group || 'Other'))];
-        $('#nav-items').innerHTML = groups.map((g, i) => `
-            <div class="nav-sec" style="--c:${GROUP_COLOURS[g] || SPARE_COLOURS[i % SPARE_COLOURS.length]}">
-            <div class="nav-group"><span>${esc(g)}</span></div>
-            ${entries.filter(e => (e.d.group || 'Other') === g).map(e => {
-            const label = e.d.navLabel || e.d.plural || e.d.label;
-            const dirty = e.kind === 'type' ? S.data[e.key].some(r => isDirtyRec(e.key, r)) : isDirtySingle(e.key);
-            const count = e.kind === 'type' ? S.data[e.key].length : '';
-            return `<button class="nav-btn ${S.view.kind === e.kind && S.view.key === e.key ? 'active' : ''}" data-nav="${e.kind}:${e.key}" ${S.navOpen ? '' : `data-tip="${esc(label)}"`} aria-label="${esc(label)}">
-                    <span class="material-symbols-outlined">${esc(e.d.icon || 'description')}</span>
-                    <span class="lbl">${esc(label)}</span>
-                    <span class="cnt">${count}</span>
-                    ${dirty ? '<span class="dot" title="Unsaved changes"></span>' : ''}
-                </button>`;
-        }).join('')}
-            </div>`).join('');
-        $('#nav-pin').innerHTML = `<span class="material-symbols-outlined">${S.navOpen ? 'left_panel_close' : 'left_panel_open'}</span><span class="lbl">Collapse menu</span>`;
-        $('#nav-pin').dataset.tip = S.navOpen ? '' : 'Show the labels';
+    const colourOf = d => {
+        const ws = wsOfDef(d);
+        if (ws !== 'tables') return WS_BY[ws].color;
+        return GROUP_COLOURS[d.group] || SPARE_COLOURS[[...new Set(ALL_ENTRIES.map(e => e.d.group))].indexOf(d.group) % SPARE_COLOURS.length] || WS_BY.tables.color;
+    };
+    // A table (and the map icons) opens as a board: a grid / gallery, the open record beside it
+    const isBoard = () => S.page !== 'home' && ((S.view.kind === 'type' && curWs() === 'tables') || (S.view.kind === 'single' && S.view.key === 'mapIcons'));
+    const PLACE_TYPES = Object.keys(TYPES).filter(t => TYPES[t].place);
+
+    /* ---------- the campaign the lists show ---------- */
+    const campOf = () => (S.camp && S.camp !== 'all' && S.data.campaign.some(c => c.id === S.camp) ? S.camp : null);
+    const curCampaign = () => campOf() || S.store.settings.currentCampaign || '';
+    const CAMP_TYPES = new Set(['npc', 'hero', 'faction', 'session', 'handout', 'rumour', 'notice', 'prophecy']);
+    function inCampaign(type, r, camp) {
+        const c = S.data.campaign.find(x => x.id === camp) || {};
+        switch (type) {
+            case 'npc': return !(r.campaigns || []).length || r.campaigns.some(x => x && x.campaign === camp);
+            case 'session': case 'handout': return !r.campaign || r.campaign === camp;
+            case 'rumour': case 'notice': case 'prophecy': return !(r.campaigns || []).length || r.campaigns.includes(camp);
+            case 'hero': return !S.data.campaign.some(x => (x.party || []).includes(r.id)) || (c.party || []).includes(r.id);
+            case 'faction': {
+                const listed = x => (x.standings || []).some(s => s && s.faction === r.id);
+                return !S.data.campaign.some(listed) || listed(c);
+            }
+        }
+        return true;
     }
-    function renderList() {
-        $('#app').classList.toggle('no-list', isSingle());
-        if (isSingle()) return;
-        const type = S.view.key, def = TYPES[type];
-        const q = S.search.trim().toLowerCase();
-        const match = r => !q || [r.id, r.name, ...(r.aliases || []), subtitle(type, r)].some(v => String(v || '').toLowerCase().includes(q));
-        const groups = orderedRecords(type).map(g => ({ ...g, recs: g.recs.filter(match) })).filter(g => g.recs.length);
-        const total = S.data[type].length;
-        $('#list-title').innerHTML = `${esc(def.plural || def.label)} <span>${q ? `${groups.reduce((n, g) => n + g.recs.length, 0)} / ` : ''}${total}</span>`;
-        $('#new-btn').title = `New ${def.label.toLowerCase()}`;
-        // A place inside another POI is indented under it, one step per level (while a
-        // search hides its parent it stands at the edge; its second line names the parent)
-        const shownIds = new Set(groups.flatMap(g => g.recs.map(r => r.id)));
-        const depthOf = r => {
-            let d = 0;
-            for (let p = r, hops = 0; type === 'poi' && hops < 6 && shownIds.has(p.parent) && typeOfId(p.parent) === 'poi'; hops++) { d++; p = S.store.get(p.parent); }
-            return d;
+    const campFilter = type => { const camp = campOf(); return camp && CAMP_TYPES.has(type) ? r => inCampaign(type, r, camp) : null; };
+    function renderCampBtn() {
+        const b = $('#camp-btn'), camp = campOf();
+        b.className = 'camp-btn' + (camp ? '' : ' all');
+        b.innerHTML = `<span class="material-symbols-outlined">auto_stories</span><span class="t">${esc(camp ? nameOf(camp) : 'All campaigns')}</span><span class="material-symbols-outlined">expand_more</span>`;
+    }
+    function campMenu(btn) {
+        const camp = campOf() || 'all';
+        openMenu(btn, [
+            { head: 'Lists show' },
+            ...S.data.campaign.map(c => ({ action: 'camp', data: { camp: c.id }, icon: c.id === camp ? 'radio_button_checked' : 'radio_button_unchecked', label: c.name || c.id, on: c.id === camp })),
+            { action: 'camp', data: { camp: 'all' }, icon: camp === 'all' ? 'radio_button_checked' : 'radio_button_unchecked', label: 'All campaigns', on: camp === 'all' },
+            { note: 'Filters NPCs, heroes, factions, sessions, handouts, rumours and notices. New sessions, rumours and notices go in this campaign. The site’s default is in Site › Settings.' },
+        ]);
+    }
+
+    /* ---------- rail and breadcrumbs ---------- */
+    function renderNav() {
+        const ws = curWs();
+        const btn = w => {
+            const dirty = w.id !== 'home' && wsEntries(w.id).some(entryDirty);
+            return `<button class="rb ${ws === w.id ? 'active' : ''}" style="--c:${w.color}" data-ws="${w.id}" ${ws === w.id ? 'aria-current="page"' : ''} title="${esc(w.blurb || w.label)}">
+                <span class="material-symbols-outlined">${w.icon}</span>${esc(w.label)}${dirty ? '<span class="dot" title="Unsaved changes"></span>' : ''}</button>`;
         };
+        $('#nav-items').innerHTML = WS.filter(w => !w.bottom).map(btn).join('');
+        $('#nav-bottom').innerHTML = WS.filter(w => w.bottom).map(btn).join('');
+        renderCrumbs();
+    }
+    function renderCrumbs() {
+        const ws = curWs(), w = WS_BY[ws];
+        const sep = '<span class="material-symbols-outlined sep">chevron_right</span>';
+        if (ws === 'home') { $('#crumbs').innerHTML = `<span class="cur ws" style="--c:${w.color}">Home</span>`; return; }
+        const parts = [`<a href="#" class="ws" style="--c:${w.color}" data-ws="${ws}">${esc(w.label)}</a>`];
+        const def = curDef();
+        if (ws === 'tables' && def.group) parts.push(`<span class="cur" style="font-weight:500;color:var(--ink-faint)">${esc(def.group)}</span>`);
+        const rec = isSingle() ? null : curRecord();
+        if (S.view.kind === 'single' && S.view.key === 'mapIcons' && S.sel) {
+            const ic = iconList().find(i => i.id === S.sel);
+            parts.push(`<a href="#" data-nav="single:mapIcons">${esc(def.label)}</a>`, `<span class="cur">${esc(ic ? ic.label || ic.id : S.sel)}</span>`);
+        } else if (!rec) { if (ws !== 'atlas') parts.push(`<span class="cur">${esc(entryLabel({ d: def }))}</span>`); }
+        else {
+            if (ws !== 'atlas') parts.push(`<a href="#" data-nav="type:${S.view.key}">${esc(entryLabel({ d: def }))}</a>`);
+            else {
+                // the places above it: the nearest three, the rest behind “…”
+                const up = S.store.ancestors(rec.id);
+                if (up.length > 3) parts.push(`<span class="more" title="${esc(up.slice(0, -3).map(x => x.name).join(' › '))}">…</span>`);
+                up.slice(-3).forEach(a => parts.push(`<a href="#" data-jump="${esc(a.id)}">${esc(a.name)}</a>`));
+            }
+            parts.push(`<span class="cur">${esc(rec.name || '(no name)')}</span>`);
+        }
+        $('#crumbs').innerHTML = parts.join(sep);
+    }
+
+    /* ---------- going places ---------- */
+    function goWs(ws) {
+        S.search = ''; $('#search').value = '';
+        if (ws === 'home') { S.page = 'home'; renderAll(); rememberUI(); return; }
+        const entries = wsEntries(ws);
+        if (!entries.length) return;
+        const last = S.wsLast[ws];
+        const has = v => v && entries.some(e => e.kind === v.kind && e.key === v.key);
+        if (has(last && last.view)) { select(last.view, last.sel); return; }
+        const e = entries[0];
+        select({ kind: e.kind, key: e.key }, S.lastSel[`${e.kind}:${e.key}`] ?? null);
+    }
+    // A tool of the current workspace (a sub-tab, a table): back on its last record, except the boards
+    function openTool(kind, key) {
+        S.search = ''; $('#search').value = '';
+        const view = { kind, key };
+        const board = (kind === 'type' && wsOfDef(TYPES[key]) === 'tables') || (kind === 'single' && key === 'mapIcons');
+        const last = S.lastSel[`${kind}:${key}`];
+        select(view, !board && kind === 'type' && last && S.data[key].some(r => r.id === last) ? last : null);
+    }
+
+    /* ---------- the list column ---------- */
+    function listHead({ title, count = '', newLabel = '', newTitle = '', more = false, tabs = null, search = true, placeholder = 'Filter this list…' }) {
+        $('#list-title').innerHTML = `${esc(title)} <span>${esc(count)}</span>`;
+        const nb = $('#new-btn');
+        $('#new-wrap').hidden = !newLabel;
+        $('#new-wrap').classList.toggle('split', !!more);
+        nb.textContent = newLabel; nb.title = newTitle || newLabel.replace(/^\+\s*/, 'New ');
+        $('#new-more').hidden = !more;
+        const st = $('#subtabs');
+        st.hidden = !tabs;
+        if (tabs) { st.style.setProperty('--c', WS_BY[curWs()].color); st.innerHTML = tabs; }
+        $('#search-wrap').hidden = !search;
+        $('#search').placeholder = placeholder;
+    }
+    function listFoot(html) { const f = $('#list-foot'); f.hidden = !html; f.innerHTML = html || ''; }
+    function renderList() {
+        const ws = curWs();
+        $('#app').classList.toggle('no-list', ws === 'home');
+        $('#app').classList.toggle('tables-mode', ws === 'tables');
+        if (ws === 'home') return;
+        listFoot('');
+        if (ws === 'atlas') renderTree();
+        else if (ws === 'tables' || ws === 'site') renderToolList(ws);
+        else renderRecordList(ws);
+    }
+    // Tables and Site: the tools themselves (Tables by group)
+    function renderToolList(ws) {
+        const entries = wsEntries(ws);
+        listHead({ title: WS_BY[ws].label, count: entries.length, search: false });
+        const groups = ws === 'tables' ? [...new Set(entries.map(e => e.d.group || 'Other'))] : [''];
+        const item = e => {
+            const on = S.view.kind === e.kind && S.view.key === e.key;
+            const n = e.kind === 'type' ? S.data[e.key].length : e.key === 'mapIcons' ? iconList().length : '';
+            return `<button class="li tbl-i ${on ? 'active' : ''}" style="--c:${colourOf(e.d)}" data-nav="${e.kind}:${e.key}">
+                <span class="material-symbols-outlined">${esc(e.d.icon || 'description')}</span><span class="t">${esc(entryLabel(e))}</span>
+                ${entryDirty(e) ? '<span class="dot" title="Unsaved changes"></span>' : ''}<span class="n">${n}</span></button>`;
+        };
+        $('#list-items').innerHTML = groups.map(g => `${g ? `<div class="lg"><span>${esc(g)}</span></div>` : ''}
+            ${entries.filter(e => !g || (e.d.group || 'Other') === g).map(item).join('')}`).join('');
+    }
+    // Cast, Chronicle, Codex: one tab per type above its records
+    function renderRecordList(ws) {
+        if (isSingle()) { renderToolList(ws); return; }
+        const type = S.view.key, def = TYPES[type];
+        const tabs = wsEntries(ws).filter(e => e.kind === 'type').map(e => {
+            const f = campFilter(e.key);
+            const n = f ? S.data[e.key].filter(f).length : S.data[e.key].length;
+            return `<button class="st ${e.key === type ? 'on' : ''}" role="tab" aria-selected="${e.key === type}" data-tab="${e.key}">${esc(entryLabel(e))} <small>${n}</small>${entryDirty(e) ? '<span class="dot" title="Unsaved changes"></span>' : ''}</button>`;
+        }).join('');
+        const q = S.search.trim().toLowerCase();
+        const inCamp = campFilter(type);
+        const match = r => !q || [r.id, r.name, ...(r.aliases || []), subtitle(type, r)].some(v => String(v || '').toLowerCase().includes(q));
+        const groups = orderedRecords(type).map(g => ({ ...g, recs: g.recs.filter(r => match(r) && (!inCamp || inCamp(r))) })).filter(g => g.recs.length);
+        const total = inCamp ? S.data[type].filter(inCamp).length : S.data[type].length;
+        const shown = groups.reduce((n, g) => n + g.recs.length, 0);
+        listHead({ title: def.plural || def.label, count: q ? `${shown} / ${total}` : total, newLabel: '+ New', newTitle: `New ${lc(def.label)}`, tabs, placeholder: `Filter ${lc(def.plural || def.label)}…` });
         const item = r => {
             const bad = recordErrors(type, r.id).length;
-            const depth = depthOf(r);
-            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${depth ? 'nested' : ''}" ${depth ? `style="--depth:${depth}"` : ''} data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
+            return `<button class="li ${r.id === S.sel ? 'active' : ''}" data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
                 <span class="t">${esc(r.name || '(no name)')}</span>
                 ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
@@ -557,31 +745,142 @@
             ${g.label ? `<div class="lg"><span>${esc(g.label)}</span><small>${g.recs.length}</small></div>` : ''}
             ${g.recs.map(item).join('')}`).join('')
             || `<p class="empty">${q ? 'No match.' : 'Nothing yet: click <b>+ New</b>.'}</p>`;
+        const hidden = inCamp ? S.data[type].length - total : 0;
+        listFoot(hidden ? `${hidden} more in other campaigns · <button data-action="camp" data-camp="all">Show every campaign</button>` : '');
     }
+
+    /* ---------- the Atlas: every place in one tree ---------- */
+    const TREE_CHILD = { continent: 'country', country: 'settlement', settlement: 'district', district: 'poi' };
+    const placeLabel = t => (t === 'poi' ? 'POI' : TYPES[t].label);
+    function placeTree() {
+        const ids = new Set(PLACE_TYPES.flatMap(t => S.data[t].map(r => r.id)));
+        const kids = new Map(), roots = [], loose = [];
+        for (const t of PLACE_TYPES) for (const r of S.data[t]) {
+            if (!TYPES[t].parent.length) roots.push(r);
+            else if (r.parent && ids.has(r.parent) && r.parent !== r.id) { if (!kids.has(r.parent)) kids.set(r.parent, []); kids.get(r.parent).push(r); }
+            else loose.push(r);
+        }
+        return { kids, roots, loose };
+    }
+    // The roles of a POI (its optional blocks: tavern, shop…), as icons
+    const roleIcons = (type, r) => Object.entries(TYPES[type].fields)
+        .filter(([k, f]) => f.kind === 'object' && f.optional && f.section !== 'Look' && r[k])
+        .map(([, f]) => `<span class="material-symbols-outlined" title="${esc(f.label)}">${esc(SECTION_ICONS[f.section] || 'label')}</span>`).join('');
+    // What "+ New" adds in the Atlas: a child of the open place (or a POI beside a POI)
+    function atlasAdd() {
+        const rec = !isSingle() && TYPES[S.view.key].place ? curRecord() : null;
+        if (!rec) return { type: 'continent', parent: '', label: '+ Continent' };
+        const t = S.view.key;
+        if (t === 'poi') return rec.institution ? { type: 'poi', parent: rec.id, label: '+ Place inside', title: `New place inside ${rec.name}` } : { type: 'poi', parent: rec.parent || '', label: '+ POI beside', title: `New POI in ${nameOf(rec.parent)}` };
+        const c = TREE_CHILD[t];
+        return { type: c, parent: rec.id, label: `+ ${placeLabel(c)} here`, title: `New ${lc(TYPES[c].label)} in ${rec.name}` };
+    }
+    function atlasAddMenu(btn) {
+        const rec = !isSingle() && TYPES[S.view.key].place ? curRecord() : null;
+        const chain = rec ? [rec, ...S.store.ancestors(rec.id).reverse()] : [];
+        openMenu(btn, [{ head: 'New place' }, ...PLACE_TYPES.map(t => {
+            const host = chain.find(p => TYPES[t].parent.includes(typeOfId(p.id)) && (t !== 'poi' || typeOfId(p.id) !== 'poi' || p.institution));
+            return { action: 'new-place', data: { type: t, parent: host ? host.id : '' }, icon: TYPES[t].icon, label: `${TYPES[t].label}${host ? ` in ${host.name}` : ''}` };
+        })]);
+    }
+    function renderTree() {
+        const { kids, roots, loose } = placeTree();
+        const q = S.search.trim().toLowerCase();
+        const total = PLACE_TYPES.reduce((n, t) => n + S.data[t].length, 0);
+        const add = atlasAdd();
+        const hit = r => !q || [r.id, r.name, ...(r.aliases || []), r.subtitle].some(v => String(v || '').toLowerCase().includes(q));
+        // with a filter: the matches and the places above them, all open
+        const keep = new Map();
+        const scan = (r, seen) => {
+            if (seen.has(r.id)) return false;
+            seen.add(r.id);
+            let k = hit(r);
+            for (const c of kids.get(r.id) || []) if (scan(c, seen)) k = true;
+            keep.set(r.id, k);
+            return k;
+        };
+        const seen0 = new Set();
+        [...roots, ...loose].forEach(r => scan(r, seen0));
+        const shown = q ? [...keep.entries()].filter(([id, k]) => k && hit(S.store.get(id) || {})).length : total;
+        listHead({ title: 'Atlas', count: q ? `${shown} / ${total}` : `${total} places`, newLabel: add.label, newTitle: add.title || `New ${lc(TYPES[add.type].label)}`, more: true, placeholder: 'Filter places…' });
+        let html = '';
+        const seen = new Set();
+        const row = (r, depth) => {
+            if (seen.has(r.id) || (q && !keep.get(r.id))) return;
+            seen.add(r.id);
+            const type = typeOfId(r.id), def = TYPES[type];
+            const ch = (kids.get(r.id) || []).filter(c => !q || keep.get(c.id));
+            const open = q ? true : S.open.has(r.id);
+            const bad = recordErrors(type, r.id).length;
+            html += `<div class="li tn ${r.id === S.sel ? 'active' : ''} ${ch.length && !open ? 'closed' : ''} ${q && hit(r) ? 'match' : ''}" style="--depth:${depth}" data-depth="${Math.min(depth, 2)}"
+                    data-select="${esc(r.id)}" tabindex="0" role="treeitem" ${ch.length ? `aria-expanded="${open}"` : ''} ${q ? '' : 'draggable="true"'} title="${esc(def.label)}${r.subtitle ? ' · ' + esc(r.subtitle) : ''}">
+                <button class="car ${ch.length ? '' : 'none'}" data-action="tree-toggle" data-id="${esc(r.id)}" tabindex="-1" aria-label="${open ? 'Close' : 'Open'}"><span class="material-symbols-outlined">expand_more</span></button>
+                <span class="ti material-symbols-outlined" style="--tc:#6aa9fa">${esc(def.icon)}</span>
+                <span class="t">${esc(r.name || '(no name)')}</span>
+                ${type === 'poi' ? `<span class="roles">${roleIcons(type, r)}</span>` : ''}
+                ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
+                ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
+                ${ch.length && !open ? `<span class="n">${ch.length}</span>` : ''}
+            </div>`;
+            if (open) ch.forEach(c => row(c, depth + 1));
+        };
+        roots.forEach(r => row(r, 0));
+        if (loose.some(r => !q || keep.get(r.id))) {
+            html += `<div class="lg"><span>Not placed anywhere</span></div>`;
+            loose.forEach(r => row(r, 0));
+        }
+        $('#list-items').innerHTML = html || `<p class="empty">${q ? 'No match.' : 'No place yet: click <b>+ Continent</b>.'}</p>`;
+        $('#list-items').setAttribute('role', 'tree');
+    }
+    function toggleTree(id, open) {
+        if (open === undefined) open = !S.open.has(id);
+        if (open) S.open.add(id); else S.open.delete(id);
+        renderTree(); rememberUI();
+        const el = $(`#list-items [data-select="${CSS.escape(id)}"]`); if (el) el.focus();
+    }
+
+    /* ---------- chrome ---------- */
     function refreshChrome() {
         const dirty = dirtyFiles();
         const pill = $('#save-pill');
         pill.textContent = dirty.length ? `${dirty.length} file${dirty.length === 1 ? '' : 's'} unsaved` : 'All saved';
         pill.className = 'pill ' + (dirty.length ? 'dirty' : 'ok');
-        pill.title = dirty.map(([p]) => p).join('\n');
+        pill.title = dirty.map(([p, t]) => (t === null ? 'delete ' : '') + p).join('\n');
         const n = S.issues.errors.length, w = S.issues.warnings.length;
         const ip = $('#issues-pill');
         ip.hidden = !n && !w;
         ip.className = 'pill ' + (n ? 'bad' : 'warn');
         ip.textContent = n ? `${n} problem${n === 1 ? '' : 's'}${w ? ` · ${w} warning${w === 1 ? '' : 's'}` : ''}` : `${w} warning${w === 1 ? '' : 's'}`;
         ip.title = 'Show them';
+        renderCampBtn();
     }
     let refreshTimer = null;
     function scheduleRefresh() {
         clearTimeout(refreshTimer);
-        refreshTimer = setTimeout(() => { rebuild(); renderNav(); renderList(); renderSide(); refreshChrome(); updateHeader(); }, 250);
+        refreshTimer = setTimeout(() => { rebuild(); renderNav(); renderList(); renderSide(); refreshChrome(); updateHeader(); if (isBoard()) syncBoard(); }, 250);
+    }
+    // Everything, after a change of workspace or tool
+    function renderAll() {
+        renderNav(); renderList(); renderMain(); refreshChrome();
+    }
+    function renderMain() {
+        const home = S.page === 'home', board = !home && isBoard();
+        const app = $('#app');
+        app.classList.toggle('board-mode', board);
+        app.classList.toggle('no-sel', board && !S.sel);
+        $('#home').hidden = !home;
+        $('#board').hidden = !board;
+        $('#editor').hidden = home;
+        if (home) { renderHome(); rememberUI(); return; }
+        if (board) renderBoard();
+        renderEditor();
     }
 
     /* =================================================================
        FORM FIELDS
        ================================================================= */
     const SECTION_ICONS = {
-        Essentials: 'badge', Details: 'tune', Lore: 'auto_stories', Map: 'map', 'On the page': 'web', Institution: 'account_balance', Tavern: 'sports_bar', Shop: 'storefront', Temple: 'brightness_7',
+        Essentials: 'badge', Details: 'tune', Lore: 'auto_stories', Map: 'map', 'On the page': 'web', Institution: 'account_balance', Tavern: 'sports_bar', Shop: 'storefront', Temple: 'brightness_7', Alchemist: 'science',
         Identity: 'person', 'Where & ties': 'pin_drop', Campaigns: 'flag', Biography: 'history_edu', 'DM only': 'lock', Dossier: 'folder_open', Relations: 'handshake',
         Intelligence: 'visibility', 'Field evidence': 'folder_supervised', Look: 'palette', Text: 'subject', 'Picture & file': 'image', Stats: 'monitoring', 'Field notes': 'edit_note',
         Card: 'style', Description: 'subject', Story: 'auto_stories', Quests: 'flag', Party: 'groups', Allegiances: 'handshake', Spellbooks: 'webhook', Overview: 'summarize',
@@ -864,12 +1163,13 @@
         const missing = value && !allIds().has(value) ? `<option value="${esc(value)}" selected>⚠ ${esc(value)} (does not exist)</option>` : '';
         return `<select ${attrs}><option value="">— none —</option>${missing}${groups}</select>`;
     }
+    // The picture of a map pin: a button showing it, which opens the icon picker
     function iconInput(value, p) {
-        if (!S.icons) return `<input data-path="${p}" data-kind="text" value="${esc(value)}" placeholder="settlement" aria-label="Icon">`;
-        const has = !value || S.icons.includes(value);
-        return `<select data-path="${p}" data-kind="enum" aria-label="Icon"><option value="">—</option>
-            ${S.icons.map(i => `<option ${i === value ? 'selected' : ''}>${esc(i)}</option>`).join('')}
-            ${has ? '' : `<option selected value="${esc(value)}">⚠ ${esc(value)} (no such icon)</option>`}</select>`;
+        const bad = value && !iconIds().includes(value);
+        return `<button type="button" class="icon-pick ${bad ? 'bad' : ''}" data-action="icon-pick" data-path="${p}" aria-label="Pin icon: ${esc(value ? iconName(value) : 'none')}. Change it">
+            <span class="pinp sm ${value ? '' : 'missing'}"><img data-thumb="${value ? esc(iconSrc(value)) : ''}" alt=""></span>
+            <span class="t ${value ? '' : 'none'}">${value ? esc(iconName(value)) + (bad ? ' — no such icon' : '') : 'Choose an icon…'}</span>
+            <span class="material-symbols-outlined">expand_more</span></button>`;
     }
     function renderMd(text) {
         const id = isSingle() ? null : S.sel;
@@ -950,20 +1250,27 @@
     }
     const secId = t => 'sec-' + slug(t);
 
+    // Sections that hold one optional block (a POI's Tavern, Shop… or its Look): shown only once added
+    const optionalBlock = sec => (sec.fields.length === 1 && sec.fields[0][1].kind === 'object' && sec.fields[0][1].optional ? sec.fields[0] : null);
     function renderEditor() {
         rememberUI(); // every change of tool or record ends up here
         closeMenu();
         const ed = $('#editor');
         const def = curDef();
+        if (S.view.kind === 'single' && S.view.key === 'mapIcons') { renderIconDetail(); return; }
         const rec = curRecord();
         if (!rec) {
-            ed.innerHTML = `<div class="empty big"><span class="material-symbols-outlined">${esc(def.icon || 'description')}</span>
-                <p>Pick ${esc((def.label || '').toLowerCase())} in the list, or create one.</p>
-                <button class="btn primary" data-action="new">+ New ${esc((def.label || '').toLowerCase())}</button>
+            const atlas = curWs() === 'atlas';
+            ed.innerHTML = isBoard() ? '' : `<div class="empty big"><span class="material-symbols-outlined">${esc(atlas ? 'travel_explore' : def.icon || 'description')}</span>
+                <p>${atlas ? 'Pick a place in the tree, or add one.' : `Pick ${esc(lc(def.label || ''))} in the list, or create one.`}</p>
+                <button class="btn primary" data-action="new">${atlas ? esc(atlasAdd().label) : `+ New ${esc(lc(def.label || ''))}`}</button>
                 <p class="muted small">Ctrl K: find any record · Alt ↑ ↓: previous / next</p></div>`;
             return;
         }
-        const secs = sectionsOf(def);
+        const allSecs = sectionsOf(def);
+        // absent optional blocks: no card, offered in the "+ Add" menu of the section index
+        const secs = allSecs.filter(sec => { const o = optionalBlock(sec); return !o || rec[o[0]] != null; });
+        const addable = allSecs.filter(sec => { const o = optionalBlock(sec); return o && rec[o[0]] == null; });
         const base = isSingle() ? '' : [
             fieldHtml({ kind: 'text', label: 'Name', required: true }, 'name', rec.name, ['name'], rec),
             def.place && def.parent.length ? fieldHtml({ kind: 'ref', to: def.parent, label: 'Sits in', required: true }, 'parent', rec.parent, ['parent'], rec) : '',
@@ -973,22 +1280,17 @@
             const k = `sec:${S.view.key}:${sec.title}`, collapsed = S.collapsed.has(k);
             // A card holding a single object (Tavern, Shop, Temple, Statistics): its fields straight on the card
             const only = sec.fields.length === 1 && sec.fields[0][1].kind === 'object' ? sec.fields[0] : null;
-            let body, extra = '', absent = false;
+            let body, extra = '';
             if (only) {
                 const [key, f] = only, v = rec[key];
-                if (f.optional && (v === undefined || v === null)) {
-                    absent = true;
-                    body = `<div class="add-block">${helpHtml(f)}<button class="btn ghost" data-action="obj-add" data-path="${pathAttr([key])}">+ Add ${esc((f.label || key).toLowerCase())}</button></div>`;
-                } else {
-                    if (f.optional) extra = `<button class="btn sm danger" data-action="remove" data-path="${pathAttr([key])}">Remove ${esc((f.label || key).toLowerCase())}</button>`;
-                    body = `${helpHtml(f)}<div class="grid">${fieldsGrid(f.fields, v || {}, [key])}</div>`;
-                }
+                if (f.optional) extra = `<button class="btn sm danger" data-action="remove-block" data-key="${esc(key)}">Remove ${esc((f.label || key).toLowerCase())}</button>`;
+                body = `${helpHtml(f)}<div class="grid">${fieldsGrid(f.fields, v || {}, [key])}</div>`;
             } else {
                 const inner = (sec.first ? base : '') + fieldsGrid(Object.fromEntries(sec.fields), rec, []);
                 if (!inner.trim()) return '';
                 body = `<div class="grid">${inner}</div>`;
             }
-            return `<section class="sec ${collapsed ? 'collapsed' : ''} ${absent ? 'absent' : ''}" id="${secId(sec.title)}">
+            return `<section class="sec ${collapsed ? 'collapsed' : ''}" id="${secId(sec.title)}">
                 <header class="sec-head" data-action="collapse" data-key="${esc(k)}">
                     <span class="material-symbols-outlined">${esc(SECTION_ICONS[sec.title] || 'segment')}</span>
                     <h3>${esc(sec.title)}</h3>${extra}<span class="material-symbols-outlined chev">expand_more</span>
@@ -996,24 +1298,26 @@
                 <div class="sec-body">${body}</div>
             </section>`;
         }).filter(Boolean);
-        const index = secs.length > 1 ? `<nav class="sec-index">${secs.map(s => {
-            const absent = s.fields.length === 1 && s.fields[0][1].optional && rec[s.fields[0][0]] == null;
-            return `<a href="#${secId(s.title)}" data-sec="${secId(s.title)}" class="${absent ? 'absent' : ''}">${esc(s.title)}</a>`;
-        }).join('')}</nav>` : '';
+        const roles = addable.filter(s => s.title !== 'Look');
+        const addBtn = addable.length ? `<button class="sec-add" data-action="sec-add" data-menu-left="1" aria-haspopup="menu" title="${esc(addable.map(s => s.title).join(', '))}">
+                <span class="material-symbols-outlined">add</span>${roles.length && S.view.key === 'poi' ? 'Role' : 'Add'}</button>` : '';
+        const index = secs.length > 1 || addBtn ? `<nav class="sec-index">${secs.map(s =>
+            `<a href="#${secId(s.title)}" data-sec="${secId(s.title)}" class="${optionalBlock(s) ? 'role' : ''}">${esc(s.title)}</a>`).join('')}${addBtn}</nav>` : '';
         const url = !isSingle() && S.store.url(rec.id);
+        const board = isBoard();
         ed.innerHTML = `
             <div class="ed-head">
                 <div class="ed-top">
                     <div class="ed-title">
-                        <div class="kind" style="--c:${GROUP_COLOURS[def.group] || 'var(--gold)'}"><span class="material-symbols-outlined">${esc(def.icon || 'description')}</span>${esc(def.label)}<span class="dot" id="ed-dirty" hidden title="Unsaved changes"></span></div>
+                        <div class="kind" style="--c:${colourOf(def)}"><span class="material-symbols-outlined">${esc(def.icon || 'description')}</span>${esc(def.label)}<span class="dot" id="ed-dirty" hidden title="Unsaved changes"></span></div>
                         <h2 id="ed-title">${esc(isSingle() ? def.label : rec.name || '(no name)')}</h2>
                         <code>${isSingle() ? esc(def.file) : `${esc(rec.id)} · ${esc(def.file)}`}</code>
                     </div>
                     <div class="ed-actions">
-                        ${url ? `<a class="btn" href="../${esc(url)}" target="_blank" rel="noopener"><span class="material-symbols-outlined">open_in_new</span>View on site</a>` : ''}
-                        <button class="btn icon ${S.sideToggled ? 'on' : ''}" data-action="toggle-side" title="Previews and links" id="side-btn"><span class="material-symbols-outlined">right_panel_open</span></button>
-                        ${isSingle() ? '' : `<button class="btn icon" data-action="more" title="More"><span class="material-symbols-outlined">more_horiz</span></button>
-                        <button class="btn danger" data-action="delete"><span class="material-symbols-outlined">delete</span>Delete</button>`}
+                        ${url ? `<a class="btn ${board ? 'icon' : ''}" href="../${esc(url)}" target="_blank" rel="noopener" title="View on site"><span class="material-symbols-outlined">open_in_new</span>${board ? '' : 'View on site'}</a>` : ''}
+                        <button class="btn icon ${S.sideToggled ? 'on' : ''}" data-action="toggle-side" title="Previews and links" aria-label="Previews and links" id="side-btn"><span class="material-symbols-outlined">right_panel_open</span></button>
+                        ${isSingle() ? '' : `<button class="btn icon" data-action="more" title="Rename id, move, delete…" aria-label="More actions"><span class="material-symbols-outlined">more_horiz</span></button>`}
+                        ${board ? `<button class="btn icon" data-action="close-sel" title="Close (Esc)" aria-label="Close the form"><span class="material-symbols-outlined">close</span></button>` : ''}
                     </div>
                 </div>
                 ${index}
@@ -1033,28 +1337,56 @@
             S.refocus = null;
             if (box) { const i = $('.chip-in', box); i.focus(); showSuggest(i); }
         }
+        if (S.scrollTo) {
+            const el = document.getElementById(S.scrollTo);
+            S.scrollTo = null;
+            if (el) { el.scrollIntoView({ block: 'start' }); const f = $('input, select, textarea', el); if (f) f.focus({ preventScroll: true }); }
+        }
+    }
+    // "+ Role / + Add" of the section index: the optional blocks this record doesn't have yet
+    function secAddMenu(btn) {
+        const rec = curRecord(), def = curDef();
+        const add = sectionsOf(def).map(optionalBlock).filter(o => o && rec[o[0]] == null);
+        const roles = add.filter(([, f]) => f.section !== 'Look'), page = add.filter(([, f]) => f.section === 'Look');
+        const item = ([key, f]) => ({ action: 'obj-add-block', data: { key }, icon: SECTION_ICONS[f.section] || 'add', label: f.label || key });
+        openMenu(btn, [
+            ...(roles.length ? [{ head: S.view.key === 'poi' ? 'What else this place is' : 'Add' }, ...roles.map(item)] : []),
+            ...(page.length ? [...(roles.length ? [null] : []), { head: 'This page' }, ...page.map(item)] : []),
+            ...(S.view.key === 'poi' && roles.length ? [{ note: 'A role adds its section here and its tab on the POI page.' }] : []),
+        ]);
+    }
+    function removeBlock(key) {
+        const f = curDef().fields[key], rec = curRecord();
+        modal(`<h3>Remove ${esc((f.label || key).toLowerCase())}?</h3><p>Everything set in it on “${esc(rec.name || '')}” goes too. Nothing is written until you save (Reload drops the change).</p>
+            <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn danger" id="rb-ok">Remove</button></div>`);
+        $('#rb-ok').addEventListener('click', () => { delete rec[key]; closeModal(); edited(true); });
     }
     function updateHeader() {
         const t = $('#ed-title'), rec = curRecord();
         if (!t || !rec) return;
-        if (!isSingle()) t.textContent = rec.name || '(no name)';
+        if (S.view.kind === 'single' && S.view.key === 'mapIcons') { const ic = iconList().find(i => i.id === S.sel); if (ic) t.textContent = ic.label || ic.id; }
+        else if (!isSingle()) t.textContent = rec.name || '(no name)';
         const d = $('#ed-dirty');
         if (d) d.hidden = isSingle() ? !isDirtySingle(S.view.key) : !isDirtyRec(S.view.key, rec);
     }
-    // The section index follows the scroll
+    // The section index follows the scroll: the last section whose top has passed under the header
     let secObserver = null;
     function watchSections() {
         if (secObserver) secObserver.disconnect();
-        const links = $$('.sec-index a');
-        if (!links.length) return;
         const ed = $('#editor');
-        const visible = new Map();
-        secObserver = new IntersectionObserver(entries => {
-            entries.forEach(e => visible.set(e.target.id, e.isIntersecting));
-            const first = $$('.sec', ed).find(s => visible.get(s.id));
-            links.forEach(a => a.classList.toggle('on', !!first && a.dataset.sec === first.id));
-        }, { root: ed, rootMargin: `-${$('.ed-head').offsetHeight + 10}px 0px -55% 0px` });
-        $$('.sec', ed).forEach(s => secObserver.observe(s));
+        const links = $$('.sec-index a');
+        if (!links.length) { ed.onscroll = null; return; }
+        const update = () => {
+            const head = $('.ed-head', ed);
+            const limit = (head ? head.getBoundingClientRect().bottom : 0) + 48;
+            const secs = $$('.sec', ed);
+            let cur = secs[0];
+            for (const sec of secs) if (sec.getBoundingClientRect().top <= limit) cur = sec;
+            if (ed.scrollTop > 0 && ed.scrollTop + ed.clientHeight >= ed.scrollHeight - 4) cur = secs[secs.length - 1];
+            links.forEach(a => a.classList.toggle('on', !!cur && a.dataset.sec === cur.id));
+        };
+        ed.onscroll = update;
+        update();
     }
     function autosize(el) {
         if (!el.classList.contains('auto')) return;
@@ -1086,7 +1418,7 @@
             if (kids.length) parts.push(`<div class="box"><h4>Contains <span>${kids.length}</span></h4>${chips(kids)}</div>`);
             const users = S.store.backrefs(rec.id);
             // (a spell's campaigns are shown in "Known by", with the hero)
-            if (users.length && S.view.key !== 'spell') parts.push(`<div class="box"><h4>Used by <span>${users.length}</span></h4>${chips(users)}</div>`);
+            if (users.length && S.view.key !== 'spell') parts.push(`<div class="box"><h4>Used by <span>${users.length}</span></h4>${chips(users.map(r => S.store.get(r.id)).filter(Boolean))}</div>`);
             if (S.view.key === 'poi' && ATH.market) parts.push(...marketPreview(rec));
             if (S.view.key === 'settlement' && ATH.market) parts.push(...townPreview(rec));
             if (S.view.key === 'rumour' && ATH.market) parts.unshift(rumourPlaces(rec));
@@ -1351,7 +1683,7 @@
     function potionBrewer(rec, preset) {
         const db = alcDb();
         if (!db || !db.vessels.length || !db.reagents.solvents.length || !db.reagents.actives.length || !db.reagents.catalysts.length) {
-            alertBox('Nothing to brew with', '<p>A potion needs at least one vessel, one solvent, one active principle and one catalyst (group “Generators”).</p>'); return;
+            alertBox('Nothing to brew with', '<p>A potion needs at least one vessel, one solvent, one active principle and one catalyst (Tables › Alchemy).</p>'); return;
         }
         const R = db.reagents;
         const had = rec ? potionOf(rec) : null;
@@ -1731,7 +2063,7 @@
     // campaign), numbered after that campaign's latest session
     function nextSession() {
         const cur = S.view.key === 'session' ? curRecord() : null;
-        const campaign = (cur && cur.campaign) || S.store.settings.currentCampaign || (S.store.all('campaign')[0] || {}).id;
+        const campaign = campOf() || (cur && cur.campaign) || S.store.settings.currentCampaign || (S.store.all('campaign')[0] || {}).id;
         if (!campaign) return {};
         const nums = S.data.session.filter(s => s.campaign === campaign && typeof s.number === 'number').map(s => s.number);
         return { campaign, number: nums.length ? Math.max(...nums) + 1 : 1 };
@@ -1960,7 +2292,10 @@
     async function thumbUrl(src) {
         if (!src) return '';
         if (/^(https?:)?\/\//.test(src) || src.startsWith('data:')) return src;
-        if (!S.thumbs.has(src)) S.thumbs.set(src, io.url(src.replace(/^\.?\//, '')).catch(() => ''));
+        const path = src.replace(/^\.?\//, '');
+        // a picture made here and not saved yet (a new map icon)
+        if (!S.thumbs.has(src) && typeof S.assets[path] === 'string') S.thumbs.set(src, Promise.resolve(URL.createObjectURL(new Blob([S.assets[path]], { type: path.endsWith('.svg') ? 'image/svg+xml' : 'application/octet-stream' }))));
+        if (!S.thumbs.has(src)) S.thumbs.set(src, io.url(path).catch(() => ''));
         return S.thumbs.get(src);
     }
     function loadThumbs() {
@@ -1972,6 +2307,515 @@
     }
 
     /* =================================================================
+       HOME
+       ================================================================= */
+    const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    function issueHl(e, cls) {
+        const m = e.match(/^\[([a-zA-Z]+)\] ([^.:\s"]+)/);
+        const target = m && TYPES[m[1]] ? `data-jump="${esc(m[2])}"` : m && SINGLES[m[1]] ? `data-jump-single="${esc(m[1])}"` : 'data-action="show-issues"';
+        return `<button class="hl ${cls}" ${target} title="${esc(e)}"><span class="material-symbols-outlined" style="--c:${cls === 'err' ? 'var(--red)' : 'var(--amber)'}">${cls === 'err' ? 'error' : 'warning'}</span><span class="t">${esc(e.replace(/^\[[^\]]+\] /, ''))}</span></button>`;
+    }
+    function renderHome() {
+        const camp = campOf();
+        const today = new Date().toISOString().slice(0, 10);
+        // Next sessions (Site › Upcoming sessions)
+        const sessions = ((S.singles.schedule || {}).sessions || []).filter(x => x && (!x.date || x.date >= today))
+            .sort((a, b) => (a.date || '9999').localeCompare(b.date || '9999')).slice(0, 3);
+        const TAGS = { tentative: ['Not confirmed', 'tbd'], postponed: ['Postponed', ''], cancelled: ['Cancelled', 'off'] };
+        const sessHtml = sessions.map(x => {
+            const tag = TAGS[x.status];
+            return `<button class="sess" data-nav="single:schedule">
+                <span class="date">${x.date ? `<b>${Number(x.date.slice(8, 10))}</b><span>${MONTHS[Number(x.date.slice(5, 7)) - 1] || ''}</span>` : '<b>?</b><span>TBA</span>'}</span>
+                <span class="tx"><b>${esc(x.title || (x.campaign ? nameOf(x.campaign) : 'Session'))}${x.number != null ? ` · Session ${x.number}` : ''}</b>
+                <span>${esc([x.time, x.where].filter(Boolean).join(' · ') || (x.date ? '' : 'Date to be announced'))}</span>
+                ${tag ? `<span class="tag ${tag[1]}">${tag[0]}</span>` : ''}</span></button>`;
+        }).join('') || '<p class="none">No session planned: add one in Site › Upcoming sessions.</p>';
+        // Quick add
+        const quick = ['session', 'npc', 'poi', 'notice', 'rumour', 'item', 'creature'].filter(t => TYPES[t]).map(t =>
+            `<button class="btn" style="--c:${colourOf(TYPES[t])}" data-action="quick-new" data-type="${t}"><span class="material-symbols-outlined">${esc(TYPES[t].icon)}</span>${esc(t === 'poi' ? 'POI' : TYPES[t].label)}</button>`).join('');
+        // Unsaved
+        const dirty = [];
+        for (const [t, d] of Object.entries(TYPES)) for (const r of S.data[t]) if (isDirtyRec(t, r)) dirty.push(`<button class="hl" style="--c:${colourOf(d)}" data-jump="${esc(r.id)}"><span class="material-symbols-outlined">${esc(d.icon)}</span><span class="t">${esc(r.name || r.id)}</span><small>${esc(d.label)}</small></button>`);
+        for (const [k, d] of Object.entries(SINGLES)) if (isDirtySingle(k)) dirty.push(`<button class="hl" style="--c:${colourOf(d)}" data-nav="single:${k}"><span class="material-symbols-outlined">${esc(d.icon)}</span><span class="t">${esc(d.label)}</span><small>Site page</small></button>`);
+        const files = dirtyFiles();
+        const pics = files.filter(([p]) => p.startsWith(ICON_DIR + '/')).length;
+        if (pics) dirty.push(`<button class="hl" data-nav="single:mapIcons"><span class="material-symbols-outlined">image</span><span class="t">Map icon pictures</span><small>${pics}</small></button>`);
+        // Problems
+        const { errors, warnings } = S.issues;
+        const issues = [...errors.slice(0, 5).map(e => issueHl(e, 'err')), ...warnings.slice(0, Math.max(0, 5 - errors.length)).map(e => issueHl(e, 'warn'))].join('');
+        const more = errors.length + warnings.length - Math.min(5, errors.length) - Math.max(0, Math.min(warnings.length, 5 - errors.length));
+        // Recently opened
+        const recent = S.recent.map(x => ({ x, r: TYPES[x.type] && S.data[x.type].find(r => r.id === x.id) })).filter(o => o.r).slice(0, 7)
+            .map(({ x, r }) => `<button class="hl" style="--c:${colourOf(TYPES[x.type])}" data-jump="${esc(r.id)}"><span class="material-symbols-outlined">${esc(TYPES[x.type].icon)}</span><span class="t">${esc(r.name || r.id)}</span><small>${esc(TYPES[x.type].label)}</small></button>`).join('');
+        // Workspaces
+        const tiles = WS.filter(w => w.id !== 'home').map(w => {
+            const es = wsEntries(w.id);
+            const sum = w.id === 'tables' ? `${es.length} tables · ${es.reduce((n, e) => n + (e.kind === 'type' ? S.data[e.key].length : 0), 0)} rows`
+                : es.map(e => { const l = /^[A-Z]{2}/.test(entryLabel(e)) ? entryLabel(e) : entryLabel(e).toLowerCase(); return e.kind === 'type' ? `${S.data[e.key].length} ${l}` : e.key === 'mapIcons' ? `${iconList().length} map icons` : l; }).join(' · ');
+            return `<button class="wt" style="--c:${w.color}" data-ws="${w.id}"><b><span class="material-symbols-outlined">${w.icon}</span>${esc(w.label)}</b><span>${esc(sum)}</span><span>${esc(w.blurb || '')}</span></button>`;
+        }).join('');
+        $('#home').innerHTML = `
+            <div class="home-head"><h1>The Athenaeum</h1>
+                <p>Folder <code>${esc(io.name())}</code> · the lists show <b>${esc(camp ? nameOf(camp) : 'every campaign')}</b> (change it at the top right) · Ctrl K finds anything.</p></div>
+            <div class="hgrid">
+                <section class="hc s7"><h3><span class="material-symbols-outlined">event_upcoming</span>Next sessions</h3>${sessHtml}</section>
+                <section class="hc s5"><h3><span class="material-symbols-outlined">add_circle</span>Add</h3><div class="qa">${quick}</div></section>
+                <section class="hc"><h3><span class="material-symbols-outlined">edit_note</span>Not saved yet<small>${files.length ? `${files.length} file${files.length === 1 ? '' : 's'}` : ''}</small></h3>
+                    ${dirty.length ? dirty.slice(0, 8).join('') + (dirty.length > 8 ? `<p class="none">and ${dirty.length - 8} more</p>` : '') + '<button class="btn primary" data-action="save" style="align-self:flex-start"><span class="material-symbols-outlined">save</span>Save all</button>' : '<p class="none">Everything is saved.</p>'}</section>
+                <section class="hc"><h3><span class="material-symbols-outlined">rule</span>To check<small>${errors.length || warnings.length ? `${errors.length} problem${errors.length === 1 ? '' : 's'} · ${warnings.length} warning${warnings.length === 1 ? '' : 's'}` : ''}</small></h3>
+                    ${issues || '<p class="none">No problem found in the data.</p>'}${more > 0 ? `<button class="btn sm" data-action="show-issues" style="align-self:flex-start">See all ${errors.length + warnings.length}</button>` : ''}</section>
+                <section class="hc"><h3><span class="material-symbols-outlined">history</span>Opened lately</h3>${recent || '<p class="none">Nothing yet.</p>'}</section>
+                <section class="hc s12"><h3><span class="material-symbols-outlined">space_dashboard</span>Workspaces</h3><div class="wst">${tiles}</div></section>
+            </div>`;
+    }
+
+    /* =================================================================
+       BOARDS (1): a table as a grid. Short fields are edited in their cell;
+       a click on a row opens the full form beside the grid.
+       ================================================================= */
+    const GRID_KINDS = ['text', 'url', 'number', 'enum', 'ref', 'boolean', 'date', 'time', 'list'];
+    function gridColumns(type) {
+        const def = TYPES[type];
+        const ok = f => f && !f.private && GRID_KINDS.includes(f.kind) && !f.long && !(f.kind === 'list' && (f.enum || f.lines));
+        const keys = def.columns ? def.columns.filter(k => ok(def.fields[k])) : Object.keys(def.fields).filter(k => ok(def.fields[k]) && !def.fields[k].showIf).slice(0, 7);
+        return keys.map(k => {
+            const f = def.fields[k];
+            return { k, f, opts: f.kind === 'enum' ? enumOpts(f) : null, cls: f.kind === 'boolean' ? 'c-chk' : f.kind === 'text' && /desc|text|effect|summary|caption/i.test(k) ? 'c-wide' : '' };
+        });
+    }
+    // What a cell says, for sorting and filtering
+    function cellText(c, v) {
+        if (v === undefined || v === null || v === '') return '';
+        if (c.f.kind === 'enum') return ((c.opts || []).find(o => o.id === v) || {}).label || String(v);
+        if (c.f.kind === 'ref') return nameOf(v);
+        if (c.f.kind === 'list') return (Array.isArray(v) ? v : []).join(', ');
+        if (c.f.kind === 'boolean') return v ? 'yes' : '';
+        return String(v);
+    }
+    function gridCell(c, r) {
+        const { k, f } = c, v = r[k], p = pathAttr([k]);
+        const lab = `aria-label="${esc(`${f.label || k} of ${r.name || r.id}`)}"`;
+        switch (f.kind) {
+            case 'boolean': return `<input type="checkbox" data-path="${p}" data-kind="boolean" ${v ? 'checked' : ''} ${lab}>`;
+            case 'enum': return `<select data-path="${p}" data-kind="enum" ${lab}><option value="">—</option>${c.opts.map(o => `<option value="${esc(o.id)}" ${o.id === v ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}${v && !c.opts.some(o => o.id === v) ? `<option value="${esc(v)}" selected>⚠ ${esc(v)}</option>` : ''}</select>`;
+            case 'ref': return refSelect(f.to, v, `data-path="${p}" data-kind="ref" ${lab}`);
+            case 'number': return `<input type="number" data-path="${p}" data-kind="number" value="${v ?? ''}" ${lab}>`;
+            case 'list': return `<input data-path="${p}" data-kind="csv" value="${esc((Array.isArray(v) ? v : []).join(', '))}" placeholder="a, b" ${lab}>`;
+            case 'date': case 'time': return `<input type="${f.kind}" data-path="${p}" data-kind="text" value="${esc(v)}" ${lab}>`;
+            default: return `<input data-path="${p}" data-kind="text" value="${esc(v)}" ${lab}>`;
+        }
+    }
+    const flagsHtml = (type, r) => {
+        const bad = recordErrors(type, r.id).length;
+        return `${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}${bad ? ` <span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}`;
+    };
+    function gridRow(type, r, cols) {
+        const on = r.id === S.sel;
+        return `<tr class="rw ${on ? 'on' : ''}" data-rec="${esc(r.id)}">
+            <td><button class="open" data-select="${esc(r.id)}" title="${on ? 'Open beside' : 'Open the full form'}" aria-label="Open ${esc(r.name || r.id)}"><span class="material-symbols-outlined">${on ? 'chevron_right' : 'open_in_full'}</span></button></td>
+            <td class="c-name"><input data-path="${pathAttr(['name'])}" data-kind="text" value="${esc(r.name)}" aria-label="Name"></td>
+            ${cols.map(c => `<td class="${c.cls}">${gridCell(c, r)}</td>`).join('')}
+            <td class="flags">${flagsHtml(type, r)}</td></tr>`;
+    }
+    function gridGroups(type, cols) {
+        const q = (S.gridQ[type] || '').trim().toLowerCase();
+        const match = r => !q || [r.id, r.name, ...(r.aliases || []), ...cols.map(c => cellText(c, r[c.k])), ...Object.values(r).filter(v => typeof v === 'string')]
+            .some(v => String(v || '').toLowerCase().includes(q));
+        const sort = S.gridSort[type];
+        const col = sort && (sort.key === 'name' ? { k: 'name', f: { kind: 'text' } } : cols.find(c => c.k === sort.key));
+        if (col) {
+            const val = r => (col.f.kind === 'number' ? (typeof r[col.k] === 'number' ? r[col.k] : Infinity * sort.dir) : cellText(col, r[col.k]).toLowerCase() || '￿');
+            const recs = S.data[type].filter(match).sort((a, b) => { const x = val(a), y = val(b); return (x < y ? -1 : x > y ? 1 : 0) * sort.dir; });
+            return recs.length ? [{ label: '', recs }] : [];
+        }
+        return orderedRecords(type).map(g => ({ ...g, recs: g.recs.filter(match) })).filter(g => g.recs.length);
+    }
+    function renderGrid() {
+        const type = S.view.key, def = TYPES[type], cols = gridColumns(type);
+        const sort = S.gridSort[type] || {};
+        const th = (k, label) => `<th scope="col" ${sort.key === k ? `aria-sort="${sort.dir > 0 ? 'ascending' : 'descending'}"` : ''}><button data-action="grid-sort" data-key="${esc(k)}" title="Sort by ${esc(label.toLowerCase())}">${esc(label)}${sort.key === k ? `<span class="material-symbols-outlined">${sort.dir > 0 ? 'arrow_upward' : 'arrow_downward'}</span>` : ''}</button></th>`;
+        const focused = document.activeElement && document.activeElement.id === 'grid-q';
+        $('#board').innerHTML = `
+            <div class="bd-head">
+                <div class="bd-title"><div class="kind" style="--c:${colourOf(def)}"><span class="material-symbols-outlined">${esc(def.icon || 'table_view')}</span>${esc(def.group || 'Table')}</div>
+                    <h2>${esc(def.plural || def.label)}</h2><code>${esc(def.file)}${def.dmOnly ? ' · DM only: never on the site' : ''}</code></div>
+                <div class="search"><span class="material-symbols-outlined">filter_list</span><input id="grid-q" value="${esc(S.gridQ[type] || '')}" placeholder="Filter rows…" aria-label="Filter rows" autocomplete="off"></div>
+                <button class="btn primary" data-action="new" title="New ${lc(esc(def.label))}"><span class="material-symbols-outlined">add</span>Row</button>
+            </div>
+            <div class="bd-scroll" id="grid-scroll">
+                <table class="grid-t"><thead><tr><th scope="col" aria-label="Open" style="width:1%"></th>${th('name', 'Name')}${cols.map(c => th(c.k, c.f.label || c.k)).join('')}<th scope="col" aria-label="State" style="width:1%"></th></tr></thead>
+                <tbody id="grid-body"></tbody></table>
+            </div>
+            <div class="bd-foot" id="grid-foot"></div>`;
+        renderGridBody();
+        if (focused) { const i = $('#grid-q'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+    }
+    function renderGridBody() {
+        const type = S.view.key, cols = gridColumns(type);
+        const groups = gridGroups(type, cols);
+        const shown = groups.reduce((n, g) => n + g.recs.length, 0), total = S.data[type].length;
+        const span = cols.length + 3;
+        $('#grid-body').innerHTML = groups.map(g => `${g.label ? `<tr class="gr"><td colspan="${span}">${esc(g.label)} · ${g.recs.length}</td></tr>` : ''}${g.recs.map(r => gridRow(type, r, cols)).join('')}`).join('')
+            || `<tr><td colspan="${span}" class="empty">${(S.gridQ[type] || '').trim() ? 'No match.' : 'Nothing yet: click + Row.'}</td></tr>`;
+        $('#grid-foot').textContent = `${shown === total ? `${total} row${total === 1 ? '' : 's'}` : `${shown} of ${total} rows`} · edit a cell in place, or click a row to open its full form · click a column’s name to sort`;
+    }
+    // A board already on screen: only the open record changes (the scroll stays)
+    function renderBoard(force) {
+        const key = `${S.view.kind}:${S.view.key}`;
+        if (!force && S.boardShown === key) { boardSelection(); return; }
+        const sc = $('#board .bd-scroll'), top = S.boardShown === key && sc ? sc.scrollTop : 0;
+        if (S.view.kind === 'single') renderIconBoard(); else renderGrid();
+        S.boardShown = key;
+        const sc2 = $('#board .bd-scroll'); if (sc2) sc2.scrollTop = top;
+        boardSelection();
+    }
+    function boardSelection() {
+        $$('#board [data-rec]').forEach(tr => {
+            const on = tr.dataset.rec === S.sel;
+            tr.classList.toggle('on', on);
+            const ic = $('.open .material-symbols-outlined', tr); if (ic) ic.textContent = on ? 'chevron_right' : 'open_in_full';
+        });
+        $$('#board [data-icon]').forEach(t => { t.classList.toggle('on', t.dataset.icon === S.sel); t.setAttribute('aria-pressed', t.dataset.icon === S.sel); });
+        const on = $('#board [data-rec].on, #board [data-icon].on'); if (on) on.scrollIntoView({ block: 'nearest' });
+    }
+    // After an edit: the rows' marks, and the open record's row (edited in the form) unless typing in it
+    function syncBoard() {
+        if (S.view.kind === 'single') { renderIconGallery(); return; }
+        const type = S.view.key, cols = gridColumns(type);
+        $$('#grid-body tr.rw').forEach(tr => {
+            const r = S.data[type].find(x => x.id === tr.dataset.rec);
+            if (!r) return;
+            if (r.id === S.sel && !tr.contains(document.activeElement)) {
+                const t = document.createElement('tbody'); t.innerHTML = gridRow(type, r, cols); tr.replaceWith(t.firstElementChild);
+            } else $('.flags', tr).innerHTML = flagsHtml(type, r);
+        });
+    }
+
+    /* =================================================================
+       BOARDS (2): the map icons (Site › Map icons). The pictures are
+       images/atlas_icons/<id>.svg; data/map-icons.json lists them with a
+       name and the icon of the places' cards. New pictures are kept in
+       S.assets and written on save, like everything else.
+       ================================================================= */
+    const ICON_DIR = 'images/atlas_icons';
+    const iconSrc = id => `${ICON_DIR}/${id}.svg`;
+    function iconList() {
+        if (!S.singles.mapIcons) S.singles.mapIcons = {};
+        const m = S.singles.mapIcons;
+        if (!Array.isArray(m.icons)) m.icons = [];
+        return m.icons;
+    }
+    const iconIds = () => [...new Set([...iconList().map(i => i && i.id).filter(Boolean), ...(S.icons || [])])].sort();
+    const iconName = id => { const ic = iconList().find(i => i && i.id === id); return (ic && ic.label) || id; };
+    const humanize = id => String(id || '').replace(/[-_]+/g, ' ').trim().replace(/^./, c => c.toUpperCase());
+    const iconUsers = id => PLACE_TYPES.flatMap(t => S.data[t].filter(r => r.map && r.map.icon === id));
+    // The pictures in the folder (null when it can't be listed: test mode)
+    async function listIcons() {
+        S.icons = null;
+        if (!io.list) return;
+        try {
+            const names = await io.list(ICON_DIR);
+            S.icons = names ? names.filter(n => n.endsWith('.svg')).map(n => n.slice(0, -4)) : null;
+        } catch (e) { S.icons = null; }
+    }
+    const iconOnDisk = id => (S.icons ? S.icons.includes(id) : S.loadedIcons.has(id));
+
+    function renderIconBoard() {
+        $('#board').innerHTML = `
+            <div class="bd-head">
+                <div class="bd-title"><div class="kind" style="--c:${WS_BY.site.color}"><span class="material-symbols-outlined">add_location_alt</span>Site</div>
+                    <h2>Map icons</h2><code>${ICON_DIR}/ · data/map-icons.json</code></div>
+                <div class="search"><span class="material-symbols-outlined">filter_list</span><input id="icon-q" value="${esc(S.iconQ || '')}" placeholder="Filter icons…" aria-label="Filter icons" autocomplete="off"></div>
+                <button class="btn primary" data-action="icon-new"><span class="material-symbols-outlined">add</span>New icon</button>
+            </div>
+            <div class="bd-scroll" id="icon-drop"><div class="icon-gal" id="icon-gal"></div></div>
+            <div class="bd-foot">Drop an SVG or PNG on this page to add it · a pin picks its icon in Atlas › a place › Map · new pictures are written when you save</div>`;
+        renderIconGallery();
+    }
+    function renderIconGallery() {
+        const gal = $('#icon-gal');
+        if (!gal) return;
+        const q = (S.iconQ || '').trim().toLowerCase();
+        const all = iconList().filter(i => i && i.id);
+        const list = all.filter(i => !q || [i.id, i.label].some(v => String(v || '').toLowerCase().includes(q)));
+        const listed = new Set(all.map(i => i.id));
+        const stray = (S.icons || []).filter(id => !listed.has(id) && (!q || id.includes(q)));
+        const tile = ic => {
+            const n = iconUsers(ic.id).length;
+            return `<button class="icon-tile ${ic.id === S.sel ? 'on' : ''}" data-icon="${esc(ic.id)}" aria-pressed="${ic.id === S.sel}">
+                <span class="pinp"><img data-thumb="${esc(iconSrc(ic.id))}" alt=""></span><b>${esc(ic.label || ic.id)}</b><small>${esc(ic.id)}.svg</small>
+                <span class="use ${n ? '' : 'zero'}">${n ? `${n} pin${n === 1 ? '' : 's'}` : 'Not used yet'}</span></button>`;
+        };
+        gal.innerHTML = `${q ? '' : `<button class="icon-tile new" data-action="icon-new"><span class="material-symbols-outlined">add_photo_alternate</span><b>New icon</b><small>SVG or PNG</small></button>`}
+            ${list.map(tile).join('')}
+            ${stray.length ? `<p class="gal-h">In the folder but not in the list</p>${stray.map(id => `<button class="icon-tile stray" data-action="icon-adopt" data-id="${esc(id)}" title="Add it to the list">
+                <span class="pinp"><img data-thumb="${esc(iconSrc(id))}" alt=""></span><b>${esc(id)}</b><span class="stray-tag">+ Add to the list</span></button>`).join('')}` : ''}
+            ${q && !list.length && !stray.length ? '<p class="gal-h">No match.</p>' : ''}`;
+        loadThumbs();
+    }
+    // The open icon, beside the gallery
+    function renderIconDetail() {
+        const ed = $('#editor');
+        const icons = iconList(), i = icons.findIndex(x => x && x.id === S.sel);
+        if (i < 0) { ed.innerHTML = ''; S.sel = null; $('#app').classList.toggle('no-sel', true); return; }
+        const ic = icons[i], users = iconUsers(ic.id), src = iconSrc(ic.id);
+        const pending = typeof S.assets[src] === 'string' && S.base[src] !== S.assets[src];
+        const pin = cls => `<span class="pinp ${cls}"><img data-thumb="${esc(src)}" alt=""></span>`;
+        ed.innerHTML = `
+            <div class="ed-head"><div class="ed-top">
+                <div class="ed-title"><div class="kind" style="--c:${WS_BY.site.color}"><span class="material-symbols-outlined">add_location_alt</span>Map icon<span class="dot" id="ed-dirty" hidden title="Unsaved changes"></span></div>
+                    <h2 id="ed-title">${esc(ic.label || ic.id)}</h2><code>${esc(src)}${pending ? ' · new picture, written on save' : ''}</code></div>
+                <div class="ed-actions"><button class="btn icon" data-action="close-sel" title="Close (Esc)" aria-label="Close"><span class="material-symbols-outlined">close</span></button></div>
+            </div></div>
+            <div class="ed-wrap no-side"><div class="form">
+                <section class="sec"><header class="sec-head"><span class="material-symbols-outlined">visibility</span><h3>As the site shows it</h3></header>
+                    <div class="sec-body"><div class="pin-row">
+                        ${pin('lg')}${pin('lg danger')}<span class="on-map" title="On a map">${pin('sm')}</span>
+                        <span class="icon-prev material-symbols-outlined" data-card-prev title="On the back of the places’ cards">${esc(ic.cardIcon || 'location_on')}</span>
+                    </div>
+                    <p class="help" style="margin-top:10px">Gold pin · red for a dangerous place · on a map · the card icon.</p>
+                    <div class="row wrap"><button class="btn" data-action="icon-replace"><span class="material-symbols-outlined">upload</span>Replace the picture…</button></div></div></section>
+                <section class="sec"><header class="sec-head"><span class="material-symbols-outlined">badge</span><h3>Details</h3></header>
+                    <div class="sec-body"><div class="grid">
+                        <div class="fld w-6"><label for="ic-label">Name</label><input id="ic-label" data-path="${pathAttr(['icons', i, 'label'])}" data-kind="text" value="${esc(ic.label)}" placeholder="${esc(humanize(ic.id))}"><p class="help">How the icon picker names it.</p></div>
+                        <div class="fld w-6"><label for="ic-id">File name</label><div class="row"><input id="ic-id" value="${esc(ic.id)}" readonly><button class="btn" data-action="icon-rename">Rename…</button></div><p class="help">What a pin stores. Renaming updates every pin.</p></div>
+                        <div class="fld w-12"><label for="ic-card">Card icon</label>${controlHtml({ kind: 'text', icon: true }, ic.cardIcon, ['icons', i, 'cardIcon'], 'ic-card')}
+                            <p class="help">A Material Symbols name (fonts.google.com/icons) for the back of the places’ cards in the Atlas list pages. Empty = location_on.</p></div>
+                    </div></div></section>
+                <section class="sec"><header class="sec-head"><span class="material-symbols-outlined">push_pin</span><h3>Pins using it <span class="muted" style="font:500 13px Manrope">${users.length}</span></h3></header>
+                    <div class="sec-body">${users.length ? chips(users.map(r => S.store.get(r.id)).filter(Boolean)) : '<p class="help">No pin uses it yet: pick it in a place’s Map section.</p>'}
+                    <div class="row wrap"><button class="btn danger" data-action="icon-delete"><span class="material-symbols-outlined">delete</span>Delete this icon</button></div></div></section>
+            </div></div>`;
+        loadThumbs();
+        updateHeader();
+    }
+    // The icon of a map pin, chosen in a grid of the icons
+    function iconPicker(path) {
+        const rec = curRecord(), cur = getAt(rec, path);
+        const dlg = modal(`<h3>Pin icon</h3>
+            <div class="search"><span class="material-symbols-outlined">search</span><input id="ip-q" placeholder="Find an icon…" autocomplete="off" aria-label="Find an icon"></div>
+            <div class="ip-grid" id="ip-grid"></div>
+            <div class="foot"><button class="btn" data-action="go-icons" style="margin-right:auto"><span class="material-symbols-outlined">add_location_alt</span>Manage the icons</button>
+                <button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="ip-new"><span class="material-symbols-outlined">add</span>New icon…</button></div>`, 'wide');
+        const grid = $('#ip-grid', dlg), qIn = $('#ip-q', dlg);
+        const draw = () => {
+            const q = qIn.value.trim().toLowerCase();
+            const ids = iconIds().filter(id => !q || id.includes(q) || iconName(id).toLowerCase().includes(q));
+            grid.innerHTML = (q ? '' : `<button class="ip-i none-i ${cur ? '' : 'on'}" data-pick="">No icon</button>`)
+                + ids.map(id => `<button class="ip-i ${id === cur ? 'on' : ''}" data-pick="${esc(id)}" title="${esc(id)}.svg"><span class="pinp sm"><img data-thumb="${esc(iconSrc(id))}" alt=""></span><span>${esc(iconName(id))}</span></button>`).join('')
+                || '<p class="muted">No match.</p>';
+            loadThumbs();
+        };
+        const pick = id => { setAt(rec, path, id || undefined); closeModal(); edited(true); };
+        qIn.addEventListener('input', draw);
+        qIn.addEventListener('keydown', e => { if (e.key === 'Enter') { const b = $('[data-pick]', grid); if (b) pick(b.dataset.pick); } });
+        grid.addEventListener('click', e => { const b = e.target.closest('[data-pick]'); if (b) pick(b.dataset.pick); });
+        $('#ip-new', dlg).addEventListener('click', () => { closeModal(); newIconDialog({ onDone: id => { setAt(rec, path, id); edited(true); } }); });
+        draw(); qIn.focus();
+    }
+
+    /* ---------- pictures: an SVG made safe, or a PNG / WebP wrapped in an SVG ---------- */
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    function cleanSvg(text) {
+        text = String(text || '').trim().replace(/^<\?xml[^>]*>\s*/i, '').replace(/<!DOCTYPE[^>]*>\s*/i, '');
+        if (!/<svg[\s>]/i.test(text)) return { error: 'That is not SVG code: it should start with <svg and end with </svg>.' };
+        if (!/xmlns\s*=\s*["']http:\/\/www\.w3\.org\/2000\/svg["']/.test(text)) text = text.replace(/<svg(?=[\s>])/i, `<svg xmlns="${SVG_NS}"`);
+        if (/xlink:/.test(text) && !/xmlns:xlink/.test(text)) text = text.replace(/<svg(?=[\s>])/i, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+        const doc = new DOMParser().parseFromString(text, 'image/svg+xml');
+        const root = doc.documentElement;
+        if (!root || doc.getElementsByTagName('parsererror').length || root.localName !== 'svg') return { error: 'That SVG could not be read (is all of it pasted?).' };
+        root.querySelectorAll('script, foreignObject, iframe, object, embed, audio, video').forEach(n => n.remove());
+        for (const el of [root, ...root.querySelectorAll('*')]) {
+            for (const a of [...el.attributes]) {
+                const n = a.name.toLowerCase(), v = a.value.trim();
+                if (n.startsWith('on')) el.removeAttribute(a.name);
+                else if ((n === 'href' || n === 'xlink:href') && !v.startsWith('#') && !/^data:image\/(png|jpe?g|webp|gif);/i.test(v)) el.removeAttribute(a.name);
+            }
+        }
+        let vb = (root.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+        if (vb.length !== 4 || vb.some(n => !isFinite(n)) || vb[2] <= 0 || vb[3] <= 0) {
+            const w = parseFloat(root.getAttribute('width')), h = parseFloat(root.getAttribute('height'));
+            if (!(w > 0 && h > 0)) return { error: 'The SVG has no size: it needs a viewBox (or a width and a height).' };
+            vb = [0, 0, w, h];
+            root.setAttribute('viewBox', vb.join(' '));
+        }
+        root.removeAttribute('style');
+        root.setAttribute('width', String(vb[2]));
+        root.setAttribute('height', String(vb[3]));
+        const out = new XMLSerializer().serializeToString(root);
+        if (out.length > 400000) return { error: 'That SVG is very heavy (over 400 KB): simplify it, or pick another.' };
+        return { svg: out, note: Math.abs(vb[2] - vb[3]) > Math.max(vb[2], vb[3]) * 0.05 ? 'It is not square: it is fitted inside the pin.' : '' };
+    }
+    async function rasterSvg(file) {
+        const url = URL.createObjectURL(file);
+        try {
+            const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('That picture could not be opened.')); i.src = url; });
+            const k = Math.min(1, 256 / Math.max(img.naturalWidth, img.naturalHeight));
+            const w = Math.max(1, Math.round(img.naturalWidth * k)), h = Math.max(1, Math.round(img.naturalHeight * k));
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const g = c.getContext('2d'); g.drawImage(img, 0, 0, w, h);
+            const px = g.getImageData(0, 0, w, h).data;
+            let clear = 0; for (let i = 3; i < px.length; i += 4) if (px[i] < 250) clear++;
+            const data = c.toDataURL('image/png');
+            return {
+                svg: `<svg xmlns="${SVG_NS}" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><image width="${w}" height="${h}" href="${data}"/></svg>`,
+                note: clear < (w * h) / 50 ? 'It has no transparent background, so the pin shows a filled square: an SVG or a cut-out PNG looks better.' : '',
+            };
+        } catch (e) { return { error: e.message }; }
+        finally { URL.revokeObjectURL(url); }
+    }
+    // New icon (or a new picture for one: replace = its id)
+    function newIconDialog({ replace = null, file = null, onDone = null } = {}) {
+        const ic = replace ? iconList().find(i => i.id === replace) : null;
+        const dlg = modal(`<h3>${ic ? `New picture for “${esc(ic.label || ic.id)}”` : 'New map icon'}</h3>
+            <div class="ni">
+                <div class="stack" style="align-items:stretch;gap:12px">
+                    <div class="seg big" role="tablist"><button class="on" data-src="file" role="tab" aria-selected="true">Upload a file</button><button data-src="code" role="tab" aria-selected="false">Paste SVG code</button></div>
+                    <div id="ni-file"><label class="drop" id="ni-drop" tabindex="0"><input type="file" id="ni-input" accept=".svg,image/svg+xml,.png,image/png,.webp,image/webp" hidden>
+                        <span class="material-symbols-outlined">upload_file</span><span><b>Choose a picture</b> or drop it here</span>
+                        <small>SVG works best: one shape on a transparent background. A PNG or WebP cut-out works too.</small></label></div>
+                    <div id="ni-code" hidden><textarea id="ni-svg" class="mono" rows="6" placeholder="&lt;svg viewBox=&quot;0 0 512 512&quot;&gt;…&lt;/svg&gt;" aria-label="SVG code"></textarea></div>
+                    <p class="ni-msg" id="ni-msg"></p>
+                    ${ic ? '' : `<div class="grid">
+                        <div class="fld w-6"><label for="ni-name">Name</label><input id="ni-name" placeholder="Watchtower" autocomplete="off"></div>
+                        <div class="fld w-6"><label for="ni-id">File name</label><input id="ni-id" placeholder="watchtower" autocomplete="off"><p class="help">Lowercase letters, digits, - and _.</p></div>
+                        <div class="fld w-12"><label for="ni-card">Card icon <span class="muted">(optional)</span></label><div class="row"><span class="icon-prev material-symbols-outlined" id="ni-card-prev">location_on</span><input id="ni-card" placeholder="location_on" autocomplete="off"></div>
+                            <p class="help">A Material Symbols name, for the back of the places’ cards.</p></div>
+                    </div>`}
+                    <p class="help">Tip: game-icons.net has thousands of free icons in the style of the existing pins (CC BY 3.0: credit the author).</p>
+                </div>
+                <div class="ni-prev">
+                    <span class="pinp lg missing" id="ni-p1"><img alt=""></span>
+                    <span class="pinp danger missing" id="ni-p2"><img alt=""></span>
+                    <span class="on-map"><span class="pinp sm missing" id="ni-p3"><img alt=""></span></span>
+                    <p>As on the site: a gold pin, a red one for a dangerous place, and on a map.</p>
+                </div>
+            </div>
+            <p class="err" id="ni-err"></p>
+            <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="ni-ok" disabled>${ic ? 'Use this picture' : 'Add the icon'}</button></div>`, 'wide');
+        let svg = null, idTouched = false, url = '';
+        const $d = s => $(s, dlg);
+        const msg = (t, cls = '') => { $d('#ni-msg').textContent = t; $d('#ni-msg').className = 'ni-msg ' + cls; };
+        const show = () => {
+            if (url) URL.revokeObjectURL(url);
+            url = svg ? URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' })) : '';
+            ['#ni-p1', '#ni-p2', '#ni-p3'].forEach(s => { const p = $d(s); p.classList.toggle('missing', !svg); $('img', p).src = url || 'data:image/gif;base64,R0lGODlhAQABAAAAACw='; });
+            $d('#ni-ok').disabled = !svg;
+        };
+        const take = r => { if (r.error) { svg = null; msg(r.error, 'bad'); } else { svg = r.svg; msg(`Ready (${(svg.length / 1024).toFixed(1)} KB).${r.note ? ' ' + r.note : ''}`, r.note ? '' : 'ok'); } show(); };
+        const nameFrom = stem => {
+            if (ic) return;
+            const n = $d('#ni-name');
+            if (!n.value.trim()) n.value = humanize(slug(stem) || stem);
+            if (!idTouched) $d('#ni-id').value = slug(stem);
+        };
+        const takeFile = async f => {
+            if (!f) return;
+            nameFrom(f.name.replace(/\.[^.]+$/, ''));
+            if (/\.svg$/i.test(f.name) || f.type === 'image/svg+xml') take(cleanSvg(await f.text()));
+            else if (/^image\/(png|webp|jpeg|gif)$/.test(f.type)) take(await rasterSvg(f));
+            else msg('Use an SVG, PNG or WebP picture.', 'bad');
+        };
+        $$('.seg button', dlg).forEach(b => b.addEventListener('click', () => {
+            $$('.seg button', dlg).forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-selected', x === b); });
+            $d('#ni-file').hidden = b.dataset.src !== 'file'; $d('#ni-code').hidden = b.dataset.src !== 'code';
+            if (b.dataset.src === 'code') $d('#ni-svg').focus();
+        }));
+        $d('#ni-input').addEventListener('change', e => takeFile(e.target.files[0]));
+        const drop = $d('#ni-drop');
+        drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $d('#ni-input').click(); } });
+        drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('over'); });
+        drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+        drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('over'); takeFile(e.dataTransfer.files[0]); });
+        let ct = null;
+        $d('#ni-svg').addEventListener('input', e => { clearTimeout(ct); ct = setTimeout(() => (e.target.value.trim() ? take(cleanSvg(e.target.value)) : (svg = null, msg(''), show())), 250); });
+        if (!ic) {
+            $d('#ni-name').addEventListener('input', e => { if (!idTouched) $d('#ni-id').value = slug(e.target.value); });
+            $d('#ni-id').addEventListener('input', () => { idTouched = true; });
+            $d('#ni-card').addEventListener('input', e => { $d('#ni-card-prev').textContent = e.target.value.trim() || 'location_on'; });
+        }
+        $d('#ni-ok').addEventListener('click', () => {
+            if (!svg) return;
+            const err = t => { $d('#ni-err').textContent = t; };
+            let id = replace;
+            if (!ic) {
+                id = $d('#ni-id').value.trim();
+                if (!id) return err('Give it a file name.');
+                if (!ID_RE.test(id)) return err('The file name may contain lowercase letters, digits, - and _ only.');
+                if (iconIds().includes(id)) return err(`“${id}” is already an icon: choose another file name, or replace that icon’s picture.`);
+            }
+            const path = iconSrc(id);
+            S.assets[path] = svg; S.removals.delete(path); S.thumbs.delete(path);
+            if (url) URL.revokeObjectURL(url);
+            closeModal();
+            if (ic) { edited(true); toast('Picture replaced — not saved yet'); return; }
+            const rec = { id, label: $d('#ni-name').value.trim() || humanize(id) };
+            const card = $d('#ni-card').value.trim(); if (card) rec.cardIcon = card;
+            iconList().push(rec);
+            rebuild();
+            S.boardShown = null; // the gallery gets its new tile
+            if (onDone) onDone(id);
+            else select({ kind: 'single', key: 'mapIcons' }, id);
+            refreshChrome();
+            toast(`Icon “${rec.label}” added — not saved yet`);
+        });
+        if (file) takeFile(file);
+        else setTimeout(() => drop.focus(), 30);
+    }
+    function renameIcon() {
+        const ic = iconList().find(i => i && i.id === S.sel);
+        if (!ic) return;
+        const dlg = modal(`<h3>Rename “${esc(ic.id)}.svg”</h3><p>The picture gets the new name and every pin using it follows, when you save.</p>
+            <div class="fld"><label for="ri-id">New file name</label><input id="ri-id" value="${esc(ic.id)}" autocomplete="off"></div><p id="ri-err" class="err"></p>
+            <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="ri-ok">Rename</button></div>`);
+        const input = $('#ri-id', dlg);
+        input.select();
+        const go = async () => {
+            const to = input.value.trim(), from = ic.id;
+            if (to === from) { closeModal(); return; }
+            const err = !ID_RE.test(to) ? 'Lowercase letters, digits, - and _ only.' : iconIds().includes(to) ? `“${to}” is already an icon.` : '';
+            if (err) { $('#ri-err', dlg).textContent = err; return; }
+            const oldPath = iconSrc(from), newPath = iconSrc(to);
+            const text = typeof S.assets[oldPath] === 'string' ? S.assets[oldPath] : await io.read(oldPath);
+            if (text === null) { $('#ri-err', dlg).textContent = `${oldPath} could not be read.`; return; }
+            S.assets[newPath] = text; S.removals.delete(newPath);
+            delete S.assets[oldPath]; S.thumbs.delete(oldPath);
+            if (iconOnDisk(from)) S.removals.add(oldPath);
+            const users = iconUsers(from);
+            users.forEach(r => { r.map.icon = to; });
+            ic.id = to; S.sel = to;
+            closeModal(); edited(true); renderCrumbs();
+            toast(`Renamed; ${users.length} pin${users.length === 1 ? '' : 's'} updated — not saved yet`);
+        };
+        $('#ri-ok', dlg).addEventListener('click', go);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
+    }
+    function deleteIcon() {
+        const icons = iconList(), i = icons.findIndex(x => x && x.id === S.sel);
+        if (i < 0) return;
+        const ic = icons[i], users = iconUsers(ic.id);
+        if (users.length) { alertBox(`“${ic.label || ic.id}” is still in use`, `<p>Give these pins another icon first, so none loses its picture:</p><div>${chips(users.map(r => S.store.get(r.id)).filter(Boolean))}</div>`); return; }
+        modal(`<h3>Delete “${esc(ic.label || ic.id)}”?</h3><p>It leaves the list, and <code>${esc(iconSrc(ic.id))}</code> is deleted from the folder when you save.</p>
+            <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn danger" id="di-ok">Delete</button></div>`);
+        $('#di-ok').addEventListener('click', () => {
+            const path = iconSrc(ic.id);
+            icons.splice(i, 1);
+            delete S.assets[path]; S.thumbs.delete(path);
+            if (iconOnDisk(ic.id)) S.removals.add(path);
+            S.sel = null;
+            closeModal(); edited(true);
+        });
+    }
+    function adoptIcon(id) {
+        if (iconList().some(i => i && i.id === id)) return;
+        iconList().push({ id, label: humanize(id) });
+        rebuild();
+        S.boardShown = null;
+        select({ kind: 'single', key: 'mapIcons' }, id);
+        refreshChrome();
+    }
+
+    /* =================================================================
        QUICK OPEN (Ctrl K): any record, any tool
        ================================================================= */
     function quickOpen() {
@@ -1979,29 +2823,32 @@
             <div id="qo-list" class="qo-list"></div>
             <p class="hint">↑ ↓ to choose · Enter to open · Esc to close</p>`, 'top');
         const input = $('#qo-in', dlg), list = $('#qo-list', dlg);
-        // Each entry wears the colour of its group in the menu
-        const col = d => GROUP_COLOURS[d.group] || SPARE_COLOURS[0];
+        // Each entry wears the colour of its workspace (of its group, for the tables)
+        const col = colourOf;
         const all = [
-            ...Object.entries(TYPES).map(([k, d]) => ({ nav: `type:${k}`, name: d.plural || d.label, sub: `${S.data[k].length} records`, tag: d.group, icon: d.icon, c: col(d) })),
-            ...Object.entries(SINGLES).map(([k, d]) => ({ nav: `single:${k}`, name: d.label, sub: d.file, tag: d.group, icon: d.icon, c: col(d) })),
+            ...WS.map(w => ({ ws: w.id, name: w.label, sub: w.blurb || 'Start page', tag: 'Workspace', icon: w.icon, c: w.color })),
+            ...Object.entries(TYPES).map(([k, d]) => ({ nav: `type:${k}`, name: d.plural || d.label, sub: `${WS_BY[wsOfDef(d)].label} · ${S.data[k].length} records`, tag: d.group, icon: d.icon, c: col(d) })),
+            ...Object.entries(SINGLES).map(([k, d]) => ({ nav: `single:${k}`, name: d.label, sub: `${WS_BY[wsOfDef(d)].label} · ${d.file}`, tag: d.group, icon: d.icon, c: col(d) })),
             ...Object.entries(TYPES).flatMap(([t, d]) => S.data[t].map(r => ({ id: r.id, name: r.name || r.id, sub: subtitle(t, r), tag: d.label, icon: d.icon, c: col(d), hay: [r.name, r.id, ...(r.aliases || [])].join(' ').toLowerCase() }))),
         ];
         let items = [], at = 0;
         const draw = () => {
             const q = input.value.trim().toLowerCase();
+            const tool = o => !!(o.nav || o.ws);
             items = (q ? all.filter(o => (o.hay || o.name.toLowerCase()).includes(q))
-                .sort((a, b) => (b.name.toLowerCase().startsWith(q) - a.name.toLowerCase().startsWith(q)) || (!!a.nav - !!b.nav) * -1) : all.filter(o => o.nav)).slice(0, 50);
+                .sort((a, b) => (b.name.toLowerCase().startsWith(q) - a.name.toLowerCase().startsWith(q)) || (tool(a) - tool(b)) * -1) : all.filter(tool)).slice(0, 60);
             at = Math.min(at, Math.max(0, items.length - 1));
             list.innerHTML = items.map((o, i) => `<div class="qo-i ${i === at ? 'on' : ''}" data-i="${i}" style="--c:${o.c}">
                 <span class="qo-ic material-symbols-outlined">${esc(o.icon || 'description')}</span>
                 <span class="qo-txt"><b>${esc(o.name)}</b>${o.sub ? `<small>${esc(o.sub)}</small>` : ''}</span>
-                <span class="qo-tag">${esc(o.nav ? 'Go to' : o.tag)}</span></div>`).join('') || '<p class="muted qo-none">No match.</p>';
+                <span class="qo-tag">${esc(o.ws ? 'Workspace' : o.nav ? 'Go to' : o.tag)}</span></div>`).join('') || '<p class="muted qo-none">No match.</p>';
             const on = $('.qo-i.on', list); if (on) on.scrollIntoView({ block: 'nearest' });
         };
         const go = i => {
             const o = items[i]; if (!o) return;
             closeModal();
-            if (o.nav) { const [kind, key] = o.nav.split(':'); S.search = ''; $('#search').value = ''; select({ kind, key }, null); }
+            if (o.ws) goWs(o.ws);
+            else if (o.nav) { const [kind, key] = o.nav.split(':'); openTool(kind, key); }
             else jump(o.id);
         };
         input.addEventListener('input', () => { at = 0; draw(); });
@@ -2017,28 +2864,44 @@
     /* =================================================================
        ACTIONS
        ================================================================= */
+    // Opens a tool (a type or a one-object file) and, in it, a record (null: none)
     function select(view, id) {
+        const sameTool = S.page !== 'home' && S.view.kind === view.kind && S.view.key === view.key;
+        S.page = null;
         S.view = view; S.sel = id ?? null; S.menuCode = null;
-        renderNav(); renderList(); renderEditor();
+        S.lastSel[`${view.kind}:${view.key}`] = S.sel;
+        S.wsLast[curWs()] = { view, sel: S.sel };
+        if (view.kind === 'type' && S.sel) {
+            if (TYPES[view.key].place) S.store.ancestors(S.sel).forEach(a => S.open.add(a.id));
+            S.recent = [{ type: view.key, id: S.sel }, ...S.recent.filter(x => !(x.type === view.key && x.id === S.sel))].slice(0, 12);
+        }
+        if (!sameTool) S.boardShown = null;
+        renderAll();
         $('#editor').scrollTop = 0;
-        const active = $('.li.active'); if (active) active.scrollIntoView({ block: 'nearest' });
+        const active = $('#list-items .li.active'); if (active) active.scrollIntoView({ block: 'nearest' });
     }
     function jump(id) {
         const type = typeOfId(id);
         if (type) { S.search = ''; $('#search').value = ''; select({ kind: 'type', key: type }, id); }
         closeModal();
     }
-    // Alt ↑ / ↓: the previous / next record of the list as shown
+    // Alt ↑ / ↓: the previous / next record of the list (or grid, or gallery) as shown
     function step(dir) {
-        if (isSingle()) return;
-        const ids = $$('#list-items .li').map(b => b.dataset.select);
+        if (S.page === 'home') return;
+        const ids = isBoard() ? $$('#board [data-rec], #board [data-icon]').map(b => b.dataset.rec || b.dataset.icon)
+            : isSingle() ? [] : $$('#list-items [data-select]').map(b => b.dataset.select);
         if (!ids.length) return;
         const i = ids.indexOf(S.sel);
         const j = i < 0 ? 0 : Math.max(0, Math.min(ids.length - 1, i + dir));
         if (ids[j] !== S.sel) select(S.view, ids[j]);
     }
     function edited(structural) {
-        if (structural) { rebuild(); renderEditor(); renderNav(); renderList(); refreshChrome(); }
+        if (structural) {
+            rebuild();
+            if (isBoard()) { renderBoard(true); $('#app').classList.toggle('no-sel', !S.sel); }
+            renderEditor(); renderNav(); renderList(); refreshChrome();
+            if (S.page === 'home') renderHome();
+        }
         else scheduleRefresh();
     }
     function emptyFor(f) {
@@ -2047,14 +2910,16 @@
         return o;
     }
 
-    function newRecord(preset = {}) {
-        const type = S.view.key, def = TYPES[type];
-        const current = curRecord();
+    // The new-record dialog of a type (by default the open one)
+    function newRecord(preset = {}, type = S.view.key) {
+        const def = TYPES[type];
+        if (!def) return;
+        const current = S.view.key === type ? curRecord() : null;
         // "+ New" beside an open record: a child of it when it can hold one, else its sibling.
         // A POI holds other POIs only when it is an institution (or when asked: preset.parent).
         const holds = current && (def.parent || []).includes(typeOfId(current.id)) && (typeOfId(current.id) !== 'poi' || !!(current.institution && current.institution.kind));
         const guessParent = preset.parent || (current && def.place ? (holds ? current.id : current.parent) : '');
-        const dlg = modal(`<h3>New ${esc(def.label.toLowerCase())}</h3>
+        const dlg = modal(`<h3>New ${lc(esc(def.label))}</h3>
             <div class="grid">
                 <div class="fld w-12"><label for="nr-name">Name</label><input id="nr-name" autofocus></div>
                 <div class="fld w-12"><label for="nr-id">Id</label><input id="nr-id"><p class="help">Used in links and addresses. Lowercase letters, digits, - and _; it can be changed later with Rename id.</p></div>
@@ -2071,14 +2936,14 @@
         name.focus();
         const create = () => {
             const id = idIn.value.trim(), parent = $('#nr-parent', dlg) ? $('#nr-parent', dlg).value : undefined;
-            const err = !name.value.trim() ? 'Give it a name.' : !ID_RE.test(id) ? 'The id may contain lowercase letters, digits, - and _ only.' : allIds().has(id) ? `"${id}" is already used by a ${TYPES[typeOfId(id)].label.toLowerCase()}.` : (def.place && def.parent.length && !parent) ? 'Choose where it sits.' : '';
+            const err = !name.value.trim() ? 'Give it a name.' : !ID_RE.test(id) ? 'The id may contain lowercase letters, digits, - and _ only.' : allIds().has(id) ? `"${id}" is already used by a ${lc(TYPES[typeOfId(id)].label)}.` : (def.place && def.parent.length && !parent) ? 'Choose where it sits.' : '';
             if (err) { $('#nr-err', dlg).textContent = err; return; }
             const rec = { id, name: name.value.trim(), ...emptyFor(def) };
             if (parent) rec.parent = parent;
             const whereSel = $('#nr-where', dlg);
             if (whereSel && whereSel.value) rec.where = whereSel.value;
             if (type === 'notice') { rec.kind = 'job'; rec.status = 'open'; }
-            if ((type === 'rumour' || type === 'notice' || type === 'prophecy') && S.store.settings.currentCampaign) rec.campaigns = [S.store.settings.currentCampaign];
+            if ((type === 'rumour' || type === 'notice' || type === 'prophecy') && curCampaign()) rec.campaigns = [curCampaign()];
             if (type === 'fortuneCard' && preset.deck) {
                 rec.deck = preset.deck;
                 const nums = S.data.fortuneCard.filter(c => c.deck === preset.deck && typeof c.number === 'number').map(c => c.number);
@@ -2106,7 +2971,7 @@
         const rec = curRecord(), type = S.view.key;
         const users = [...S.store.children(rec.id), ...S.store.backrefs(rec.id)];
         if (users.length) {
-            alertBox(`“${rec.name}” is still in use`, `<p>Change or remove these first, so no link breaks:</p><div>${chips(users)}</div>`);
+            alertBox(`“${rec.name}” is still in use`, `<p>Change or remove these first, so no link breaks:</p><div>${chips(users.map(r => S.store.get(r.id)).filter(Boolean))}</div>`);
             return;
         }
         modal(`<h3>Delete “${esc(rec.name)}”?</h3><p>It disappears from <code>${esc(TYPES[type].file)}</code> when you save. Nothing else points to it.</p>
@@ -2158,8 +3023,8 @@
     // Swaps the record with its neighbour in the list as shown (same group), i.e. in the file
     function moveRecord(dir) {
         const type = S.view.key, list = S.data[type], rec = curRecord();
-        const group = orderedRecords(type).find(g => g.recs.includes(rec));
-        const recs = group ? group.recs : list;
+        const group = TYPES[type].place ? null : orderedRecords(type).find(g => g.recs.includes(rec));
+        const recs = TYPES[type].place ? list.filter(r => (r.parent || '') === (rec.parent || '')) : group ? group.recs : list;
         const j = recs.indexOf(rec) + dir;
         if (j < 0 || j >= recs.length) return;
         const a = list.indexOf(rec), b = list.indexOf(recs[j]);
@@ -2169,12 +3034,14 @@
     // Drag and drop in the list: moves the record in its file, so the site shows it there.
     // Only within its group (and, for POIs, among the places that sit in the same one).
     function sameShelf(type, a, b) {
+        if (TYPES[type].place) return (a.parent || '') === (b.parent || ''); // the Atlas tree: siblings
         const ga = listGroup(type, a), gb = listGroup(type, b);
         if ((ga ? ga.key : '') !== (gb ? gb.key : '')) return false;
         return type !== 'poi' || (a.parent || '') === (b.parent || '');
     }
     function dropRecord(id, targetId, after) {
-        const type = S.view.key, list = S.data[type];
+        const type = typeOfId(id), list = type && S.data[type];
+        if (!list || typeOfId(targetId) !== type) return;
         const rec = list.find(r => r.id === id), target = list.find(r => r.id === targetId);
         if (!rec || !target || rec === target || !sameShelf(type, rec, target)) return;
         list.splice(list.indexOf(rec), 1);
@@ -2189,6 +3056,7 @@
                 { action: 'move-record', dir: -1, icon: 'arrow_upward', label: 'Move up (order on the site)' },
                 { action: 'move-record', dir: 1, icon: 'arrow_downward', label: 'Move down (order on the site)' });
         }
+        items.push(null, { action: 'delete', icon: 'delete', label: `Delete this ${lc(def.label)}…`, danger: true });
         openMenu(btn, items);
     }
 
@@ -2269,6 +3137,7 @@
         if (kind === 'enum' || kind === 'ref') return el.value || undefined;
         if (kind === 'enum-set') return [...el.closest('[data-set]').querySelectorAll('input:checked')].map(i => i.value);
         if (kind === 'lines') return el.value.split('\n');
+        if (kind === 'csv') return el.value.split(',').map(v => v.trim()).filter(Boolean);
         if (kind === 'json') {
             try { const v = JSON.parse(el.value); el.classList.remove('invalid'); return v; }
             catch (e) { el.classList.add('invalid'); return Symbol.for('invalid'); }
@@ -2276,9 +3145,17 @@
         return el.value;
     }
     const keyOf = el => { const p = JSON.parse(el.dataset.path); return [...p].reverse().find(k => typeof k === 'string'); };
+    // The record an input writes to: a row of the grid, or the record open in the form
+    function holderOf(el) {
+        const row = el.closest && el.closest('#board [data-rec]');
+        if (row) return S.view.kind === 'type' ? S.data[S.view.key].find(r => r.id === row.dataset.rec) || null : null;
+        return $('#editor').contains(el) ? curRecord() : null;
+    }
     document.addEventListener('input', e => {
         const el = e.target;
         if (el.id === 'search') { S.search = el.value; renderList(); return; }
+        if (el.id === 'grid-q') { S.gridQ[S.view.key] = el.value; clearTimeout(S.gq); S.gq = setTimeout(renderGridBody, 120); return; }
+        if (el.id === 'icon-q') { S.iconQ = el.value; renderIconGallery(); return; }
         if (el.id === 'menu-code') { S.menuCode = el.value; clearTimeout(S.mt); S.mt = setTimeout(() => { renderSide(); const i = $('#menu-code'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 300); return; }
         if (el.matches('[data-chip-in]')) { showSuggest(el); return; }
         if (el.dataset.colorFor) { const t = document.getElementById(el.dataset.colorFor); t.value = el.value; t.dispatchEvent(new Event('input', { bubbles: true })); return; }
@@ -2289,11 +3166,13 @@
         }
         if (el.dataset.rangeFor) { const t = document.getElementById(el.dataset.rangeFor); t.value = el.value; t.dispatchEvent(new Event('input', { bubbles: true })); return; }
         if (el.tagName === 'TEXTAREA') autosize(el);
-        if (!el.dataset.path || !$('#editor').contains(el)) return;
+        const holder = holderOf(el);
+        if (!el.dataset.path || !holder) return;
         const v = readValue(el);
         if (v === Symbol.for('invalid')) return;
         const path = JSON.parse(el.dataset.path);
-        setAt(curRecord(), path, v);
+        setAt(holder, path, v);
+        if (path[path.length - 1] === 'cardIcon') { const cp = $('[data-card-prev]'); if (cp) cp.textContent = el.value.trim() || 'location_on'; }
         if (el.dataset.kind === 'markdown') {
             const prev = document.querySelector(`[data-preview="${CSS.escape(JSON.stringify(path))}"]`);
             if (prev) { clearTimeout(S.pt); S.pt = setTimeout(() => { prev.innerHTML = renderMd(el.value); }, 200); }
@@ -2315,7 +3194,10 @@
     });
     document.addEventListener('change', e => {
         const el = e.target;
-        if (!el.dataset.path || !$('#editor').contains(el)) return;
+        if (!el.dataset.path || !holderOf(el)) return;
+        // a cell of the grid, on the record open beside it: the form follows
+        const row = el.closest('#board [data-rec]');
+        if (row) { if (row.dataset.rec === S.sel) renderEditor(); if (el.tagName === 'SELECT' || el.type === 'checkbox') edited(false); return; }
         // a field other fields depend on (showIf, the map pin): redraw the form
         if (CONTROLLERS.has(keyOf(el))) { edited(true); return; }
         if (el.tagName === 'SELECT' || el.type === 'checkbox') edited(false);
@@ -2333,11 +3215,37 @@
             }
             return;
         }
+        // menus: arrows move between the items
+        if (el.closest && el.closest('#menu') && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+            e.preventDefault();
+            const items = $$('#menu button:not(:disabled)'), i = items.indexOf(el);
+            const n = items[(i + (e.key === 'ArrowDown' ? 1 : -1) + items.length) % items.length]; if (n) n.focus();
+            return;
+        }
+        // the Atlas tree: Enter opens, ← → close / open, ↑ ↓ move
+        if (el.matches && el.matches('#list-items [data-select][tabindex]') && !e.altKey && !e.ctrlKey) {
+            const id = el.dataset.select, rows = $$('#list-items [data-select][tabindex]'), i = rows.indexOf(el);
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select({ kind: 'type', key: typeOfId(id) }, id); return; }
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); const n = rows[i + (e.key === 'ArrowDown' ? 1 : -1)]; if (n) n.focus(); return; }
+            if (e.key === 'ArrowRight' && el.hasAttribute('aria-expanded')) { e.preventDefault(); if (el.getAttribute('aria-expanded') === 'false') toggleTree(id, true); else if (rows[i + 1]) rows[i + 1].focus(); return; }
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (el.getAttribute('aria-expanded') === 'true') toggleTree(id, false);
+                else { const p = (S.store.get(id) || {}).parent, pe = p && $(`#list-items [data-select="${CSS.escape(p)}"]`); if (pe) pe.focus(); }
+                return;
+            }
+        }
         const k = e.key.toLowerCase();
         if ((e.ctrlKey || e.metaKey) && k === 's') { e.preventDefault(); save(); return; }
         if ((e.ctrlKey || e.metaKey) && k === 'k') { e.preventDefault(); quickOpen(); return; }
         if (e.altKey && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) { e.preventDefault(); step(e.key === 'ArrowUp' ? -1 : 1); return; }
-        if (e.key === 'Escape') { closeMenu(); if (!$('#modal').hidden) closeModal(); }
+        if (e.key === 'Escape') {
+            const menu = $('#menu');
+            if (menu) { closeMenu(); return; }
+            if (!$('#modal').hidden) { closeModal(); return; }
+            // a board: Esc closes the record open beside it
+            if (isBoard() && S.sel && !(el.closest && el.closest('#board'))) { e.preventDefault(); closeSel(); }
+        }
     });
     document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('[data-chip-in]')) showSuggest(e.target); });
     document.addEventListener('focusout', e => {
@@ -2381,8 +3289,8 @@
     const dropSpot = e => {
         const li = e.target.closest && e.target.closest('#list-items .li[data-select]');
         if (!recDrag || !li || li.dataset.select === recDrag) return null;
-        const type = S.view.key, a = S.store.get(recDrag), b = S.store.get(li.dataset.select);
-        if (!a || !b || !sameShelf(type, a, b)) return null;
+        const type = typeOfId(recDrag), a = S.store.get(recDrag), b = S.store.get(li.dataset.select);
+        if (!a || !b || !type || typeOfId(b.id) !== type || !sameShelf(type, a, b)) return null;
         const r = li.getBoundingClientRect();
         return { li, after: e.clientY > r.top + r.height / 2 };
     };
@@ -2415,17 +3323,43 @@
         recDrag = null; clearDrop();
         $$('#list-items .li.dragging').forEach(li => li.classList.remove('dragging'));
     });
-    // Tooltips of the icon rail
-    document.addEventListener('mouseover', e => { const t = e.target.closest('#nav [data-tip]'); if (t && t.dataset.tip) showTip(t); else $('#tip').hidden = true; });
-    document.addEventListener('scroll', () => { $('#tip').hidden = true; }, true);
+    // Map icons: a picture dropped on the gallery opens the new-icon dialog
+    document.addEventListener('dragover', e => {
+        if (!recDrag && !drag && e.target.closest && e.target.closest('#board') && S.view.key === 'mapIcons' && [...(e.dataTransfer.types || [])].includes('Files')) e.preventDefault();
+    });
+    document.addEventListener('drop', e => {
+        if (recDrag || drag || !e.target.closest || !e.target.closest('#board') || S.view.key !== 'mapIcons' || !e.dataTransfer.files.length) return;
+        e.preventDefault();
+        newIconDialog({ file: e.dataTransfer.files[0] });
+    });
+    function closeSel() {
+        S.sel = null;
+        S.lastSel[`${S.view.kind}:${S.view.key}`] = null;
+        S.wsLast[curWs()] = { view: S.view, sel: null };
+        renderMain(); renderCrumbs();
+    }
 
     document.addEventListener('click', e => {
-        if (!e.target.closest('#menu') && !e.target.closest('[data-action="more"]')) closeMenu();
-        const t = e.target.closest('[data-nav],[data-select],[data-jump],[data-jump-single],[data-action],[data-sec]');
-        if (!t) return;
+        if (!e.target.closest('#menu') && !e.target.closest('[aria-haspopup="menu"], [data-action="more"]')) closeMenu();
+        const t = e.target.closest('[data-ws],[data-tab],[data-icon],[data-nav],[data-select],[data-jump],[data-jump-single],[data-action],[data-sec]');
+        // a row of the grid, outside its cells' controls: open it beside
+        if (!t || t.matches('tr')) {
+            const tr = e.target.closest('#board tr.rw');
+            if (tr && !e.target.closest('input, select, textarea, button, a')) select(S.view, tr.dataset.rec);
+            if (!t) return;
+        }
+        if (t.dataset.ws) { e.preventDefault(); closeModal(); goWs(t.dataset.ws); return; }
+        if (t.dataset.tab) { openTool('type', t.dataset.tab); return; }
+        if (t.dataset.icon) { select({ kind: 'single', key: 'mapIcons' }, t.dataset.icon === S.sel ? null : t.dataset.icon); return; }
         if (t.dataset.sec) { e.preventDefault(); const s = document.getElementById(t.dataset.sec); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
-        if (t.dataset.nav) { const [kind, key] = t.dataset.nav.split(':'); S.search = ''; $('#search').value = ''; select({ kind, key }, null); return; }
-        if (t.dataset.select) { select(S.view, t.dataset.select); return; }
+        if (t.dataset.nav) { e.preventDefault(); closeModal(); const [kind, key] = t.dataset.nav.split(':'); openTool(kind, key); return; }
+        if (t.dataset.select) {
+            if (e.target.closest('[data-action="tree-toggle"]')) return; // (handled below)
+            const id = t.dataset.select;
+            const view = S.view.kind === 'type' && S.data[S.view.key].some(r => r.id === id) ? S.view : typeOfId(id) ? { kind: 'type', key: typeOfId(id) } : S.view;
+            if (isBoard() && id === S.sel && t.matches('.open')) { closeSel(); return; }
+            select(view, id); return;
+        }
         if (t.dataset.jump) { e.preventDefault(); jump(t.dataset.jump); return; }
         if (t.dataset.jumpSingle) { e.preventDefault(); closeModal(); select({ kind: 'single', key: t.dataset.jumpSingle }); return; }
         const a = t.dataset.action;
@@ -2434,16 +3368,43 @@
         if (t.closest('#menu')) closeMenu();
         switch (a) {
             case 'close-modal': closeModal(); break;
-            case 'new': newRecord(); break;
+            case 'new': if (curWs() === 'atlas') { const ad = atlasAdd(); newRecord({ parent: ad.parent }, ad.type); } else newRecord(); break;
+            case 'new-place': newRecord({ parent: t.dataset.parent }, t.dataset.type); break;
+            case 'quick-new': newRecord({}, t.dataset.type); break;
+            case 'tree-toggle': e.stopPropagation(); toggleTree(t.dataset.id); break;
+            case 'camp': S.camp = t.dataset.camp; rememberUI(); renderNav(); renderList(); refreshChrome(); if (S.page === 'home') renderHome(); break;
+            case 'show-issues': showIssues(false); break;
+            case 'save': save(); break;
+            case 'close-sel': closeSel(); break;
+            case 'grid-sort': {
+                const k = t.dataset.key, cur = S.gridSort[S.view.key];
+                if (!cur || cur.key !== k) S.gridSort[S.view.key] = { key: k, dir: 1 };
+                else if (cur.dir > 0) cur.dir = -1;
+                else delete S.gridSort[S.view.key];
+                renderBoard(true); break;
+            }
+            case 'sec-add': secAddMenu(t); break;
+            case 'obj-add-block': {
+                const key = t.dataset.key, f = curDef().fields[key];
+                rec[key] = emptyFor(f);
+                S.scrollTo = secId(f.section);
+                edited(true); break;
+            }
+            case 'remove-block': removeBlock(t.dataset.key); break;
+            case 'icon-pick': iconPicker(path); break;
+            case 'go-icons': closeModal(); openTool('single', 'mapIcons'); break;
+            case 'icon-new': newIconDialog(); break;
+            case 'icon-replace': newIconDialog({ replace: S.sel }); break;
+            case 'icon-rename': renameIcon(); break;
+            case 'icon-delete': deleteIcon(); break;
+            case 'icon-adopt': adoptIcon(t.dataset.id); break;
             case 'more': moreMenu(t); break;
             case 'toggle-side': S.sideToggled = !S.sideToggled; $('.ed-wrap').classList.toggle('side-toggled', S.sideToggled); $('#side-btn').classList.toggle('on', S.sideToggled); break;
             case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
             case 'add-here': {
                 // "+ Rumour / + Notice" from a POI or settlement: open the new-record dialog on that type
                 // (data-field: the field it fills, e.g. a new card's deck; default where)
-                S.search = ''; $('#search').value = '';
-                select({ kind: 'type', key: t.dataset.type }, null);
-                newRecord(t.dataset.type === 'poi' ? { parent: t.dataset.where } : { [t.dataset.field || 'where']: t.dataset.where });
+                newRecord(t.dataset.type === 'poi' ? { parent: t.dataset.where } : { [t.dataset.field || 'where']: t.dataset.where }, t.dataset.type);
                 break;
             }
             case 'found-add': {
@@ -2513,16 +3474,23 @@
         const box = e.target.closest('[data-chips]');
         if (box && !e.target.closest('.tok, .suggest, input')) $('.chip-in', box).focus();
     });
-    $('#new-btn').addEventListener('click', () => newRecord());
+    $('#new-btn').addEventListener('click', () => {
+        if (curWs() === 'atlas') { const ad = atlasAdd(); newRecord({ parent: ad.parent }, ad.type); }
+        else newRecord();
+    });
+    $('#new-more').addEventListener('click', e => atlasAddMenu(e.currentTarget));
+    $('#camp-btn').addEventListener('click', e => campMenu(e.currentTarget));
     $('#save-btn').addEventListener('click', save);
     $('#qo-btn').addEventListener('click', quickOpen);
     $('#issues-pill').addEventListener('click', () => showIssues(false));
     $('#collapse-btn').addEventListener('click', () => { $('#app').classList.toggle('list-collapsed'); rememberUI(); });
-    $('#nav-pin').addEventListener('click', () => { S.navOpen = !S.navOpen; $('#tip').hidden = true; renderNav(); rememberUI(); });
     $('#reload-btn').addEventListener('click', async () => {
         if (dirtyFiles().length && !confirm('Reload from disk and lose the unsaved changes?')) return;
-        S.thumbs.clear();
-        await loadAll(); renderNav(); renderList(); renderEditor(); refreshChrome();
+        S.thumbs.clear(); S.assets = {}; S.removals.clear();
+        await loadAll(); await listIcons(); S.loadedIcons = new Set(iconList().map(i => i && i.id));
+        if (!isSingle() && S.sel && !S.data[S.view.key].some(r => r.id === S.sel)) S.sel = null;
+        S.boardShown = null;
+        renderAll();
         toast('Reloaded from disk');
     });
     window.addEventListener('resize', () => { const ed = $('#editor'), h = $('.ed-head'); if (h) ed.style.setProperty('--head-h', `${h.offsetHeight}px`); });
@@ -2538,14 +3506,15 @@
             gateError(e.message);
             return;
         }
-        if (io.list) { try { S.icons = (await io.list('images/atlas_icons') || []).filter(n => n.endsWith('.svg')).map(n => n.slice(0, -4)); } catch (e) { S.icons = null; } }
-        if (S.icons && !S.icons.length) S.icons = null;
+        await listIcons();
+        S.loadedIcons = new Set(iconList().map(i => i && i.id));
         $('#gate').hidden = true;
         $('#app').hidden = false;
-        $('#folder-name').textContent = io.name();
+        $('#brand').title = `Athenaeum · ${io.name()}`;
         await restoreUI();
-        renderNav(); renderList(); renderEditor(); refreshChrome();
-        const active = $('.li.active');
+        if (!S.camp) S.camp = S.store.settings.currentCampaign || 'all';
+        renderAll();
+        const active = $('#list-items .li.active');
         if (active) active.scrollIntoView({ block: 'nearest' });
     }
     function gateError(msg) {

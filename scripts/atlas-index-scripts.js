@@ -44,11 +44,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const LEVELS = ['continent', 'country', 'settlement'];
     const filterTypes = LEVELS.slice(0, type === 'poi' ? 3 : LEVELS.indexOf(type));
 
-    // POI card icons (back of the card), from the pin icon names
+    // POI card icons (back of the card), from the pin icon names: data/map-icons.json
+    // (set in the dashboard, Site › Map icons), else these defaults
     const POI_ICONS = {
         capital: 'fort', castle: 'fort', fort: 'local_police', danger: 'skull', 'pay-money': 'payments',
         beer: 'sports_bar', bookshelf: 'book_2', 'spinning-blades': 'swords', house: 'house'
     };
+    for (const ic of ((store.singletons || {}).mapIcons || {}).icons || []) if (ic && ic.id && ic.cardIcon) POI_ICONS[ic.id] = ic.cardIcon;
 
     const records = store.all(type).filter(r => !(type === 'country' && r.unlisted));
     const items = records.map(rec => {

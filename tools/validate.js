@@ -30,6 +30,10 @@ for (const [name, def] of Object.entries(ATH.schema.singletons || {})) {
         if (!fs.existsSync(path.join(ROOT, src))) warnings.push(`${where}: image "${src}" not found`);
     });
 }
+// Every listed map icon has its picture
+for (const ic of ((store.singletons.mapIcons || {}).icons || [])) {
+    if (ic && ic.id && !fs.existsSync(path.join(ROOT, `images/atlas_icons/${ic.id}.svg`))) warnings.push(`[mapIcons] "${ic.id}": images/atlas_icons/${ic.id}.svg not found`);
+}
 for (const [type, def] of Object.entries(ATH.schema.types)) {
     for (const rec of store.all(type)) {
         eachImage(def.fields, rec, `[${type}] ${rec.id}`, (src, where) => {

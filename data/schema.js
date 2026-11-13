@@ -38,6 +38,12 @@ range     number: [min, max] adds a slider       choices  number: [[value, label
 layers    map: offers the world map's layer (continents only)
 noPin     help shown instead of the pin when the parent has no map of its own
 
+※ DASHBOARD ONLY, per type or one-object file ※
+workspace  where it sits in the dashboard: 'atlas' (places, one tree) · 'cast' · 'chronicle' · 'codex' ·
+           'tables' (pools, edited as a grid) · 'site' (behind the gear). None = 'tables'.
+group      its heading among the tables (and its colour)
+columns    the fields shown as columns of its grid (tables); none = the first short fields
+
 ※ TYPE OPTIONS ※
 order  { by, desc, within }  store.all(type) returns the records sorted by `by` (descending if `desc`), grouped by `within` if given;
 records missing `by` come last. Otherwise: file order.
@@ -93,7 +99,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
         singletons: {
             /* The world map is the root every continent is pinned on. */
             world: {
-                label: 'World', icon: 'travel_explore', group: 'Site',
+                label: 'World', icon: 'travel_explore', group: 'Site', workspace: 'site',
                 file: 'data/world.json',
                 page: 'world.html',
                 sections: ['Essentials', 'Lore', 'Map'],
@@ -107,7 +113,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             },
             /* Site-wide settings. */
             settings: {
-                label: 'Settings', icon: 'tune', group: 'Site',
+                label: 'Settings', icon: 'tune', group: 'Site', workspace: 'site',
                 file: 'data/settings.json',
                 fields: {
                     tavernCode: { kind: 'text', label: 'Market code', help: 'Tavern menus, shop wares, the order of rumours and the blessings are drawn from it, the same for every player. Change it to change them all.' },
@@ -118,7 +124,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             },
             /* The "Upcoming Sessions" cards of the homepage (scripts/upcoming-sessions.js). */
             schedule: {
-                label: 'Upcoming sessions', icon: 'event_upcoming', group: 'Site',
+                label: 'Upcoming sessions', icon: 'event_upcoming', group: 'Site', workspace: 'site',
                 file: 'data/schedule.json',
                 page: 'index.html',
                 sections: ['Homepage cards'],
@@ -144,7 +150,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* The potion maker (admin_tools/potion-maker.html, DM only): what it needs besides its
                reagents. scripts/alchemy-engine.js reads it through Alchemy.dbFromStore(). */
             alchemy: {
-                label: 'Alchemy', icon: 'science', group: 'Generators',
+                label: 'Alchemy', icon: 'science', group: 'Alchemy', workspace: 'tables',
                 file: 'data/alchemy.json',
                 page: 'admin_tools/potion-maker.html',
                 sections: ['Properties', 'Forms', 'Oddities'],
@@ -169,6 +175,23 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     oddities: {
                         kind: 'list', label: 'Oddities', lines: true, section: 'Oddities',
                         help: 'One per line. Every potion gets one, picked by its seed: harmless flavour that players see, never a rule.',
+                    },
+                },
+            },
+            /* The pictures of the map pins: images/atlas_icons/<id>.svg. A pin names its picture in
+               map.icon. The dashboard (Site › Map icons) adds, replaces and removes the pictures; this
+               file lists them, with the Material Symbols icon of the places' cards (Atlas list pages). */
+            mapIcons: {
+                label: 'Map icons', icon: 'add_location_alt', group: 'Site', workspace: 'site',
+                file: 'data/map-icons.json',
+                fields: {
+                    icons: {
+                        kind: 'objects', label: 'Icons', itemLabel: ['label', 'id'],
+                        fields: {
+                            id: { kind: 'text', label: 'File name', required: true, help: 'images/atlas_icons/<file name>.svg, and what map.icon holds.' },
+                            label: { kind: 'text', label: 'Name' },
+                            cardIcon: { kind: 'text', icon: true, label: 'Card icon', help: 'Material Symbols name on the back of the places’ cards (Atlas list pages). Empty = location_on.' },
+                        },
                     },
                 },
             },
@@ -484,7 +507,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
         types: {
             /*-------------------------------------======= PLACES =======-------------------------------------*/
             continent: {
-                label: 'Continent', plural: 'Continents', icon: 'public', group: 'Places',
+                label: 'Continent', plural: 'Continents', icon: 'public', group: 'Places', workspace: 'atlas',
                 file: 'data/continents.json',
                 page: 'continent.html?id={id}',
                 place: true, parent: [], autolink: true,
@@ -508,7 +531,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             country: {
-                label: 'Country', plural: 'Countries', icon: 'flag', group: 'Places',
+                label: 'Country', plural: 'Countries', icon: 'flag', group: 'Places', workspace: 'atlas',
                 file: 'data/countries.json',
                 page: 'country.html?id={id}',
                 place: true, parent: ['continent'], autolink: true,
@@ -526,7 +549,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             settlement: {
-                label: 'Settlement', plural: 'Settlements', icon: 'location_city', group: 'Places',
+                label: 'Settlement', plural: 'Settlements', icon: 'location_city', group: 'Places', workspace: 'atlas',
                 file: 'data/settlements.json',
                 page: 'settlement.html?id={id}',
                 place: true, parent: ['country'], autolink: true,
@@ -540,7 +563,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             district: {
-                label: 'District', plural: 'Districts', icon: 'holiday_village', group: 'Places',
+                label: 'District', plural: 'Districts', icon: 'holiday_village', group: 'Places', workspace: 'atlas',
                 file: 'data/districts.json',
                 page: 'settlement.html?id={parent}&district={id}',
                 place: true, parent: ['settlement'], autolink: true,
@@ -554,7 +577,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             poi: {
-                label: 'Point of interest', plural: 'Points of interest', icon: 'location_on', group: 'Places',
+                label: 'Point of interest', plural: 'Points of interest', icon: 'location_on', group: 'Places', workspace: 'atlas',
                 file: 'data/pois.json',
                 page: 'poi.html?id={id}',
                 /* parent 'poi': a key location inside an institution (a hall of the university),
@@ -730,7 +753,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
 
             /*-------------------------------------======= PEOPLE =======-------------------------------------*/
             npc: {
-                label: 'NPC', plural: 'NPCs', icon: 'group', group: 'People',
+                label: 'NPC', plural: 'NPCs', icon: 'group', group: 'People', workspace: 'cast',
                 file: 'data/npcs.json',
                 page: 'npc.html?id={id}',
                 autolink: true,
@@ -761,7 +784,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             faction: {
-                label: 'Faction', plural: 'Factions', icon: 'swords', group: 'People',
+                label: 'Faction', plural: 'Factions', icon: 'swords', group: 'People', workspace: 'cast',
                 file: 'data/factions.json',
                 page: 'factions.html?id={id}',
                 autolink: true,
@@ -806,7 +829,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /*-------------------------------------======= LIBRARY =======-------------------------------------*/
             /* A glossary term: lore, an object, a creature... that has no page of its own. Shown as a keyword (with its definition as tooltip) in the scriptorium. */
             lore: {
-                label: 'Glossary term', plural: 'Glossary', icon: 'key', group: 'Library',
+                label: 'Glossary term', plural: 'Glossary', icon: 'key', group: 'Library', workspace: 'codex',
                 file: 'data/lore.json',
                 autolink: true,
                 fields: {
@@ -815,7 +838,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             tome: {
-                label: 'Tome', plural: 'Tomes', icon: 'menu_book', group: 'Library',
+                label: 'Tome', plural: 'Tomes', icon: 'menu_book', group: 'Library', workspace: 'codex',
                 file: 'data/tomes.json',
                 page: 'tomes.html?id={id}',
                 sections: ['Essentials', 'Look', 'Text'],
@@ -834,7 +857,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             handout: {
-                label: 'Handout', plural: 'Handouts', icon: 'contract', group: 'Library',
+                label: 'Handout', plural: 'Handouts', icon: 'contract', group: 'Library', workspace: 'codex',
                 file: 'data/handouts.json',
                 page: 'handouts.html',
                 sections: ['Essentials', 'Picture & file'],
@@ -850,7 +873,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             creature: {
-                label: 'Creature', plural: 'Bestiary', icon: 'pest_control', group: 'Library',
+                label: 'Creature', plural: 'Bestiary', icon: 'pest_control', group: 'Library', workspace: 'codex',
                 file: 'data/creatures.json',
                 page: 'beast.html?id={id}',
                 autolink: true,
@@ -893,7 +916,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* A spell, shown as a card in the Spellbook (spellbook.html) and from the
                heroes' cards (heroes.html). Who knows it: campaign.spellbooks. */
             spell: {
-                label: 'Spell', plural: 'Spellbook', icon: 'webhook', group: 'Library',
+                label: 'Spell', plural: 'Spellbook', icon: 'webhook', group: 'Library', workspace: 'codex',
                 file: 'data/spells.json',
                 page: 'spellbook.html?spell={id}', // opens the card, whatever campaign and hero are picked
                 autolink: true,
@@ -917,7 +940,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             },
             /* Shown as a loot card in the Artifact Vault (vault.html). Players see the items found in their campaign's sessions (session.loot) and the party's own (campaign.inventory). */
             item: {
-                label: 'Item', plural: 'Items', icon: 'crown', group: 'Library',
+                label: 'Item', plural: 'Items', icon: 'crown', group: 'Library', workspace: 'codex',
                 file: 'data/items.json',
                 page: 'vault.html?item={id}',
                 autolink: true,   // only items found somewhere (else the Vault link leads nowhere)
@@ -938,7 +961,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
 
             /*-------------------------------------======= CAMPAIGNS =======-------------------------------------*/
             campaign: {
-                label: 'Campaign', plural: 'Campaigns', icon: 'auto_stories', group: 'Campaigns',
+                label: 'Campaign', plural: 'Campaigns', icon: 'auto_stories', group: 'Campaigns', workspace: 'chronicle',
                 file: 'data/campaigns.json',
                 page: 'scriptorium.html?campaign={id}',
                 sections: ['Story', 'Quests', 'Party', 'Allegiances', 'Spellbooks'],
@@ -978,7 +1001,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             session: {
-                label: 'Session', plural: 'Sessions', icon: 'history_edu', group: 'Campaigns',
+                label: 'Session', plural: 'Sessions', icon: 'history_edu', group: 'Campaigns', workspace: 'chronicle',
                 file: 'data/sessions.json',
                 page: 'scriptorium.html?session={id}',
                 /* Newest first everywhere (store.all('session')), whatever the order in the file: grouped by campaign, highest number first. */
@@ -1008,7 +1031,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             hero: {
-                label: 'Hero', plural: 'Heroes', icon: 'local_fire_department', group: 'Campaigns',
+                label: 'Hero', plural: 'Heroes', icon: 'local_fire_department', group: 'Campaigns', workspace: 'cast',
                 file: 'data/heroes.json',
                 page: 'heroes.html',
                 sections: ['Identity', 'Backstory', 'Statistics', 'Secret'],
@@ -1044,7 +1067,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* Taverns, shops and temples are POIs with a tavern / shop / temple block.
                These are the shared pools and catalogues they draw from. */
             menuItem: {
-                label: 'Menu item', plural: 'Tavern menu pool', icon: 'restaurant', group: 'Markets',
+                label: 'Menu item', plural: 'Tavern menu pool', icon: 'restaurant', group: 'Markets', workspace: 'tables',
                 file: 'data/menu-items.json',
                 fields: {
                     category: { kind: 'enum', enum: 'menuCategory', label: 'Category', required: true },
@@ -1056,7 +1079,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             service: {
-                label: 'Tavern service', plural: 'Tavern services', icon: 'bed', group: 'Markets',
+                label: 'Tavern service', plural: 'Tavern services', icon: 'bed', group: 'Markets', workspace: 'tables',
                 file: 'data/services.json',
                 fields: {
                     desc: { kind: 'text', label: 'Description', width: 'full' },
@@ -1067,7 +1090,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* The shared shop pool: a shop shows N seeded goods per shelf, among those its
                kind, tier and tags allow (price = basePrice x tier multiplier x markup). */
             shopGood: {
-                label: 'Shop good', plural: 'Shop goods pool', icon: 'storefront', group: 'Markets',
+                label: 'Shop good', plural: 'Shop goods pool', icon: 'storefront', group: 'Markets', workspace: 'tables',
                 file: 'data/shop-goods.json',
                 fields: {
                     category: { kind: 'enum', enum: 'shopCategory', label: 'Shelf', required: true },
@@ -1085,7 +1108,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                (deity.html). Elder gods stay sealed (no name, no page, no keyword link) until
                a campaign lists them in `revealedIn`. Card frames: scripts/deity-card.js. */
             deity: {
-                label: 'Deity', plural: 'Pantheon', icon: 'brightness_7', group: 'Faith',
+                label: 'Deity', plural: 'Pantheon', icon: 'brightness_7', group: 'Faith', workspace: 'cast',
                 file: 'data/deities.json',
                 page: 'deity.html?id={id}',
                 autolink: true,   // sealed Elder gods excepted (store.revealed)
@@ -1111,7 +1134,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             templeService: {
-                label: 'Temple service', plural: 'Temple services', icon: 'healing', group: 'Faith',
+                label: 'Temple service', plural: 'Temple services', icon: 'healing', group: 'Faith', workspace: 'tables',
                 file: 'data/temple-services.json',
                 fields: {
                     category: { kind: 'enum', enum: 'templeCategory', label: 'Kind', required: true },
@@ -1122,7 +1145,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             },
             /* What "Pray" at a temple can grant: drawn once per market code, per browser. */
             blessing: {
-                label: 'Blessing', plural: 'Blessings', icon: 'volunteer_activism', group: 'Faith',
+                label: 'Blessing', plural: 'Blessings', icon: 'volunteer_activism', group: 'Faith', workspace: 'tables',
                 file: 'data/blessings.json',
                 fields: {
                     text: { kind: 'text', label: 'What the worshipper feels or sees', long: true, required: true, help: 'Shown to the player.' },
@@ -1135,7 +1158,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* Heard in every tavern at or under `where`: a settlement's rumour is heard in
                all its taverns, a POI's only there. Players draw them by buying a round. */
             rumour: {
-                label: 'Rumour', plural: 'Rumours', icon: 'record_voice_over', group: 'Town life',
+                label: 'Rumour', plural: 'Rumours', icon: 'record_voice_over', group: 'Town life', workspace: 'chronicle',
                 file: 'data/rumours.json',
                 sections: ['Rumour', 'DM only'],
                 fields: {
@@ -1149,7 +1172,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             },
             /* A post on a notice board: the settlement's (town board) or a POI's. */
             notice: {
-                label: 'Notice', plural: 'Notice boards', icon: 'push_pin', group: 'Town life',
+                label: 'Notice', plural: 'Notice boards', icon: 'push_pin', group: 'Town life', workspace: 'chronicle',
                 file: 'data/notices.json',
                 sections: ['Notice', 'Text'],
                 fields: {
@@ -1174,7 +1197,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                campaign, is that one instead of a random draw. Scripts: scripts/divination.js
                (draws) and scripts/fortune-card.js (markup, styles/fortune-card.css). */
             practice: {
-                label: 'Practice', plural: 'Practices', icon: 'visibility', group: 'Divination',
+                label: 'Practice', plural: 'Practices', icon: 'visibility', group: 'Divination', workspace: 'tables',
                 file: 'data/practices.json',
                 fields: {
                     method: { kind: 'enum', enum: 'divinationMethod', label: 'Method', required: true },
@@ -1187,7 +1210,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             deck: {
-                label: 'Deck', plural: 'Decks', icon: 'style', group: 'Divination',
+                label: 'Deck', plural: 'Decks', icon: 'style', group: 'Divination', workspace: 'tables',
                 file: 'data/decks.json',
                 fields: {
                     desc: { kind: 'text', label: 'Description', width: 'full' },
@@ -1196,7 +1219,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             fortuneCard: {
-                label: 'Card', plural: 'Cards', icon: 'playing_cards', group: 'Divination',
+                label: 'Card', plural: 'Cards', icon: 'playing_cards', group: 'Divination', workspace: 'tables',
                 file: 'data/fortune-cards.json',
                 order: { by: 'number', within: 'deck' },
                 sections: ['Card', 'Meanings'],
@@ -1211,7 +1234,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             spread: {
-                label: 'Spread', plural: 'Spreads', icon: 'view_column', group: 'Divination',
+                label: 'Spread', plural: 'Spreads', icon: 'view_column', group: 'Divination', workspace: 'tables',
                 file: 'data/spreads.json',
                 fields: {
                     desc: { kind: 'text', label: 'Description', width: 'full', help: 'Under the spread’s name in the player’s choice.' },
@@ -1228,7 +1251,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             },
             /* The pool of an omen practice: one is drawn per reading */
             omen: {
-                label: 'Omen', plural: 'Omens', icon: 'flare', group: 'Divination',
+                label: 'Omen', plural: 'Omens', icon: 'flare', group: 'Divination', workspace: 'tables',
                 file: 'data/omens.json',
                 fields: {
                     practice: { kind: 'ref', to: ['practice'], label: 'Practice', required: true, help: 'An omen practice (bone casting, tea leaves…).' },
@@ -1240,7 +1263,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* A reading fixed by the DM for a campaign. A player of that campaign gets it at
                their next reading at `where` (first prophecy first), then draws go back to random. */
             prophecy: {
-                label: 'Prophecy', plural: 'Prophecies', icon: 'auto_awesome', group: 'Divination',
+                label: 'Prophecy', plural: 'Prophecies', icon: 'auto_awesome', group: 'Divination', workspace: 'tables',
                 file: 'data/prophecies.json',
                 sections: ['Prophecy', 'The reading', 'DM only'],
                 fields: {
@@ -1269,8 +1292,9 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                exports it (scripts/sigil-engine.js). Text fields: empty = the generated text,
                a single "-" = leave that part blank. */
             folio: {
-                label: 'Folio', plural: 'Folios', icon: 'import_contacts', group: 'Generators',
+                label: 'Folio', plural: 'Folios', icon: 'import_contacts', group: 'Generators', workspace: 'tables',
                 file: 'data/folios.json',
+                columns: ['title', 'subtitle', 'chapter', 'coverColour', 'initialColour'],
                 dmOnly: true,
                 sections: ['Left page', 'Right page', 'Book', 'Circle'],
                 fields: {
@@ -1310,7 +1334,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                `modifier` or a reaction's effect. The DM brews in the dashboard (“Brew a potion”)
                and on admin_tools/potion-maker.html. */
             solvent: {
-                label: 'Solvent', plural: 'Solvents', icon: 'water_drop', group: 'Generators',
+                label: 'Solvent', plural: 'Solvents', icon: 'water_drop', group: 'Alchemy', workspace: 'tables',
                 file: 'data/solvents.json',
                 sections: ['Reagent', 'Senses'],
                 fields: {
@@ -1324,7 +1348,8 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             principle: {
-                label: 'Active principle', plural: 'Active principles', icon: 'local_florist', group: 'Generators',
+                label: 'Active principle', plural: 'Active principles', icon: 'local_florist', group: 'Alchemy', workspace: 'tables',
+                columns: ['epithet', 'code', 'form', 'tag', 'rarity', 'kit', 'dcMod'],
                 file: 'data/principles.json',
                 sections: ['Reagent', 'Potion', 'Bottle'],
                 fields: {
@@ -1343,7 +1368,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             catalyst: {
-                label: 'Catalyst', plural: 'Catalysts', icon: 'bolt', group: 'Generators',
+                label: 'Catalyst', plural: 'Catalysts', icon: 'bolt', group: 'Alchemy', workspace: 'tables',
                 file: 'data/catalysts.json',
                 sections: ['Reagent', 'Potion'],
                 fields: {
@@ -1359,7 +1384,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             vessel: {
-                label: 'Vessel', plural: 'Vessels', icon: 'science', group: 'Generators',
+                label: 'Vessel', plural: 'Vessels', icon: 'science', group: 'Alchemy', workspace: 'tables',
                 file: 'data/vessels.json',
                 fields: {
                     slots: { kind: 'number', label: 'Carrying slots', width: 'third', help: 'Empty = 1.' },
@@ -1371,7 +1396,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                with the catalyst; when all three reagents share one property, its triad (if any)
                replaces the pair reactions. One reaction per pair of properties. */
             reaction: {
-                label: 'Reaction', plural: 'Reactions', icon: 'bubble_chart', group: 'Generators',
+                label: 'Reaction', plural: 'Reactions', icon: 'bubble_chart', group: 'Alchemy', workspace: 'tables',
                 file: 'data/reactions.json',
                 fields: {
                     first: { kind: 'enum', enum: 'potionTag', label: 'Property', required: true, width: 'third' },

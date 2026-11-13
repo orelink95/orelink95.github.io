@@ -493,6 +493,24 @@
                 checkFields(def.fields, v, `[${name}]`, report, false);
             }
 
+            // Map pins: their picture must be one of data/map-icons.json (when that list exists)
+            const iconList = ((singletonData || {}).mapIcons || {}).icons;
+            if (Array.isArray(iconList) && iconList.length) {
+                const known = new Set();
+                for (const ic of iconList) {
+                    if (!ic || !ic.id) continue;
+                    if (known.has(ic.id)) errors.push(`[mapIcons] icons: "${ic.id}" is listed twice`);
+                    known.add(ic.id);
+                }
+                for (const [type, def] of Object.entries(types)) {
+                    if (!def.place) continue;
+                    for (const rec of byType[type] || []) {
+                        const icon = rec.map && rec.map.icon;
+                        if (icon && !known.has(icon)) warnings.push(`[${type}] ${rec.id}.map.icon: "${icon}" is not one of the map icons (Site › Map icons)`);
+                    }
+                }
+            }
+
             // Type-specific rules
             const seenNumbers = new Map();
             for (const s of byType.session || []) {

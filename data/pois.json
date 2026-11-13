@@ -281,10 +281,11 @@
     "name": "Harbour Master",
     "parent": "the_docks",
     "body": "Where the master habours... or something",
+    "typeLabel": "DOCKSIDE HANGAR",
     "map": {
       "x": 262,
       "y": 514,
-      "icon": "rook"
+      "icon": "warehouse"
     }
   },
   {
@@ -296,7 +297,7 @@
     "map": {
       "x": 277,
       "y": 777,
-      "icon": "pay-money"
+      "icon": "topaz"
     },
     "shop": {
       "kind": "jeweller",
@@ -527,6 +528,16 @@
         "knucklebones",
         "crown-and-dagger"
       ]
+    }
+  },
+  {
+    "id": "temple-of-pholtos",
+    "name": "Temple of Pholtos",
+    "parent": "cloud_district",
+    "map": {
+      "x": 920,
+      "y": 321,
+      "icon": "temple"
     }
   }
 ]

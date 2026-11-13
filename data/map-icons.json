@@ -1,0 +1,143 @@
+{
+  "icons": [
+    {
+      "id": "beer",
+      "label": "Beer",
+      "cardIcon": "sports_bar"
+    },
+    {
+      "id": "beliene",
+      "label": "Beliene"
+    },
+    {
+      "id": "bookshelf",
+      "label": "Bookshelf",
+      "cardIcon": "book_2"
+    },
+    {
+      "id": "capital",
+      "label": "Capital",
+      "cardIcon": "fort"
+    },
+    {
+      "id": "danger",
+      "label": "Danger",
+      "cardIcon": "skull"
+    },
+    {
+      "id": "darphrena",
+      "label": "Darphrena"
+    },
+    {
+      "id": "eldenna",
+      "label": "Eldenna"
+    },
+    {
+      "id": "eperina",
+      "label": "Eperina"
+    },
+    {
+      "id": "fort",
+      "label": "Fort",
+      "cardIcon": "local_police"
+    },
+    {
+      "id": "house",
+      "label": "House",
+      "cardIcon": "house"
+    },
+    {
+      "id": "lemerolai",
+      "label": "Lemerolai"
+    },
+    {
+      "id": "maltona",
+      "label": "Maltona"
+    },
+    {
+      "id": "northlands",
+      "label": "Northlands"
+    },
+    {
+      "id": "pay-money",
+      "label": "Pay money",
+      "cardIcon": "payments"
+    },
+    {
+      "id": "rook",
+      "label": "Rook"
+    },
+    {
+      "id": "settlement",
+      "label": "Settlement"
+    },
+    {
+      "id": "spinning-blades",
+      "label": "Spinning blades",
+      "cardIcon": "swords"
+    },
+    {
+      "id": "verdena",
+      "label": "Verdena"
+    },
+    {
+      "id": "wolf-teeth-emp",
+      "label": "Wolf teeth emp"
+    },
+    {
+      "id": "warehouse",
+      "label": "Warehouse",
+      "cardIcon": "pallet"
+    },
+    {
+      "id": "round-potion",
+      "label": "Alchemy",
+      "cardIcon": "experiment"
+    },
+    {
+      "id": "magic-portal",
+      "label": "Magic portal",
+      "cardIcon": "gate"
+    },
+    {
+      "id": "dungeon-gate",
+      "label": "Dungeon gate",
+      "cardIcon": "stairs"
+    },
+    {
+      "id": "caduceus",
+      "label": "Caduceus",
+      "cardIcon": "local_hospital"
+    },
+    {
+      "id": "tree",
+      "label": "Tree",
+      "cardIcon": "park"
+    },
+    {
+      "id": "castle",
+      "label": "Castle",
+      "cardIcon": "castle"
+    },
+    {
+      "id": "temple",
+      "label": "Temple",
+      "cardIcon": "synagogue"
+    },
+    {
+      "id": "topaz",
+      "label": "Topaz",
+      "cardIcon": "jewelry"
+    },
+    {
+      "id": "chest",
+      "label": "Chest",
+      "cardIcon": "inventory_2"
+    },
+    {
+      "id": "cash",
+      "label": "Cash",
+      "cardIcon": "poker_chip"
+    }
+  ]
+}

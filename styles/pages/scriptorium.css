@@ -402,10 +402,15 @@ body[data-view="ledger"] .scr-ledger {
     height: 2px;
     background-image: linear-gradient(90deg, transparent, var(--scr-gold-soft), transparent);
 }
-.scr-card:hover {
-    border-color: color-mix(in srgb, var(--scr-gold) 35%, transparent);
-    box-shadow: 0 12px 30px rgb(0 0 0 / 0.35);
-    transform: translateY(-2px);
+/* Hover effects only with a mouse: on a touch screen the card would shift
+   under the finger between touch and click, and a tap meant for a name in
+   the summary (its preview sheet) would land on the card (its folio) */
+@media (hover: hover) and (pointer: fine) {
+    .scr-card:hover {
+        border-color: color-mix(in srgb, var(--scr-gold) 35%, transparent);
+        box-shadow: 0 12px 30px rgb(0 0 0 / 0.35);
+        transform: translateY(-2px);
+    }
 }
 .scr-card.is-latest {
     border-color: color-mix(in srgb, var(--scr-gold) 40%, transparent);
@@ -476,10 +481,12 @@ body[data-view="ledger"] .scr-ledger {
     color: var(--color-tertiary-fixed);
     transition: transform 150ms var(--ease);
 }
-.scr-face:hover {
-    position: relative;
-    z-index: 1;
-    transform: translateY(-2px) scale(1.08);
+@media (hover: hover) and (pointer: fine) {
+    .scr-face:hover {
+        position: relative;
+        z-index: 1;
+        transform: translateY(-2px) scale(1.08);
+    }
 }
 .scr-face img {
     width: 100%;
@@ -759,9 +766,11 @@ body[data-view="ledger"] .scr-ledger {
     color: var(--scr-object);
     transition: border-color 150ms var(--ease), transform 150ms var(--ease);
 }
-.scr-find:hover {
-    border-color: var(--scr-object);
-    transform: translateY(-2px);
+@media (hover: hover) and (pointer: fine) {
+    .scr-find:hover {
+        border-color: var(--scr-object);
+        transform: translateY(-2px);
+    }
 }
 .scr-find img {
     width: 100%;
@@ -1051,7 +1060,9 @@ body[data-view="ledger"] .scr-ledger {
 .folio[open] {
     display: flex;
     flex-direction: column;
-    animation: folio-open 250ms var(--ease) both;
+    /* backwards, not both: a transform kept after the animation would make the
+       folio the frame of the preview cards opened inside it (cut at its edges) */
+    animation: folio-open 250ms var(--ease) backwards;
 }
 .folio::backdrop {
     background-color: rgb(5 6 5 / 0.78);

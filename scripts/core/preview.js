@@ -253,6 +253,14 @@
         return words.slice(0, 2).map(w => w[0]).join('').toUpperCase() || '?';
     }
 
+    /* Inside an open modal <dialog> (a session's folio, a card reading), the rest of
+       the page is inert and drawn under the dialog: the card goes inside the dialog
+       instead, so it shows on top and can be used. Back in <body> otherwise. */
+    function attach(el, link) {
+        const host = (link && link.closest && link.closest('dialog[open]')) || document.body;
+        if (el.parentNode !== host) host.appendChild(el);
+    }
+
     /* ---------- the hover card ---------- */
     function ensurePop() {
         if (pop) return pop;
@@ -280,6 +288,7 @@
         if (anchor && anchor !== link) anchor.removeAttribute('aria-describedby');
         anchor = link;
         link.setAttribute('aria-describedby', 'pv-pop');
+        attach(el, link);
         el.hidden = false;
         el.classList.remove('is-shown');
         place(link, el);
@@ -364,6 +373,7 @@
             : lore ? `<button type="button" class="pv-sheet__open" data-pv-lore="${esc(id)}">${esc(lore.label)}</button>` : '')
             + `<button type="button" class="pv-sheet__close" data-pv-close>Close</button>`;
         sheetOpener = link;
+        attach(el, link);
         el.hidden = false;
         document.documentElement.classList.add('pv-locked');
         requestAnimationFrame(() => el.classList.add('is-open'));

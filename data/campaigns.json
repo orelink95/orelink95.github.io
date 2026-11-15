@@ -86,6 +86,11 @@
         "title": "Finding Sam",
         "description": "Sam Eredil, a briliant researcher in mathemagics has gone missing. Thanks to some helpful students, it might possible to find him.",
         "status": "Secondary"
+      },
+      {
+        "title": "Understand Ruin",
+        "description": "Ever since you discovered the concept of Ruin, it has haunted you and pushed your quest in a direction you didn't expect.",
+        "status": "Secondary"
       }
     ],
     "partyName": "EM&M",

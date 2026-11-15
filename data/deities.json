@@ -142,5 +142,26 @@
     "icon": "panorama_photosphere",
     "colour": "#4c91cd",
     "body": "Eldur, the Allfather, was there before anything actually was. The very first spark to light up the world. "
+  },
+  {
+    "id": "pholtos",
+    "name": "Pholtos",
+    "tier": "great",
+    "epithet": "The Sun",
+    "domains": [
+      "Light",
+      "Sun",
+      "Fire",
+      "Dawn",
+      "Astral",
+      "Cats",
+      "Shadows"
+    ],
+    "portrait": "images/Pholtos.png",
+    "portraitFocus": "50% 46%",
+    "portraitZoom": 120,
+    "symbol": "images/Eraldom Gods Symbols/Pholtos Symbol.png",
+    "symbolText": "A white sun",
+    "body": "Pholtos walks the line between light and shadow, the eternal blaze that pushes back the dark without ever truly banishing it. A radiant feline figure cloaked in shifting robes of sunrise hues, he bears the First Torch—a flame that never dims, even in the depths of night. He teaches that fire is knowledge, light is courage, and even shadows have their place beneath the sun."
   }
 ]

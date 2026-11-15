@@ -422,6 +422,7 @@
     "id": "rusty-anchor",
     "name": "The Rusty Anchor",
     "parent": "the_docks",
+    "body": "This squat, two-story structure is a masterpiece of neglect: its timbers are bowed and blackened by brine, the plaster is peeling in long, desaturated strips, and the windows are so encrusted with salt grime they appear opaque.\n\nA single, salt-stained lantern flickers weakly above the main entrance, casting long, nervous shadows across the uneven, muddy cobblestones. The inn’s sign, creaking precariously on rusted hinges, depicts a cracked ceramic flagon, its once-bright colors faded to murky greys and browns. Below it, the words “ALE & LODGING” are barely legible.\n\nThere are no inviting smells here, only the sharp tang of low-tide mud, old fish, and stale smoke. Figures bundled in heavy, oil-stained cloaks loiter in the deepest shadows near the door, their faces obscured, eyeing any newcomer with quiet suspicion. The air is thick with the low, muffled murmur of hushed conversations and the rhythmic, hollow slap of water against the rotting pilings of the docks nearby. If The Gilded Goldfinch is a warm embrace, The Rusty Anchor is a cold, indifferent stare.",
     "image": "images/pois/rusty-anchor.jpg",
     "map": {
       "x": 611,
@@ -534,10 +535,33 @@
     "id": "temple-of-pholtos",
     "name": "Temple of Pholtos",
     "parent": "cloud_district",
+    "body": "The Brightend temple of Pholtos is one of the oldest temples in Brightend. Amycia Eperina, oversaw its construction herself. The gorgeous monument is still very well taken care of. The white stone, common in the district and throughout the city, is adored with fine tapestry and richly colored details. ",
     "map": {
       "x": 920,
       "y": 321,
       "icon": "temple"
+    },
+    "temple": {
+      "deities": [
+        "pholtos"
+      ],
+      "tier": "wealthy",
+      "services": [
+        "prayer-of-mending",
+        "cure-wounds",
+        "augury"
+      ]
+    }
+  },
+  {
+    "id": "bitch-bath-and-beyond",
+    "name": "Bitch, Bath and Beyond",
+    "parent": "cloud_district",
+    "typeLabel": "Sauna",
+    "map": {
+      "x": 352,
+      "y": 973,
+      "icon": "house"
     }
   }
 ]

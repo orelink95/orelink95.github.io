@@ -141,5 +141,12 @@
         "labelSub": ""
       }
     }
+  },
+  {
+    "id": "awakened-dream-crystal",
+    "name": "Awakened Dream Crystal",
+    "type": "Wondrous item",
+    "rarity": "Very rare",
+    "summary": "A memory made solid, given away willingly, trapped forever in the gem."
   }
 ]

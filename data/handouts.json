@@ -53,5 +53,16 @@
     "description": "A royal decree offering 500 gold for information regarding the King's missing mage cadet.",
     "thumbnail": "images/placeholder.png",
     "file": "handouts/verrick-poster.jpg"
+  },
+  {
+    "id": "tarot-death",
+    "name": "Tarot: Death",
+    "campaign": "last-sigil",
+    "category": "Card",
+    "icon": "crop_2_3",
+    "foundAt": "In the dreamlands",
+    "description": "The Death card of the Tarot of the Wandering Stars.",
+    "thumbnail": "images/tarot/wandering/MA-Death.webp",
+    "file": "images/tarot/wandering/MA-Death.webp"
   }
 ]

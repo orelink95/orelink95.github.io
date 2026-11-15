@@ -399,6 +399,7 @@
     "name": "The Fool",
     "deck": "wandering-star-tarot",
     "number": 0,
+    "image": "images/tarot/wandering/MA-Fool.webp",
     "keywords": [
       "new beginnings",
       "a leap of faith",
@@ -417,6 +418,7 @@
     "name": "The Magician",
     "deck": "wandering-star-tarot",
     "number": 1,
+    "image": "images/tarot/wandering/MA-Magician.webp",
     "keywords": [
       "will",
       "skill",
@@ -435,6 +437,7 @@
     "name": "The High Priestess",
     "deck": "wandering-star-tarot",
     "number": 2,
+    "image": "images/tarot/wandering/MA-High Priestess.webp",
     "keywords": [
       "intuition",
       "hidden knowledge",
@@ -453,6 +456,7 @@
     "name": "The Empress",
     "deck": "wandering-star-tarot",
     "number": 3,
+    "image": "images/tarot/wandering/MA-Empress.webp",
     "keywords": [
       "abundance",
       "nurture",
@@ -471,6 +475,7 @@
     "name": "The Emperor",
     "deck": "wandering-star-tarot",
     "number": 4,
+    "image": "images/tarot/wandering/MA-Emperor.webp",
     "keywords": [
       "authority",
       "order",
@@ -489,6 +494,7 @@
     "name": "The Hierophant",
     "deck": "wandering-star-tarot",
     "number": 5,
+    "image": "images/tarot/wandering/MA-Hierophant.webp",
     "keywords": [
       "tradition",
       "teaching",
@@ -507,6 +513,7 @@
     "name": "The Lovers",
     "deck": "wandering-star-tarot",
     "number": 6,
+    "image": "images/tarot/wandering/MA-Lovers.webp",
     "keywords": [
       "union",
       "a choice of the heart",
@@ -525,6 +532,7 @@
     "name": "The Chariot",
     "deck": "wandering-star-tarot",
     "number": 7,
+    "image": "images/tarot/wandering/MA-Chariot.webp",
     "keywords": [
       "victory through will",
       "momentum"
@@ -542,6 +550,7 @@
     "name": "Strength",
     "deck": "wandering-star-tarot",
     "number": 8,
+    "image": "images/tarot/wandering/MA-Strength.webp",
     "keywords": [
       "courage",
       "patience",
@@ -560,6 +569,7 @@
     "name": "The Hermit",
     "deck": "wandering-star-tarot",
     "number": 9,
+    "image": "images/tarot/wandering/MA-Hermit.webp",
     "keywords": [
       "solitude",
       "searching",
@@ -578,6 +588,7 @@
     "name": "Wheel of Fortune",
     "deck": "wandering-star-tarot",
     "number": 10,
+    "image": "images/tarot/wandering/MA-Wheel of Fortune.webp",
     "keywords": [
       "fate",
       "cycles",
@@ -596,6 +607,7 @@
     "name": "Justice",
     "deck": "wandering-star-tarot",
     "number": 11,
+    "image": "images/tarot/wandering/MA-Justice.webp",
     "keywords": [
       "fairness",
       "truth",
@@ -614,6 +626,7 @@
     "name": "The Hanged Man",
     "deck": "wandering-star-tarot",
     "number": 12,
+    "image": "images/tarot/wandering/MA-Hanged Man.webp",
     "keywords": [
       "surrender",
       "a new perspective",
@@ -632,6 +645,7 @@
     "name": "Death",
     "deck": "wandering-star-tarot",
     "number": 13,
+    "image": "images/tarot/wandering/MA-Death.webp",
     "keywords": [
       "an ending",
       "transformation",
@@ -650,6 +664,7 @@
     "name": "Temperance",
     "deck": "wandering-star-tarot",
     "number": 14,
+    "image": "images/tarot/wandering/MA-Temperance.webp",
     "keywords": [
       "balance",
       "moderation",
@@ -668,6 +683,7 @@
     "name": "The Devil",
     "deck": "wandering-star-tarot",
     "number": 15,
+    "image": "images/tarot/wandering/MA-Devil.webp",
     "keywords": [
       "bondage",
       "temptation",
@@ -686,6 +702,7 @@
     "name": "The Tower",
     "deck": "wandering-star-tarot",
     "number": 16,
+    "image": "images/tarot/wandering/MA-Tower.webp",
     "keywords": [
       "sudden upheaval",
       "revelation",
@@ -704,6 +721,7 @@
     "name": "The Star",
     "deck": "wandering-star-tarot",
     "number": 17,
+    "image": "images/tarot/wandering/MA-Star.webp",
     "keywords": [
       "hope",
       "renewal",
@@ -722,6 +740,7 @@
     "name": "The Moon",
     "deck": "wandering-star-tarot",
     "number": 18,
+    "image": "images/tarot/wandering/MA-Moon.webp",
     "keywords": [
       "illusion",
       "fear",
@@ -740,6 +759,7 @@
     "name": "The Sun",
     "deck": "wandering-star-tarot",
     "number": 19,
+    "image": "images/tarot/wandering/MA-Sun.webp",
     "keywords": [
       "joy",
       "success",
@@ -758,6 +778,7 @@
     "name": "Judgement",
     "deck": "wandering-star-tarot",
     "number": 20,
+    "image": "images/tarot/wandering/MA-Judgement.webp",
     "keywords": [
       "reckoning",
       "awakening",
@@ -776,6 +797,7 @@
     "name": "The World",
     "deck": "wandering-star-tarot",
     "number": 21,
+    "image": "images/tarot/wandering/MA-World.webp",
     "keywords": [
       "completion",
       "fulfilment",

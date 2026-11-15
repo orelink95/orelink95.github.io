@@ -331,13 +331,13 @@
   },
   {
     "id": "sigil-session-4",
-    "name": "In a hole, in the ground, there lived a Sigil",
+    "name": "The lost temple",
     "campaign": "last-sigil",
-    "number": 4,
+    "number": 1,
     "date": "Deftesten 28 Mystawal, 1693LF",
     "region": "Wolf's Cradle, Maltona",
     "arc": "Main",
-    "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
+    "summary": "Sent by the Athenaeum to investigate the ruins of an old temple near Lemerolai, the two scholars found themselves in a treacherous vault, which held many secrets.",
     "otherPlaces": [
       "Wolf's Cradle"
     ],
@@ -354,5 +354,27 @@
       "Figure out what the deal is with this Last Sigil thing"
     ],
     "body": "*Nothing yet, come back soon*"
+  },
+  {
+    "id": "sigil-at-the-end-of-hall",
+    "name": "The Sigil at the end of hall",
+    "campaign": "last-sigil",
+    "number": 2,
+    "date": "Deftesten 28 Mystawal, 1693LF",
+    "region": "Wolf's Cradle, Maltona",
+    "arc": "Main",
+    "summary": "The mysterious Vault disturbs magic and the flow of time. The scholars try to move forward, despite the time-fuckery.  After two days, they find the source of these disturbances : an old magic artefact known as the Last Sigil was created eons ago by the Doleris, but it is now crumbling and it is affecting reality itself"
+  },
+  {
+    "id": "just-a-dream",
+    "name": "Just a dream",
+    "campaign": "last-sigil",
+    "number": 3,
+    "region": "Dreamlands",
+    "arc": "Main",
+    "summary": "Their quest to restore the stability of the Sigil leads them to the Dreamlands.",
+    "loot": [
+      "awakened-dream-crystal"
+    ]
   }
 ]

@@ -160,16 +160,14 @@
     position: relative;
 }
 
-/* Gold */
+/* Purple */
 .kw-object {
-    color: #7b49d8;
+    color: #b294ef;   /* 6.8:1 on the cards' #1a1c1a (was #7b49d8, 3.1:1) */
     font-weight: 600;
     cursor: pointer;
     border-bottom: 1px dashed rgba(192, 132, 252, 0.5);
     position: relative;
 }
-
-/* Purple */
 
 /* Teal: spells (scripts/core/store.js LINK_CLASS) */
 .kw-spell {
@@ -336,34 +334,7 @@
     filter: drop-shadow(0 0 10px rgba(255, 180, 171, 0.3));
 }
 
-/* Campaign story and session transcripts (scriptorium.html) */
-.story-text .drop-cap {
-    font-size: 3rem;
-    padding-top: 0.25rem;
-}
-@media (min-width: 768px) {
-    .story-text .drop-cap {
-        font-size: 4.5rem;
-        padding-top: 0.5rem;
-    }
-}
-.story-text blockquote,
-.session-text blockquote {
-    margin: 2rem 0;
-    padding: 0.5rem 0 0.5rem 1.5rem;
-    border-left: 2px solid #1a3020;
-}
-.story-text blockquote p,
-.session-text blockquote p {
-    font-family: 'Newsreader', serif;
-    font-style: italic;
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    color: #e2e3df;
-}
-.session-text blockquote p {
-    font-size: 1.25rem;
-}
+/* The campaign story and the session transcripts: styles/pages/scriptorium.css */
 
 /* Markdown blockquotes in lore bodies */
 .lore blockquote {

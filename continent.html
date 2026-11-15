@@ -40,9 +40,12 @@
     <div id="header-placeholder"></div>
 
 
+    <!-- Grand Atlas tabs: renderSectionTabs (scripts/general-scripts.js) -->
+    <nav class="section-tabs" data-section="atlas"></nav>
+
     <main class="continent-main">
-        <!-- filled by Atlas.trail (scripts/atlas-common.js) -->
-        <nav id="atlas-trail" class="trail"></nav>
+        <!-- "Settlement · Eperina, Maltona": Atlas.placeLine (scripts/atlas-common.js) -->
+        <p id="atlas-place-line" class="place-line" hidden></p>
         <div class="continent-grid">
             <div class="continent-main-column">
                 <div class="continent-map-card">
@@ -109,6 +112,8 @@
                 </div>
             </div>
         </div>
+        <!-- the places next to this one: Atlas.elsewhere (scripts/atlas-common.js) -->
+        <section id="atlas-elsewhere" class="elsewhere" hidden></section>
     </main>
 
 

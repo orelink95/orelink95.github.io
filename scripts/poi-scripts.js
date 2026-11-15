@@ -81,8 +81,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('poi-eyebrow').hidden = !eyebrow;
     $('poi-title').textContent = poi.name;
     $('poi-subtitle').textContent = poi.subtitle || '';
-    // Where it is: Eraldom › continent › country › settlement › this POI
-    Atlas.trail(store, $('atlas-trail'), poi);
+    // Where it is ("Point of Interest · Cloud District, Brightend, Eperina"); its neighbours at the end
+    Atlas.placeLine(store, $('atlas-place-line'), poi);
+    Atlas.elsewhere(store, $('atlas-elsewhere'), poi);
 
     const fact = (key, html) => { $(`poi-${key}`).innerHTML = html; $(`poi-${key}-fact`).hidden = false; };
     // A place inside another POI: link to it, straight to this pin when it has one

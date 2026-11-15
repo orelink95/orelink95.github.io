@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. HEADER
     // -----------------------------------------------------------------
     document.title = `${country.name} - The Athenaeum Vault`;
-    Atlas.trail(store, $('atlas-trail'), country);
+    Atlas.placeLine(store, $('atlas-place-line'), country);
+    Atlas.elsewhere(store, $('atlas-elsewhere'), country);
     $('dynamic-title').textContent = country.name;
     $('dynamic-description').textContent = country.summary || country.subtitle || '';
     const mapImage = country.mapImage || null;

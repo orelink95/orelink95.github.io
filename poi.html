@@ -53,11 +53,14 @@
 <body class="page">
     <div id="header-placeholder"></div>
 
+    <!-- Grand Atlas tabs: renderSectionTabs (scripts/general-scripts.js) -->
+    <nav class="section-tabs" data-section="atlas"></nav>
+
     <main class="poi-main">
         <div id="poi-root" class="poi-root">
 
-            <!-- Atlas ▾ › continent › country › settlement › POI: Atlas.trail (scripts/atlas-common.js) -->
-            <nav id="atlas-trail" class="trail"></nav>
+            <!-- "Settlement · Eperina, Maltona": Atlas.placeLine (scripts/atlas-common.js) -->
+            <p id="atlas-place-line" class="place-line" hidden></p>
 
             <!-- HERO -->
             <header class="poi-hero">
@@ -229,6 +232,8 @@
                 </section>
             </div>
         </div>
+        <!-- the places next to this one: Atlas.elsewhere (scripts/atlas-common.js) -->
+        <section id="atlas-elsewhere" class="elsewhere" hidden></section>
     </main>
 
     <!-- A reading: the spread and what the turned cards say (scripts/fortune-card.js) -->

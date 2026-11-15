@@ -88,8 +88,8 @@ function loadComponent(placeholderId, componentPath) {
 
 // ==========================================
 // --- SITE NAVIGATION: ONE LIST FOR EVERY MENU ---
-// The header highlight, the mobile orb menu, the Atlas trail's "Atlas" menu
-// (scripts/atlas-common.js) and the Black Archive tab bar all read SITE_NAV.
+// The header highlight, the mobile orb menu and the tab bars of the Grand
+// Atlas and the Black Archive all read SITE_NAV.
 // Add or rename a page here and every menu follows.
 //   url   : the page a section or entry opens
 //   alias : other pages that belong to that entry (a record page under its list)
@@ -99,6 +99,7 @@ function loadComponent(placeholderId, componentPath) {
 const SITE_NAV = [
     {
         id: 'atlas', name: 'Grand Atlas', url: 'world.html', icon: 'public', tone: 'green',
+        // Also the tab bar of every Atlas page
         sub: [
             { name: 'World Map', url: 'world.html', icon: 'public' },
             { name: 'Continents', url: 'continents.html', icon: 'map', alias: ['continent.html'] },
@@ -160,33 +161,37 @@ function highlightActiveLink() {
 }
 
 // ==========================================
-// --- BLACK ARCHIVE TAB BAR ---
-// <nav id="archive-tabs" class="archive-tabs"> right under the header of each
-// Archive page (not library.html, whose cards already lead everywhere).
-// Filled from SITE_NAV; styles: components.css (.archive-tabs).
+// --- SECTION TAB BARS (Grand Atlas, Black Archive) ---
+// <nav class="section-tabs" data-section="atlas|archive"> right under the
+// header: the section's entries in SITE_NAV, the page's own entry lit (a record
+// page lights its list: settlement.html lights "Settlements"). On every Atlas
+// page, and on every Archive page but library.html (its cards lead everywhere).
+// Dramatis Personae has its own tabs (scripts/personae.js).
+// Styles: components.css (.section-tabs).
 // ==========================================
-function renderArchiveTabs() {
-    const bar = document.getElementById('archive-tabs');
-    if (!bar || bar.children.length) return;
+function renderSectionTabs() {
     const page = currentPage();
-    const archive = SITE_NAV.find(s => s.id === 'archive');
-    bar.setAttribute('aria-label', archive.name);
-    bar.innerHTML = `<div class="archive-tabs__track">${archive.sub.map(e => {
-        const here = navEntryHolds(e, page);
-        return `<a href="${e.url}" class="archive-tab${here ? ' is-active' : ''}"${here ? ' aria-current="page"' : ''}>
-                <span class="archive-tab__icon material-symbols-outlined" aria-hidden="true">${e.icon}</span>${e.name}</a>`;
-    }).join('')}</div>`;
-    // On a phone the row scrolls sideways: bring the current tab into view
-    const active = bar.querySelector('.archive-tab.is-active');
-    if (active) {
-        const track = bar.firstElementChild;
-        track.scrollLeft = active.offsetLeft - (track.clientWidth - active.offsetWidth) / 2;
-    }
+    document.querySelectorAll('nav.section-tabs[data-section]').forEach(bar => {
+        const section = SITE_NAV.find(s => s.id === bar.dataset.section);
+        if (!section || bar.children.length) return;
+        bar.setAttribute('aria-label', section.name);
+        bar.innerHTML = `<div class="section-tabs__track">${section.sub.map(e => {
+            const here = navEntryHolds(e, page);
+            return `<a href="${SITE_ROOT}${e.url}" class="section-tab${here ? ' is-active' : ''}"${here ? ' aria-current="page"' : ''}>
+                <span class="section-tab__icon material-symbols-outlined" aria-hidden="true">${e.icon}</span>${e.name}</a>`;
+        }).join('')}</div>`;
+        // On a phone the row scrolls sideways: bring the current tab into view
+        const active = bar.querySelector('.section-tab.is-active');
+        if (active) {
+            const track = bar.firstElementChild;
+            track.scrollLeft = active.offsetLeft - (track.clientWidth - active.offsetWidth) / 2;
+        }
+    });
 }
 
 // Start the fetch process when the page loads
 document.addEventListener("DOMContentLoaded", () => {
-    renderArchiveTabs();
+    renderSectionTabs();
 
     // Archive pages (<body data-section="archive">) load their own header and
     // footer variants; skip the defaults there to avoid a double fetch and a

@@ -1034,8 +1034,6 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 page: 'scriptorium.html?campaign={id}',
                 sections: ['Story', 'Quests', 'Party', 'Allegiances', 'Spellbooks'],
                 fields: {
-                    preview: { kind: 'text', label: 'Teaser', long: true, help: 'The short “Story so far” of the scriptorium.' },
-                    story: { kind: 'markdown', label: 'Story so far' },
                     quests: {
                         kind: 'objects', label: 'Active quests', itemLabel: 'title', section: 'Quests', fields: {
                             title: { kind: 'text', label: 'Title' },
@@ -1066,6 +1064,20 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                             spells: { kind: 'refs', to: ['spell'], label: 'Spells known' },
                         }
                     },
+                    /* The full story, one chapter per arc (the scriptorium's “The Full Story” tab).
+                       Each passage is a stretch of text; its sessions become the note in its margin,
+                       which opens the first of them. */
+                    chapters: {
+                        kind: 'objects', label: 'Chapters', itemLabel: 'arc', section: 'Story', help: 'One per arc, oldest first. The arc must be written as in the sessions.', fields: {
+                            arc: { kind: 'text', label: 'Arc', required: true },
+                            passages: {
+                                kind: 'objects', label: 'Passages', help: 'In reading order: a paragraph or a few.', fields: {
+                                    text: { kind: 'markdown', label: 'Text' },
+                                    sessions: { kind: 'refs', to: ['session'], label: 'Told in sessions', help: 'The note in the margin. None = no note.' },
+                                }
+                            },
+                        }
+                    },
                 },
             },
             session: {
@@ -1080,7 +1092,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     number: { kind: 'number', label: 'Session number', required: true, help: 'Sets the order (highest = latest); not shown.' },
                     date: { kind: 'worlddate', label: 'In-world date', help: 'Empty = unknown: the timeline puts the session between its neighbours.' },
                     region: { kind: 'text', label: 'Region' },
-                    arc: { kind: 'text', label: 'Arc' },
+                    arc: { kind: 'text', label: 'Arc', help: 'Sessions with the same arc form a chapter: write it exactly as in the campaign’s Chapters.' },
                     summary: { kind: 'text', label: 'Summary', long: true },
                     places: { kind: 'refs', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Places visited', section: 'People & places' },
                     otherPlaces: { kind: 'list', label: 'Places with no page', section: 'People & places' },

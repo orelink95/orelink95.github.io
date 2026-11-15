@@ -1,121 +1,89 @@
-document.addEventListener("DOMContentLoaded", async () => {
+/* =====================================================================
+   THE SCRIPTORIUM (scriptorium.html) — a campaign's chronicle.
+   Three tabs (body[data-view]):
+   - sessions : the timeline of the sessions, newest first, grouped by arc,
+                with the ledger (leads, finds) beside it on wide screens
+   - story    : the full story, one chapter per arc (campaign.chapters)
+   - ledger   : leads and finds on their own (phones only)
+   A session opens in its folio (<dialog id="scr-folio">).
+   The campaign is the one the Dramatis Personae pages share
+   (scripts/personae.js): ?campaign=…, else the last one picked, else
+   settings.currentCampaign. ?session=… opens that session's folio.
+   Styles: styles/pages/scriptorium.css
+   ===================================================================== */
+document.addEventListener('DOMContentLoaded', async () => {
     const store = await Athenaeum.ready;
-    const timelineContainer = document.getElementById('chronicle-timeline');
-    const questList = document.getElementById('quest-list');
-    const lootList = document.getElementById('notable-loot-list');
-    const searchInput = document.getElementById('scriptorium-search');
-    const arcFilter = document.getElementById('filter-arc');
-    const storyPreview = document.getElementById('story-so-far-preview');
-    const campaignFilter = document.getElementById('filter-campaign');
+    const personae = Athenaeum.personae;
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    // Campaigns (data/campaigns.json) and their sessions (data/sessions.json, newest first)
-    const campaigns = store.all('campaign').slice().sort((a, b) => a.name.localeCompare(b.name));
-    const sessionsOf = id => store.all('session').filter(s => s.campaign === id);
-    const itemName = id => (store.get(id) || {}).name || id;
-    // A session's in-world date, written with the world's calendar (data/calendar.json)
-    const worldDate = d => (store.calendar && d ? store.calendar.format(d) : '');
-    // An item from a session's loot: a link to its card in the Vault when it exists
-    const itemLink = (id, cls, inner) => {
-        const href = store.get(id) ? store.url(id) : null;
-        return href ? `<a href="${href}" onclick="event.stopPropagation()" class="${cls}">${inner}</a>`
-                    : `<span class="${cls}">${inner}</span>`;
+    const els = {
+        title: $('scr-title'), meta: $('scr-meta'), picker: $('scr-campaign'),
+        search: $('scr-search'), arcs: $('scr-arcs'), count: $('scr-count'), timeline: $('scr-timeline'),
+        quests: $('scr-quests'), finds: $('scr-finds'), findsFoot: $('scr-finds-foot'),
+        story: $('scr-story'), folio: $('scr-folio'), folioBody: $('folio-body'), folioLabel: $('folio-label'),
     };
-    let current = null;   // the campaign on screen
 
-    // --- WORKSPACE INITIALIZATION ---
-    function initWorkspace() {
-        if (campaigns.length === 0) return;
-
-        // 1. Populate the Campaign Dropdown
-        if (campaignFilter) {
-            campaignFilter.innerHTML = campaigns.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-        }
-
-        // 2. Deep links: ?session=… opens its campaign, ?campaign=… picks one
-        const urlParams = new URLSearchParams(window.location.search);
-        const linkedSession = store.get(urlParams.get('session'));
-        const wanted = (linkedSession && linkedSession.campaign) || urlParams.get('campaign');
-
-        // 3. Otherwise the current campaign (data/settings.json), else the first
-        current = campaigns.find(c => c.id === wanted) || campaigns.find(c => c.id === store.settings.currentCampaign) || campaigns[0];
-
-        if (campaignFilter) campaignFilter.value = current.id;
-
-        // 4. Load the selected workspace!
-        loadCampaignWorkspace();
+    const campaigns = store.all('campaign').slice().sort((a, b) => a.name.localeCompare(b.name));
+    if (!campaigns.length) {
+        els.timeline.innerHTML = `<p class="scr-empty">No campaign has been recorded yet.</p>`;
+        return;
     }
 
-    // --- WORKSPACE SWAPPER ---
-    function loadCampaignWorkspace() {
-        if (!current) return;
-        const sessions = sessionsOf(current.id);
+    /* ---------------- small helpers ---------------- */
 
-        // Update the Story Preview
-        if (storyPreview) storyPreview.textContent = current.preview || '';
-
-        // Update the Sidebar
-        renderQuests(current.quests || []);
-        renderGlobalLoot(sessions);
-
-        // Update Arc Filter for this specific campaign
-        populateArcFilter(sessions);
-
-        // Render the Timeline
-        applyFilters();
+    const ROMAN = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']];
+    function roman(n) {
+        if (!Number.isInteger(n) || n < 1) return '';
+        let out = '';
+        for (const [v, s] of ROMAN) while (n >= v) { out += s; n -= v; }
+        return out;
     }
-
-    // --- SEARCH & FILTER LOGIC ---
-    function applyFilters() {
-        const query = searchInput.value.toLowerCase();
-        const selectedArc = arcFilter.value;
-        if (!current) return;
-
-        const filtered = sessionsOf(current.id).filter(s => {
-            const matchesArc = selectedArc === "all" || s.arc === selectedArc;
-            const matchesSearch = s.name.toLowerCase().includes(query) ||
-                (s.summary || '').toLowerCase().includes(query) ||
-                (s.keywords || []).some(k => k.toLowerCase().includes(query)) ||
-                (s.npcs || []).some(n => n.npc.toLowerCase().includes(query));
-                
-            return matchesArc && matchesSearch; 
-        });
-
-        renderTimeline(filtered);
+    // "Session IV", "Sessions I – III": the first and the last of the numbers
+    function sessionsLabel(numbers) {
+        const ns = [...new Set(numbers.filter(Number.isInteger))].sort((a, b) => a - b);
+        if (!ns.length) return '';
+        if (ns.length === 1) return `Session ${roman(ns[0])}`;
+        return `Sessions ${roman(ns[0])} – ${roman(ns[ns.length - 1])}`;
     }
+    const worldDate = (d, o) => (store.calendar && d ? store.calendar.format(d, o) : '');
+    const initials = name => String(name || '?').split(/\s+/).filter(Boolean).map(w => w[0]).join('').slice(0, 2).toUpperCase();
 
-    // Event Listeners for Filters
-    if (campaignFilter) {
-        campaignFilter.addEventListener('change', (e) => {
-            current = campaigns.find(c => c.id === e.target.value);
-            if (arcFilter) arcFilter.value = "all"; // Reset Arc filter on campaign swap
-            if (searchInput) searchInput.value = ""; // Reset Search
-            loadCampaignWorkspace();
-        });
+    // The NPCs of a session that exist in the data
+    const npcsOf = s => (s.npcs || []).map(e => ({ entry: e, npc: store.get(e.npc) }))
+        .filter(x => x.npc && store.typeOf(x.npc) === 'npc');
+    const faceSrc = npc => npc.avatar || npc.portrait || '';
+
+    // A link to a record, with its preview card (data-kw: scripts/core/preview.js)
+    function recLink(rec, cls, inner) {
+        const href = store.url(rec);
+        const label = inner === undefined ? esc(rec.name) : inner;
+        return href ? `<a href="${esc(href)}" class="${cls}" data-kw="${esc(rec.id)}">${label}</a>`
+                    : `<span class="${cls}" data-kw="${esc(rec.id)}">${label}</span>`;
     }
-    if (searchInput) searchInput.addEventListener('input', applyFilters);
-    if (arcFilter) arcFilter.addEventListener('change', applyFilters);
+    // A place with no page: a click searches the chronicle for it
+    const searchLink = (term, cls) => `<button type="button" class="scr-searchlink ${cls || ''}" data-search="${esc(term)}" title="Search the chronicle">${esc(term)}</button>`;
 
+    // The places of a session: records first, then the ones with no page
+    const placesOf = s => [
+        ...(s.places || []).map(id => store.get(id)).filter(Boolean).map(rec => ({ name: rec.name, rec })),
+        ...(s.otherPlaces || []).map(name => ({ name, rec: null })),
+    ];
+    const placeHtml = (p, cls) => (p.rec ? recLink(p.rec, `kw-place ${cls || ''}`) : searchLink(p.name, cls));
 
-    function findNPC(id) {
-        const npc = store.get(id);
-        if (!npc || store.typeOf(npc) !== 'npc') return null;
-        return { ...npc, image: npc.portrait, avatar: npc.avatar || npc.portrait };
-    }
+    /* ---------------- linked names ---------------- */
 
-    // Keywords: names of NPCs, places, factions and creatures become links; glossary
-    // terms (data/lore.json) become spans that search the chronicle. Hovering any of
-    // them opens its preview card (scripts/core/preview.js).
+    // Glossary terms (data/lore.json) search the chronicle; everything else is a link
     function keywordAttrs(rec) {
-        if (store.typeOf(rec) === 'lore') return `onclick="event.stopPropagation(); triggerSearch('${rec.id}')"`;
-        return `onclick="event.stopPropagation()"`;
+        if (store.typeOf(rec) === 'lore') return `onclick="event.preventDefault(); triggerSearch('${rec.id}')"`;
+        return '';
     }
-    const handoutsData = store.all('handout').filter(h => !h.draft);
 
-    // Handout names become links to the handout's file (their preview card says
-    // what it is). One pass, longest names first, never inside another link or a
-    // {kept plain} name.
-    const handoutByName = new Map(handoutsData.map(h => [h.name.toLowerCase(), h]));
-    const handoutRe = handoutsData.length ? new RegExp(`(?<![\\p{L}\\p{N}])(${[...handoutsData]
+    // Handout names become links to the handout's file. One pass, longest names
+    // first, never inside another link or a {kept plain} name.
+    const handouts = store.all('handout').filter(h => !h.draft);
+    const handoutByName = new Map(handouts.map(h => [h.name.toLowerCase(), h]));
+    const handoutRe = handouts.length ? new RegExp(`(?<![\\p{L}\\p{N}])(${[...handouts]
         .sort((a, b) => b.name.length - a.name.length)
         .map(h => h.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}\\p{N}])`, 'giu') : null;
     function linkHandouts(html) {
@@ -132,316 +100,432 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
             if (!part || inAnchor || spans.includes(true)) return part;
             return part.replace(handoutRe, match => {
-                const handout = handoutByName.get(match.toLowerCase());
-                if (!handout) return match;
-                return `<a href="${handout.file || '#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="keyword-link kw-object" data-kw="${handout.id}">${match}</a>`;
+                const h = handoutByName.get(match.toLowerCase());
+                if (!h) return match;
+                return `<a href="${esc(h.file || '#')}" target="_blank" rel="noopener noreferrer" class="keyword-link kw-object" data-kw="${esc(h.id)}">${match}</a>`;
             });
         }).join('');
     }
 
-    function autoLinkContent(text, { markdown = false } = {}) {
-        if (!text) return "";
-        const html = markdown ? store.md(text) : text;
-        // Handouts first, so a handout named like an item or a place is the link;
-        // the store's names (NPCs, places, factions, creatures, items, glossary
-        // terms) never go inside it
+    // Plain text (escaped) or Markdown, with the names of the world linked
+    function linked(text, { markdown = false, dropCap = false } = {}) {
+        if (!text) return '';
+        const html = markdown ? store.md(text, { dropCap }) : esc(text);
         return store.autolink(linkHandouts(html), { className: 'keyword-link', attrs: keywordAttrs, terms: true });
     }
 
-    function sessionPlaces(session) {
+    /* ---------------- state ---------------- */
+
+    let current = null;      // the campaign shown
+    let sessions = [];       // its sessions, newest first
+    let arcIndex = new Map(); // arc name -> its number (oldest arc = 1)
+    let haystacks = new Map(); // session id -> lower-case text the search reads
+    let arcFilter = 'all';
+
+    // Everything a search can find in a session
+    function haystack(s) {
+        const names = ids => (ids || []).map(id => (store.get(id) || {}).name || '');
         return [
-            ...(session.places || []).map(id => store.get(id)).filter(Boolean).map(p => ({ title: p.name, url: store.url(p) })),
-            ...(session.otherPlaces || []).map(title => ({ title, url: null })),
-        ];
+            s.name, s.summary, s.region, s.arc, s.body,
+            ...(s.keywords || []), ...placesOf(s).map(p => p.name),
+            ...npcsOf(s).map(x => [x.npc.name, ...(x.npc.aliases || [])].join(' ')),
+            ...names(s.loot), ...(s.accomplished || []), ...(s.leadsPursued || []), ...(s.futureLeads || []),
+        ].filter(Boolean).join(' \n ').toLowerCase();
     }
 
-    // --- TIMELINE RENDERING ---
-    function renderTimeline(sessions) {
-        if (sessions.length === 0) {
-            timelineContainer.innerHTML = `<p class="timeline__empty">No records match your search criteria.</p>`;
+    const arcLabel = arc => (arc ? (arcIndex.has(arc) ? `Arc ${roman(arcIndex.get(arc))} · ${arc}` : arc) : '');
+    const arcSessions = arc => sessions.filter(s => s.arc === arc);
+
+    function loadCampaign(campaign) {
+        current = campaign;
+        sessions = store.all('session').filter(s => s.campaign === campaign.id);
+        arcIndex = new Map();
+        [...sessions].reverse().forEach(s => { if (s.arc && !arcIndex.has(s.arc)) arcIndex.set(s.arc, arcIndex.size + 1); });
+        haystacks = new Map(sessions.map(s => [s.id, haystack(s)]));
+        arcFilter = 'all';
+        els.search.value = '';
+
+        renderHero();
+        renderArcs();
+        renderTimeline();
+        renderLedger();
+        renderStory();
+    }
+
+    /* ---------------- header ---------------- */
+
+    function renderHero() {
+        els.title.textContent = current.name;
+        const dated = sessions.filter(s => s.date && s.date.year != null);
+        let span = '';
+        if (dated.length) {
+            const a = dated[dated.length - 1].date, b = dated[0].date;
+            if (dated.length === 1 || (a.year === b.year && a.month === b.month && a.day === b.day)) span = worldDate(a, { weekday: false });
+            else if (a.year === b.year && a.month === b.month && a.day != null) span = `${a.day} – ${worldDate(b, { weekday: false })}`;
+            else if (a.year === b.year) span = `${worldDate(a, { weekday: false, year: false })} – ${worldDate(b, { weekday: false })}`;
+            else span = `${worldDate(a, { weekday: false })} – ${worldDate(b, { weekday: false })}`;
+        }
+        const n = sessions.length;
+        els.meta.textContent = [`The chronicle of ${current.partyName || current.name}`, `${n} ${n === 1 ? 'session' : 'sessions'}`, span]
+            .filter(Boolean).join(' · ');
+    }
+
+    /* ---------------- sessions ---------------- */
+
+    function renderArcs() {
+        const arcs = [...arcIndex.keys()];
+        if (arcs.length < 2) { els.arcs.innerHTML = ''; els.arcs.hidden = true; return; }
+        els.arcs.hidden = false;
+        els.arcs.innerHTML = [['all', 'All arcs'], ...arcs.map(a => [a, a])].map(([v, label]) =>
+            `<button type="button" class="scr-pill" data-arc="${esc(v)}" aria-pressed="${v === arcFilter}">${esc(label)}</button>`).join('');
+    }
+
+    function filtered() {
+        const q = els.search.value.trim().toLowerCase();
+        return sessions.filter(s => (arcFilter === 'all' || s.arc === arcFilter) && (!q || haystacks.get(s.id).includes(q)));
+    }
+
+    function faces(s, max = 4) {
+        const list = npcsOf(s);
+        const shown = list.slice(0, max).map(({ npc }) => {
+            const src = faceSrc(npc);
+            const inner = src ? `<img src="${esc(src)}" alt="${esc(npc.name)}" loading="lazy">` : `<span aria-label="${esc(npc.name)}">${esc(initials(npc.name))}</span>`;
+            return recLink(npc, 'scr-face', inner);
+        }).join('');
+        const more = list.length > max ? `<span class="scr-face scr-face--more">+${list.length - max}</span>` : '';
+        return shown || more ? `<span class="scr-faces">${shown}${more}</span>` : '';
+    }
+
+    function entryHtml(s, latest) {
+        const places = placesOf(s);
+        const placeLine = places.length ? `<span class="scr-card__places"><span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+            ${places.slice(0, 2).map(p => placeHtml(p)).join('<span class="scr-dot" aria-hidden="true">·</span>')}
+            ${places.length > 2 ? `<span class="scr-card__more">+${places.length - 2}</span>` : ''}</span>` : '';
+        const loot = (s.loot || []).length;
+        const lootLine = loot ? `<span class="scr-card__finds"><span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>${loot} ${loot === 1 ? 'find' : 'finds'}</span>` : '';
+        return `
+            <article id="${esc(s.id)}" class="scr-entry">
+                <span class="scr-seal${latest ? ' is-latest' : ''}" aria-hidden="true">${roman(s.number)}</span>
+                <div class="scr-card${latest ? ' is-latest' : ''}" data-card="${esc(s.id)}">
+                    <div class="scr-card__top">
+                        <span class="scr-card__date">${esc(worldDate(s.date) || 'Unknown date')}</span>
+                        ${latest ? '<span class="scr-badge">Latest folio</span>' : ''}
+                        ${faces(s)}
+                    </div>
+                    <h3 class="scr-card__title"><button type="button" data-open="${esc(s.id)}">${esc(s.name)}</button></h3>
+                    ${s.summary ? `<p class="scr-card__summary">${linked(s.summary)}</p>` : ''}
+                    <div class="scr-card__foot">
+                        ${placeLine}${lootLine}
+                        <button type="button" class="scr-card__read" data-open="${esc(s.id)}" aria-label="Read the folio of ${esc(s.name)}">Read folio<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></button>
+                    </div>
+                </div>
+            </article>`;
+    }
+
+    function renderTimeline() {
+        const list = filtered();
+        const q = els.search.value.trim();
+        els.count.textContent = `${list.length} ${list.length === 1 ? 'folio' : 'folios'}`;
+        if (!list.length) {
+            els.timeline.innerHTML = sessions.length
+                ? `<div class="scr-empty"><span class="material-symbols-outlined" aria-hidden="true">ink_eraser</span>
+                    <p class="scr-empty__title">${q ? `No folio mentions “${esc(q)}”.` : 'No folio in this arc.'}</p>
+                    <p class="scr-empty__help">The search reads titles, summaries, places, people, finds and transcripts.</p></div>`
+                : `<div class="scr-empty"><span class="material-symbols-outlined" aria-hidden="true">ink_pen</span>
+                    <p class="scr-empty__title">No session has been recorded for this campaign yet.</p></div>`;
             return;
         }
-
-        let currentArc = "";
-        let html = `<div class="timeline__line"></div>`;
-
-        sessions.forEach((session, index) => {
-            if (session.arc !== currentArc) {
-                currentArc = session.arc;
-                html += `
-                    <div class="timeline-arc">
-                        <h4 class="timeline-arc__title">${currentArc}</h4>
-                    </div>
-                `;
+        const plain = !q && arcFilter === 'all';
+        let html = '', arc = null;
+        list.forEach((s, i) => {
+            if (i === 0 || s.arc !== arc) {
+                arc = s.arc;
+                const range = sessionsLabel(arcSessions(arc).map(x => x.number));
+                html += `<div class="scr-arc"><span class="scr-arc__mark" aria-hidden="true"></span>
+                    <h2 class="scr-arc__title">${esc(arcLabel(arc) || 'Sessions')}</h2>${range ? `<span class="scr-arc__range">${esc(range)}</span>` : ''}</div>`;
             }
-
-            const npcTags = (session.npcs || []).map(entry => {
-                const data = findNPC(entry.npc);
-                if (!data) return '';
-                
-                const avatarImg = data.avatar || 'https://ui-avatars.com/api/?background=1a1c1a&color=4ade80&name=' + data.name;
-
-                return `
-                <div class="npc-avatar">
-                    <a href="${store.url(entry.npc)}" onclick="event.stopPropagation()" class="npc-avatar__link">
-                        <img src="${avatarImg}" alt="${data.name}" class="npc-avatar__img">
-                        <div class="npc-avatar__tip">
-                            ${data.name}
-                        </div>
-                    </a>
-                </div>`;
-            }).join('');
-
-            const locTags = sessionPlaces(session).map(({ title, url }) => {
-                return url ? `<a href="${url}" onclick="event.stopPropagation()" class="place-tag"><span class="tag-icon material-symbols-outlined">location_on</span> ${title}</a>`
-                    : `<span onclick="event.stopPropagation(); triggerSearch(this.dataset.term)" data-term="${title.replace(/"/g, '&quot;')}" class="place-tag place-tag--search"><span class="tag-icon material-symbols-outlined">location_on</span> ${title}</span>`;
-            }).join('');
-
-            const lootTags = (session.loot || []).map(id =>
-                itemLink(id, 'loot-tag', `<span class="tag-icon material-symbols-outlined">auto_awesome</span> ${itemName(id)}`)
-            ).join('');
-
-            const isLatest = index === 0 && searchInput.value === "" && arcFilter.value === "all";
-            const latestClass = isLatest ? 'is-latest' : '';   // the newest session is lit in gold
-
-            html += `
-                <div id="${session.id}" class="timeline-entry">
-                    <div class="timeline-entry__dot ${latestClass}"></div>
-                    
-                    <div onclick="openSessionFolio('${session.id}')" class="timeline-entry__card ${latestClass}">
-                        <div class="timeline-entry__head">
-                            <div>
-                                <div class="timeline-entry__campaign">
-                                    <span class="timeline-entry__campaign-icon material-symbols-outlined">explore</span> ${current.name}
-                                </div>
-
-                                <p class="timeline-entry__date">${worldDate(session.date) || "Unknown Date"}</p>
-                                <h3 class="timeline-entry__title">${session.name}</h3>
-                            </div>
-                           <div class="timeline-entry__npcs">${npcTags}</div>
-                        </div> <p class="timeline-entry__summary">${autoLinkContent(session.summary)}</p>
-                        
-                        <div class="timeline-entry__foot">
-                            <div class="timeline-entry__tags">${locTags} ${lootTags}</div>
-                            <span class="timeline-entry__read">Read Folio <span class="timeline-entry__read-icon material-symbols-outlined">arrow_forward</span></span>
-                        </div>
-                    </div>
-                </div>
-            `;
+            html += entryHtml(s, plain && s === sessions[0]);
         });
-        timelineContainer.innerHTML = html;
+        els.timeline.innerHTML = `<div class="scr-spine" aria-hidden="true"></div>${html}`;
     }
 
-    // --- SIDEBAR RENDERING ---
-    function renderQuests(quests) {
-        if (!questList) return;
-        questList.innerHTML = quests.map(q => `
-            <div class="quest">
-                <div class="quest__head">
-                    <span class="quest__dot ${q.status === 'Primary' ? 'quest__dot--primary' : ''}"></span>
-                    <h4 class="quest__title">${q.title}</h4>
-                </div>
-                <p class="quest__text">${q.description}</p>
-            </div>
-        `).join('');
+    /* ---------------- the ledger ---------------- */
+
+    function renderLedger() {
+        const quests = current.quests || [];
+        els.quests.innerHTML = quests.length ? quests.map(q => {
+            const primary = q.status === 'Primary';
+            return `<div class="scr-quest${primary ? ' is-primary' : ''}">
+                <span class="scr-quest__mark material-symbols-outlined" aria-hidden="true">${primary ? 'workspace_premium' : 'radio_button_unchecked'}</span>
+                <div><h3 class="scr-quest__title">${esc(q.title)}${primary ? '<span class="scr-quest__tag">Primary</span>' : ''}</h3>
+                ${q.description ? `<p class="scr-quest__text">${linked(q.description)}</p>` : ''}</div></div>`;
+        }).join('') : '<p class="scr-panel__none">No lead is being followed.</p>';
+
+        const ids = [...new Set(sessions.flatMap(s => s.loot || []))];
+        const found = sessions.filter(s => (s.loot || []).length).length;
+        els.finds.innerHTML = ids.map(id => {
+            const item = store.get(id);
+            const name = item ? item.name : id;
+            const inner = item && item.image
+                ? `<img src="${esc(item.image)}" alt="" loading="lazy">`
+                : `<span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>`;
+            const cls = `scr-find${item && item.image ? '' : ' scr-find--plain'}`;
+            return item ? recLink(item, cls, `${inner}<span class="sr-only">${esc(name)}</span>`).replace('data-kw', `title="${esc(name)}" data-kw`)
+                        : `<span class="${cls}" title="${esc(name)}">${inner}<span class="sr-only">${esc(name)}</span></span>`;
+        }).join('');
+        els.findsFoot.innerHTML = ids.length
+            ? `<span>${ids.length} ${ids.length === 1 ? 'find' : 'finds'} across ${found} ${found === 1 ? 'session' : 'sessions'}</span><a href="vault.html" class="scr-finds__vault">Open the Vault →</a>`
+            : '<span>Nothing found yet.</span>';
     }
 
-    function renderGlobalLoot(sessions) {
-        if (!lootList) return;
-        const allLoot = [...new Set(sessions.flatMap(s => s.loot || []))];
-        lootList.innerHTML = allLoot.map(id => itemLink(id, 'acquisition', itemName(id))).join('');
-    }
+    /* ---------------- the full story ---------------- */
 
-    function populateArcFilter(sessions) {
-        if (!arcFilter) return;
-        const arcs = [...new Set(sessions.map(s => s.arc))];
-        arcFilter.innerHTML = `<option value="all">All Campaign Arcs</option>` +
-            arcs.map(arc => `<option value="${arc}">${arc}</option>`).join('');
-    }
+    function renderStory() {
+        const chapters = (current.chapters || []).filter(c => c && (c.passages || []).some(p => p && p.text));
+        const written = new Set(chapters.map(c => c.arc));
+        const unwritten = [...arcIndex.keys()].filter(a => !written.has(a));
 
-    // --- GLOSSARY TERMS: a click searches the chronicle ---
-    window.triggerSearch = (term) => {
-        const rec = store.get(term);
-        if (rec) term = rec.name;   // called with a glossary id
-        if (searchInput) {
-            searchInput.value = term;
-            document.getElementById('session-modal').classList.add('hidden');
-            document.getElementById('story-modal').classList.add('hidden');
-            if (Athenaeum.preview) Athenaeum.preview.close();
-            searchInput.dispatchEvent(new Event('input'));
+        if (!chapters.length) {
+            els.story.innerHTML = `<div class="scr-empty"><span class="material-symbols-outlined" aria-hidden="true">ink_pen</span>
+                <p class="scr-empty__title">The scribes have not begun this story yet.</p></div>`;
+            return;
         }
+        const num = id => (store.get(id) || {}).number;
+        const nav = chapters.map((c, i) => {
+            const range = sessionsLabel(arcSessions(c.arc).map(s => s.number));
+            return `<a href="#chapter-${i + 1}" class="scr-toc${i === 0 ? ' is-active' : ''}" data-chapter="${i + 1}">${esc(arcLabel(c.arc) || c.arc)}${range ? `<small>${esc(range)}</small>` : ''}</a>`;
+        }).join('') + unwritten.map(a => `<span class="scr-toc is-unwritten">${esc(arcLabel(a))}<small>Yet unwritten</small></span>`).join('');
+
+        const body = chapters.map((c, i) => {
+            const passages = (c.passages || []).filter(p => p && p.text);
+            const told = passages.flatMap(p => (p.sessions || []).map(num));
+            const last = Math.max(0, ...told.filter(Number.isInteger));
+            return `<article id="chapter-${i + 1}" class="scr-chapter">
+                <p class="scr-chapter__eyebrow">${i === chapters.length - 1 ? 'The Story So Far' : 'The Story'}</p>
+                <h2 class="scr-chapter__title">${esc(arcLabel(c.arc) || c.arc)}</h2>
+                ${last ? `<p class="scr-chapter__sub">As set down after Session ${roman(last)}</p>` : ''}
+                ${passages.map((p, j) => {
+                    const refs = (p.sessions || []).filter(id => store.get(id));
+                    const label = sessionsLabel(refs.map(num));
+                    const note = refs.length && label
+                        ? `<button type="button" class="scr-note" data-open="${esc(refs[0])}"><span class="material-symbols-outlined" aria-hidden="true">bookmark</span>${esc(label)}</button>`
+                        : '<span class="scr-note scr-note--none"></span>';
+                    return `<div class="scr-passage"><div class="scr-passage__text story-text">${linked(p.text, { markdown: true, dropCap: j === 0 })}</div>${note}</div>`;
+                }).join('')}
+                <div class="scr-chapter__end" aria-hidden="true"><span></span><span class="material-symbols-outlined">auto_awesome</span><span></span></div>
+            </article>`;
+        }).join('');
+
+        els.story.innerHTML = `<nav class="scr-chapters" aria-label="Chapters"><p class="scr-chapters__title">Chapters</p>${nav}</nav>
+            <div class="scr-manuscript">${body}</div>`;
+    }
+
+    /* ---------------- the folio ---------------- */
+
+    const MOOD = {
+        like: { icon: 'sentiment_satisfied', label: 'Friendly' },
+        dislike: { icon: 'sentiment_dissatisfied', label: 'Hostile' },
+        neutral: { icon: 'sentiment_neutral', label: 'Neutral' },
+    };
+    let shown = null;   // the session in the folio
+
+    function section(cls, icon, title, inner) {
+        return `<section class="folio-sec ${cls}"><h3 class="folio-sec__title">${icon ? `<span class="material-symbols-outlined" aria-hidden="true">${icon}</span>` : ''}${title}</h3>${inner}</section>`;
+    }
+    const listOf = (items, cls) => `<ul class="${cls}">${items.map(t => `<li>${linked(t)}</li>`).join('')}</ul>`;
+
+    function folioHtml(s) {
+        const places = placesOf(s);
+        const npcs = npcsOf(s);
+        const loot = (s.loot || []).map(id => ({ id, item: store.get(id) }));
+        const date = worldDate(s.date) || 'Unknown date';
+
+        const main = [
+            s.summary ? `<p class="folio__summary">${linked(s.summary)}</p>` : '',
+            (s.accomplished || []).length ? section('folio-sec--done', 'verified', 'Things Accomplished',
+                `<ul class="folio-done">${s.accomplished.map(t => `<li><span class="folio-done__mark" aria-hidden="true">✦</span><span>${linked(t)}</span></li>`).join('')}</ul>`) : '',
+            section('folio-sec--transcript', 'history_edu', 'Archival Transcript', s.body
+                ? `<div class="folio__transcript session-text">${linked(s.body, { markdown: true })}</div>`
+                : `<div class="folio__unwritten"><span class="material-symbols-outlined" aria-hidden="true">ink_pen</span><p>The scribes have not finished this folio yet.</p></div>`),
+        ].join('');
+
+        const rail = [
+            places.length || s.region ? section('folio-sec--places', 'location_on', 'Places',
+                `${s.region ? `<p class="folio__region">${esc(s.region)}</p>` : ''}
+                 ${places.length ? `<ul class="folio-places">${places.map(p => `<li>${placeHtml(p)}</li>`).join('')}</ul>` : ''}`) : '',
+            npcs.length ? section('folio-sec--people', 'group', 'Encounters',
+                `<ul class="folio-people">${npcs.map(({ npc, entry }) => {
+                    const m = MOOD[entry.sentiment] || MOOD.neutral;
+                    const src = faceSrc(npc);
+                    return `<li>${src ? `<img class="folio-people__face" src="${esc(src)}" alt="" loading="lazy">` : `<span class="folio-people__face folio-people__face--initials" aria-hidden="true">${esc(initials(npc.name))}</span>`}
+                        ${recLink(npc, 'kw-person folio-people__name')}
+                        <span class="folio-mood folio-mood--${esc(entry.sentiment || 'neutral')} material-symbols-outlined" title="${m.label}" role="img" aria-label="${m.label}">${m.icon}</span></li>`;
+                }).join('')}</ul>`) : '',
+            loot.length ? section('folio-sec--vault', 'inventory_2', 'The Vault',
+                `<ul class="folio-loot">${loot.map(({ id, item }) => {
+                    const pic = item && item.image ? `<img class="folio-loot__pic" src="${esc(item.image)}" alt="" loading="lazy">`
+                        : `<span class="folio-loot__pic folio-loot__pic--plain material-symbols-outlined" aria-hidden="true">auto_awesome</span>`;
+                    return `<li>${pic}${item ? recLink(item, 'kw-object') : `<span class="kw-object">${esc(id)}</span>`}</li>`;
+                }).join('')}</ul>`) : '',
+            (s.leadsPursued || []).length ? section('folio-sec--pursued', '', 'Leads Pursued', listOf(s.leadsPursued, 'folio-list')) : '',
+            (s.futureLeads || []).length ? section('folio-sec--future', 'explore', 'Future Leads', listOf(s.futureLeads, 'folio-list')) : '',
+        ].join('');
+
+        return `
+            <header class="folio__head">
+                <div class="folio__date-row"><span class="folio__rule"></span>
+                    <p class="folio__date">${esc([date, s.region].filter(Boolean).join(' — '))}</p><span class="folio__rule"></span></div>
+                <h2 id="folio-title" class="folio__title">${esc(s.name)}</h2>
+                ${s.arc ? `<p class="folio__arc">${esc(arcLabel(s.arc))}</p>` : ''}
+            </header>
+            <div class="folio__grid">
+                <div class="folio__main">${main}</div>
+                ${rail ? `<aside class="folio__rail">${rail}</aside>` : ''}
+            </div>`;
+    }
+
+    function setAddress(id) {
+        const url = new URL(location.href);
+        if (id) url.searchParams.set('session', id); else url.searchParams.delete('session');
+        history.replaceState(history.state, '', url.pathname.split('/').pop() + url.search + url.hash);
+    }
+
+    function openFolio(id) {
+        const s = sessions.find(x => x.id === id);
+        if (!s) return;
+        shown = s;
+        const i = sessions.indexOf(s);
+        els.folioLabel.textContent = [s.number ? `Folio ${roman(s.number)}` : 'Folio', current.name].join(' · ');
+        els.folio.querySelector('[data-step="1"]').disabled = i === sessions.length - 1;
+        els.folio.querySelector('[data-step="-1"]').disabled = i === 0;
+        els.folioBody.innerHTML = folioHtml(s);
+        els.folioBody.scrollTop = 0;
+        if (Athenaeum.preview) Athenaeum.preview.close();
+        if (!els.folio.open) {
+            els.folio.showModal();
+            document.body.classList.add('scr-locked');
+        }
+        setAddress(s.id);
+    }
+    function closeFolio() { if (els.folio.open) els.folio.close(); }
+    els.folio.addEventListener('close', () => {
+        document.body.classList.remove('scr-locked');
+        if (Athenaeum.preview) Athenaeum.preview.close();
+        setAddress(null);
+        // Back to the card it came from
+        const card = shown && document.querySelector(`[data-card="${CSS.escape(shown.id)}"] [data-open]`);
+        if (card && document.body.dataset.view === 'sessions') card.focus({ preventScroll: true });
+        shown = null;
+    });
+    // A click on the dimmed page around it closes it
+    els.folio.addEventListener('click', e => { if (e.target === els.folio) closeFolio(); });
+    els.folio.querySelectorAll('[data-step]').forEach(b => b.addEventListener('click', () => {
+        const i = sessions.indexOf(shown) + Number(b.dataset.step);
+        if (sessions[i]) openFolio(sessions[i].id);
+    }));
+    els.folio.querySelector('[data-close]').addEventListener('click', closeFolio);
+
+    /* ---------------- tabs ---------------- */
+
+    const tabs = [...document.querySelectorAll('.scr-tab')];
+    function setView(view, { focus = false } = {}) {
+        document.body.dataset.view = view;
+        tabs.forEach(t => {
+            const on = t.dataset.view === view;
+            t.setAttribute('aria-selected', String(on));
+            t.tabIndex = on ? 0 : -1;
+            if (on && focus) t.focus();
+        });
+    }
+    tabs.forEach(t => {
+        t.addEventListener('click', () => { setView(t.dataset.view); window.scrollTo({ top: 0 }); });
+        t.addEventListener('keydown', e => {
+            if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+            const visible = tabs.filter(x => x.offsetParent !== null);
+            const i = visible.indexOf(t) + (e.key === 'ArrowRight' ? 1 : -1);
+            const next = visible[(i + visible.length) % visible.length];
+            setView(next.dataset.view, { focus: true });
+            e.preventDefault();
+        });
+    });
+
+    /* ---------------- search ---------------- */
+
+    function search(term) {
+        closeFolio();
+        if (Athenaeum.preview) Athenaeum.preview.close();
+        arcFilter = 'all';
+        renderArcs();
+        els.search.value = term;
+        setView('sessions');
+        renderTimeline();
+        els.search.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    // Glossary terms: called with a term's id, or with any text
+    window.triggerSearch = term => {
+        const rec = store.get(term);
+        search(rec ? rec.name : term);
     };
     // The same search from a term's preview card (the button of the sheet on phones)
     Athenaeum.loreAction = { label: 'Search the Chronicle', run: id => window.triggerSearch(id) };
 
-    // --- MODAL LOGIC ---
-    window.openStoryFolio = () => {
-        if (!current) return;
+    els.search.addEventListener('input', renderTimeline);
+    els.arcs.addEventListener('click', e => {
+        const b = e.target.closest('[data-arc]');
+        if (!b) return;
+        arcFilter = b.dataset.arc;
+        els.arcs.querySelectorAll('[data-arc]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+        renderTimeline();
+    });
 
-        const modal = document.getElementById('story-modal');
-        modal.innerHTML = `
-            <div class="story-folio">
-                <div class="story-folio__head">
-                    <div><p class="story-folio__eyebrow">Archival Summary</p><h2 class="story-folio__title">The Story So Far</h2></div>
-                    <button onclick="closeStoryModal()" class="story-folio__close"><span class="material-symbols-outlined">close</span></button>
-                </div>
-                <div class="story-folio__text story-text custom-scrollbar">
-                    ${autoLinkContent(store.md(current.story, { dropCap: true }))}
-                </div>
-            </div>
-        `;
-        modal.classList.remove('hidden');
-    };
+    /* ---------------- clicks anywhere ---------------- */
 
-    window.openSessionFolio = (id) => {
-        const session = store.get(id);
-        if (!session || store.typeOf(session) !== 'session') return;
+    document.addEventListener('click', e => {
+        const open = e.target.closest('[data-open]');
+        if (open) { openFolio(open.dataset.open); return; }
+        const term = e.target.closest('[data-search]');
+        if (term) { search(term.dataset.search); return; }
+        // The rest of a card opens its folio too (not its links)
+        const card = e.target.closest('[data-card]');
+        if (card && !e.target.closest('a, button, [data-kw]') && !String(window.getSelection() || '')) openFolio(card.dataset.card);
+    });
 
-        const modal = document.getElementById('session-modal');
-        const content = document.getElementById('session-modal-content');
+    // The chapters list: the chapter being read is marked
+    els.story.addEventListener('click', e => {
+        const a = e.target.closest('[data-chapter]');
+        if (!a) return;
+        e.preventDefault();
+        const target = $(`chapter-${a.dataset.chapter}`);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        els.story.querySelectorAll('[data-chapter]').forEach(x => x.classList.toggle('is-active', x === a));
+    });
 
-        const getSentiment = (s) => {
-            if (s === 'like') return '<span class="sentiment sentiment--like material-symbols-outlined" title="Positive Interaction">sentiment_satisfied</span>';
-            if (s === 'dislike') return '<span class="sentiment sentiment--dislike material-symbols-outlined" title="Hostile/Negative">sentiment_dissatisfied</span>';
-            return '<span class="sentiment sentiment--neutral material-symbols-outlined" title="Neutral/Business">sentiment_neutral</span>';
-        };
+    /* ---------------- start ---------------- */
 
-        const npcCards = (session.npcs || []).map(entry => {
-            const npc = findNPC(entry.npc);
-            if (!npc) return '';
-            return `
-            <div class="encounter">
-                <a href="${store.url(entry.npc)}" class="encounter__name kw-person">${npc.name}</a>
-                ${getSentiment(entry.sentiment)}
-            </div>`;
-        }).join('');
+    const params = new URLSearchParams(location.search);
+    const linkedSession = store.get(params.get('session'));
+    const wanted = linkedSession && store.typeOf(linkedSession) === 'session' ? linkedSession.campaign : null;
+    const firstId = campaigns.some(c => c.id === wanted) ? wanted : personae.choose(store, { campaigns, allowAll: false });
+    const first = campaigns.find(c => c.id === firstId) || campaigns[0];
+    // Keep the campaign shared with the other pages, so the preview cards follow it
+    if (store.viewCampaign() !== first.id) personae.remember(first.id);
 
-        content.innerHTML = `
-        <div class="folio">
-            <header class="folio__head">
-                <div class="folio__date-row">
-                    <div class="folio__rule"></div>
-                    <p class="folio__date">${worldDate(session.date) || 'Unknown date'} — ${session.region || ''}</p>
-                    <div class="folio__rule"></div>
-                </div>
-                <h1 class="folio__title">${session.name}</h1>
-                <p class="folio__arc">${session.arc || ''}</p>
-            </header>
+    personae.picker(els.picker, {
+        campaigns, value: first.id, allowAll: false,
+        onChange: id => { closeFolio(); loadCampaign(campaigns.find(c => c.id === id)); },
+    });
+    if (params.get('view') === 'story') setView('story');
+    loadCampaign(first);
 
-            <div class="folio__grid">
-                <div class="folio-summary">
-                    <h3 class="folio-summary__title">
-                        <span class="folio-icon material-symbols-outlined">summarize</span> Summary
-                    </h3>
-                    <p class="folio-summary__text">${autoLinkContent(session.summary)}</p>
-                </div>
-
-                <div class="folio-panel">
-                    <h3 class="folio-places__title">
-                        <span class="folio-icon material-symbols-outlined">location_on</span> Locations Visited
-                    </h3>
-                    <div class="folio-places__list">${sessionPlaces(session).map(({ title, url }) => url
-                ? `<a href="${url}" class="folio-place kw-place">${title}</a>`
-                : `<span class="folio-place folio-place--search kw-place" onclick="triggerSearch(this.dataset.term)" data-term="${title.replace(/"/g, '&quot;')}">${title}</span>`
-        ).join(', ')}</div>
-                </div>
-
-                <div class="folio-panel">
-                    <h3 class="folio-encounters__title">
-                        <span class="folio-icon material-symbols-outlined">group</span> Notable Encounters
-                    </h3>
-                    <div class="folio-encounters__list">${npcCards}</div>
-                </div>
-
-                <div class="folio-accomplished">
-                    <h3 class="folio-accomplished__title">
-                        <span class="folio-icon material-symbols-outlined">verified</span> Things Accomplished
-                    </h3>
-                    <ul class="folio-accomplished__list">
-                        ${(session.accomplished || []).map(item => `<li class="folio-accomplished__item"><span class="folio-accomplished__arrow">→</span> <span>${autoLinkContent(item)}</span></li>`).join('')}
-                    </ul>
-                </div>
-
-                <div class="folio-vault">
-                    <h3 class="folio-vault__title">
-                        <span class="folio-icon material-symbols-outlined">inventory_2</span> The Vault
-                    </h3>
-                    <div class="folio-list">
-                        ${(session.loot || []).map(id => itemLink(id, 'folio-vault__item', `<span class="folio-vault__icon material-symbols-outlined">auto_awesome</span> ${itemName(id)}`)).join('')}
-                    </div>
-                </div>
-
-                <div class="folio-leads">
-                    <h3 class="folio-leads__title">Leads Pursued</h3>
-                    <ul class="folio-list">
-                        ${(session.leadsPursued || []).map(item => `<li class="folio-leads__item">${autoLinkContent(item)}</li>`).join('')}
-                    </ul>
-                </div>
-
-                <div class="folio-future">
-                    <h3 class="folio-future__title">Future Leads</h3>
-                    <ul class="folio-list">
-                        ${(session.futureLeads || []).map(item => `<li class="folio-future__item">${autoLinkContent(item)}</li>`).join('')}
-                    </ul>
-                </div>
-<div class="folio-transcript">
-                    <h3 class="folio-transcript__title">
-                        <span class="folio-icon material-symbols-outlined">history_edu</span> Archival Transcript
-                    </h3>
-                    <div class="folio-transcript__text session-text">
-                        ${autoLinkContent(session.body, { markdown: true })}
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-        modal.classList.remove('hidden');
-    };
-
-    window.closeStoryModal = () => document.getElementById('story-modal').classList.add('hidden');
-    window.closeSessionModal = () => document.getElementById('session-modal').classList.add('hidden');
-
-    const openStoryBtn = document.getElementById('open-story-btn');
-    if (openStoryBtn) openStoryBtn.onclick = window.openStoryFolio;
-
-    const storyModalElement = document.getElementById('story-modal');
-    const sessionModalElement = document.getElementById('session-modal');
-
-    if (storyModalElement) {
-        storyModalElement.addEventListener('click', (e) => {
-            if (e.target === storyModalElement) window.closeStoryModal();
-        });
-    }
-
-    if (sessionModalElement) {
-        sessionModalElement.addEventListener('click', (e) => {
-            if (e.target === sessionModalElement) window.closeSessionModal();
-        });
-    }
-
-    // Call Initialization!
-    initWorkspace();
-
-    // After workspace loads, check for deep link scrolling
-    const urlParams = new URLSearchParams(window.location.search);
-    const targetSessionId = urlParams.get('session');
-    
-    if (targetSessionId) {
-        setTimeout(() => {
-            const sessionElement = document.getElementById(targetSessionId);
-            if (sessionElement) {
-                sessionElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                const card = sessionElement.querySelector('.cursor-pointer');
-                if (card) {
-                    const originalShadow = card.style.boxShadow;
-                    card.style.transition = "box-shadow 0.5s ease";
-                    card.style.boxShadow = "0 0 30px rgba(233, 193, 118, 0.6)";
-                    setTimeout(() => { card.style.boxShadow = originalShadow; }, 2000);
-                }
-                if (typeof window.openSessionFolio === 'function') {
-                    setTimeout(() => { window.openSessionFolio(targetSessionId); }, 400);
-                }
-            }
-        }, 400);
+    // ?session=…: its card glows, then its folio opens
+    if (linkedSession && sessions.includes(linkedSession)) {
+        const entry = $(linkedSession.id);
+        if (entry) {
+            entry.scrollIntoView({ block: 'center' });
+            const card = entry.querySelector('.scr-card');
+            card.classList.add('is-flash');
+            setTimeout(() => card.classList.remove('is-flash'), 2200);
+        }
+        setTimeout(() => openFolio(linkedSession.id), 350);
     }
 });

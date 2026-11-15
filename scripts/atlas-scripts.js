@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const store = await Athenaeum.ready;
     const world = store.world;
     Atlas.glow();
-    Atlas.trail(store, document.getElementById('atlas-trail'));
 
     // -----------------------------------------------------------------
     // 1. MAP

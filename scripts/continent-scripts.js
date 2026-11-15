@@ -19,7 +19,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     // HEADER
     // -----------------------------------------------------------------
     document.title = `${continent.name} - The Athenaeum Vault`;
-    Atlas.trail(store, $('atlas-trail'), continent);
+    Atlas.placeLine(store, $('atlas-place-line'), continent);
+    Atlas.elsewhere(store, $('atlas-elsewhere'), continent);
     $('continent-name').textContent = continent.name;
     $('continent-tagline').textContent = [continent.subtitle, continent.era].filter(Boolean).join(' • ');
 

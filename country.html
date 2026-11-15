@@ -37,6 +37,9 @@
 
     <div id="header-placeholder"></div>
 
+    <!-- Grand Atlas tabs: renderSectionTabs (scripts/general-scripts.js) -->
+    <nav class="section-tabs" data-section="atlas"></nav>
+
     <main
         class="region-main">
 
@@ -44,8 +47,8 @@
             class="region-backdrop"></div>
 
         <header class="region-header">
-            <!-- filled by Atlas.trail (scripts/atlas-common.js) -->
-            <nav id="atlas-trail" class="trail"></nav>
+            <!-- "Settlement · Eperina, Maltona": Atlas.placeLine (scripts/atlas-common.js) -->
+            <p id="atlas-place-line" class="place-line" hidden></p>
             <h1 id="dynamic-title" class="region-header__title">Loading...
             </h1>
             <p id="dynamic-description"
@@ -125,6 +128,8 @@
         <div class="region-footer-space">
             <div id="footer-placeholder"></div>
         </div>
+        <!-- the places next to this one: Atlas.elsewhere (scripts/atlas-common.js) -->
+        <section id="atlas-elsewhere" class="elsewhere" hidden></section>
     </main>
 
 </body>

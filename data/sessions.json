@@ -403,5 +403,27 @@
     "loot": [
       "awakened-dream-crystal"
     ]
+  },
+  {
+    "id": "a-terrible-encounter",
+    "name": "A terrible encounter",
+    "campaign": "echoes-from-the-void",
+    "number": 5,
+    "date": {
+      "year": 1693,
+      "month": "Pholawal",
+      "day": 6
+    },
+    "region": "Eperina",
+    "arc": "Remnants of the Past",
+    "places": [
+      "gilded-goldfinch"
+    ],
+    "npcs": [
+      {
+        "npc": "mertonlensher",
+        "sentiment": "like"
+      }
+    ]
   }
 ]

@@ -15,6 +15,7 @@
     <link href="styles/tokens.css" rel="stylesheet" />
     <link href="styles/base.css" rel="stylesheet" />
     <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/personae.css" rel="stylesheet" />
     <link href="styles/pages/scriptorium.css" rel="stylesheet" />
     <link href="styles/main-style.css" rel="stylesheet" />
 
@@ -23,108 +24,79 @@
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/calendar.js"></script>
     <script src="scripts/core/store.js"></script>
+    <script src="scripts/personae.js"></script>
     <script src="scripts/scriptorium-scripts.js"></script>
-    
 </head>
 
-<body class="page archival-bg">
+<!-- data-view: which tab is shown (scripts/scriptorium-scripts.js).
+     sessions = the timeline (+ the ledger beside it on wide screens),
+     story = the full story, ledger = leads and finds (phones only). -->
+<body class="page archival-bg" data-view="sessions">
     <div id="header-placeholder"></div>
 
-    <main class="scriptorium-main">
+    <nav class="scr-tabs" role="tablist" aria-label="The Scriptorium">
+        <button id="tab-sessions" class="scr-tab" role="tab" data-view="sessions" aria-controls="scr-sessions" aria-selected="true">
+            <span class="scr-tab__icon material-symbols-outlined" aria-hidden="true">history_edu</span>Sessions</button>
+        <button id="tab-story" class="scr-tab" role="tab" data-view="story" aria-controls="scr-story" aria-selected="false" tabindex="-1">
+            <span class="scr-tab__icon material-symbols-outlined" aria-hidden="true">auto_stories</span><span class="scr-tab__long">The Full</span> Story</button>
+        <button id="tab-ledger" class="scr-tab scr-tab--phone" role="tab" data-view="ledger" aria-controls="scr-ledger" aria-selected="false" tabindex="-1">
+            <span class="scr-tab__icon material-symbols-outlined" aria-hidden="true">stylus_note</span>Ledger</button>
+    </nav>
 
-        <section
-            class="narrative">
-            <div
-                class="narrative__glow">
-            </div>
+    <main class="scr-main">
+        <header class="personae-hero scr-hero">
+            <p class="personae-hero__eyebrow">The Scriptorium</p>
+            <h1 id="scr-title" class="personae-hero__title">The Chronicle</h1>
+            <p id="scr-meta" class="scr-hero__meta"></p>
+            <div class="personae-hero__rule"></div>
+            <select id="scr-campaign" class="personae-picker hidden" aria-label="Campaign"></select>
+        </header>
 
-            <div class="narrative__body">
-                <p class="narrative__eyebrow">The Grand Narrative</p>
-                <h1 class="narrative__title">The Story So Far</h1>
-                <p id="story-so-far-preview" class="narrative__preview">
-                </p>
-                <button id="open-story-btn"
-                    class="narrative__open">
-                    <span
-                        class="narrative__open-icon material-symbols-outlined">auto_stories</span>
-                    Read Full Chronicle
-                </button>
-            </div>
-        </section>
-
-        <div class="scriptorium-layout">
-
-            <div class="chronicle">
-
-                <div
-                    class="chronicle-tools">
-                    <div class="chronicle-search">
-                        <span
-                            class="chronicle-search__icon material-symbols-outlined">search</span>
-                        <input type="text" id="scriptorium-search" placeholder="Search keywords, NPCs..."
-                            class="chronicle-search__input">
-                    </div>
-
-                   <div class="chronicle-filters">
-                    <select id="filter-campaign" class="chronicle-filter">
-                        <option value="all">All Campaigns</option>
-                    </select>
-
-                    <select id="filter-arc" class="chronicle-filter">
-                        <option value="all">All Campaign Arcs</option>
-                    </select>
-                    </div>
+        <div class="scr-layout">
+            <!-- Sessions -->
+            <section id="scr-sessions" class="scr-sessions" role="tabpanel" aria-labelledby="tab-sessions">
+                <div class="scr-tools">
+                    <label class="scr-search">
+                        <span class="scr-search__icon material-symbols-outlined" aria-hidden="true">search</span>
+                        <span class="sr-only">Search the chronicle</span>
+                        <input type="search" id="scr-search" class="scr-search__input" placeholder="Search sessions, people, places, finds…" autocomplete="off">
+                    </label>
+                    <div id="scr-arcs" class="scr-arcs" role="group" aria-label="Arc"></div>
+                    <span id="scr-count" class="scr-count" aria-live="polite"></span>
                 </div>
+                <div id="scr-timeline" class="scr-timeline"></div>
+            </section>
 
-                <div id="chronicle-timeline" class="timeline">
-                    <div class="timeline__line"></div>
-
-                </div>
-            </div>
-
-            <aside class="scriptorium-aside">
-
-                <div class="leads">
-                    <h3
-                        class="leads__title">
-                        <span class="aside-icon material-symbols-outlined">stylus_note</span> Active Leads
-                    </h3>
-
-                    <div id="quest-list" class="leads__list">
-                    </div>
-
-                    <div class="acquisitions">
-                        <h3 class="acquisitions__title">Notable
-                            Acquisitions</h3>
-                        <div id="notable-loot-list" class="acquisitions__list">
-                        </div>
-                    </div>
-                </div>
+            <!-- Leads and finds: beside the timeline on wide screens, a tab on phones -->
+            <aside id="scr-ledger" class="scr-ledger" role="tabpanel" aria-labelledby="tab-ledger">
+                <section class="scr-panel">
+                    <h2 class="scr-panel__title"><span class="material-symbols-outlined" aria-hidden="true">stylus_note</span>Active Leads</h2>
+                    <div id="scr-quests" class="scr-quests"></div>
+                </section>
+                <section class="scr-panel scr-panel--finds">
+                    <h2 class="scr-panel__title"><span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>Notable Acquisitions</h2>
+                    <div id="scr-finds" class="scr-finds"></div>
+                    <p id="scr-finds-foot" class="scr-finds__foot"></p>
+                </section>
             </aside>
+
+            <!-- The full story -->
+            <section id="scr-story" class="scr-story" role="tabpanel" aria-labelledby="tab-story"></section>
         </div>
     </main>
 
-    <div id="story-modal"
-        class="story-modal hidden">
-    </div>
-
-    <div id="session-modal"
-        class="session-modal hidden">
-        <div
-            class="session-modal__card">
-            <div id="session-modal-content" class="session-modal__content custom-scrollbar">
-            </div>
-            <div class="session-modal__foot">
-                <button onclick="closeSessionModal()"
-                    class="session-modal__close">Close
-                    Archive</button>
-            </div>
+    <!-- A session's folio -->
+    <dialog id="scr-folio" class="folio" aria-labelledby="folio-title">
+        <div class="folio__bar">
+            <button type="button" class="folio__nav" data-step="1" aria-label="Older session"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span><span class="folio__nav-text">Older</span></button>
+            <button type="button" class="folio__nav" data-step="-1" aria-label="Newer session"><span class="folio__nav-text">Newer</span><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
+            <span id="folio-label" class="folio__label"></span>
+            <button type="button" class="folio__close" data-close aria-label="Close the folio" autofocus><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
         </div>
-    </div>
+        <div id="folio-body" class="folio__body"></div>
+    </dialog>
 
     <div id="footer-placeholder"></div>
-
-
 </body>
 
 </html>

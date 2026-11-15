@@ -1,6 +1,6 @@
 /* =====================================================================
-   COMPONENTS — pieces shared by every page: the header, the Atlas
-   trail, the footer (with its "nothing to see here" modal) and the
+   COMPONENTS — pieces shared by every page: the header, the section
+   tab bars, the Atlas place line and neighbour cards, the footer (with its "nothing to see here" modal) and the
    mobile orb menu.
    Markup: components/*.html and scripts/general-scripts.js.
    ===================================================================== */
@@ -197,246 +197,289 @@
 }
 
 
-/* ---------- Atlas trail (Atlas.trail in scripts/atlas-common.js) ----------
-   Atlas ▾ › Continent ▾ › Country ▾ › Settlement ▾ › Place ▾
-   "Atlas ▾" opens the Atlas pages (SITE_NAV in general-scripts.js); each
-   place's ▾ opens the places beside it. The page's look tints it on poi.html
-   (--look-accent). Below 768px only the parent and the current place show. */
+/* ---------- Section tab bars (renderSectionTabs in general-scripts.js) ----------
+   <nav class="section-tabs" data-section="atlas|archive">, right under the
+   header of every Atlas page and every Archive page but library.html.
+   It sticks to the top of the screen: on pages whose <body> is brightened
+   (.mystical-bg) the header scrolls away with the page, elsewhere (the Atlas,
+   beast.html) the header stays, so the bar stops under it. On a phone the row
+   scrolls sideways. */
 
-.trail {
-    --trail-accent: var(--look-accent, var(--color-secondary));
-    position: relative;
-    display: flex;
-    width: fit-content;
-    max-width: 100%;
-    margin-bottom: 1.5rem;
-    padding: 0.25rem 0.375rem;
-    border: 1px solid rgb(255 255 255 / 0.07);
-    background-color: color-mix(in srgb, var(--color-surface-container-lowest) 70%, transparent);
-    font-family: var(--font-label);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-on-surface-variant) 75%, transparent);
-}
-
-.trail__list {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.125rem;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.trail__step {
-    position: relative;
-    display: flex;
-    align-items: center;
-    min-width: 0;
-}
-.trail__step + .trail__step::before {
-    content: 'chevron_right';
-    margin: 0 0.125rem;
-    font-family: 'Material Symbols Outlined';
-    font-size: 14px;
-    letter-spacing: normal;
-    text-transform: none;
-    color: rgb(255 255 255 / 0.25);
-}
-
-.trail__link,
-.trail__current {
-    min-width: 0;
-    overflow: hidden;
-    padding: 0.375rem 0.25rem;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-.trail__link {
-    transition: color 150ms var(--ease);
-}
-.trail__link:hover {
-    color: var(--trail-accent);
-}
-.trail__current {
-    font-weight: 700;
-    color: var(--trail-accent);
-}
-
-/* The two kinds of buttons: "Atlas ▾" and a place's ▾ */
-.trail__atlas,
-.trail__caret {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    min-height: 2rem;
-    border: 1px solid transparent;
-    background: none;
-    color: inherit;
-    font: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-    cursor: pointer;
-    transition: color 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease);
-}
-.trail__atlas {
-    gap: 0.375rem;
-    padding: 0 0.5rem 0 0.375rem;
-    font-weight: 700;
-    color: var(--color-on-surface);
-}
-.trail__caret {
-    width: 1.75rem;
-    margin-left: -0.125rem;
-}
-.trail__atlas:hover,
-.trail__caret:hover,
-.trail__atlas[aria-expanded="true"],
-.trail__caret[aria-expanded="true"] {
-    border-color: color-mix(in srgb, var(--trail-accent) 35%, transparent);
-    background-color: rgb(255 255 255 / 0.05);
-    color: var(--trail-accent);
-}
-.trail__atlas-icon {
-    font-size: 18px;
-    color: var(--trail-accent);
-}
-.trail__caret-icon {
-    font-size: 18px;
-    transition: transform 150ms var(--ease);
-}
-[aria-expanded="true"] > .trail__caret-icon {
-    transform: rotate(180deg);
-}
-
-/* The drop-down: moved to the end of <body> and placed under its button
-   by the script (position: fixed), above the maps (Leaflet goes up to 1000)
-   but under the orb menu */
-.trail__menu {
-    --trail-accent: var(--color-secondary);
-    position: fixed;
+.section-tabs {
+    --section-tabs-h: 3rem;
+    position: sticky;
     top: 0;
-    left: 0;
-    z-index: 1001;
-    display: flex;
-    flex-direction: column;
-    width: max-content;
-    min-width: 13rem;
-    max-width: min(20rem, calc(100vw - 2rem));
-    max-height: min(26rem, 65vh);
-    border: 1px solid color-mix(in srgb, var(--trail-accent) 30%, transparent);
-    background-color: var(--color-surface-container-lowest);
-    box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.85), 0 0 0 1px rgb(0 0 0 / 0.6);
-    font-family: var(--font-label);
-    color: color-mix(in srgb, var(--color-on-surface-variant) 75%, transparent);
+    z-index: 45;
+    width: 100%;
+    min-height: var(--section-tabs-h);
+    margin-top: 4rem;   /* the fixed header */
+    border-bottom: 1px solid rgb(255 255 255 / 0.07);
+    background-color: rgb(5 5 5 / 0.82);
+    box-shadow: 0 10px 30px -18px rgba(26, 11, 46, 0.9);   /* Archive: violet */
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
 }
-.trail__menu[hidden] {
+body:not(.mystical-bg) .section-tabs {
+    top: 4rem;
+}
+/* The pages' <main> pad their top for the header alone: the bar already clears it */
+.section-tabs ~ main {
+    padding-top: 2.5rem;
+}
+
+.section-tabs__track {
+    display: flex;
+    justify-content: center;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.section-tabs__track::-webkit-scrollbar {
     display: none;
 }
-.trail__menu-head {
-    padding: 0.625rem 0.875rem 0.5rem;
-    border-bottom: 1px solid rgb(255 255 255 / 0.06);
-    font-size: 10px;
+
+.section-tab {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--section-tabs-h);
+    margin-bottom: -1px;
+    padding: 0 1rem;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 80%, transparent);
+    transition: color 150ms var(--ease), border-color 150ms var(--ease), text-shadow 150ms var(--ease);
+}
+.section-tab:hover {
+    color: #fff;
+}
+.section-tab.is-active {
+    border-bottom-color: var(--color-secondary);
+    color: var(--color-secondary);
+    text-shadow: 0 0 12px rgba(233, 193, 118, 0.35);
+}
+.section-tab:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: -2px;
+}
+.section-tab__icon {
+    font-size: 18px;
+}
+
+@media (max-width: 767.98px) {
+    .section-tabs__track {
+        justify-content: flex-start;
+        padding: 0 0.25rem;
+        /* fades at the edges say the row goes on */
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
+        mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
+    }
+    .section-tab {
+        padding: 0 0.875rem;
+    }
+    .section-tab__icon {
+        display: none;
+    }
+}
+.section-tabs[data-section="atlas"] {
+    box-shadow: 0 10px 30px -18px rgba(9, 32, 20, 0.95);   /* Atlas: green */
+}
+
+
+
+/* ---------- Atlas: where a place is, and its neighbours ----------
+   Atlas.placeLine and Atlas.elsewhere (scripts/atlas-common.js), on
+   continent.html, country.html, settlement.html and poi.html. A POI's look
+   tints them (--look-accent). */
+
+/* "Settlement · Eperina, Maltona", above the heading */
+.place-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.5rem;
+    margin: 0 0 0.75rem;
+    font-family: var(--font-label);
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
 }
-.trail__filter {
-    margin: 0.5rem 0.625rem 0.25rem;
-    padding: 0.4rem 0.625rem;
-    border: 1px solid rgb(255 255 255 / 0.12);
-    background-color: rgb(255 255 255 / 0.03);
-    font-family: var(--font-label);
-    font-size: 13px;
-    color: var(--color-on-surface);
+.place-line[hidden] {
+    display: none;
 }
-.trail__filter:focus {
-    border-color: var(--trail-accent);
+.place-line__type {
+    color: var(--look-accent, var(--color-secondary));
+}
+.place-line__sep {
+    color: rgb(255 255 255 / 0.25);
+}
+.place-line__link {
+    border-bottom: 1px solid rgb(255 255 255 / 0.15);
+    color: var(--color-on-surface);
+    transition: color 150ms var(--ease), border-color 150ms var(--ease);
+}
+.place-line__link:hover,
+.place-line__link:focus-visible {
+    border-color: var(--look-accent, var(--color-secondary));
+    color: var(--look-accent, var(--color-secondary));
     outline: none;
 }
-.trail__items {
-    margin: 0;
-    padding: 0.25rem 0;
-    overflow-y: auto;
-    list-style: none;
-    overscroll-behavior: contain;
+
+/* "Elsewhere in Brightend", at the end of the page */
+.elsewhere {
+    width: 100%;
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgb(255 255 255 / 0.07);
 }
-.trail__item {
+.elsewhere[hidden] {
+    display: none;
+}
+.elsewhere__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin-bottom: 1.25rem;
+}
+.elsewhere__title {
+    margin: 0;
+    font-family: var(--font-headline);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-on-surface);
+}
+.elsewhere__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--look-accent, var(--color-secondary)) 80%, transparent);
+    transition: color 150ms var(--ease);
+}
+.elsewhere__all .material-symbols-outlined {
+    font-size: 16px;
+    transition: transform 150ms var(--ease);
+}
+.elsewhere__all:hover {
+    color: var(--look-accent, var(--color-secondary));
+}
+.elsewhere__all:hover .material-symbols-outlined {
+    transform: translateX(3px);
+}
+.elsewhere__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.elsewhere-card {
     display: flex;
     align-items: center;
-    gap: 0.625rem;
-    min-height: 2.25rem;
-    padding: 0.375rem 0.875rem;
-    font-family: var(--font-body);
-    font-size: 16px;
-    color: var(--color-on-surface);
-    transition: background-color 120ms var(--ease), color 120ms var(--ease);
+    gap: 0.875rem;
+    height: 100%;
+    padding: 0.5rem 0.875rem 0.5rem 0.5rem;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background-color: var(--color-surface-container-low);
+    transition: border-color 150ms var(--ease), background-color 150ms var(--ease), transform 150ms var(--ease);
 }
-.trail__item:hover,
-.trail__item:focus-visible {
-    background-color: rgb(255 255 255 / 0.06);
-    color: var(--trail-accent);
+.elsewhere-card:hover,
+.elsewhere-card:focus-visible {
+    border-color: color-mix(in srgb, var(--look-accent, var(--color-secondary)) 45%, transparent);
+    background-color: var(--color-surface-container);
+    transform: translateY(-2px);
     outline: none;
 }
-.trail__item.is-current {
-    color: var(--trail-accent);
+.elsewhere-card__img {
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background-color: var(--color-surface-container-lowest);
 }
-.trail__item-icon {
-    font-size: 18px;
-    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
+.elsewhere-card__img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.85);
+    transition: filter 150ms var(--ease), transform 300ms var(--ease);
 }
-.trail__item.is-current .trail__item-icon,
-.trail__item:hover .trail__item-icon {
-    color: var(--trail-accent);
+.elsewhere-card:hover .elsewhere-card__img img {
+    filter: saturate(1.05);
+    transform: scale(1.06);
 }
-.trail__item-label {
-    flex: 1;
+.elsewhere-card__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
 }
-.trail__item-check {
-    font-size: 16px;
+.elsewhere-card__name {
+    overflow: hidden;
+    font-family: var(--font-headline);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--color-on-surface);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-.trail__none {
-    padding: 0.5rem 0.875rem 0.75rem;
+.elsewhere-card:hover .elsewhere-card__name {
+    color: var(--look-accent, var(--color-secondary));
+}
+.elsewhere-card__line {
+    overflow: hidden;
     font-family: var(--font-body);
     font-style: italic;
     font-size: 15px;
-    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
+    color: color-mix(in srgb, var(--color-on-surface-variant) 75%, transparent);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.elsewhere-card.is-danger .elsewhere-card__img {
+    border-color: rgb(255 180 171 / 0.45);
 }
 
-/* Phones: Atlas (icon only) › parent › current place */
+/* Phones: one row that scrolls sideways */
 @media (max-width: 767.98px) {
-    .trail {
-        margin-bottom: 1rem;
-        letter-spacing: 0.05em;
+    .elsewhere {
+        margin-top: 2.5rem;
     }
-    .trail__list {
-        flex-wrap: nowrap;
+    .elsewhere__grid {
+        display: flex;
+        margin: 0 -1rem;
+        padding: 0 1rem 0.5rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding: 0 1rem;
+        scrollbar-width: none;
     }
-    .trail__step--far {
+    .elsewhere__grid::-webkit-scrollbar {
         display: none;
     }
-    .trail__atlas-label {
-        display: none;
-    }
-    .trail__atlas,
-    .trail__caret {
-        min-height: 2.5rem;
-    }
-    .trail__caret {
-        width: 2.25rem;
-    }
-    /* Room for the current place: the parent gives way first, without its ▾
-       (its siblings are a tap away on its own page) */
-    .trail__step--parent {
-        flex-shrink: 3;
-    }
-    .trail__step--parent .trail__caret {
-        display: none;
+    .elsewhere__grid > li {
+        flex: 0 0 min(16rem, 78vw);
+        scroll-snap-align: start;
     }
 }
 
@@ -983,9 +1026,9 @@
 
 
 /* =====================================================================
-   LIBRARY  —  header, footer (with its modal) and the tab bar of the
-   Black Archive pages. Markup: components/library-*.html and
-   renderArchiveTabs() in general-scripts.js.
+   LIBRARY  —  header and footer (with its modal) of the Black Archive
+   pages. Markup: components/library-*.html. Their tab bar is the shared
+   .section-tabs, above.
    ===================================================================== */
 
 /* ---------- Library header (components/library-header.html) ---------- */
@@ -1459,99 +1502,6 @@
     background-color: var(--color-secondary);
     color: #000;
 }
-
-/* ---------- Black Archive tab bar (renderArchiveTabs in general-scripts.js) ----------
-   Right under the library header on every Archive page but library.html.
-   It sticks to the top of the screen: on pages whose <body> is brightened
-   (.mystical-bg) the header scrolls away with the page, elsewhere (beast.html)
-   the header stays, so the bar stops under it. On a phone the row scrolls
-   sideways. */
-
-.archive-tabs {
-    --archive-tabs-h: 3rem;
-    position: sticky;
-    top: 0;
-    z-index: 45;
-    width: 100%;
-    min-height: var(--archive-tabs-h);
-    margin-top: 4rem;   /* the fixed library header */
-    border-bottom: 1px solid rgb(255 255 255 / 0.07);
-    background-color: rgb(5 5 5 / 0.82);
-    box-shadow: 0 10px 30px -18px rgba(26, 11, 46, 0.9);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-}
-body:not(.mystical-bg) .archive-tabs {
-    top: 4rem;
-}
-/* The pages' <main> pad their top for the header alone: the bar already clears it */
-.archive-tabs ~ main {
-    padding-top: 2.5rem;
-}
-
-.archive-tabs__track {
-    display: flex;
-    justify-content: center;
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-.archive-tabs__track::-webkit-scrollbar {
-    display: none;
-}
-
-.archive-tab {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: var(--archive-tabs-h);
-    margin-bottom: -1px;
-    padding: 0 1rem;
-    border-bottom: 2px solid transparent;
-    font-family: var(--font-label);
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.14em;
-    white-space: nowrap;
-    color: color-mix(in srgb, var(--color-on-surface-variant) 80%, transparent);
-    transition: color 150ms var(--ease), border-color 150ms var(--ease), text-shadow 150ms var(--ease);
-}
-.archive-tab:hover {
-    color: #fff;
-}
-.archive-tab.is-active {
-    border-bottom-color: var(--color-secondary);
-    color: var(--color-secondary);
-    text-shadow: 0 0 12px rgba(233, 193, 118, 0.35);
-}
-.archive-tab:focus-visible {
-    outline: 2px solid var(--color-secondary);
-    outline-offset: -2px;
-}
-.archive-tab__icon {
-    font-size: 18px;
-}
-
-@media (max-width: 767.98px) {
-    .archive-tabs__track {
-        justify-content: flex-start;
-        padding: 0 0.25rem;
-        /* fades at the edges say the row goes on */
-        -webkit-mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
-        mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
-    }
-    .archive-tab {
-        padding: 0 0.875rem;
-    }
-    .archive-tab__icon {
-        display: none;
-    }
-}
-
 
 /* ---------- The Scribe's Guild pop-up (both footers) ----------
    The card of the footer's pop-up (.silence-modal or .archive-modal), with

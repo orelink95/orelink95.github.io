@@ -31,18 +31,6 @@
 .deity-main--primordial { --tier-ink: #b9cf8e; --tier-line: #94b35a; }
 .deity-main--elder { --tier-ink: #e07aa6; --tier-line: #8e3cc9; }
 
-.breadcrumbs {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
-    margin-bottom: 2.5rem;
-    font-family: var(--font-label); font-size: 10px;
-    text-transform: uppercase; letter-spacing: 0.1em;
-    color: rgb(255 255 255 / 0.4);
-}
-.breadcrumbs__link { transition: color 150ms var(--ease); }
-.breadcrumbs__link:hover { color: var(--color-secondary); }
-.breadcrumbs__separator { font-size: 12px; }
-.breadcrumbs__current { font-weight: 700; color: var(--color-secondary); }
-
 /* --- Layout --- */
 .deity-layout {
     display: grid;

@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const back = '<a class="deity-back" href="pantheon.html"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Back to the Pantheon</a>';
 
     if (!d) {
-        $('deity-crumb').textContent = 'Not found';
         layout.innerHTML = `<div class="deity-missing"><h1 class="deity-entry__name">Record Not Found</h1>
             <p>No god of that name is kept in the archive.</p>${back}</div>`;
         return;
@@ -32,7 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Sealed: nothing about it but the seal
     if (!store.revealed(d, campaign)) {
-        $('deity-crumb').textContent = 'A sealed name';
         layout.innerHTML = `
             <div class="deity-layout__card">${Card.sealed()}</div>
             <div class="deity-entry">
@@ -45,7 +43,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     document.title = `${d.name} — The Pantheon — The Athenaeum Vault`;
-    $('deity-crumb').textContent = d.name;
     if (d.colour && CSS.supports('color', d.colour)) layout.style.setProperty('--deity', d.colour);
 
     const md = (text, opts) => store.autolink(store.md(text, opts), { exclude: d.id, campaign });

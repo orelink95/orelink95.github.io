@@ -35,15 +35,6 @@
 
     <main class="beast-main">
 
-        <nav class="breadcrumbs" aria-label="Breadcrumb">
-            <a href="index.html" class="breadcrumbs__link">Athenaeum</a>
-            <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
-            <a href="library.html" class="breadcrumbs__link">Black Archive</a>
-            <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
-            <a href="bestiary.html" class="breadcrumbs__link">The Elder Tarot</a>
-            <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
-            <span id="b-crumb-name" class="breadcrumbs__current" aria-current="page">...</span>
-        </nav>
 
         <div class="beast-hero">
 
@@ -161,7 +152,6 @@
             // The page's own look (styles/looks.css), if it has one
             Athenaeum.look.apply(document.body, beast.look, 'creature');
             // Populate Basic Info
-            document.getElementById('b-crumb-name').textContent = beast.name;
             document.getElementById('b-image').src = beast.image;
             document.getElementById('b-specimen').textContent = beast.specimenNo || "UNKNOWN";
             document.getElementById('b-name').textContent = beast.name;

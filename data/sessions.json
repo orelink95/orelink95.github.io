@@ -9,7 +9,7 @@
       "month": "Pholawal",
       "day": 7
     },
-    "region": "Brightend, Maltona",
+    "region": "Brightend, Eperina",
     "arc": "Remnants of the Past",
     "summary": "The party investigated a string of thefts, captured a shadow-infused thief, and discovered a terrifying alchemical conspiracy tied to other planes of existence.",
     "places": [
@@ -77,7 +77,7 @@
       "month": "Pholawal",
       "day": 6
     },
-    "region": "Brightend, Maltona",
+    "region": "Brightend, Eperina",
     "arc": "Remnants of the Past",
     "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
     "places": [
@@ -115,8 +115,7 @@
       "Alabaster Wardens",
       "Thieves Guild",
       "Murder"
-    ],
-    "body": "*Nothing yet, come back soon*"
+    ]
   },
   {
     "id": "echoes-session-3",
@@ -128,7 +127,7 @@
       "month": "Pholawal",
       "day": 6
     },
-    "region": "Brightend, Maltona",
+    "region": "Brightend, Eperina",
     "arc": "Remnants of the Past",
     "summary": "After rescuing Maera Voss and escaping the Vale House, the party discovered a highly coordinated thieve's guild had stolen their prize.",
     "places": [
@@ -375,8 +374,7 @@
     ],
     "futureLeads": [
       "Figure out what the deal is with this Last Sigil thing"
-    ],
-    "body": "*Nothing yet, come back soon*"
+    ]
   },
   {
     "id": "sigil-at-the-end-of-hall",

@@ -4,7 +4,7 @@
    - .personae-hero : the centred page title (eyebrow, title, gold rule)
    - .personae-tabs : the NPCs · Heroes · Factions tab bar under it
    The tab bar is written out in each of the three pages: keep them in step
-   (and in step with MOBILE_NAV in scripts/general-scripts.js).
+   (and in step with SITE_NAV in scripts/general-scripts.js).
    ===================================================================== */
 
 :root {

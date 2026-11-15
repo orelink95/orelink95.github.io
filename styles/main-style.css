@@ -38,29 +38,6 @@
     background: #333533;
 }
 
-/* Sidebar Toggle Logic */
-#sidebar-toggle-input:checked~aside {
-    width: 80px;
-}
-
-#sidebar-toggle-input:checked~aside .nav-label {
-    opacity: 0;
-    pointer-events: none;
-    width: 0;
-}
-
-#sidebar-toggle-input:checked~aside .header-text {
-    display: none;
-}
-
-#sidebar-toggle-input:checked~main {
-    margin-left: 80px;
-}
-
-#sidebar-toggle-input:checked~aside #toggle-icon {
-    transform: rotate(180deg);
-}
-
 /* Navigation Hover Animation */
 .nav-item .nav-label {
     max-width: 0;
@@ -76,12 +53,14 @@
     margin-left: 0.5rem;
 }
 
-/* Modal logic */
-#not-see-modal.hidden {
+/* Modal logic: the footer's pop-ups (toggleModal in general-scripts.js) */
+#not-see-modal.hidden,
+#guild-modal.hidden {
     display: none;
 }
 
-#not-see-modal:not(.hidden) {
+#not-see-modal:not(.hidden),
+#guild-modal:not(.hidden) {
     display: flex;
 }
 

@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const label = LABELS[type];
     document.title = `${label.many} - The Athenaeum Vault`;
     $('index-title').textContent = label.many;
-    Atlas.breadcrumbs(store, $('atlas-breadcrumbs'), null, label.many);
+    Atlas.trail(store, $('atlas-trail'), null, label.many);
 
     // -----------------------------------------------------------------
     // 2. ONE VIEW MODEL PER RECORD

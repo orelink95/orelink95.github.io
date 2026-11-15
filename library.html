@@ -20,13 +20,12 @@
     <script src="scripts/general-scripts.js"></script>
 </head>
 
-<body
+<body data-section="archive"
     class="page mystical-bg">
 
     <div id="dust-container" class="dust-layer"></div>
 
     <div id="header-placeholder" class="header-slot"></div>
-    <div id="library-sidebar-placeholder"></div>
 
     <main class="archive-main">
         <div class="archive-hub">
@@ -208,14 +207,6 @@
 
     <div id="footer-placeholder"></div>
 
-    <script>
-        // Override standard components for the Library aesthetic
-        document.addEventListener("DOMContentLoaded", () => {
-            loadComponent("header-placeholder", "components/library-header.html");
-            loadComponent("footer-placeholder", "components/library-footer.html");
-            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
-        });
-    </script>
 </body>
 
 </html>

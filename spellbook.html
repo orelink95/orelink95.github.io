@@ -27,11 +27,11 @@
     <script src="scripts/spellbook-scripts.js"></script>
 </head>
 
-<body class="page mystical-bg">
+<body data-section="archive" class="page mystical-bg">
 
     <div id="dust-container" class="dust-layer"></div>
     <div id="header-placeholder" class="header-slot"></div>
-    <div id="library-sidebar-placeholder"></div>
+    <nav id="archive-tabs" class="archive-tabs"></nav>
 
     <main class="spellbook-main">
 
@@ -63,13 +63,6 @@
 
     <div id="footer-placeholder"></div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            loadComponent("header-placeholder", "components/library-header.html");
-            loadComponent("footer-placeholder", "components/library-footer.html");
-            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
-        });
-    </script>
 </body>
 
 </html>

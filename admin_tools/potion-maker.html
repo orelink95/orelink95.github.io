@@ -5,9 +5,20 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Potion maker — DM</title>
+    <!-- Opened with ?guild (the Scribe's Guild pop-up in the site's footer): the
+         player version. Bottles, reagents and lore only; no effects, rarity,
+         values, DCs or brew marks, and no way to the dashboard. Both versions
+         carry the site's header and footer. -->
+    <script>
+        if (new URLSearchParams(location.search).has('guild')) {
+            document.documentElement.classList.add('is-guild');
+            document.title = 'The Potion Maker — The Scribe’s Guild';
+        }
+    </script>
     <link rel="icon" type="image/png" href="../images/EA-favicon.png" />
-    <!-- DM only: linked from the dashboard (Alchemy), nowhere on the site. It reads the
-         site's files, so open it through the live server, not from disk. -->
+    <!-- DM version: linked from the dashboard (Alchemy). Player version (?guild):
+         linked from the Scribe's Guild pop-up in the footer. It reads the site's
+         files, so open it through the live server, not from disk. -->
 
     <!-- Noto Sans Symbols: the alchemical glyphs (☿ 🜍 🜔…) that system fonts lack -->
     <link
@@ -31,11 +42,14 @@
     <script src="potion-maker.js"></script>
 </head>
 
-<body class="page mystical-bg">
+<body class="page mystical-bg has-site-chrome" data-section="archive">
 
-    <div class="alch-dmbar">
+    <!-- The Black Archive's header and footer (general-scripts.js, data-section) -->
+    <div id="header-placeholder"></div>
+
+    <div class="alch-dmbar dm-only">
         <a href="dashboard.html"><span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>Dashboard</a>
-        <span class="alch-dmbar__badge">DM only · not on the site</span>
+        <span class="alch-dmbar__badge">DM only · players get ?guild</span>
     </div>
 
     <main class="alch-main">
@@ -43,8 +57,10 @@
         <div class="alch-head">
             <div class="alch-head__intro">
                 <h1 class="alch-head__title">The Potion Maker</h1>
-                <p class="alch-head__lede">Every potion of the archive, with what it does, what it is worth and how hard it
+                <p class="alch-head__lede dm-only">Every potion of the archive, with what it does, what it is worth and how hard it
                     is to brew. Turn one into a Vault card from the dashboard (an item’s “Brew a potion”).</p>
+                <p class="alch-head__lede guild-only">Pick a vessel and three reagents, or speak a word to the still,
+                    and see what you bottle. What it does, the guild keeps to itself.</p>
             </div>
 
             <!-- The seed: the same word always distills the same potion -->
@@ -267,7 +283,8 @@
             <div class="alch-shelf__head">
                 <div>
                     <h2 class="alch-shelf__title" id="shelf-title">The Cabinet Shelf</h2>
-                    <p class="alch-shelf__lede">Kept in this browser. Export to keep a copy; “Import” also takes a recipe saved below, or by the dashboard.</p>
+                    <p class="alch-shelf__lede dm-only">Kept in this browser. Export to keep a copy; “Import” also takes a recipe saved below, or by the dashboard.</p>
+                    <p class="alch-shelf__lede guild-only">Kept in this browser. Export to keep a copy, Import to bring it back.</p>
                 </div>
                 <div class="alch-shelf__tools">
                     <span class="alch-shelf__count" id="shelf-count">0 specimens</span>
@@ -291,6 +308,8 @@
     <!-- potion-maker.js moves the toast out of <body>, whose filter would pin a
          fixed element to the page instead of the screen -->
     <div id="toast" class="alch-toast" role="status" aria-live="polite"></div>
+
+    <div id="footer-placeholder"></div>
 
 </body>
 

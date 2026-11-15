@@ -22,42 +22,9 @@
 }
 @media (min-width: 768px) {
     .continent-main {
-        margin-left: 5rem;
         padding-left: 2rem;
         padding-right: 2rem;
     }
-}
-
-.breadcrumbs {
-    display: flex;
-    align-items: center;
-    margin-bottom: 2rem;
-    font-family: var(--font-label);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
-}
-.breadcrumbs > :not([hidden]) ~ :not([hidden]) {
-    margin-right: 0;
-    margin-left: 0.5rem;
-}
-
-.breadcrumbs__link {
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: var(--ease);
-    transition-duration: 150ms;
-}
-.breadcrumbs__link:hover {
-    color: var(--color-secondary);
-}
-
-.breadcrumbs__separator {
-    font-size: 14px;
-}
-
-.breadcrumbs__current {
-    color: color-mix(in srgb, var(--color-secondary) 80%, transparent);
 }
 
 .continent-grid {

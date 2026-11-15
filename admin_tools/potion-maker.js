@@ -7,8 +7,12 @@
 // scripts/alchemy-engine.js. A potion becomes a Vault card in the dashboard
 // (an item's “Brew a potion”, or “Import a recipe” with a file saved here).
 //
-// Players meet potions only on POI pages: in shops (bottle, name, price) and
-// at an alchemist's Workbench (craft DC, tool, price): scripts/market.js.
+// Players meet potions on POI pages: in shops (bottle, name, price) and at an
+// alchemist's Workbench (craft DC, tool, price): scripts/market.js.
+// Opened with ?guild (the Scribe's Guild pop-up in the site's footer), this is
+// the player version: bottle, name, look, reagents and their lore only. No
+// rarity, properties, effects, reactions, value, DC or brew mark, no Markdown
+// or recipe file (both carry them), and a shelf of its own.
 
 document.addEventListener("DOMContentLoaded", async () => {
   "use strict";
@@ -17,7 +21,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const esc = A.esc;
   const $ = (id) => document.getElementById(id);
 
-  const SHELF_STORAGE_KEY = "athenaeum_apothecary_shelf_v1";
+  const PLAYER = document.documentElement.classList.contains("is-guild");
+  const SHELF_STORAGE_KEY = PLAYER ? "athenaeum_guild_shelf_v1" : "athenaeum_apothecary_shelf_v1";
   const DEFAULT_SEED = "ATHENAEUM-01";
 
   let DB = null;
@@ -225,14 +230,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="alch-reagent">
           <span class="alch-reagent__role"><span class="alch-glyph" aria-hidden="true">${glyph}</span> ${role}</span>
           <span class="alch-reagent__name">${esc(item.name)}</span>
-          <span class="alch-reagent__sub">${esc(sub)}</span>
+          ${sub ? `<span class="alch-reagent__sub">${esc(sub)}</span>` : ""}
           ${item.lore ? `<span class="alch-reagent__lore">${esc(item.lore)}</span>` : ""}
         </div>`;
 
     $("output-panel").innerHTML = `
       <header class="alch-folio__head">
         <p class="alch-folio__meta">
-          <span class="alch-rarity alch-rarity--${esc(p.rarity)}">Potion, ${esc(A.rarityLabel(p.rarity))}</span>
+          ${PLAYER ? "" : `<span class="alch-rarity alch-rarity--${esc(p.rarity)}">Potion, ${esc(A.rarityLabel(p.rarity))}</span>`}
           <span>Index ${esc(p.active.code)}</span>
           <span>${esc(p.form)}</span>
           <span>${esc(p.vessel.slots)} ${p.vessel.slots === 1 ? "slot" : "slots"}</span>
@@ -243,7 +248,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <span class="material-symbols-outlined" aria-hidden="true">edit</span>
           </button>
         </div>
-        <div class="alch-tags">${uniqueTags}</div>
+        ${PLAYER ? "" : `<div class="alch-tags">${uniqueTags}</div>`}
       </header>
 
       <p class="alch-quote">${A.sensoryHTML(p, texture)}</p>
@@ -253,10 +258,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="alch-reagents">
         ${reagent("☿", "Menstruum · the solvent", p.solvent, `${p.solvent.viscosity}, keeps ${p.solvent.shelfLife}`)}
         ${reagent("🜍", "Nigredo · the active principle", p.active, p.active.biome)}
-        ${reagent("🜔", "Fixative · the catalyst", p.catalyst, `${A.rarityLabel(p.catalyst.rarity)} grade`)}
+        ${reagent("🜔", "Fixative · the catalyst", p.catalyst, PLAYER ? "" : `${A.rarityLabel(p.catalyst.rarity)} grade`)}
       </div>
 
-      <section class="alch-ledger" aria-label="DM ledger">
+      ${PLAYER ? "" : `<section class="alch-ledger" aria-label="DM ledger">
         <h3 class="alch-rubric">Virtues · DM only</h3>
         <dl class="alch-effects">
           <div><dt>Use</dt><dd>${esc(p.use)}</dd></div>
@@ -281,18 +286,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="alch-stat"><span class="alch-label">Craft DC</span><span class="alch-stat__value">${esc(p.brewDC)}</span><span class="alch-stat__note">${esc(p.kit)}</span></div>
           <div class="alch-stat"><span class="alch-label">Brew mark</span><span class="alch-stat__value">${esc(A.brewMark(A.recipeOf(p)))}</span><span class="alch-stat__note">what a Workbench shows</span></div>
         </div>
-      </section>
+      </section>`}
 
       <div class="alch-actions">
         <button type="button" id="btn-save-shelf" class="alch-btn alch-btn--gold">
           <span class="material-symbols-outlined" aria-hidden="true">bookmark_add</span><span data-flash>Save to shelf</span>
         </button>
-        <button type="button" id="btn-copy-md" class="alch-btn">
+        ${PLAYER ? "" : `<button type="button" id="btn-copy-md" class="alch-btn">
           <span class="material-symbols-outlined" aria-hidden="true">content_copy</span><span data-flash>Copy as Markdown</span>
         </button>
         <button type="button" id="btn-save-recipe" class="alch-btn" title="A small file the dashboard turns into a Vault card (an item's “Import a recipe”)">
           <span class="material-symbols-outlined" aria-hidden="true">description</span><span data-flash>Save recipe</span>
-        </button>
+        </button>`}
         <button type="button" id="btn-dl-svg" class="alch-btn">
           <span class="material-symbols-outlined" aria-hidden="true">download</span><span data-flash>Bottle as SVG</span>
         </button>
@@ -340,8 +345,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     $("btn-save-shelf").addEventListener("click", saveCurrentToShelf);
-    $("btn-save-recipe").addEventListener("click", saveRecipe);
-    $("btn-copy-md").addEventListener("click", copyMarkdown);
+    if (!PLAYER) {
+      $("btn-save-recipe").addEventListener("click", saveRecipe);
+      $("btn-copy-md").addEventListener("click", copyMarkdown);
+    }
     $("btn-dl-svg").addEventListener("click", downloadSVG);
   }
 

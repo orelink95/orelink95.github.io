@@ -1100,7 +1100,7 @@
     color: rgb(255 255 255 / 0.5);
 }
 
-/* ---------- The DM page's own bar (no site header: this page is not part of the site) ---------- */
+/* ---------- The DM version's bar, under the site header (hidden with ?guild) ---------- */
 
 .alch-dmbar {
     position: relative;
@@ -1138,4 +1138,12 @@
     border: 1px solid color-mix(in srgb, var(--color-error) 50%, transparent);
     border-radius: 999px;
     color: var(--color-error);
+}
+
+/* ---------- DM version / player version (?guild, html.is-guild) ----------
+   The player version is opened from the Scribe's Guild pop-up in the site's
+   footer: potion-maker.js leaves out the mechanics, these hide the DM texts. */
+.is-guild .dm-only,
+html:not(.is-guild) .guild-only {
+    display: none !important;
 }

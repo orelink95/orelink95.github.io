@@ -751,6 +751,77 @@
         .empty.big p { margin: 0; }
 
         /* =============================================================
+           PRINTING CARDS (item and spell lists)
+           ============================================================= */
+        .li.picking { grid-template-columns: 24px minmax(0, 1fr) auto auto; }
+        .li.picking .s { grid-column: 2 / -1; }
+        .li .pick { grid-row: span 2; align-self: center; display: flex; color: var(--ink-faint); cursor: pointer; border-radius: 4px; }
+        .li .pick:hover { color: var(--ink); }
+        .li .pick.on { color: var(--gold); }
+        .li .pick.on .material-symbols-outlined { font-variation-settings: 'FILL' 1; }
+        .lg .lg-pick { margin-left: auto; border: 0; background: none; padding: 0 4px; cursor: pointer; font: inherit; color: var(--ink-faint); letter-spacing: .06em; }
+        .lg .lg-pick:hover { color: var(--gold); }
+        .lg:has(.lg-pick) small { margin-left: 0; }
+        #print-bar { flex: none; padding: 10px 12px; border-top: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--ink-dim); }
+        #print-bar b { color: var(--gold); }
+        #print-bar .pb-row { display: flex; align-items: center; gap: 6px; }
+        #print-bar .grow { flex: 1; }
+        #print-bar .btn.primary.grow { justify-content: center; }
+        .pr-h { margin: 18px 0 8px; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); }
+        .pr-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+        .pr-opts label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--ink-dim); }
+        .pr-opts label.pr-inline { flex-direction: row; align-items: center; gap: 8px; align-self: end; height: 36px; }
+        .pr-opts label.off { opacity: .4; }
+        .pr-sum { margin: 16px 0 0; font-weight: 600; color: var(--ink); }
+
+        /* The sheet: laid out out of sight (to fit the texts), shown only when printing */
+        #print-root { position: fixed; left: -10000px; top: 0; pointer-events: none; }
+        .pr-page { position: relative; overflow: hidden; background: #fff; }
+        .pr-slot { position: absolute; width: 70mm; height: 120mm; }
+        .pr-mark { position: absolute; background: #000; }
+        #print-root .loot-card, #print-root .item-sheet, #print-root .spell-card {
+            width: 100%; height: 100%; aspect-ratio: auto; filter: none; transform: none; transition: none; cursor: default;
+        }
+        #print-root .loot-card__inner, #print-root .spell-card__inner, #print-root .spell-card__back { transform: none; transition: none; }
+        #print-root .loot-card__back { display: none; }
+        #print-root .pr-slot:not(.pr-slot--back) .spell-card__back { display: none; }
+        #print-root .pr-slot--back .spell-card__face { visibility: hidden; }
+        #print-root .spell-card__note, #print-root .spell-card__m.has-note::before { display: none; }
+        #print-root .spell-card__m.has-note { text-decoration: none; color: inherit; }
+        #print-root, #print-root * { animation: none !important; }
+        #print-root .item-sheet__text { overflow: hidden; }
+        #print-root .spell-card--open .spell-card__inner,
+        #print-root .spell-card--open .spell-card__face { height: 100%; min-height: 0; }
+        #print-root .spell-card--open .spell-card__title { font-size: 6.4cqw; }
+        #print-root .spell-card--open .spell-card__details { flex: 1 1 0; min-height: 0; overflow: hidden; font-size: 4.4cqw; line-height: 1.45; }
+        /* The printed spell card (front): smaller banners, as on the opened card, no
+           "Details" heading, so that the box holds the full description */
+        #print-root .spell-card:not(.spell-card--open) .spell-card__face { padding-top: 16cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__banner--left,
+        #print-root .spell-card:not(.spell-card--open) .spell-card__banner--right { width: 8cqw; height: 13cqw; padding-top: 1.8cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__banner--left { left: 16cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__banner--right { right: 16cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__banner--level { width: 11cqw; height: 14.5cqw; padding-top: 0.8cqw; font-size: 7cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__symbol { width: 5.4cqw; height: 5.4cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__symbol--icon { width: auto; height: auto; font-size: 5cqw; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__details-title { display: none; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__details {
+            display: block; -webkit-line-clamp: none; flex: 1 1 0; min-height: 0; overflow: hidden;
+            margin-top: 3cqw; font-size: 4.4cqw; font-style: normal; line-height: 1.4; color: #3d3a36;
+        }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__details p + p { margin-top: 0.6em; }
+        #print-root .spell-card:not(.spell-card--open) .spell-card__details strong { color: var(--school-dark); }
+        .pr-item-back { width: 100%; height: 100%; background: url("../images/cards/item-back.webp") center / 100% 100%; }
+        @media print {
+            html, body { height: auto; background: #fff !important; }
+            body > :not(#print-root) { display: none !important; }
+            #print-root { position: static; }
+            .pr-page { break-after: page; }
+            .pr-page:last-child { break-after: auto; }
+            #print-root, #print-root * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+
+        /* =============================================================
            MODAL, MENU, TOAST
            ============================================================= */
         #modal {
@@ -1154,6 +1225,7 @@
             <div class="list-head">
                 <div class="list-title-row">
                     <h2 id="list-title"></h2>
+                    <button id="print-btn" class="btn sm icon" data-action="print-mode" title="Print cards" aria-label="Print cards" hidden><span class="material-symbols-outlined">print</span></button>
                     <div class="new-wrap" id="new-wrap">
                         <button id="new-btn" class="btn primary sm">+ New</button>
                         <button id="new-more" class="btn primary sm" aria-haspopup="menu" hidden title="Add another kind of place" aria-label="Add another kind of place"><span class="material-symbols-outlined">expand_more</span></button>
@@ -1164,6 +1236,7 @@
             </div>
             <div id="list-items"></div>
             <div id="list-foot" hidden></div>
+            <div id="print-bar" hidden></div>
         </section>
         <section id="main">
             <div id="home" hidden></div>

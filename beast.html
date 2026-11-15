@@ -28,10 +28,10 @@
     <script src="scripts/core/look.js"></script>
 </head>
 
-<body class="page">
+<body data-section="archive" class="page">
 
     <div id="header-placeholder" class="header-slot"></div>
-    <div id="library-sidebar-placeholder"></div>
+    <nav id="archive-tabs" class="archive-tabs"></nav>
 
     <main class="beast-main">
 
@@ -246,12 +246,6 @@
             }
         });
 
-        // Override standard components for the Library aesthetic
-        document.addEventListener("DOMContentLoaded", () => {
-            loadComponent("header-placeholder", "components/library-header.html");
-            loadComponent("footer-placeholder", "components/library-footer.html");
-            loadComponent("library-sidebar-placeholder", "components/library-sidebar.html");
-        });
     </script>
 </body>
 

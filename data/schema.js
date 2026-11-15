@@ -147,7 +147,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     },
                 },
             },
-            /* The potion maker (admin_tools/potion-maker.html, DM only): what it needs besides its
+            /* The potion maker (admin_tools/potion-maker.html; players get ?guild, without mechanics): what it needs besides its
                reagents. scripts/alchemy-engine.js reads it through Alchemy.dbFromStore(). */
             alchemy: {
                 label: 'Alchemy', icon: 'science', group: 'Alchemy', workspace: 'tables',

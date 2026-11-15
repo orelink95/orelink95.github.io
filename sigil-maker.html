@@ -3,10 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sigil Grimoire</title>
+<title>Sigil Grimoire — The Scribe's Guild</title>
+<link rel="icon" type="image/png" href="images/EA-favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=UnifrakturMaguntia&family=Noto+Sans+Runic&family=Noto+Sans+Ogham&family=Noto+Sans+Symbols&family=Noto+Sans+Symbols+2&family=MedievalSharp&family=Uncial+Antiqua&family=Metamorphous&family=Noto+Sans+Glagolitic&family=Noto+Sans+Gothic&family=Noto+Sans+Phoenician&family=Noto+Sans+Old+Italic&display=swap">
+<!-- The site's header, footer and mobile menu (fonts, styles, loader).
+     chrome.css gives them what they need from the site's global styles without
+     touching this page's own look; this page's <style> comes after. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/chrome.css">
+<script src="scripts/general-scripts.js"></script>
 <style>
 :root{
   /* Layout: header / [ring stack | open book | ring editor] / archetypes / [codex | export] */
@@ -60,7 +70,7 @@ h1,h2,h3{text-wrap:balance;margin:0}
   padding:14px clamp(16px,3vw,32px);
   border-bottom:1px solid var(--gilt-line);
   background:linear-gradient(#111b15,#0e1611);
-  position:sticky;top:0;z-index:20;
+  position:sticky;top:4rem;z-index:20;   /* under the site header (fixed, 4rem) */
 }
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
 .brand-mark{width:42px;height:42px;flex:none}
@@ -322,7 +332,7 @@ input[type="checkbox"]{accent-color:var(--green);width:17px;height:17px;margin:0
 .seg button[aria-pressed="true"]{background:rgba(63,158,106,.2);color:var(--green-bright)}
 .btn-col{display:grid;gap:8px}
 .btn-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-footer{padding:6px clamp(16px,3vw,32px) 28px;color:var(--faint);font-size:15px;text-align:center}
+.sigil-note{margin:0;padding:6px clamp(16px,3vw,32px) 28px;color:var(--faint);font-size:15px;text-align:center}
 #toast{
   position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;
   padding:10px 18px;border-radius:4px;background:#1a281f;border:1px solid var(--gold);color:var(--text);
@@ -332,7 +342,8 @@ footer{padding:6px clamp(16px,3vw,32px) 28px;color:var(--faint);font-size:15px;t
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
-<body>
+<body class="has-site-chrome">
+<div id="header-placeholder"></div>
 
 <header class="topbar">
   <div class="brand">
@@ -478,8 +489,9 @@ footer{padding:6px clamp(16px,3vw,32px) 28px;color:var(--faint);font-size:15px;t
   </div>
 </div>
 
-<footer>Every circle can be rebuilt from its seed, archetype and purpose.</footer>
+<p class="sigil-note">Every circle can be rebuilt from its seed, archetype and purpose.</p>
 <div id="toast" role="status" aria-live="polite"></div>
+<div id="footer-placeholder"></div>
 
 <script src="scripts/sigil-engine.js"></script>
 <script>

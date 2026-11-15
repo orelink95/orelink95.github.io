@@ -9,6 +9,8 @@
    Athenaeum.spellCard.card(spell, store, options) -> the card's HTML
         options.open      true = the opened card: only the name and the full
                           description, in a large box (not clickable)
+        options.full      true = the card (not opened) with the full description
+                          in its Details box instead of the summary (printing)
         options.autolink  false = no links in the description (default: true)
         options.faceDown  true/false = show the back / the front. Default: face
                           down until this browser has turned the card over once.
@@ -110,7 +112,7 @@
             : `<span class="spell-card__m">M</span>`;
 
         const text = store.md(spell.body || spell.summary || '');
-        const details = open
+        const details = open || options.full
             ? (options.autolink === false ? text : store.autolink(text, { exclude: spell.id }))
             : esc(spell.summary || '');
 

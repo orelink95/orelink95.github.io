@@ -197,6 +197,7 @@
         cardSide: 'front', // item, spell and deity previews: 'front', 'sheet', 'back' or 'sealed'
         sideToggled: false, // previews panel: hidden on wide screens / shown on narrow ones
         refocus: null,     // data-path of the tag / link input to focus again after a re-render
+        print: { on: false, picked: { item: new Set(), spell: new Set() }, groups: [] }, // cards ticked for printing
     };
     if (TEST) { window.__dash = S; window.__dashboardIO = io; } // inspected by the headless tests
 
@@ -697,6 +698,7 @@
         $('#app').classList.toggle('tables-mode', ws === 'tables');
         if (ws === 'home') return;
         listFoot('');
+        $('#print-btn').hidden = true; $('#print-bar').hidden = true;   // (shown again by the item and spell lists)
         if (ws === 'atlas') renderTree();
         else if (ws === 'tables' || ws === 'site') renderToolList(ws);
         else renderRecordList(ws);
@@ -732,19 +734,38 @@
         const total = inCamp ? S.data[type].filter(inCamp).length : S.data[type].length;
         const shown = groups.reduce((n, g) => n + g.recs.length, 0);
         listHead({ title: def.plural || def.label, count: q ? `${shown} / ${total}` : total, newLabel: '+ New', newTitle: `New ${lc(def.label)}`, tabs, placeholder: `Filter ${lc(def.plural || def.label)}…` });
+        // Item and spell lists: a tick on each row while choosing cards to print
+        const printing = S.print.on && PRINTABLE[type];
+        const picked = printing && S.print.picked[type];
+        $('#print-btn').hidden = !PRINTABLE[type];
+        $('#print-btn').classList.toggle('on', !!printing);
+        const pick = r => printing ? `<span class="pick${picked.has(r.id) ? ' on' : ''}" data-print-pick="${esc(r.id)}" role="checkbox" aria-checked="${picked.has(r.id)}" title="Print this card"><span class="material-symbols-outlined">${picked.has(r.id) ? 'check_box' : 'check_box_outline_blank'}</span></span>` : '';
         const item = r => {
             const bad = recordErrors(type, r.id).length;
-            return `<button class="li ${r.id === S.sel ? 'active' : ''}" data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
-                <span class="t">${esc(r.name || '(no name)')}</span>
+            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${printing ? 'picking' : ''}" data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
+                ${pick(r)}<span class="t">${esc(r.name || '(no name)')}</span>
                 ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
                 <span class="s">${esc(subtitle(type, r))}</span>
             </button>`;
         };
-        $('#list-items').innerHTML = groups.map(g => `
-            ${g.label ? `<div class="lg"><span>${esc(g.label)}</span><small>${g.recs.length}</small></div>` : ''}
+        S.print.groups = groups.map(g => g.recs.map(r => r.id));
+        const groupPick = i => printing ? `<button class="lg-pick" data-print-group="${i}" title="Tick or untick the whole group">${S.print.groups[i].every(id => picked.has(id)) ? 'None' : 'All'}</button>` : '';
+        $('#list-items').innerHTML = groups.map((g, i) => `
+            ${g.label ? `<div class="lg"><span>${esc(g.label)}</span>${groupPick(i)}<small>${g.recs.length}</small></div>` : ''}
             ${g.recs.map(item).join('')}`).join('')
             || `<p class="empty">${q ? 'No match.' : 'Nothing yet: click <b>+ New</b>.'}</p>`;
+        const bar = $('#print-bar');
+        bar.hidden = !printing;
+        if (printing) {
+            const n = [...picked].filter(id => S.data[type].some(r => r.id === id)).length;
+            bar.innerHTML = `<div class="pb-row"><b>${n}</b> card${n === 1 ? '' : 's'} ticked
+                    <span class="grow"></span>
+                    <button class="btn sm" data-action="print-all" title="Tick every card shown">All</button>
+                    <button class="btn sm" data-action="print-none" ${n ? '' : 'disabled'}>None</button></div>
+                <div class="pb-row"><button class="btn sm" data-action="print-mode">Done</button>
+                    <button class="btn sm primary grow" data-action="print-open" ${n ? '' : 'disabled'}><span class="material-symbols-outlined">print</span>Print…</button></div>`;
+        }
         const hidden = inCamp ? S.data[type].length - total : 0;
         listFoot(hidden ? `${hidden} more in other campaigns · <button data-action="camp" data-camp="all">Show every campaign</button>` : '');
     }
@@ -1675,7 +1696,7 @@
             <div class="box"><h4>Potion maker</h4>
             <p class="muted">The full page: seeds, recipes, the bottle’s look, effects, values and DCs, and a shelf kept in this browser.</p>
             <div class="row wrap"><a class="btn" href="potion-maker.html" target="_blank" rel="noopener"><span class="material-symbols-outlined">open_in_new</span>Open the potion maker</a></div>
-            <p class="hint">It reads the site’s files, so open it through the live server (like the other pages), not from disk. Not linked anywhere on the site.</p></div>`;
+            <p class="hint">It reads the site’s files, so open it through the live server (like the other pages), not from disk. Players reach a version without effects, rarity, values, DCs or brew marks from The Scribe’s Guild in the site’s footer.</p></div>`;
     }
 
     // The brewer. rec = the item to give the potion to, or null to make a new card;
@@ -2039,6 +2060,205 @@
         return `<div class="box"><h4>Known by</h4>
             ${lines.length ? `<div class="stack">${lines.join('')}</div>` : '<p class="warn">No hero knows it yet: no player sees this card.</p>'}
             <p class="hint">Add it to a hero in a campaign's Spellbooks.</p></div>`;
+    }
+
+    /* ---------- printing cards: tick them in the list, print one sheet ----------
+       The Print button of the item and spell lists puts a tick on each row and a
+       bar under the list. The sheet is drawn by the same code as the previews,
+       at the size of the physical cards (tarot, 70 × 120 mm), as many to a page
+       as fit (4 on A4). Each page of backs follows its page of fronts, mirrored,
+       so that they line up when printed double-sided. */
+    const PRINTABLE = { item: true, spell: true };
+    const CARD_MM = { w: 70, h: 120 };
+    const PAPER = { a4: { w: 210, h: 297, label: 'A4' }, letter: { w: 215.9, h: 279.4, label: 'Letter' } };
+    const PRINT_FACES = {
+        item: [['sheet', 'Opened', 'The physical card: name, type, rarity, cost, weight and text'],
+               ['front', 'Picture', 'The Vault card: picture, name and summary']],
+        spell: [['front', 'Card', 'The card: components, time, range, duration and the full description'],
+                ['sheet', 'Opened', 'The name and the full description']],
+    };
+    const PRINT_KEY = 'athenaeum.dashboard.print';
+    function printOptions() {
+        const d = { item: { faces: ['sheet'], backs: true }, spell: { faces: ['front'], backs: true }, copies: 1, paper: 'a4', flip: 'long', gap: 0, marks: true };
+        try { const o = JSON.parse(localStorage.getItem(PRINT_KEY) || '{}'); return { ...d, ...o, item: { ...d.item, ...o.item }, spell: { ...d.spell, ...o.spell } }; }
+        catch (e) { return d; }
+    }
+    function pickedRecords(type) {
+        const picked = S.print.picked[type];
+        return orderedRecords(type).flatMap(g => g.recs).filter(r => picked.has(r.id)).map(r => S.store.get(r.id) || r);
+    }
+    function printLayout(o) {
+        const P = PAPER[o.paper] || PAPER.a4, g = Number(o.gap) || 0, edge = 6; // printers rarely reach the last 5 mm
+        const { w, h } = CARD_MM;
+        const cols = Math.max(1, Math.floor((P.w - 2 * edge + g) / (w + g)));
+        const rows = Math.max(1, Math.floor((P.h - 2 * edge + g) / (h + g)));
+        const gw = cols * w + (cols - 1) * g, gh = rows * h + (rows - 1) * g;
+        return { P, g, cols, rows, per: cols * rows, x0: (P.w - gw) / 2, y0: (P.h - gh) / 2 };
+    }
+    // One side of one card, as the previews draw it
+    function printFace(type, r, face, uid) {
+        if (type === 'item') {
+            if (face === 'back') return '<div class="pr-item-back"></div>';
+            if (face === 'sheet') return ATH.lootCard.sheet(r, S.store, { autolink: false });
+            // (a brewed potion shows its bottle: each copy needs ids of its own)
+            return ATH.lootCard.front(r, { tag: 'div', picture: src => `data-thumb="${esc(src)}"`, store: S.store, uid });
+        }
+        // The printed card holds the full description (smaller banners make room: see .pr-slot in dashboard.html)
+        return ATH.spellCard.card(r, S.store, { open: face === 'sheet', full: true, faceDown: face === 'back', autolink: false, symbol: path => `data-symbol="${esc(path)}"` });
+    }
+    const mm = v => `${v.toFixed(2)}mm`;
+    // Cut marks: short lines in the margins, along every edge of the cards
+    function cutMarks(L) {
+        const { w, h } = CARD_MM, out = [];
+        const xs = new Set(), ys = new Set();
+        for (let c = 0; c < L.cols; c++) { xs.add(L.x0 + c * (w + L.g)); xs.add(L.x0 + c * (w + L.g) + w); }
+        for (let r = 0; r < L.rows; r++) { ys.add(L.y0 + r * (h + L.g)); ys.add(L.y0 + r * (h + L.g) + h); }
+        const lenY = Math.min(6, L.y0 - 2.5), lenX = Math.min(6, L.x0 - 2.5);
+        if (lenY > 1) xs.forEach(x => {
+            out.push(`<i class="pr-mark" style="left:${mm(x - 0.1)};top:${mm(L.y0 - 1.5 - lenY)};width:0.2mm;height:${mm(lenY)}"></i>`);
+            out.push(`<i class="pr-mark" style="left:${mm(x - 0.1)};top:${mm(L.P.h - L.y0 + 1.5)};width:0.2mm;height:${mm(lenY)}"></i>`);
+        });
+        if (lenX > 1) ys.forEach(y => {
+            out.push(`<i class="pr-mark" style="top:${mm(y - 0.1)};left:${mm(L.x0 - 1.5 - lenX)};height:0.2mm;width:${mm(lenX)}"></i>`);
+            out.push(`<i class="pr-mark" style="top:${mm(y - 0.1)};left:${mm(L.P.w - L.x0 + 1.5)};height:0.2mm;width:${mm(lenX)}"></i>`);
+        });
+        return out.join('');
+    }
+    function printSheet(type, recs, o) {
+        const L = printLayout(o), t = o[type];
+        const cards = recs.flatMap(r => Array(Math.max(1, Math.min(20, Number(o.copies) || 1))).fill(r));
+        const chunks = [];
+        for (let i = 0; i < cards.length; i += L.per) chunks.push(cards.slice(i, i + L.per));
+        const faces = PRINT_FACES[type].map(f => f[0]).filter(k => t.faces.includes(k));
+        // The backs swap left and right (flip on the long edge) or top and bottom (short edge)
+        const page = (chunk, face, back) => `<section class="pr-page" style="width:${mm(L.P.w)};height:${mm(L.P.h - 0.4)}">
+            ${!back && o.marks ? cutMarks(L) : ''}
+            ${chunk.map((r, i) => {
+                let c = i % L.cols, row = Math.floor(i / L.cols);
+                if (back) { if (o.flip === 'short') row = L.rows - 1 - row; else c = L.cols - 1 - c; }
+                return `<div class="pr-slot${back ? ' pr-slot--back' : ''}" data-name="${esc(r.name)}" style="left:${mm(L.x0 + c * (CARD_MM.w + L.g))};top:${mm(L.y0 + row * (CARD_MM.h + L.g))}">${printFace(type, r, back ? 'back' : face, `print-${pages.length}-${i}`)}</div>`;
+            }).join('')}</section>`;
+        const pages = [];
+        for (const face of faces) for (const ch of chunks) { pages.push(page(ch, face, false)); if (t.backs) pages.push(page(ch, face, true)); }
+        if (!faces.length && t.backs) chunks.forEach(ch => pages.push(page(ch, null, true)));
+        return { html: pages.join(''), pages: pages.length, cards: cards.length, per: L.per };
+    }
+    // (each image gets 8 s: one that never comes doesn't hold the sheet back)
+    const inTime = job => Promise.race([job, new Promise(res => setTimeout(res, 8000))]);
+    const preload = url => inTime(new Promise(res => { const i = new Image(); i.onload = i.onerror = () => res(); i.src = url; }));
+    // Pictures and symbols (read through the linked folder), then the frames and backs
+    // the stylesheets draw: all loaded before the print dialog opens
+    async function printImages(root) {
+        await Promise.all([
+            ...$$('img[data-thumb]', root).map(async img => {
+                const url = await thumbUrl(img.dataset.thumb);
+                img.loading = 'eager';      // a lazy picture out of sight would never load
+                img.src = url || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
+                img.classList.toggle('none', !url);
+                if (url) await inTime(img.decode().catch(() => {}));
+            }),
+            ...$$('[data-symbol]', root).map(async el => {
+                const url = await thumbUrl(el.dataset.symbol);
+                if (url) { el.style.setProperty('--symbol', `url("${url}")`); await preload(url); }
+            }),
+        ]);
+        const urls = new Set();
+        $$('*', root).forEach(el => {
+            const cs = getComputedStyle(el);
+            [cs.backgroundImage, cs.maskImage, cs.webkitMaskImage].forEach(v => String(v || '').replace(/url\("?([^")]+)"?\)/g, (_, u) => urls.add(u)));
+        });
+        await Promise.all([...urls].map(preload));
+        await document.fonts.ready;
+    }
+    // Long texts: the font shrinks (down to 55%) until the text fits its box.
+    // Returns the names of the cards whose text is still cut.
+    function printFit(root) {
+        const cut = new Set();
+        $$('.item-sheet__text, .pr-slot:not(.pr-slot--back) .spell-card__details', root).forEach(el => {
+            const base = parseFloat(getComputedStyle(el).fontSize);
+            let k = 1;
+            while (el.scrollHeight > el.clientHeight + 1 && k > 0.56) { k -= 0.04; el.style.fontSize = `${(base * k).toFixed(2)}px`; }
+            if (el.scrollHeight > el.clientHeight + 1) cut.add(el.closest('[data-name]').dataset.name);
+        });
+        return [...cut];
+    }
+    function printDialog() {
+        const type = S.view.key, recs = pickedRecords(type);
+        if (!recs.length) { toast('Tick the cards to print first'); return; }
+        const o = printOptions(), t = o[type], noun = type === 'item' ? 'item' : 'spell';
+        const opt = (v, label, cur) => `<option value="${v}" ${String(v) === String(cur) ? 'selected' : ''}>${label}</option>`;
+        const dlg = modal(`<h3>Print ${recs.length} ${noun} card${recs.length === 1 ? '' : 's'}</h3>
+            <p class="muted">Tarot size (70 × 120 mm), as many to a page as fit.</p>
+            <h4 class="pr-h">Sides</h4>
+            <div class="chk-row">
+                ${PRINT_FACES[type].map(([k, label, sub]) => `<label class="chk"><input type="checkbox" name="pr-face" value="${k}" ${t.faces.includes(k) ? 'checked' : ''}><span><b>${label}</b><small>${sub}</small></span></label>`).join('')}
+                <label class="chk"><input type="checkbox" id="pr-backs" ${t.backs ? 'checked' : ''}><span><b>Backs</b><small>A page of backs after each page, mirrored to line up when printed double-sided</small></span></label>
+            </div>
+            <h4 class="pr-h">Sheet</h4>
+            <div class="pr-opts">
+                <label>Copies of each card <input type="number" id="pr-copies" class="num-s" min="1" max="20" value="${o.copies}"></label>
+                <label>Paper <select id="pr-paper">${Object.entries(PAPER).map(([k, p]) => opt(k, p.label, o.paper)).join('')}</select></label>
+                <label>Double-sided <select id="pr-flip">${opt('long', 'Flip on the long edge', o.flip)}${opt('short', 'Flip on the short edge', o.flip)}</select></label>
+                <label>Space between cards <select id="pr-gap">${[0, 2, 4].map(g => opt(g, g ? `${g} mm` : 'None (shared cuts)', o.gap)).join('')}</select></label>
+                <label class="pr-inline"><input type="checkbox" id="pr-marks" ${o.marks ? 'checked' : ''}> Cut marks</label>
+            </div>
+            <p class="pr-sum" id="pr-sum"></p>
+            <p class="hint">In the print dialog: Scale “Default” (100%) so the cards keep their size, and two-sided printing if you print the backs. “Save as PDF” keeps a file.</p>
+            <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="pr-go"><span class="material-symbols-outlined">print</span>Print…</button></div>`, 'wide');
+        const read = () => {
+            const n = { ...o, [type]: { faces: $$('[name="pr-face"]:checked', dlg).map(i => i.value), backs: $('#pr-backs', dlg).checked } };
+            n.copies = Math.max(1, Math.min(20, parseInt($('#pr-copies', dlg).value, 10) || 1));
+            n.paper = $('#pr-paper', dlg).value; n.flip = $('#pr-flip', dlg).value;
+            n.gap = Number($('#pr-gap', dlg).value); n.marks = $('#pr-marks', dlg).checked;
+            return n;
+        };
+        const sum = () => {
+            const n = read(), L = printLayout(n), cards = recs.length * n.copies, sheets = Math.ceil(cards / L.per);
+            const faces = n[type].faces.length, pages = (faces || (n[type].backs ? 1 : 0)) * sheets * (faces && n[type].backs ? 2 : 1);
+            $('#pr-sum', dlg).textContent = pages
+                ? `${cards} card${cards === 1 ? '' : 's'}, ${L.per} to a page: ${pages} page${pages === 1 ? '' : 's'}${faces && n[type].backs ? ` (${pages / 2} sheet${pages === 2 ? '' : 's'}, front and back)` : ''}.`
+                : 'Choose at least one side.';
+            $('#pr-go', dlg).disabled = !pages;
+            $('#pr-flip', dlg).closest('label').classList.toggle('off', !n[type].backs);
+        };
+        dlg.addEventListener('input', sum); dlg.addEventListener('change', sum); sum();
+        $('#pr-go', dlg).addEventListener('click', () => {
+            const n = read();
+            try { localStorage.setItem(PRINT_KEY, JSON.stringify(n)); } catch (e) { /* not fatal */ }
+            closeModal();
+            printCards(type, recs, n);
+        });
+    }
+    async function printCards(type, recs, o) {
+        const sheet = printSheet(type, recs, o);
+        let root = $('#print-root');
+        if (!root) { root = document.createElement('div'); root.id = 'print-root'; document.body.appendChild(root); }
+        let page = $('#print-page');
+        if (!page) { page = document.createElement('style'); page.id = 'print-page'; document.head.appendChild(page); }
+        const P = PAPER[o.paper] || PAPER.a4;
+        page.textContent = `@page { size: ${P.w}mm ${P.h}mm; margin: 0; }`;
+        root.innerHTML = sheet.html;
+        toast(`Preparing ${sheet.pages} page${sheet.pages === 1 ? '' : 's'}…`);
+        await printImages(root);
+        const cut = printFit(root);
+        const go = () => {
+            const clear = () => { root.innerHTML = ''; page.textContent = ''; };
+            window.addEventListener('afterprint', clear, { once: true });
+            window.print();
+        };
+        if (!cut.length) { go(); return; }
+        const dlg = modal(`<h3>Text too long</h3>
+            <p>Even in a smaller font, the text is still cut on ${cut.length === 1 ? 'this card' : 'these cards'}:</p>
+            <ul class="issues">${cut.map(n => `<li>${esc(n)}</li>`).join('')}</ul>
+            <p class="muted">Shorten the text, or print it anyway.</p>
+            <div class="foot"><button class="btn" id="pr-cancel">Cancel</button><button class="btn primary" id="pr-anyway">Print anyway</button></div>`);
+        $('#pr-cancel', dlg).addEventListener('click', () => { closeModal(); root.innerHTML = ''; });
+        $('#pr-anyway', dlg).addEventListener('click', () => { closeModal(); go(); });
+    }
+    function togglePick(type, ids, on) {
+        const set = S.print.picked[type];
+        ids.forEach(id => on ? set.add(id) : set.delete(id));
+        renderList();
     }
 
     // Where an item can be found: a session's loot, or a party's own inventory
@@ -3341,13 +3561,15 @@
 
     document.addEventListener('click', e => {
         if (!e.target.closest('#menu') && !e.target.closest('[aria-haspopup="menu"], [data-action="more"]')) closeMenu();
-        const t = e.target.closest('[data-ws],[data-tab],[data-icon],[data-nav],[data-select],[data-jump],[data-jump-single],[data-action],[data-sec]');
+        const t = e.target.closest('[data-print-pick],[data-print-group],[data-ws],[data-tab],[data-icon],[data-nav],[data-select],[data-jump],[data-jump-single],[data-action],[data-sec]');
         // a row of the grid, outside its cells' controls: open it beside
         if (!t || t.matches('tr')) {
             const tr = e.target.closest('#board tr.rw');
             if (tr && !e.target.closest('input, select, textarea, button, a')) select(S.view, tr.dataset.rec);
             if (!t) return;
         }
+        if (t.dataset.printPick) { e.preventDefault(); const set = S.print.picked[S.view.key]; togglePick(S.view.key, [t.dataset.printPick], !set.has(t.dataset.printPick)); return; }
+        if (t.dataset.printGroup) { const ids = S.print.groups[Number(t.dataset.printGroup)] || [], set = S.print.picked[S.view.key]; togglePick(S.view.key, ids, !ids.every(id => set.has(id))); return; }
         if (t.dataset.ws) { e.preventDefault(); closeModal(); goWs(t.dataset.ws); return; }
         if (t.dataset.tab) { openTool('type', t.dataset.tab); return; }
         if (t.dataset.icon) { select({ kind: 'single', key: 'mapIcons' }, t.dataset.icon === S.sel ? null : t.dataset.icon); return; }
@@ -3401,6 +3623,10 @@
             case 'more': moreMenu(t); break;
             case 'toggle-side': S.sideToggled = !S.sideToggled; $('.ed-wrap').classList.toggle('side-toggled', S.sideToggled); $('#side-btn').classList.toggle('on', S.sideToggled); break;
             case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
+            case 'print-mode': S.print.on = !S.print.on; renderList(); break;
+            case 'print-all': togglePick(S.view.key, S.print.groups.flat(), true); break;
+            case 'print-none': togglePick(S.view.key, [...S.print.picked[S.view.key]], false); break;
+            case 'print-open': printDialog(); break;
             case 'add-here': {
                 // "+ Rumour / + Notice" from a POI or settlement: open the new-record dialog on that type
                 // (data-field: the field it fills, e.g. a new card's deck; default where)

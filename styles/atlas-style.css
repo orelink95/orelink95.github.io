@@ -184,11 +184,6 @@
     }
 }
 
-/* Long breadcrumb trails wrap on narrow screens */
-.breadcrumbs {
-    flex-wrap: wrap;
-}
-
 /* Popup subtitle always on its own line */
 .map-popup__subtitle {
     display: block;

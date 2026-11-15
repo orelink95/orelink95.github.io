@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. HEADER
     // -----------------------------------------------------------------
     document.title = `${settlement.name} - The Athenaeum Vault`;
-    Atlas.breadcrumbs(store, $('atlas-breadcrumbs'), settlement);
+    Atlas.trail(store, $('atlas-trail'), settlement);
     $('dynamic-title').textContent = settlement.name;
     $('dynamic-description').textContent = settlement.summary || '';
 

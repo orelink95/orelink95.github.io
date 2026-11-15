@@ -19,11 +19,6 @@
     padding-top: 5rem;
     background-color: #050505;
 }
-@media (min-width: 768px) {
-    .lost__layout {
-        margin-left: 5rem;
-    }
-}
 
 .lost__main {
     position: relative;

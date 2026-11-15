@@ -1,7 +1,34 @@
-function toggleModal() {
-    const modal = document.getElementById('not-see-modal');
-    modal.classList.toggle('hidden');
+// The site's root, from this script's own address: the header, footer and menus
+// load and link from it, so they work from a page in a sub-folder too
+// (admin_tools/potion-maker.html)
+const SITE_ROOT = (document.currentScript && document.currentScript.src || '')
+    .replace(/scripts\/general-scripts\.js(\?.*)?$/, '');
+
+// The footer's pop-ups (components/footer.html, library-footer.html):
+// 'not-see-modal' ("Nothing to see here") and 'guild-modal' (The Scribe's
+// Guild, the way to the sigil maker and the potion maker). Escape closes them.
+let modalOpener = null;
+function toggleModal(id = 'not-see-modal') {
+    const modal = document.getElementById(id);
+    if (!modal) return;
+    const opening = modal.classList.contains('hidden');
+    modal.classList.toggle('hidden', !opening);
+    if (opening) {
+        modalOpener = document.activeElement;
+        const first = modal.querySelector('a, button');
+        if (first) first.focus({ preventScroll: true });
+    } else if (modalOpener) {
+        modalOpener.focus({ preventScroll: true });
+        modalOpener = null;
+    }
 }
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    ['guild-modal', 'not-see-modal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (m && !m.classList.contains('hidden')) toggleModal(id);
+    });
+});
 
 
 // The library pages brighten everything with a filter on <body> (.mystical-bg).
@@ -16,13 +43,25 @@ function liftOutOfBody(el) {
     document.documentElement.appendChild(el);
 }
 
+// The components' links are written from the site's root ("world.html"). On a
+// page in a sub-folder they would point inside it: rewrite them from SITE_ROOT.
+function rebaseLinks(container) {
+    const pageDir = window.location.href.replace(/[^/]*([?#].*)?$/, '');
+    if (!SITE_ROOT || pageDir === SITE_ROOT) return;
+    container.querySelectorAll('a[href]').forEach(a => {
+        const href = a.getAttribute('href');
+        if (/^([a-z]+:|#|\/)/i.test(href)) return;   // absolute, anchor or from the domain root
+        a.setAttribute('href', SITE_ROOT + href);
+    });
+}
+
 // Function to fetch and inject HTML
 function loadComponent(placeholderId, componentPath) {
     const placeholder = document.getElementById(placeholderId);
 
     if (!placeholder) return;
 
-    fetch(componentPath)
+    fetch(SITE_ROOT + componentPath)
         .then(response => {
             if (!response.ok) throw new Error(`Could not load ${componentPath}`);
             return response.text();
@@ -30,22 +69,16 @@ function loadComponent(placeholderId, componentPath) {
         .then(htmlData => {
             // Inject the HTML
             placeholder.innerHTML = htmlData;
+            rebaseLinks(placeholder);
 
             // If the component we just injected is the header, run the header highlight function
             if (placeholderId === "header-placeholder") {
                 highlightActiveLink();
             }
-            // If the component we just injected is the sidebar, run the sidebar highlight function
-            else if (placeholderId === "sidebar-placeholder") {
-                highlightActiveSidebarItem();
-            }
-            // NEW: If the library sidebar just loaded, run its highlight function!
-            else if (placeholderId === "library-sidebar-placeholder") {
-                highlightLibrarySidebar();
-            }
             // The footer's "nothing to see here" pop-up
             else if (placeholderId === "footer-placeholder") {
                 liftOutOfBody(document.getElementById('not-see-modal'));
+                liftOutOfBody(document.getElementById('guild-modal'));
             }
         })
         .catch(error => console.error(error));
@@ -53,96 +86,42 @@ function loadComponent(placeholderId, componentPath) {
 
 
 
-// Function to find and highlight the active page in the header nav
-function highlightActiveLink() {
-    // 1. Get the current file name (e.g., 'world.html' or 'index.html')
-    let currentFileName = window.location.pathname.split("/").pop();
-
-    // If the URL ends in a slash (like on a live server root), default to index.html
-    if (currentFileName === "") currentFileName = "index.html";
-
-    // Pages that live under another page's header entry
-    const SECTION_OF = { 'heroes.html': 'npc.html', 'factions.html': 'npc.html' };
-    currentFileName = SECTION_OF[currentFileName] || currentFileName;
-
-    // 2. Find all the navigation links inside the header
-    const navLinks = document.querySelectorAll("#header-placeholder a.nav-item");
-
-    // 3. Loop through them and check if they match the current page
-    navLinks.forEach(link => {
-        const linkHref = link.getAttribute("href");
-
-        if (linkHref === currentFileName) {
-            // Gold, glowing, with its icon tilted (.site-header__link.is-active, .library-header__link.is-active)
-            link.classList.add("is-active");
-        }
-    });
-}
-
-//Function to find and highlight the active page in the sidebar nav
-function highlightActiveSidebarItem() {
-    let currentPath = window.location.pathname.split("/").pop();
-    if (currentPath === "") currentPath = "index.html";
-
-    const navItems = document.querySelectorAll('#atlas-sidebar .nav-item');
-
-    navItems.forEach(item => {
-        const itemHref = item.getAttribute('href');
-
-        if (itemHref === currentPath) {
-            item.classList.add('is-active');
-        }
-    });
-}
-
-// Start the fetch process when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-    // Library pages load their own header/footer variants; skip the defaults
-    // there to avoid a double fetch and a flash of the wrong header.
-    if (document.getElementById("library-sidebar-placeholder")) return;
-
-    loadComponent("header-placeholder", "components/header.html");
-    loadComponent("footer-placeholder", "components/footer.html");
-    loadComponent("sidebar-placeholder", "components/sidebar.html");
-});
-
-
 // ==========================================
-// --- MOBILE ORB MENU ---
-// One button (bottom-left) opening a vertical panel. It replaces, below 768px,
-// the atlas sidebar and the library "wings" sidebar: the section you are in
-// unfolds its own pages under its entry. Styles: components.css.
-// NB: the sub-links repeat those of components/sidebar.html and
-// components/library-sidebar.html (desktop). Keep the three in step.
+// --- SITE NAVIGATION: ONE LIST FOR EVERY MENU ---
+// The header highlight, the mobile orb menu, the Atlas trail's "Atlas" menu
+// (scripts/atlas-common.js) and the Black Archive tab bar all read SITE_NAV.
+// Add or rename a page here and every menu follows.
+//   url   : the page a section or entry opens
+//   alias : other pages that belong to that entry (a record page under its list)
+// The two headers (components/header.html, library-header.html) keep their own
+// markup for their looks, but their links must point to the sections' url.
 // ==========================================
-const MOBILE_NAV = [
+const SITE_NAV = [
     {
-        name: 'Atlas', url: 'world.html', icon: 'public', tone: 'green',
-        pages: ['world.html', 'continent.html', 'country.html', 'settlement.html', 'pois.html', 'poi.html'],
+        id: 'atlas', name: 'Grand Atlas', url: 'world.html', icon: 'public', tone: 'green',
         sub: [
-            { name: 'Continents', url: 'continent.html', icon: 'map' },
-            { name: 'Countries', url: 'country.html', icon: 'fort' },
-            { name: 'Settlements', url: 'settlement.html', icon: 'home_work' },
+            { name: 'World Map', url: 'world.html', icon: 'public' },
+            { name: 'Continents', url: 'continents.html', icon: 'map', alias: ['continent.html'] },
+            { name: 'Countries', url: 'countries.html', icon: 'fort', alias: ['country.html'] },
+            { name: 'Settlements', url: 'settlements.html', icon: 'home_work', alias: ['settlement.html'] },
             { name: 'Points of Interest', url: 'pois.html', icon: 'location_on', alias: ['poi.html'] }
         ]
     },
     {
-        name: 'Archive', url: 'library.html', icon: 'account_balance', tone: 'violet',
-        pages: ['library.html', 'bestiary.html', 'beast.html', 'handouts.html', 'tomes.html', 'vault.html', 'spellbook.html', 'pantheon.html', 'deity.html'],
+        id: 'archive', name: 'Black Archive', url: 'library.html', icon: 'library_books', tone: 'violet',
+        // Also the tab bar of the Archive pages (library.html has its cards instead)
         sub: [
             { name: 'Elder Tarot', url: 'bestiary.html', icon: 'temp_preferences_custom', alias: ['beast.html'] },
             { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' },
             { name: 'Reference', url: 'tomes.html', icon: 'menu_book' },
             { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
             { name: 'Book of Shadows', url: 'spellbook.html', icon: 'auto_fix_high' },
-            { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] },
-            { name: 'Exit Archive', url: 'index.html', icon: 'door_front', exit: true }
+            { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] }
         ]
     },
-    { name: 'Story', url: 'scriptorium.html', icon: 'book', tone: 'gold', pages: ['scriptorium.html'], sub: [] },
+    { id: 'scriptorium', name: 'Scriptorium', url: 'scriptorium.html', icon: 'history_edu', tone: 'gold', sub: [] },
     {
-        name: 'Dramatis Personae', url: 'npc.html', icon: 'groups', tone: 'blue',
-        pages: ['npc.html', 'heroes.html', 'factions.html'],
+        id: 'personae', name: 'Dramatis Personae', url: 'npc.html', icon: 'groups', tone: 'blue',
         // Same three entries as the tab bar of npc.html, heroes.html and factions.html
         sub: [
             { name: 'NPCs', url: 'npc.html', icon: 'group' },
@@ -152,22 +131,95 @@ const MOBILE_NAV = [
     }
 ];
 
+// The file name of the page being shown ('index.html' at the site root)
+function currentPage() {
+    return window.location.pathname.split('/').pop() || 'index.html';
+}
+// Is this page the entry itself, or one of its alias pages?
+function navEntryHolds(entry, page) {
+    return entry.url === page || (entry.alias || []).includes(page);
+}
+// The section a page belongs to (its own url, an entry or an alias), or null
+function navSectionOf(page) {
+    return SITE_NAV.find(s => s.url === page || s.sub.some(e => navEntryHolds(e, page))) || null;
+}
+
+// Header: the section of the page glows gold (.site-header__link.is-active,
+// .library-header__link.is-active), on its sub-pages too
+function highlightActiveLink() {
+    const section = navSectionOf(currentPage());
+    if (!section) return;
+    document.querySelectorAll('#header-placeholder a.nav-item').forEach(link => {
+        if (link.getAttribute('href').split('/').pop() === section.url) {
+            link.classList.add('is-active');
+            link.setAttribute('aria-current', 'true');
+        }
+    });
+}
+
+// ==========================================
+// --- BLACK ARCHIVE TAB BAR ---
+// <nav id="archive-tabs" class="archive-tabs"> right under the header of each
+// Archive page (not library.html, whose cards already lead everywhere).
+// Filled from SITE_NAV; styles: components.css (.archive-tabs).
+// ==========================================
+function renderArchiveTabs() {
+    const bar = document.getElementById('archive-tabs');
+    if (!bar || bar.children.length) return;
+    const page = currentPage();
+    const archive = SITE_NAV.find(s => s.id === 'archive');
+    bar.setAttribute('aria-label', archive.name);
+    bar.innerHTML = `<div class="archive-tabs__track">${archive.sub.map(e => {
+        const here = navEntryHolds(e, page);
+        return `<a href="${e.url}" class="archive-tab${here ? ' is-active' : ''}"${here ? ' aria-current="page"' : ''}>
+                <span class="archive-tab__icon material-symbols-outlined" aria-hidden="true">${e.icon}</span>${e.name}</a>`;
+    }).join('')}</div>`;
+    // On a phone the row scrolls sideways: bring the current tab into view
+    const active = bar.querySelector('.archive-tab.is-active');
+    if (active) {
+        const track = bar.firstElementChild;
+        track.scrollLeft = active.offsetLeft - (track.clientWidth - active.offsetWidth) / 2;
+    }
+}
+
+// Start the fetch process when the page loads
+document.addEventListener("DOMContentLoaded", () => {
+    renderArchiveTabs();
+
+    // Archive pages (<body data-section="archive">) load their own header and
+    // footer variants; skip the defaults there to avoid a double fetch and a
+    // flash of the wrong header.
+    if (document.body.dataset.section === 'archive') {
+        loadComponent("header-placeholder", "components/library-header.html");
+        loadComponent("footer-placeholder", "components/library-footer.html");
+        return;
+    }
+    loadComponent("header-placeholder", "components/header.html");
+    loadComponent("footer-placeholder", "components/footer.html");
+});
+
+
+// ==========================================
+// --- MOBILE ORB MENU ---
+// One button (bottom-left) opening a vertical panel, below 768px. The section
+// you are in unfolds its own pages under its entry. Entries: SITE_NAV above.
+// Styles: components.css.
+// ==========================================
 function createMobileOrbMenu() {
     if (document.getElementById('mobile-orb-menu')) return;
 
-    let page = window.location.pathname.split('/').pop();
-    if (page === '') page = 'index.html';
-
-    const isHere = item => item.url === page || (item.alias || []).includes(page);
+    const page = currentPage();
+    const here = navSectionOf(page);
+    const isHere = item => navEntryHolds(item, page);
     let step = 0; // index used to stagger the entries when the panel opens
 
-    const groupsHtml = MOBILE_NAV.map(section => {
-        const inSection = section.pages.includes(page);
+    const groupsHtml = SITE_NAV.map(section => {
+        const inSection = section === here;
         const exact = section.url === page;
         const parentStep = ++step;
         const sub = inSection && section.sub.length
             ? `<div class="orb-sub">${section.sub.map(s => `
-                <a href="${s.url}" class="orb-sublink${isHere(s) ? ' is-active' : ''}${s.exit ? ' orb-sublink--exit' : ''}"
+                <a href="${SITE_ROOT}${s.url}" class="orb-sublink${isHere(s) ? ' is-active' : ''}"
                    style="--i:${++step}"${isHere(s) ? ' aria-current="page"' : ''}>
                     <span class="orb-sublink__icon material-symbols-outlined">${s.icon}</span>
                     <span class="orb-sublink__label">${s.name}</span>
@@ -175,7 +227,7 @@ function createMobileOrbMenu() {
             : '';
         const html = `
             <div class="orb-group orb-tone--${section.tone}${inSection ? ' is-current' : ''}">
-                <a href="${section.url}" class="orb-link${exact ? ' is-active' : ''}"
+                <a href="${SITE_ROOT}${section.url}" class="orb-link${exact ? ' is-active' : ''}"
                    style="--i:${parentStep}"${exact ? ' aria-current="page"' : ''}>
                     <span class="orb-link__disc"><span class="orb-link__icon material-symbols-outlined">${section.icon}</span></span>
                     <span class="orb-link__label">${section.name}</span>
@@ -257,44 +309,6 @@ document.addEventListener("DOMContentLoaded", () => {
         container.appendChild(particle);
     }
 });
-
-// ==========================================
-// LIBRARY SIDEBAR LOGIC
-// ==========================================
-
-function toggleLibrarySidebar() {
-    const sidebarContent = document.getElementById('library-sidebar-content');
-    const icon = document.getElementById('lib-sidebar-icon');
-    const btn = document.getElementById('lib-sidebar-btn');
-
-    if (!sidebarContent || !icon || !btn) return;
-
-    // Open/closed looks: .library-sidebar__panel.is-open etc. in components.css
-    const open = !sidebarContent.classList.contains('is-open');
-    [sidebarContent, btn, icon].forEach(el => el.classList.toggle('is-open', open));
-    icon.textContent = open ? 'close' : 'menu_open';
-}
-
-function highlightLibrarySidebar() {
-    let currentFileName = window.location.pathname.split("/").pop();
-    if (currentFileName === "" || currentFileName.includes("beast.html")) {
-        // If on the specific beast page, highlight the bestiary
-        currentFileName = "bestiary.html";
-    }
-    // A god's page sits under the Pantheon
-    if (currentFileName === "deity.html") currentFileName = "pantheon.html";
-
-    const links = document.querySelectorAll('#lib-sidebar-nav a');
-
-    links.forEach(link => {
-        const href = link.getAttribute('href');
-
-        if (href === currentFileName) {
-            // Gold, bold label (see .library-sidebar__link.is-active)
-            link.classList.add('is-active');
-        }
-    });
-}
 
 // --- CURSOR GLOW ENGINE ---
 document.addEventListener("DOMContentLoaded", () => {

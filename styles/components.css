@@ -1,11 +1,17 @@
 /* =====================================================================
-   COMPONENTS — pieces shared by every page: the header, the atlas
-   sidebar, the footer (with its "nothing to see here" modal) and the
+   COMPONENTS — pieces shared by every page: the header, the Atlas
+   trail, the footer (with its "nothing to see here" modal) and the
    mobile orb menu.
    Markup: components/*.html and scripts/general-scripts.js.
    ===================================================================== */
 
 /* ---------- Header (components/header.html) ---------- */
+
+/* A page whose own layout starts at the top (the Sigil Maker, the potion maker)
+   makes room for the fixed header with <body class="has-site-chrome"> */
+.has-site-chrome {
+    padding-top: 4rem;
+}
 
 .site-header {
     position: fixed;
@@ -191,155 +197,251 @@
 }
 
 
-/* ---------- Atlas sidebar (components/sidebar.html) ---------- */
+/* ---------- Atlas trail (Atlas.trail in scripts/atlas-common.js) ----------
+   Atlas ▾ › Continent ▾ › Country ▾ › Settlement ▾ › Place ▾
+   "Atlas ▾" opens the Atlas pages (SITE_NAV in general-scripts.js); each
+   place's ▾ opens the places beside it. The page's look tints it on poi.html
+   (--look-accent). Below 768px only the parent and the current place show. */
 
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: 40;
+.trail {
+    --trail-accent: var(--look-accent, var(--color-secondary));
+    position: relative;
     display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 18rem;
-    overflow: hidden;
-    padding-bottom: 2rem;
-    padding-top: 7rem;
-    border-right-width: 1px;
-    border-color: color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
-    background-color: color-mix(in srgb, var(--color-surface-container-lowest) 95%, transparent);
-    transform: translateX(-100%);
-    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-    transition: all 150ms var(--ease);
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+    padding: 0.25rem 0.375rem;
+    border: 1px solid rgb(255 255 255 / 0.07);
+    background-color: color-mix(in srgb, var(--color-surface-container-lowest) 70%, transparent);
+    font-family: var(--font-label);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 75%, transparent);
 }
 
-.sidebar:hover {
-    width: 18rem;
+.trail__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.125rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-@media (min-width: 768px) {
-    .sidebar {
-        width: 5rem;
-        transform: translate(0, 0);
-    }
-}
-
-.sidebar__head {
+.trail__step {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 1rem;
-    overflow: hidden;
-    margin-bottom: 2rem;
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-    white-space: nowrap;
+    min-width: 0;
+}
+.trail__step + .trail__step::before {
+    content: 'chevron_right';
+    margin: 0 0.125rem;
+    font-family: 'Material Symbols Outlined';
+    font-size: 14px;
+    letter-spacing: normal;
+    text-transform: none;
+    color: rgb(255 255 255 / 0.25);
 }
 
-.sidebar__emblem {
-    display: flex;
+.trail__link,
+.trail__current {
+    min-width: 0;
+    overflow: hidden;
+    padding: 0.375rem 0.25rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.trail__link {
+    transition: color 150ms var(--ease);
+}
+.trail__link:hover {
+    color: var(--trail-accent);
+}
+.trail__current {
+    font-weight: 700;
+    color: var(--trail-accent);
+}
+
+/* The two kinds of buttons: "Atlas ▾" and a place's ▾ */
+.trail__atlas,
+.trail__caret {
+    display: inline-flex;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    height: 2.5rem;
-    width: 2.5rem;
-    border-radius: 0.75rem;
-    border-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
-    background-color: var(--color-primary-container);
-    box-shadow: 0 0 10px rgba(179, 205, 182, 0.2);
+    min-height: 2rem;
+    border: 1px solid transparent;
+    background: none;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+    transition: color 150ms var(--ease), background-color 150ms var(--ease), border-color 150ms var(--ease);
+}
+.trail__atlas {
+    gap: 0.375rem;
+    padding: 0 0.5rem 0 0.375rem;
+    font-weight: 700;
+    color: var(--color-on-surface);
+}
+.trail__caret {
+    width: 1.75rem;
+    margin-left: -0.125rem;
+}
+.trail__atlas:hover,
+.trail__caret:hover,
+.trail__atlas[aria-expanded="true"],
+.trail__caret[aria-expanded="true"] {
+    border-color: color-mix(in srgb, var(--trail-accent) 35%, transparent);
+    background-color: rgb(255 255 255 / 0.05);
+    color: var(--trail-accent);
+}
+.trail__atlas-icon {
+    font-size: 18px;
+    color: var(--trail-accent);
+}
+.trail__caret-icon {
+    font-size: 18px;
+    transition: transform 150ms var(--ease);
+}
+[aria-expanded="true"] > .trail__caret-icon {
+    transform: rotate(180deg);
 }
 
-.sidebar__emblem-icon {
-    color: var(--color-secondary);
-}
-
-.sidebar__heading {
-    transition: opacity 300ms var(--ease);
-}
-
-.sidebar:hover .sidebar__heading {
-    opacity: 1;
-}
-
-@media (min-width: 768px) {
-    .sidebar__heading {
-        opacity: 0;
-    }
-}
-
-.sidebar__title {
-    font-family: var(--font-headline);
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    font-weight: 600;
-    color: var(--color-secondary);
-}
-
-.sidebar__subtitle {
+/* The drop-down: moved to the end of <body> and placed under its button
+   by the script (position: fixed), above the maps (Leaflet goes up to 1000)
+   but under the orb menu */
+.trail__menu {
+    --trail-accent: var(--color-secondary);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    min-width: 13rem;
+    max-width: min(20rem, calc(100vw - 2rem));
+    max-height: min(26rem, 65vh);
+    border: 1px solid color-mix(in srgb, var(--trail-accent) 30%, transparent);
+    background-color: var(--color-surface-container-lowest);
+    box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.85), 0 0 0 1px rgb(0 0 0 / 0.6);
     font-family: var(--font-label);
+    color: color-mix(in srgb, var(--color-on-surface-variant) 75%, transparent);
+}
+.trail__menu[hidden] {
+    display: none;
+}
+.trail__menu-head {
+    padding: 0.625rem 0.875rem 0.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.06);
     font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: color-mix(in srgb, var(--color-on-surface-variant) 60%, transparent);
+    letter-spacing: 0.14em;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
 }
-
-.sidebar__nav {
-    flex: 1 1 0%;
+.trail__filter {
+    margin: 0.5rem 0.625rem 0.25rem;
+    padding: 0.4rem 0.625rem;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    background-color: rgb(255 255 255 / 0.03);
+    font-family: var(--font-label);
+    font-size: 13px;
+    color: var(--color-on-surface);
+}
+.trail__filter:focus {
+    border-color: var(--trail-accent);
+    outline: none;
+}
+.trail__items {
+    margin: 0;
+    padding: 0.25rem 0;
     overflow-y: auto;
-    overflow-x: hidden;
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    list-style: none;
+    overscroll-behavior: contain;
 }
-
-.sidebar__nav> :not([hidden])~ :not([hidden]) {
-    margin-top: 0.5rem;
-    margin-bottom: 0;
-}
-
-.sidebar__link {
+.trail__item {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem;
-    border-radius: 0.375rem;
-    white-space: nowrap;
-    color: var(--color-on-surface);
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: var(--ease);
-    transition-duration: 150ms;
-}
-
-.sidebar__link:hover {
-    background-color: var(--color-surface-container-high);
-    color: var(--color-secondary);
-}
-
-.sidebar__link-icon {
-    flex-shrink: 0;
-    margin-left: 0.25rem;
-}
-
-.sidebar__link-label {
+    gap: 0.625rem;
+    min-height: 2.25rem;
+    padding: 0.375rem 0.875rem;
     font-family: var(--font-body);
-    font-size: 1.125rem;
-    line-height: 1.75rem;
-    transition: opacity 300ms var(--ease);
+    font-size: 16px;
+    color: var(--color-on-surface);
+    transition: background-color 120ms var(--ease), color 120ms var(--ease);
+}
+.trail__item:hover,
+.trail__item:focus-visible {
+    background-color: rgb(255 255 255 / 0.06);
+    color: var(--trail-accent);
+    outline: none;
+}
+.trail__item.is-current {
+    color: var(--trail-accent);
+}
+.trail__item-icon {
+    font-size: 18px;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
+}
+.trail__item.is-current .trail__item-icon,
+.trail__item:hover .trail__item-icon {
+    color: var(--trail-accent);
+}
+.trail__item-label {
+    flex: 1;
+}
+.trail__item-check {
+    font-size: 16px;
+}
+.trail__none {
+    padding: 0.5rem 0.875rem 0.75rem;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 15px;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
 }
 
-.sidebar:hover .sidebar__link-label {
-    opacity: 1;
-}
-
-@media (min-width: 768px) {
-    .sidebar__link-label {
-        opacity: 0;
+/* Phones: Atlas (icon only) › parent › current place */
+@media (max-width: 767.98px) {
+    .trail {
+        margin-bottom: 1rem;
+        letter-spacing: 0.05em;
+    }
+    .trail__list {
+        flex-wrap: nowrap;
+    }
+    .trail__step--far {
+        display: none;
+    }
+    .trail__atlas-label {
+        display: none;
+    }
+    .trail__atlas,
+    .trail__caret {
+        min-height: 2.5rem;
+    }
+    .trail__caret {
+        width: 2.25rem;
+    }
+    /* Room for the current place: the parent gives way first, without its ▾
+       (its siblings are a tap away on its own page) */
+    .trail__step--parent {
+        flex-shrink: 3;
+    }
+    .trail__step--parent .trail__caret {
+        display: none;
     }
 }
 
 
-/* Active page (highlightActiveLink / highlightActiveSidebarItem) */
+/* Active section (highlightActiveLink in general-scripts.js) */
 
 .site-header__link.is-active {
     color: var(--color-secondary);
@@ -349,25 +451,6 @@
 .site-header__link.is-active .site-header__link-icon {
     color: var(--color-secondary);
     transform: rotate(12deg);
-}
-
-.sidebar__link.is-active {
-    position: relative;
-    background-color: var(--color-surface-container-highest);
-    color: var(--color-secondary);
-    box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-}
-
-.sidebar__link.is-active:hover {
-    background-color: var(--color-surface-bright);
-}
-
-/* Below 768px the atlas pages are reached through the orb menu (general-scripts.js) */
-
-@media (max-width: 767.98px) {
-    .sidebar {
-        display: none;
-    }
 }
 
 
@@ -628,8 +711,8 @@
 
 
 /* ---------- Mobile orb menu (scripts/general-scripts.js, createMobileOrbMenu) ---------- */
-/* Below 768px it replaces the atlas sidebar and the library wings. The entry of
-   the section you are in unfolds its own pages (.orb-group.is-current). */
+/* Below 768px. The entry of the section you are in unfolds its own pages
+   (.orb-group.is-current). Entries: SITE_NAV in general-scripts.js. */
 
 .orb-menu {
     position: fixed;
@@ -880,11 +963,6 @@
     font-weight: 700;
 }
 
-.orb-sublink--exit {
-    margin-top: 0.125rem;
-    color: rgb(255 255 255 / 0.4);
-}
-
 .orb-menu a:focus-visible,
 .orb-menu button:focus-visible {
     outline: 2px solid var(--color-secondary);
@@ -905,8 +983,9 @@
 
 
 /* =====================================================================
-   LIBRARY  —  header, footer (with its modal) and the wings sidebar of
-   the library pages. Markup: components/library-*.html.
+   LIBRARY  —  header, footer (with its modal) and the tab bar of the
+   Black Archive pages. Markup: components/library-*.html and
+   renderArchiveTabs() in general-scripts.js.
    ===================================================================== */
 
 /* ---------- Library header (components/library-header.html) ---------- */
@@ -1381,218 +1460,173 @@
     color: #000;
 }
 
-/* ---------- Wings sidebar (components/library-sidebar.html) ---------- */
+/* ---------- Black Archive tab bar (renderArchiveTabs in general-scripts.js) ----------
+   Right under the library header on every Archive page but library.html.
+   It sticks to the top of the screen: on pages whose <body> is brightened
+   (.mystical-bg) the header scrolls away with the page, elsewhere (beast.html)
+   the header stays, so the bar stops under it. On a phone the row scrolls
+   sideways. */
 
-.library-sidebar {
-    position: fixed;
-    right: 0;
-    top: 25%;
-    z-index: 100;
+.archive-tabs {
+    --archive-tabs-h: 3rem;
+    position: sticky;
+    top: 0;
+    z-index: 45;
+    width: 100%;
+    min-height: var(--archive-tabs-h);
+    margin-top: 4rem;   /* the fixed library header */
+    border-bottom: 1px solid rgb(255 255 255 / 0.07);
+    background-color: rgb(5 5 5 / 0.82);
+    box-shadow: 0 10px 30px -18px rgba(26, 11, 46, 0.9);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+}
+body:not(.mystical-bg) .archive-tabs {
+    top: 4rem;
+}
+/* The pages' <main> pad their top for the header alone: the bar already clears it */
+.archive-tabs ~ main {
+    padding-top: 2.5rem;
 }
 
-/* Below 768px the wings are in the orb menu (general-scripts.js) */
+.archive-tabs__track {
+    display: flex;
+    justify-content: center;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.archive-tabs__track::-webkit-scrollbar {
+    display: none;
+}
+
+.archive-tab {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: var(--archive-tabs-h);
+    margin-bottom: -1px;
+    padding: 0 1rem;
+    border-bottom: 2px solid transparent;
+    font-family: var(--font-label);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    white-space: nowrap;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 80%, transparent);
+    transition: color 150ms var(--ease), border-color 150ms var(--ease), text-shadow 150ms var(--ease);
+}
+.archive-tab:hover {
+    color: #fff;
+}
+.archive-tab.is-active {
+    border-bottom-color: var(--color-secondary);
+    color: var(--color-secondary);
+    text-shadow: 0 0 12px rgba(233, 193, 118, 0.35);
+}
+.archive-tab:focus-visible {
+    outline: 2px solid var(--color-secondary);
+    outline-offset: -2px;
+}
+.archive-tab__icon {
+    font-size: 18px;
+}
+
 @media (max-width: 767.98px) {
-    .library-sidebar {
+    .archive-tabs__track {
+        justify-content: flex-start;
+        padding: 0 0.25rem;
+        /* fades at the edges say the row goes on */
+        -webkit-mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
+        mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
+    }
+    .archive-tab {
+        padding: 0 0.875rem;
+    }
+    .archive-tab__icon {
         display: none;
     }
 }
 
-.library-sidebar__toggle {
-    position: absolute;
-    right: 0;
-    top: 1.5rem;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 3.5rem;
-    width: 3rem;
-    border-top-left-radius: 0.25rem;
-    border-bottom-left-radius: 0.25rem;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 30%, transparent);
-    background-color: rgb(5 5 5 / 0.9);
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    transition: transform 500ms var(--ease);
-}
 
-.library-sidebar__toggle:hover {
-    border-color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
-}
+/* ---------- The Scribe's Guild pop-up (both footers) ----------
+   The card of the footer's pop-up (.silence-modal or .archive-modal), with
+   the two hidden workshops as links. */
 
-.library-sidebar__toggle-icon {
-    color: color-mix(in srgb, var(--color-secondary) 70%, transparent);
-    filter: drop-shadow(0 0 5px rgba(233, 193, 118, 0.5));
-    transition: all 150ms var(--ease);
+.guild-card {
+    max-width: 34rem;
 }
-
-.library-sidebar__toggle:hover .library-sidebar__toggle-icon {
-    color: var(--color-secondary);
-    transform: scale(1.1);
-}
-
-.library-sidebar__panel {
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    width: 16rem;
-    overflow: hidden;
-    padding: 2rem 1rem;
-    border-top-left-radius: 1rem;
-    border-bottom-left-radius: 1rem;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
-    background-color: rgb(5 5 5 / 0.9);
-    transform-origin: right;
-    /* Closed: shrunk towards the right edge. (It used to be pushed 1rem past
-       the edge, which let every library page scroll sideways.) */
-    transform: scale(.95);
-    opacity: 0;
-    box-shadow: -20px 0 50px rgba(26, 11, 46, 0.6);
-    -webkit-backdrop-filter: blur(24px);
-    backdrop-filter: blur(24px);
-    transition: all 500ms var(--ease);
-    pointer-events: none;
-}
-
-.library-sidebar__glow-void {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 8rem;
-    width: 8rem;
-    border-radius: 0.75rem;
-    background-color: color-mix(in srgb, var(--color-void) 60%, transparent);
-    filter: blur(64px);
-    pointer-events: none;
-}
-
-.library-sidebar__glow-ethereal {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 8rem;
-    width: 8rem;
-    border-radius: 0.75rem;
-    background-color: color-mix(in srgb, var(--color-ethereal) 60%, transparent);
-    filter: blur(64px);
-    pointer-events: none;
-}
-
-.library-sidebar__title {
+.guild-relics {
     position: relative;
-    z-index: 10;
-    margin-bottom: 0.5rem;
-    padding-bottom: 1rem;
-    border-bottom-width: 1px;
-    border-color: rgb(255 255 255 / 0.05);
-    text-align: center;
-    font-family: var(--font-headline);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    color: color-mix(in srgb, var(--color-secondary) 80%, transparent);
+    display: grid;
+    gap: 0.75rem;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+    text-align: left;
 }
-
-.library-sidebar__nav {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.library-sidebar__link {
+.guild-relic {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 0.25rem;
-    border-width: 1px;
-    border-color: transparent;
-    color: rgb(255 255 255 / 0.5);
-    transition: all 150ms var(--ease);
+    padding: 0.875rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 22%, transparent);
+    background-color: rgb(0 0 0 / 0.25);
+    transition: border-color 150ms var(--ease), background-color 150ms var(--ease);
 }
-
-.library-sidebar__link:hover {
-    border-color: rgb(255 255 255 / 0.1);
-    background-color: rgb(255 255 255 / 0.05);
-    color: #fff;
+.guild-relic:hover,
+.guild-relic:focus-visible {
+    border-color: color-mix(in srgb, var(--color-secondary) 60%, transparent);
+    background-color: color-mix(in srgb, var(--color-secondary) 7%, transparent);
+    outline: none;
 }
-
-.library-sidebar__link-icon {
+.guild-relic__icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 30%, transparent);
+    border-radius: 50%;
+    font-size: 22px;
+    color: var(--color-secondary);
+}
+.guild-relic__text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.125rem;
+    min-width: 0;
+}
+.guild-relic__name {
+    font-family: var(--font-headline);
     font-size: 1.125rem;
-    line-height: 1.75rem;
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: var(--ease);
-    transition-duration: 150ms;
+    color: var(--color-on-surface);
 }
-
-.library-sidebar__link:hover .library-sidebar__link-icon {
+.guild-relic__line {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: color-mix(in srgb, var(--color-on-surface-variant) 70%, transparent);
+}
+.guild-relic__go {
+    font-size: 20px;
+    color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    transition: transform 150ms var(--ease), color 150ms var(--ease);
+}
+.guild-relic:hover .guild-relic__go,
+.guild-relic:focus-visible .guild-relic__go {
     color: var(--color-secondary);
+    transform: translateX(3px);
 }
-
-.library-sidebar__link-label {
-    font-family: var(--font-label);
-    font-size: 0.75rem;
-    line-height: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+@media (max-width: 479.98px) {
+    .guild-card {
+        padding: 2.25rem 1.25rem;
+    }
 }
-
-/* Open (toggleLibrarySidebar() toggles .is-open on the panel, the button and its icon) */
-
-.library-sidebar__panel.is-open {
-    transform: translate(0, 0);
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.library-sidebar__toggle.is-open {
-    transform: translateX(-16rem);
-}
-
-.library-sidebar__toggle-icon.is-open {
-    transform: rotate(90deg);
-}
-
-.library-sidebar__toggle:hover .library-sidebar__toggle-icon.is-open {
-    transform: rotate(90deg) scale(1.1);
-}
-
-/* The wing you are in (highlightLibrarySidebar() adds .is-active) */
-
-.library-sidebar__link.is-active {
-    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
-    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
-    color: var(--color-secondary);
-    box-shadow: 0 0 15px rgba(233, 193, 118, 0.1);
-}
-
-.library-sidebar__link.is-active:hover {
-    border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
-    background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
-    color: var(--color-secondary);
-}
-
-.library-sidebar__link.is-active .library-sidebar__link-icon {
-    color: var(--color-secondary);
-    filter: drop-shadow(0 0 5px rgba(233, 193, 118, 0.5));
-}
-
-.library-sidebar__link.is-active .library-sidebar__link-label {
-    font-weight: 700;
-}
-
 
 /* =====================================================================
    POP-UPS MOVED OUT OF <body>  (liftOutOfBody() in general-scripts.js)

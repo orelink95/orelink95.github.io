@@ -6,7 +6,8 @@ Plain CSS, no build step. Every page loads, in this order:
 |---|---|
 | `tokens.css` | Colours (`--color-*`), fonts (`--font-headline`, `--font-body`, `--font-label`) and the shared easing (`--ease`). Change a colour here and it changes everywhere. |
 | `base.css` | Browser reset, form defaults, the `.hidden` helper and the shared `@keyframes` (pulse, float, glow…). |
-| `components.css` | Pieces used on every page: header, atlas sidebar, footer, mobile orb menu. |
+| `components.css` | Pieces used on every page: header, Atlas trail, Black Archive tab bar, footer, mobile orb menu. |
+| `chrome.css` | For standalone pages with their own complete stylesheet (`sigil-maker.html`): what the header, footer, footer pop-ups and orb menu need from `base.css` and `main-style.css`, scoped to them so the page's own look is untouched. Such a page also sets `<body class="has-site-chrome">` to clear the fixed header. |
 | `pages/<page>.css` | Everything specific to one page, e.g. `pages/npc.css` for `npc.html`. One exception: `pages/atlas-index.css` serves the four Atlas list pages (see below). |
 | `loot-card.css` | The item cards (front and opened, rarity colours), shared by the Vault and the dashboard preview. Markup: `scripts/loot-card.js`. |
 | `games.css` | The gaming table of a tavern (Games tab): bone dice, the game picker, the purse bar and stakes screen, Liar's Dice (`.ld-*`) and Knucklebones (`.kb-*`). Scripts: `scripts/games/`. |
@@ -28,7 +29,7 @@ Plain CSS, no build step. Every page loads, in this order:
 ## No build step
 
 Every page uses these files directly: there is no Tailwind, npm or compile step any more. Edit a `.css` file, reload the page.
-The library pages share `components.css` (library header, footer and wings sidebar) like the atlas pages do.
+The library pages share `components.css` (library header, footer and the Black Archive tab bar) like the atlas pages do. They say so with `<body data-section="archive">`: `general-scripts.js` then loads the library header and footer, and fills `<nav id="archive-tabs">` (left out of `library.html`, whose cards lead everywhere).
 
 ## The Atlas
 
@@ -41,9 +42,9 @@ The library pages share `components.css` (library header, footer and wings sideb
 | `poi.html?id=…` | `pages/poi.css`, `poi-style.css`, `notice-board.css`, `games.css` | `poi-scripts.js` (with `tavern-menu.js`, `market.js`, `notice-board.js`, `personae.js`, `games/*.js`) |
 | `continents.html`, `countries.html`, `settlements.html`, `pois.html` (lists) | `pages/atlas-index.css`, `atlas-style.css` | `atlas-index-scripts.js` |
 
-Every Atlas page also loads `scripts/atlas-common.js`: names shown to players (`Atlas.LABELS`), breadcrumbs, map set-up, pins, popups and the lore panel. An entry page opened without a valid `?id=` goes to its list page.
+Every Atlas page also loads `scripts/atlas-common.js`: names shown to players (`Atlas.LABELS`), the trail, map set-up, pins, popups and the lore panel. An entry page opened without a valid `?id=` goes to its list page.
 
-- **Renaming a kind of place** (e.g. "Countries"): change `Atlas.LABELS` in `scripts/atlas-common.js`, then the two hard-coded copies of the menu: `components/sidebar.html` and `MOBILE_NAV` in `scripts/general-scripts.js`.
+- **Renaming a kind of place** (e.g. "Countries"): change `Atlas.LABELS` in `scripts/atlas-common.js`, then its menu entry in `SITE_NAV` (`scripts/general-scripts.js`), the one list behind every menu: header highlight, mobile orb menu, the trail's "Atlas" menu and the Black Archive tabs.
 - **The lore panel** (`.lore-panel*`) is styled in each map page's own stylesheet; `pages/continent.css` has a shorter version that sits under the map.
-- **Breadcrumbs** (`.breadcrumbs*`) are filled by the script into `<nav id="atlas-breadcrumbs">`; each page stylesheet holds their look.
+- **The trail** (`.trail*`, in `components.css`) is filled by `Atlas.trail()` into `<nav id="atlas-trail">`: "Atlas ▾" (the Atlas pages), then the places above the entry and the entry, each with a ▾ listing the places beside it. Its menus move to the end of `<body>` so nothing covers them. On phones only the parent and the current place show.
 - **List cards** reuse the `.poi-card` / `.poi-pill` classes for every type, not only points of interest.

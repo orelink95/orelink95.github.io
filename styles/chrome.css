@@ -1,0 +1,80 @@
+/* =====================================================================
+   SITE CHROME FOR STANDALONE PAGES  (sigil-maker.html)
+   The header, footer, footer pop-ups and mobile orb menu (components.css)
+   rely on the site's global resets (base.css) and a few rules of
+   main-style.css. A page with its own complete stylesheet loads this file
+   instead: the same rules, scoped to those pieces so the page's own look
+   is left alone. Load order: tokens.css, components.css, chrome.css, then
+   the page's own styles.
+   ===================================================================== */
+
+/* base.css (Tailwind preflight), only inside the site's pieces. Every rule
+   sits in :where() so it weighs nothing: the components' own classes win. */
+:where(.site-header, .site-footer, .silence-modal, .orb-menu),
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) :where(*, ::before, ::after) {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+}
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) :where(h1, h2, h3, h4, p) {
+    font-size: inherit;
+    font-weight: inherit;
+}
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) :where(a) {
+    color: inherit;
+    text-decoration: inherit;
+}
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) :where(button, [role="button"]) {
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+}
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) :where(ul) {
+    list-style: none;
+}
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) :where(svg, img) {
+    display: block;
+}
+:where(.site-header, .site-footer, .silence-modal, .orb-menu) {
+    font-family: var(--font-body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+.hidden {
+    display: none;
+}
+
+/* main-style.css: header labels that slide out on hover, the footer's pop-ups */
+.nav-item .nav-label {
+    max-width: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    white-space: nowrap;
+}
+.nav-item:hover .nav-label {
+    max-width: 200px;
+    opacity: 1;
+    margin-left: 0.5rem;
+}
+#not-see-modal.hidden,
+#guild-modal.hidden {
+    display: none;
+}
+#not-see-modal:not(.hidden),
+#guild-modal:not(.hidden) {
+    display: flex;
+}
+
+/* base.css: the pop-ups' floating icon and pulsing glows */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+@keyframes pulse {
+    50% { opacity: .5; }
+}

@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('poi-title').textContent = poi.name;
     $('poi-subtitle').textContent = poi.subtitle || '';
     // Where it is: Eraldom › continent › country › settlement › this POI
-    Atlas.breadcrumbs(store, $('atlas-breadcrumbs'), poi);
+    Atlas.trail(store, $('atlas-trail'), poi);
 
     const fact = (key, html) => { $(`poi-${key}`).innerHTML = html; $(`poi-${key}-fact`).hidden = false; };
     // A place inside another POI: link to it, straight to this pin when it has one

@@ -104,5 +104,42 @@
     "weight": "weightless",
     "summary": "A phial filled with air",
     "body": "This phial is filled with air taken from a void anomaly. Its exact contents are unknown, and whether it actually contains something is a mystery."
+  },
+  {
+    "id": "purifying-tincture-of-ethereal-truesight",
+    "name": "Purifying Tincture of Ethereal Truesight",
+    "type": "Potion",
+    "rarity": "Rare",
+    "cost": "1900 gp",
+    "weight": "0.5 lb.",
+    "summary": "A chalky, star-flecked tincture in a long-necked onion bottle, smelling of graveyard loam and bitter almond.",
+    "body": "*As a Bonus Action, you can drink it or administer it to a creature within 5 feet of you.*\n\nFor 10 minutes, you have Truesight with a range of 60 feet.\n\n**Purifying.** When you drink it, you also lose 1 Exhaustion level, and the Charmed and Frightened conditions end on you.\n\n**Ancestral Haunting.** You hear the whispers of the dead: make a DC 13 Wisdom saving throw or have the Stunned condition until the end of your next turn.\n\n*It leaves the drinker's tongue violet for an hour.*",
+    "potion": {
+      "seed": "Z5NK0B",
+      "recipe": {
+        "vessel": "onion-bottle",
+        "solvent": "grave-milk",
+        "active": "astral-lotus",
+        "catalyst": "phoenix-soot"
+      },
+      "studio": {
+        "showSeal": true,
+        "showLabel": true,
+        "wax": "auto",
+        "stamp": "auto",
+        "neck": "auto",
+        "vellum": "auto",
+        "glass": "auto",
+        "stopper": "auto",
+        "texture": "auto",
+        "fillOverrideActive": false,
+        "fillValue": 65,
+        "colorEnable": false,
+        "col1": "#e74c3c",
+        "col2": "#f39c12",
+        "labelText": "",
+        "labelSub": ""
+      }
+    }
   }
 ]

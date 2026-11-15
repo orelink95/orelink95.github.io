@@ -9,7 +9,7 @@
         <div class="library-footer__links">
             <button class="library-footer__link" onclick="toggleModal()">Privacy Scroll</button>
             <button class="library-footer__link" onclick="toggleModal()">Terms of Service</button>
-            <button class="library-footer__link" onclick="toggleModal()">The Scribe's Guild</button>
+            <button class="library-footer__link" onclick="toggleModal('guild-modal')">The Scribe's Guild</button>
         </div>
 
         <div class="site-footer__credit">
@@ -36,5 +36,36 @@
         <p class="archive-modal__text">The archive remains silent on these matters... for
             now.</p>
         <button class="archive-modal__button" onclick="toggleModal()">Dismiss Scroll</button>
+    </div>
+</div>
+
+<!-- The Scribe's Guild: the hidden workshops (sigil maker, potion maker) -->
+<div class="archive-modal hidden" id="guild-modal" role="dialog" aria-modal="true" aria-labelledby="guild-modal-title">
+    <div class="archive-modal__veil" onclick="toggleModal('guild-modal')"></div>
+    <div class="archive-modal__card guild-card">
+        <div class="archive-modal__corner-tl"></div>
+        <div class="archive-modal__corner-tr"></div>
+        <div class="archive-modal__corner-bl"></div>
+        <div class="archive-modal__corner-br"></div>
+        <div class="archive-modal__glow-void"></div>
+        <div class="archive-modal__glow-ethereal" style="animation-delay: 1.5s"></div>
+        <span class="archive-modal__icon material-symbols-outlined" aria-hidden="true">ink_pen</span>
+        <h2 class="archive-modal__title" id="guild-modal-title">The Scribe's Guild</h2>
+        <p class="archive-modal__text">Behind a loose shelf, the guild keeps its workshops.</p>
+        <ul class="guild-relics">
+            <li><a class="guild-relic" href="sigil-maker.html">
+                <span class="guild-relic__icon material-symbols-outlined" aria-hidden="true">flare</span>
+                <span class="guild-relic__text"><span class="guild-relic__name">Sigil Grimoire</span>
+                    <span class="guild-relic__line">Draw a magic circle, ring by ring.</span></span>
+                <span class="guild-relic__go material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+            </a></li>
+            <li><a class="guild-relic" href="admin_tools/potion-maker.html?guild">
+                <span class="guild-relic__icon material-symbols-outlined" aria-hidden="true">science</span>
+                <span class="guild-relic__text"><span class="guild-relic__name">The Potion Maker</span>
+                    <span class="guild-relic__line">Mix three reagents and bottle what comes out.</span></span>
+                <span class="guild-relic__go material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+            </a></li>
+        </ul>
+        <button class="archive-modal__button" onclick="toggleModal('guild-modal')">Close the Door</button>
     </div>
 </div>

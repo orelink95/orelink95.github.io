@@ -19,6 +19,9 @@ admin dashboard all read this file; nothing else describes the data.
 ※ FIELD KINDS ※
 text · markdown · number · boolean · image · url · list (of strings)
 date (YYYY-MM-DD) · time (HH:MM, 24 h)
+worlddate ({year, month, day, approx}: a date of the world's calendar, data/calendar.json;
+           month and day optional; approx = “c.”. With yearly: true, a date that comes back
+           every year: {month, day}, no year)
 enum (options | enum: '<name of a shared enum below>')
 ref / refs (to: [types]) · map ({x, y, icon, layer, on}) · mapImage
 object (fields) · objects (array; fields) · json (free-form, raw)
@@ -122,6 +125,56 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     currentCampaign: { kind: 'ref', to: ['campaign'], label: 'Current campaign', help: 'What every campaign drop-down opens on (NPCs, Heroes, Factions, Pantheon, boards, scriptorium) and which Elder gods are sealed by default. In the dashboard: the ✓ of rumour lists and the campaign of new rumours and notices.' },
                 },
             },
+            /* The world's calendar (scripts/core/calendar.js): every in-world date of the site is
+               written with it (sessions, the timeline). */
+            calendar: {
+                label: 'Calendar', icon: 'calendar_month', group: 'Site', workspace: 'site',
+                file: 'data/calendar.json',
+                page: 'timeline.html',
+                sections: ['Era', 'Months', 'Week', 'Seasons', 'Moons', 'Now'],
+                fields: {
+                    era: { kind: 'text', label: 'Era (short)', width: 'quarter', section: 'Era', help: 'After the year: 1693 LF.' },
+                    eraName: { kind: 'text', label: 'Era (in full)', section: 'Era', help: 'Leviathans’ Fall. Year 1 is its first year.' },
+                    before: { kind: 'text', label: 'Before the first year', section: 'Era', help: 'The undated ages on the timeline. Empty = The Old Days.' },
+                    months: {
+                        kind: 'objects', label: 'Months', itemLabel: ['name', 'days'], section: 'Months', help: 'In order, from the first month of the year.',
+                        fields: {
+                            name: { kind: 'text', label: 'Name', required: true },
+                            days: { kind: 'number', label: 'Days', required: true },
+                        },
+                    },
+                    leap: {
+                        kind: 'object', label: 'Leap day', section: 'Months', help: 'Every few years, one month has a day more.',
+                        fields: {
+                            month: { kind: 'text', label: 'Month', width: 'third', help: 'Gets the extra day (at its end).' },
+                            every: { kind: 'number', label: 'Every … years', width: 'third' },
+                            year: { kind: 'number', label: 'A leap year', width: 'third', help: 'Any year that has the leap day: the others are counted from it.' },
+                        },
+                    },
+                    weekdays: { kind: 'list', label: 'Days of the week', lines: true, section: 'Week', help: 'One per line, in order. The week runs on across months and years.' },
+                    anchor: { kind: 'worlddate', label: 'A date…', section: 'Week', help: 'Any date whose weekday you know: every other weekday is counted from it.' },
+                    anchorWeekday: { kind: 'text', label: '…falls on', section: 'Week', width: 'third' },
+                    seasons: {
+                        kind: 'objects', label: 'Seasons', itemLabel: ['name', 'days'], section: 'Seasons',
+                        help: 'In order, from the first day of the year. The last one takes what is left of the year (a day fewer in a common year).',
+                        fields: {
+                            name: { kind: 'text', label: 'Name', required: true },
+                            days: { kind: 'number', label: 'Days', width: 'third' },
+                            colour: { kind: 'text', color: true, label: 'Colour', width: 'third' },
+                        },
+                    },
+                    moons: {
+                        kind: 'objects', label: 'Moons', itemLabel: ['name', 'cycle'], section: 'Moons',
+                        fields: {
+                            name: { kind: 'text', label: 'Name', required: true },
+                            cycle: { kind: 'number', label: 'Cycle (days)', width: 'third', help: 'From one full moon to the next.' },
+                            colour: { kind: 'text', color: true, label: 'Colour', width: 'third' },
+                            full: { kind: 'worlddate', label: 'A full moon', help: 'Any date it was full: every phase is counted from it.' },
+                        },
+                    },
+                    now: { kind: 'worlddate', label: 'Today in the world', section: 'Now', help: 'The “year now” of the timeline. Empty = the date of the latest session.' },
+                },
+            },
             /* The "Upcoming Sessions" cards of the homepage (scripts/upcoming-sessions.js). */
             schedule: {
                 label: 'Upcoming sessions', icon: 'event_upcoming', group: 'Site', workspace: 'site',
@@ -221,6 +274,19 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* Each school has its hue and symbols in styles/spell-card.css (.school--<name in lowercase>) */
             spellSchool: ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation', 'Blood', 'Chaos', 'Void'],
             questStatus: ['Primary', 'Secondary'],
+            /* Festivals of the calendar (the Astrolabe's Calendar tab) */
+            festivalKind: [
+                { id: 'festival', label: 'Festival' },
+                { id: 'holy', label: 'Holy day' },
+                { id: 'market', label: 'Market or fair' },
+                { id: 'remembrance', label: 'Day of remembrance' },
+            ],
+            /* How an event looks on the timeline (timeline.html) */
+            eventKind: [
+                { id: 'event', label: 'Event' },
+                { id: 'major', label: 'Major event (a wide panel across the line)' },
+                { id: 'age', label: 'Start of an age (a seal on the line)' },
+            ],
             /* Faction evidence cards (factions-script.js) and their tags (.tag--<tone> in pages/factions.css) */
             intelKind: [
                 { id: 'note', label: 'Sealed note' },
@@ -1012,7 +1078,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 fields: {
                     campaign: { kind: 'ref', to: ['campaign'], label: 'Campaign', required: true },
                     number: { kind: 'number', label: 'Session number', required: true, help: 'Sets the order (highest = latest); not shown.' },
-                    date: { kind: 'text', label: 'In-world date' },
+                    date: { kind: 'worlddate', label: 'In-world date', help: 'Empty = unknown: the timeline puts the session between its neighbours.' },
                     region: { kind: 'text', label: 'Region' },
                     arc: { kind: 'text', label: 'Arc' },
                     summary: { kind: 'text', label: 'Summary', long: true },
@@ -1030,6 +1096,50 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     futureLeads: { kind: 'list', label: 'Future leads', lines: true, section: 'Loot & leads' },
                     keywords: { kind: 'list', label: 'Search keywords' },
                     body: { kind: 'markdown', label: 'Transcript', section: 'Transcript' },
+                },
+            },
+            /* The Astrolabe (timeline.html), the timeline: the world's history. Sessions take their place on it too, by
+               their own date. An event marked `sealed` is hidden history: a sealed page until a campaign
+               lists it in `revealedIn` (store.revealed), like the Elder gods. */
+            event: {
+                label: 'Event', plural: 'The Astrolabe', navLabel: 'Astrolabe', icon: 'hourglass_top', group: 'Campaigns', workspace: 'chronicle',
+                file: 'data/events.json',
+                page: 'timeline.html?event={id}',
+                sections: ['Essentials', 'When', 'Look', 'Lore', 'Hidden history'],
+                fields: {
+                    kind: { kind: 'enum', enum: 'eventKind', label: 'Shown as', help: 'Empty = an event.' },
+                    summary: { kind: 'text', label: 'Summary', long: true, help: 'Always shown on the timeline.' },
+                    oldDays: { kind: 'boolean', label: 'In the Old Days', section: 'When', help: 'Before the first year: no date, only an order.' },
+                    order: { kind: 'number', label: 'Order in the Old Days', section: 'When', showIf: { key: 'oldDays', set: true }, help: '1 = the oldest.' },
+                    date: { kind: 'worlddate', label: 'Date', section: 'When', showIf: { key: 'oldDays', empty: true }, help: 'A year is enough. Tick “about” for “c. 993 LF”. With a month and a day, it is on the calendar.' },
+                    yearly: { kind: 'boolean', label: 'Remembered every year', section: 'When', showIf: { key: 'oldDays', empty: true }, help: 'An anniversary: on the calendar on its day every year after it, not only in its year.' },
+                    end: { kind: 'worlddate', label: 'Until', section: 'When', showIf: { key: 'oldDays', empty: true }, help: 'For a war, a reign, an age… Empty = a single moment.' },
+                    colour: { kind: 'text', color: true, label: 'Colour', section: 'Look', width: 'third', help: 'Its panel, its icon and the line of light around it. Empty = gold (a major event: red).' },
+                    icon: { kind: 'text', icon: true, label: 'Icon', section: 'Look', width: 'third', help: 'A Material Symbols name (swords, castle, skull…), on the line in place of the star.' },
+                    iconImage: { kind: 'image', label: 'Icon (your own picture)', section: 'Look', help: 'Replaces the Material icon. An SVG is tinted in the event’s colour; another picture is shown as it is.' },
+                    body: { kind: 'markdown', label: 'Lore', section: 'Lore', help: 'Shown when the event is opened.' },
+                    image: { kind: 'image', label: 'Picture', section: 'Lore', help: 'Optional, shown when the event is opened.' },
+                    links: { kind: 'refs', to: ['continent', 'country', 'settlement', 'district', 'poi', 'npc', 'faction', 'deity', 'creature', 'item', 'tome', 'lore'], label: 'Linked', section: 'Lore', help: 'Shown when the event is opened, with their preview cards.' },
+                    sealed: { kind: 'boolean', label: 'Hidden history', section: 'Hidden history', help: 'A sealed page on the timeline until a campaign learns it.' },
+                    revealedIn: { kind: 'refs', to: ['campaign'], label: 'Learned in', section: 'Hidden history', showIf: { key: 'sealed', set: true } },
+                },
+            },
+            /* Celebrations that come back every year, on the Astrolabe's Calendar tab and the
+               homepage's “Today in Eraldom” card. `campaigns` empty = known in every campaign. */
+            festival: {
+                label: 'Festival', plural: 'Festivals', icon: 'celebration', group: 'Campaigns', workspace: 'chronicle',
+                file: 'data/festivals.json',
+                page: 'timeline.html?view=calendar&festival={id}',
+                sections: ['Essentials', 'When', 'Lore'],
+                fields: {
+                    kind: { kind: 'enum', enum: 'festivalKind', label: 'Kind', help: 'Empty = a festival.' },
+                    summary: { kind: 'text', label: 'Summary', long: true, help: 'Shown on the calendar and on the homepage card.' },
+                    on: { kind: 'worlddate', yearly: true, label: 'Every year on', section: 'When', required: true },
+                    days: { kind: 'number', label: 'Lasts (days)', section: 'When', width: 'third', help: 'Empty = one day.' },
+                    body: { kind: 'markdown', label: 'Lore', section: 'Lore', help: 'Shown when the day is chosen on the calendar.' },
+                    deity: { kind: 'ref', to: ['deity'], label: 'In honour of', section: 'Lore' },
+                    places: { kind: 'refs', to: ['continent', 'country', 'settlement', 'district', 'poi'], label: 'Where', section: 'Lore', help: 'Empty = everywhere.' },
+                    campaigns: { kind: 'refs', to: ['campaign'], label: 'Known in', section: 'Lore', help: 'Empty = every campaign.' },
                 },
             },
             hero: {

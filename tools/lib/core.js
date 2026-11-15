@@ -8,7 +8,7 @@ const ROOT = path.resolve(__dirname, '..', '..');
 
 function loadCore() {
     const ctx = vm.createContext({ console });
-    for (const file of ['data/schema.js', 'scripts/core/markdown.js', 'scripts/core/store.js']) {
+    for (const file of ['data/schema.js', 'scripts/core/markdown.js', 'scripts/core/calendar.js', 'scripts/core/store.js']) {
         vm.runInContext(fs.readFileSync(path.join(ROOT, file), 'utf8'), ctx, { filename: file });
     }
     return ctx.Athenaeum;

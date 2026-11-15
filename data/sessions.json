@@ -4,7 +4,11 @@
     "name": "The Shadow Takes All",
     "campaign": "echoes-from-the-void",
     "number": 6,
-    "date": "Eksten 7, Pholawal 1693 LF",
+    "date": {
+      "year": 1693,
+      "month": "Pholawal",
+      "day": 7
+    },
     "region": "Brightend, Maltona",
     "arc": "Remnants of the Past",
     "summary": "The party investigated a string of thefts, captured a shadow-infused thief, and discovered a terrifying alchemical conspiracy tied to other planes of existence.",
@@ -68,7 +72,11 @@
     "name": "Stretched thin",
     "campaign": "echoes-from-the-void",
     "number": 4,
-    "date": "Pemtasten 6 Pholawal, 1693LF",
+    "date": {
+      "year": 1693,
+      "month": "Pholawal",
+      "day": 6
+    },
     "region": "Brightend, Maltona",
     "arc": "Remnants of the Past",
     "summary": "The party was led Grand Warden Foll who give them partial jurisdiction to investigate a series of crimes. They started by focusing on a string of strange murders.",
@@ -115,7 +123,11 @@
     "name": "Back in Brightend",
     "campaign": "echoes-from-the-void",
     "number": 3,
-    "date": "Pemtasten 6 Pholawal, 1693LF",
+    "date": {
+      "year": 1693,
+      "month": "Pholawal",
+      "day": 6
+    },
     "region": "Brightend, Maltona",
     "arc": "Remnants of the Past",
     "summary": "After rescuing Maera Voss and escaping the Vale House, the party discovered a highly coordinated thieve's guild had stolen their prize.",
@@ -175,7 +187,6 @@
     "name": "Secrets of the Vale House",
     "campaign": "echoes-from-the-void",
     "number": 2,
-    "date": "???",
     "region": "The Vale House",
     "arc": "Remnants of the Past",
     "summary": "The party explored the impossible mansion, battling animated furniture and uncovering the disturbing, time-displaced experiments of its ancient masters.",
@@ -228,7 +239,11 @@
     "name": "A Tome Twice Missing",
     "campaign": "echoes-from-the-void",
     "number": 1,
-    "date": "Deftesten 3 Pholawal, 1693LF",
+    "date": {
+      "year": 1693,
+      "month": "Pholawal",
+      "day": 3
+    },
     "region": "Brightend, Eperina",
     "arc": "Remnants of the Past",
     "summary": "Hired by Lord White and two anxious scholars, the party tracked a missing academic through a disappearing door into an impossible pocket dimension.",
@@ -298,7 +313,11 @@
     "name": "Nearing the end",
     "campaign": "last-sigil",
     "number": 9,
-    "date": "Prostaten 5 Egirawal, 1693LF",
+    "date": {
+      "year": 1693,
+      "month": "Egirawal",
+      "day": 5
+    },
     "region": "The Wildlands",
     "arc": "Main",
     "summary": "Racing against the decaying Sigil after parting from the Otters, the party braved a perilous descent through a basalt scree chute and arrived at a gravity-warping Void rift. After Eli captured a sample of the anomalous air in a phial, the heroes rescued a man trapped in the abyss's pull—Jerry, an advance scout from Silverbrook. Jerry guided them through the dense woods where they slew an ambushing Ulnorya aberration, finally escorting them into the unexpectedly rebuilt, thriving ruins of Silverbrook. At the local tavern, the Stoat and Cellar, the party parlayed a hearty meal and a game of knucklebones into a vital lead on Sam's whereabouts, spending their last coin on traveling supplies before setting out once more.",
@@ -334,7 +353,11 @@
     "name": "The lost temple",
     "campaign": "last-sigil",
     "number": 1,
-    "date": "Deftesten 28 Mystawal, 1693LF",
+    "date": {
+      "year": 1693,
+      "month": "Mystawal",
+      "day": 28
+    },
     "region": "Wolf's Cradle, Maltona",
     "arc": "Main",
     "summary": "Sent by the Athenaeum to investigate the ruins of an old temple near Lemerolai, the two scholars found themselves in a treacherous vault, which held many secrets.",
@@ -360,7 +383,11 @@
     "name": "The Sigil at the end of hall",
     "campaign": "last-sigil",
     "number": 2,
-    "date": "Deftesten 28 Mystawal, 1693LF",
+    "date": {
+      "year": 1693,
+      "month": "Mystawal",
+      "day": 28
+    },
     "region": "Wolf's Cradle, Maltona",
     "arc": "Main",
     "summary": "The mysterious Vault disturbs magic and the flow of time. The scholars try to move forward, despite the time-fuckery.  After two days, they find the source of these disturbances : an old magic artefact known as the Last Sigil was created eons ago by the Doleris, but it is now crumbling and it is affecting reality itself"

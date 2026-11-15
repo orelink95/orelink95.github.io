@@ -18,7 +18,8 @@
        store.md(text, {dropCap:true})         -> HTML
        store.autolink(html, {exclude: id})    -> names turned into links
                                                  (glossary terms too, as spans,
-                                                 with {terms: true})
+                                                 with {terms: true}); each has
+                                                 data-kw="<id>" (preview cards)
        store.find('The Gilded Goldfinch')     -> record by name or alias
        store.inCampaign(npc, 'last-sigil')    -> is an NPC / faction part of it
        store.standing(npc, 'last-sigil')      -> its relation (NPC) / status
@@ -27,8 +28,12 @@
        store.viewCampaign()                   -> the campaign the reader is looking at
                                                  (?campaign=…, else the one picked in
                                                  this tab, else settings.currentCampaign)
-       store.revealed(deity, campaignId)      -> false for an Elder god still sealed
-                                                 there (campaignId: default viewCampaign())
+       store.revealed(deity, campaignId)      -> false for an Elder god (or a hidden
+                                                 event) still sealed there
+                                                 (campaignId: default viewCampaign())
+       store.calendar                         -> the world's calendar (scripts/core/
+                                                 calendar.js, data/calendar.json):
+                                                 format, compare, weekday of world dates
        store.validate()                       -> {errors, warnings}
        store.world / store.settings           -> data/world.json, data/settings.json
    Node tools build a store from files with Athenaeum.createStore().
@@ -87,6 +92,9 @@
         const singletons = {};
         for (const name of Object.keys(schema.singletons || {})) singletons[name] = Object.assign({}, (singletonData || {})[name] || {});
 
+        // The world's calendar (scripts/core/calendar.js, loaded before this file)
+        const calendar = ATH.makeCalendar ? ATH.makeCalendar(singletons.calendar) : null;
+
         const resolve = x => (typeof x === 'string' ? byId.get(x) : x) || null;
         const typeOf = x => { const r = resolve(x); return r ? typeOfRec.get(r) : null; };
 
@@ -102,6 +110,7 @@
             if (!rec) return [];
             const type = typeOfRec.get(rec);
             if (type === 'npc') return (rec.campaigns || []).filter(e => e && e.campaign).map(e => ({ campaign: e.campaign, value: e.relation }));
+            if (type === 'festival') return (rec.campaigns || []).filter(Boolean).map(c => ({ campaign: c }));
             if (type === 'faction') return (byType.campaign || []).flatMap(c => (c.standings || []).filter(s => s && s.faction === rec.id).map(s => ({ campaign: c.id, value: s.status })));
             return [];
         }
@@ -136,10 +145,14 @@
             return [asked, kept, (singletons.settings || {}).currentCampaign].find(ok) || 'all';
         }
         /* Gods of every tier are known to all, but an Elder god is sealed until a
-           campaign lists it in `revealedIn`. 'all' = revealed in at least one. */
+           campaign lists it in `revealedIn`; so is an event of the timeline marked
+           `sealed` (hidden history). 'all' = revealed in at least one. */
         function revealed(x, cid) {
             const rec = resolve(x);
-            if (!rec || typeOfRec.get(rec) !== 'deity' || rec.tier !== 'elder') return true;
+            if (!rec) return true;
+            const t = typeOfRec.get(rec);
+            const sealed = (t === 'deity' && rec.tier === 'elder') || (t === 'event' && rec.sealed);
+            if (!sealed) return true;
             const list = rec.revealedIn || [];
             const c = cid === undefined ? viewCampaign() : cid;
             return isAll(c) ? list.length > 0 : list.includes(c);
@@ -297,7 +310,8 @@
                     if (!t.href && !options.terms) return match;
                     const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
                     const attrs = typeof options.attrs === 'function' ? options.attrs(t.rec, match) : options.attrs;
-                    const extra = attrs ? ' ' + attrs : '';
+                    // data-kw: the record's id, for the preview cards (scripts/core/preview.js)
+                    const extra = ` data-kw="${t.id}"` + (attrs ? ' ' + attrs : '');
                     return t.href
                         ? `<a href="${t.href}" class="${cls}"${extra}>${match}</a>`
                         : `<span class="${cls}"${extra}>${match}</span>`;
@@ -341,6 +355,13 @@
                 case 'time':
                     if (typeof v !== 'string' || !/^([01]\d|2[0-3]):[0-5]\d$/.test(v)) error(`${where}: expected a time written HH:MM (24 h)`);
                     break;
+                case 'worlddate': {
+                    if (typeof v !== 'object' || Array.isArray(v)) { error(`${where}: expected a world date {year, month, day}`); break; }
+                    const problem = calendar ? calendar.check(v, { yearly: !!f.yearly }) : '';
+                    if (problem) error(`${where}: ${problem}`);
+                    Object.keys(v).filter(k => !['year', 'month', 'day', 'approx'].includes(k)).forEach(k => warn(`${where}.${k}: not part of a world date (ignored)`));
+                    break;
+                }
                 case 'number':
                     if (typeof v !== 'number' || Number.isNaN(v)) error(`${where}: expected a number`);
                     break;
@@ -626,6 +647,15 @@
                     if (card && pr.deck && card.deck !== pr.deck) warnings.push(`${where}.cards[${i}]: "${c.card}" is not in the deck of ${pr.id}`);
                 });
             }
+            // The timeline: every event needs a place on it
+            for (const ev of byType.event || []) {
+                const where = `[event] ${ev.id}`;
+                const hasDate = ev.date && ev.date.year !== undefined && ev.date.year !== '';
+                if (ev.oldDays && hasDate) warnings.push(`${where}.date: an event of the Old Days has no date (its order places it)`);
+                if (!ev.oldDays && !hasDate) warnings.push(`${where}.date: no date and not in the Old Days, so it is not on the timeline`);
+                if (calendar && hasDate && ev.end && ev.end.year !== undefined && !calendar.check(ev.date) && !calendar.check(ev.end) && calendar.compare(ev.end, ev.date) < 0) errors.push(`${where}.end: before its date`);
+                if (ev.sealed && !(ev.revealedIn || []).length) warnings.push(`${where}.revealedIn: hidden history no campaign has learned yet (a sealed page everywhere)`);
+            }
             for (const r of byType.rumour || []) {
                 const w = resolve(r.where);
                 if (!w) continue;
@@ -644,7 +674,7 @@
             plain: t => (ATH.mdPlain ? ATH.mdPlain(t) : t),
             autolink, validate,
             campaignEntries, inCampaign, standing,
-            viewCampaign, revealed,
+            viewCampaign, revealed, calendar,
         };
     }
 

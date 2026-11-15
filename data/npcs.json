@@ -352,5 +352,19 @@
     "quote": "There are myriads of worlds beyond our own.",
     "home": "great-readers-office",
     "biography": "Often invited to Runebridge University, Savikas was once attacked on her way there. Despite her extensive spell casting abilities and her security detail, she came back scared and with a certain apprehension of leaving the confines of the Athenaeum. "
+  },
+  {
+    "id": "lars-enrik",
+    "name": "Lars Enrik",
+    "role": "Priest of Pholtos",
+    "summary": "The ever peaceful orc has been at the head of the Brightend Temple of Pholtos for two decades and is really loved by most people in the Cloud District.",
+    "quote": "All in good time",
+    "portrait": "images/lars-enrik.jpg",
+    "avatar": "images/avatars/lars-enrik-portrait.jpg",
+    "home": "temple-of-pholtos",
+    "species": "Orc",
+    "age": "61",
+    "gender": "Male",
+    "relation": "Ally (Friendly)"
   }
 ]

@@ -189,20 +189,6 @@
     position: relative;
 }
 
-/* Tooltip Styling */
-#keyword-tooltip {
-    position: fixed;
-    z-index: 200;
-    width: 280px;
-    background: #1a1c1a;
-    border: 1px solid #e9c176;
-    /* Default border, will be changed by JS */
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
-    display: none;
-    pointer-events: auto;
-}
 
 /* =========================================
    LIBRARY OF AGES (Landing Page Styles)

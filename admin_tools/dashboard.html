@@ -465,6 +465,9 @@
         .help { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-faint); }
         .fld-box { padding: 14px 16px; border-radius: 10px; background: #ffffff05; border: 1px solid var(--line); }
         .mini { font-size: 12px; color: var(--ink-faint); flex: none; }
+        .wdate select { flex: 1; min-width: 120px; }
+        .wdate__about { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+        .wdate__day { min-width: 72px; font-style: italic; }
         .map-row { flex-wrap: wrap; }
         .map-row select, .map-row input:not(.num-s) { width: auto !important; min-width: 150px; flex: 1; }
         .sealed-status { margin: 0; font-style: italic; color: var(--ink-dim); }
@@ -1171,6 +1174,7 @@
     <script>window.Athenaeum = { manualLoad: true };</script>
     <script src="../data/schema.js"></script>
     <script src="../scripts/core/markdown.js"></script>
+    <script src="../scripts/core/calendar.js"></script>
     <script src="../scripts/core/store.js"></script>
     <script src="../scripts/core/look.js"></script>
     <script src="../scripts/core/seal.js"></script>

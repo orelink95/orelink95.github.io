@@ -1,0 +1,406 @@
+/* =====================================================================
+   PREVIEWS — the card over a linked name (scripts/core/preview.js).
+   Loaded by general-scripts.js on every page that loads the store.
+   .pv-pop    the hover card (mouse, keyboard)
+   .pv-sheet  the bottom sheet (touch)
+   .pv        the card itself; .pv--<kind> sets --pv (its edge and kicker
+              colour), the same colours as the links (.kw-* in main-style.css)
+   ===================================================================== */
+
+/* ---------- colours per kind ---------- */
+.pv--person  { --pv: #66c488; --pv-ink: #66c488; }
+.pv--place   { --pv: #559df7; --pv-ink: #6aa8f8; }
+.pv--monster { --pv: #bd6363; --pv-ink: #e08585; }
+.pv--faction { --pv: #fb923c; --pv-ink: #fb923c; }
+.pv--lore    { --pv: #e9c176; --pv-ink: #e9c176; }
+.pv--object  { --pv: #7b49d8; --pv-ink: #ad8cf2; }
+.pv--spell   { --pv: #4fb8c4; --pv-ink: #5ec6d2; }
+.pv--deity   { --pv: #f3dc9b; --pv-ink: #f3dc9b; }
+
+/* Spell schools: the hues of styles/spell-card.css (.school--*) */
+.pv--school-abjuration    { --school: #3b67b0; }
+.pv--school-conjuration   { --school: #c98a2c; }
+.pv--school-divination    { --school: #2f8f9a; }
+.pv--school-enchantment   { --school: #c75f8c; }
+.pv--school-evocation     { --school: #c4482c; }
+.pv--school-illusion      { --school: #7b52c0; }
+.pv--school-necromancy    { --school: #3f7a4f; }
+.pv--school-transmutation { --school: #7d7d4a; }
+.pv--school-blood         { --school: #8c1c2c; }
+.pv--school-chaos         { --school: #a8329a; }
+.pv--school-void          { --school: #34305e; }
+
+/* ---------- the hover card ---------- */
+.pv-pop {
+    position: fixed;
+    z-index: 300;
+    width: 320px;
+    max-width: calc(100vw - 16px);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 140ms var(--ease), transform 140ms var(--ease);
+    pointer-events: auto;
+}
+.pv-pop.is-above { transform: translateY(-4px); }
+.pv-pop.is-shown { opacity: 1; transform: none; }
+.pv-pop[hidden] { display: none; }
+
+/* ---------- the card ---------- */
+.pv {
+    box-sizing: border-box;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--pv) 45%, transparent);
+    border-top: 2px solid var(--pv);
+    border-radius: 10px;
+    background: var(--color-surface-container-low);
+    box-shadow: 0 18px 40px rgb(0 0 0 / 0.55), 0 2px 6px rgb(0 0 0 / 0.4);
+    color: var(--color-on-surface);
+    font-family: var(--font-body);
+    text-align: left;
+    line-height: normal;
+}
+
+.pv-kicker {
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pv-ink);
+}
+.pv-name {
+    margin-top: 3px;
+    font-family: var(--font-headline);
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--color-on-surface);
+}
+.pv-sub {
+    margin-top: 3px;
+    font-family: var(--font-label);
+    font-size: 12px;
+    color: var(--color-on-surface-variant);
+}
+.pv-sub--under { margin: 0; padding: 0 16px; }
+
+/* Head: thumbnail + titles */
+.pv-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 16px 0;
+}
+.pv-head--text { display: block; }
+.pv-titles { display: flex; flex-direction: column; min-width: 0; }
+
+.pv-thumb {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border: 1px solid color-mix(in srgb, var(--pv) 50%, transparent);
+    background: var(--color-surface);
+}
+.pv-thumb--round { border-radius: 50%; }
+.pv-thumb--square { border-radius: 8px; }
+.pv-thumb--medallion {
+    box-sizing: border-box;
+    padding: 8px;
+    border-radius: 50%;
+    object-fit: contain;
+    border-color: color-mix(in srgb, var(--glow, var(--pv)) 60%, transparent);
+    background: radial-gradient(circle, #2a2410 0%, var(--color-surface) 75%);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--glow, var(--pv)) 25%, transparent);
+}
+.pv-thumb--initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: var(--color-secondary);
+    color: var(--color-surface);
+    font-family: var(--font-headline);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+/* Head: picture banner (places, creatures) */
+.pv-banner {
+    position: relative;
+    height: 132px;
+    overflow: hidden;
+}
+.pv-banner__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.pv-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgb(26 28 26 / 0) 30%, rgb(26 28 26 / 0.85) 78%, var(--color-surface-container-low) 100%);
+}
+.pv-banner .pv-titles {
+    position: absolute;
+    z-index: 1;
+    left: 16px;
+    right: 16px;
+    bottom: 6px;
+}
+/* The picture failed to load: titles only */
+.pv .pv-banner.is-empty { height: auto; padding: 16px 16px 0; }
+.pv-banner.is-empty::after { display: none; }
+.pv-banner.is-empty .pv-titles { position: static; }
+
+/* Head: spells */
+.pv-head--spell {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-surface-container-high);
+    background: linear-gradient(90deg, color-mix(in srgb, var(--school, #444) 22%, transparent), transparent 80%);
+}
+.pv-level {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--school, #444);
+    border-radius: 50%;
+    background: var(--color-surface);
+    color: var(--color-secondary-fixed);
+    font-family: var(--font-headline);
+    font-size: 18px;
+    font-weight: 600;
+}
+.pv-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    border-bottom: 1px solid var(--color-surface-container-high);
+    background: var(--color-surface-container-high);
+}
+.pv-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    background: var(--color-surface-container-low);
+    min-width: 0;
+}
+.pv-stat__label {
+    font-family: var(--font-label);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-outline);
+}
+.pv-stat__value {
+    font-family: var(--font-label);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    overflow-wrap: anywhere;
+}
+
+/* Body */
+.pv-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 16px 14px;
+}
+.pv-summary {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--color-on-surface);
+}
+.pv-quote {
+    margin: 0;
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.4;
+    color: var(--color-on-surface-variant);
+}
+.pv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pv-chip {
+    padding: 3px 9px;
+    border: 1px solid var(--color-outline-variant);
+    border-radius: 999px;
+    background: var(--color-surface-container-high);
+    font-family: var(--font-label);
+    font-size: 11px;
+    color: var(--color-on-surface-variant);
+}
+.pv-chip--offer {
+    border-color: color-mix(in srgb, var(--color-secondary) 45%, transparent);
+    background: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+    color: var(--color-secondary);
+}
+.pv-chip--danger { border-color: rgb(255 143 132 / 0.5); color: #ff8f84; font-weight: 700; }
+.pv-chip--safe { border-color: rgb(102 196 136 / 0.5); color: #66c488; }
+.pv-chip--threat {
+    border-color: color-mix(in srgb, var(--threat, #fff) 40%, transparent);
+    background: rgb(0 0 0 / 0.4);
+    color: var(--threat);
+    font-weight: 700;
+}
+
+/* The campaign row */
+.pv-camp {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    border: 1px solid var(--color-surface-container-high);
+    border-radius: 8px;
+    background: var(--color-surface);
+}
+.pv-camp__name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-label);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-outline);
+}
+.pv-camp__value {
+    flex-shrink: 0;
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 700;
+}
+.pv-rel--ally    { color: #66c488; }
+.pv-rel--neutral { color: var(--color-on-surface-variant); }
+.pv-rel--wary    { color: #fb923c; }
+.pv-rel--hostile { color: #ff8f84; }
+.pv-rel--killed  { color: var(--color-outline); text-decoration: line-through; }
+.pv-rel--unknown { color: var(--color-outline); }
+
+/* Foot */
+.pv-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 16px 10px;
+    border-top: 1px solid var(--color-surface-container-high);
+    font-family: var(--font-label);
+    font-size: 11px;
+    color: var(--color-outline);
+}
+.pv-foot__where {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.pv-foot__open {
+    flex-shrink: 0;
+    margin-left: auto;
+    color: var(--color-secondary);
+    font-weight: 700;
+    text-decoration: none;
+}
+.pv-foot__open:hover { color: var(--color-secondary-fixed); }
+
+/* ---------- the touch sheet ---------- */
+.pv-locked, .pv-locked body { overflow: hidden; }
+
+.pv-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+}
+.pv-sheet[hidden] { display: none; }
+.pv-sheet__backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    border: 0;
+    background: rgb(0 0 0 / 0.55);
+    cursor: pointer;
+}
+.pv-sheet__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-top: 2px solid var(--color-outline-variant);
+    border-radius: 18px 18px 0 0;
+    background: var(--color-surface-container-low);
+    box-shadow: 0 -12px 40px rgb(0 0 0 / 0.6);
+    transform: translateY(100%);
+    transition: transform 200ms var(--ease);
+}
+.pv-sheet.is-open .pv-sheet__panel { transform: none; }
+.pv-sheet__panel:focus { outline: none; }
+.pv-sheet__handle {
+    display: block;
+    width: 40px;
+    height: 4px;
+    margin: 8px auto 2px;
+    border-radius: 4px;
+    background: var(--color-outline-variant);
+}
+.pv-sheet__actions {
+    display: flex;
+    gap: 10px;
+    padding: 4px 16px calc(20px + env(safe-area-inset-bottom));
+}
+.pv-sheet__open,
+.pv-sheet__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    border-radius: 10px;
+    font-family: var(--font-label);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+.pv-sheet__open {
+    flex: 1;
+    border: 0;
+    background: var(--color-secondary);
+    color: var(--color-on-secondary-fixed);
+}
+.pv-sheet__close {
+    min-width: 96px;
+    border: 1px solid var(--color-outline-variant);
+    background: var(--color-surface-container-high);
+    color: var(--color-on-surface);
+}
+
+/* The card inside the sheet: flat, larger */
+.pv--sheet {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.pv--sheet .pv-banner { height: 168px; }
+.pv--sheet .pv-thumb { width: 84px; height: 84px; }
+.pv--sheet .pv-summary { -webkit-line-clamp: 5; font-size: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .pv-pop, .pv-sheet__panel { transition: none; }
+}

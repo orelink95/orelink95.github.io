@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const campaigns = store.all('campaign').slice().sort((a, b) => a.name.localeCompare(b.name));
     const sessionsOf = id => store.all('session').filter(s => s.campaign === id);
     const itemName = id => (store.get(id) || {}).name || id;
+    // A session's in-world date, written with the world's calendar (data/calendar.json)
+    const worldDate = d => (store.calendar && d ? store.calendar.format(d) : '');
     // An item from a session's loot: a link to its card in the Vault when it exists
     const itemLink = (id, cls, inner) => {
         const href = store.get(id) ? store.url(id) : null;
@@ -101,40 +103,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Keywords: names of NPCs, places, factions and creatures become links; glossary
-    // terms (data/lore.json) become spans that search the chronicle. Anything with a
-    // summary or a definition shows it as a tooltip.
-    const KW_TYPE = { npc: 'person', faction: 'faction', creature: 'monster', lore: 'lore', item: 'object' };
-    const kwKind = rec => rec.kind || KW_TYPE[store.typeOf(rec)] || 'place';
-    const tipOf = rec => rec.definition || rec.summary || rec.shortDesc || '';
+    // terms (data/lore.json) become spans that search the chronicle. Hovering any of
+    // them opens its preview card (scripts/core/preview.js).
     function keywordAttrs(rec) {
-        const tip = tipOf(rec) ? ` onmouseenter="showTooltip(event, '${rec.id}')"` : '';
-        if (store.typeOf(rec) === 'lore') return `onclick="event.stopPropagation(); triggerSearch('${rec.id}')"${tip}`;
-        return `onclick="event.stopPropagation()"${tip}`;
+        if (store.typeOf(rec) === 'lore') return `onclick="event.stopPropagation(); triggerSearch('${rec.id}')"`;
+        return `onclick="event.stopPropagation()"`;
     }
     const handoutsData = store.all('handout').filter(h => !h.draft);
 
+    // Handout names become links to the handout's file (their preview card says
+    // what it is). One pass, longest names first, never inside another link or a
+    // {kept plain} name.
+    const handoutByName = new Map(handoutsData.map(h => [h.name.toLowerCase(), h]));
+    const handoutRe = handoutsData.length ? new RegExp(`(?<![\\p{L}\\p{N}])(${[...handoutsData]
+        .sort((a, b) => b.name.length - a.name.length)
+        .map(h => h.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})(?![\\p{L}\\p{N}])`, 'giu') : null;
+    function linkHandouts(html) {
+        if (!handoutRe) return html;
+        let inAnchor = 0;
+        const spans = [];   // for each open <span>: is it a nolink one?
+        return html.split(/(<[^>]+>)/g).map(part => {
+            if (part.startsWith('<')) {
+                if (/^<a[\s>]/i.test(part)) inAnchor++;
+                else if (/^<\/a>/i.test(part)) inAnchor = Math.max(0, inAnchor - 1);
+                else if (/^<span[\s>]/i.test(part)) spans.push(/\bclass="[^"]*\bnolink\b/.test(part));
+                else if (/^<\/span>/i.test(part)) spans.pop();
+                return part;
+            }
+            if (!part || inAnchor || spans.includes(true)) return part;
+            return part.replace(handoutRe, match => {
+                const handout = handoutByName.get(match.toLowerCase());
+                if (!handout) return match;
+                return `<a href="${handout.file || '#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="keyword-link kw-object" data-kw="${handout.id}">${match}</a>`;
+            });
+        }).join('');
+    }
+
     function autoLinkContent(text, { markdown = false } = {}) {
         if (!text) return "";
-        let linkedText = markdown ? store.md(text) : text;
-
-        // NPCs, places, factions, creatures and glossary terms (from the data files)
-        linkedText = store.autolink(linkedText, { className: 'keyword-link', attrs: keywordAttrs, terms: true });
-
-        if (handoutsData.length) {
-            const sortedHandouts = [...handoutsData].sort((a, b) => b.name.length - a.name.length);
-            
-            sortedHandouts.forEach(handout => {
-                const safeTitle = handout.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                const regex = new RegExp(`\\b${safeTitle}\\b(?![^<]*>)`, 'gi');
-                
-                linkedText = linkedText.replace(regex, (match) => `
-                    <a href="${handout.file || '#'}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="keyword-link kw-object" onmousemove="showHandoutTooltip(event, '${handout.id}')" onmouseleave="hideHandoutTooltip()" title="Click to view evidence">${match}</a>`
-                );
-            });
-        }
-
-        return linkedText;
-    };
+        const html = markdown ? store.md(text) : text;
+        // Handouts first, so a handout named like an item or a place is the link;
+        // the store's names (NPCs, places, factions, creatures, items, glossary
+        // terms) never go inside it
+        return store.autolink(linkHandouts(html), { className: 'keyword-link', attrs: keywordAttrs, terms: true });
+    }
 
     function sessionPlaces(session) {
         return [
@@ -203,7 +215,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                                     <span class="timeline-entry__campaign-icon material-symbols-outlined">explore</span> ${current.name}
                                 </div>
 
-                                <p class="timeline-entry__date">${session.date || "Unknown Date"}</p>
+                                <p class="timeline-entry__date">${worldDate(session.date) || "Unknown Date"}</p>
                                 <h3 class="timeline-entry__title">${session.name}</h3>
                             </div>
                            <div class="timeline-entry__npcs">${npcTags}</div>
@@ -247,12 +259,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             arcs.map(arc => `<option value="${arc}">${arc}</option>`).join('');
     }
 
-    // --- TOOLTIP LOGIC ---
-    window.closeTooltip = () => {
-        const tt = document.getElementById('keyword-tooltip');
-        if (tt) tt.style.display = 'none';
-    };
-
+    // --- GLOSSARY TERMS: a click searches the chronicle ---
     window.triggerSearch = (term) => {
         const rec = store.get(term);
         if (rec) term = rec.name;   // called with a glossary id
@@ -260,145 +267,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             searchInput.value = term;
             document.getElementById('session-modal').classList.add('hidden');
             document.getElementById('story-modal').classList.add('hidden');
-            window.closeTooltip();
+            if (Athenaeum.preview) Athenaeum.preview.close();
             searchInput.dispatchEvent(new Event('input'));
         }
     };
-
-    window.showTooltip = (e, id) => {
-        const rec = store.get(id);
-        if (!rec) return;
-        const term = rec.name, definition = tipOf(rec), type = kwKind(rec);
-        const tt = document.getElementById('keyword-tooltip');
-        const title = document.getElementById('tooltip-title');
-
-        const typeColors = {
-            person: '#4ade80', place: '#60a5fa', monster: '#f87171', 
-            faction: '#fb923c', lore: '#e9c176', object: '#c084fc'
-        };
-
-        const activeColor = typeColors[type] || typeColors.lore;
-
-        if (tt.style.display !== 'block' || title.textContent !== term) {
-            tt.style.left = `${e.clientX + 15}px`; // fixed ? 
-            tt.style.top = `${e.clientY + 15}px`;  // fixed, hopefully
-        }
-
-        title.textContent = term;
-        title.style.color = activeColor;
-        tt.style.borderColor = activeColor;
-        // Markdown (glossary definitions; plain summaries come out the same)
-        document.getElementById('tooltip-body').innerHTML = store.md(definition);
-
-        tt.style.display = 'block';
-
-        if (typeof window.resetTooltipTimer === 'function') {
-            window.resetTooltipTimer();
-        }
-    };
-
-    window.showHandoutTooltip = (e, handoutId) => {
-        const tt = document.getElementById('handout-tooltip');
-        if (!tt) return;
-
-        const handout = handoutsData.find(h => h.id === handoutId);
-        if (!handout) return;
-
-        if (tt.getAttribute('data-current-id') !== handoutId) {
-            tt.setAttribute('data-current-id', handoutId);
-            
-            tt.innerHTML = `
-                <div class="handout-tip">
-                    <div class="handout-tip__glow"></div>
-
-                    <div class="handout-tip__head">
-                        <h3 class="handout-tip__title">${handout.name}</h3>
-                        <p class="handout-tip__category">${handout.category || ''}</p>
-                    </div>
-
-                    <div class="handout-tip__media">
-                        <div class="handout-tip__frame">
-                            <img src="${handout.thumbnail}" class="handout-tip__img">
-                            <div class="handout-tip__fade"></div>
-                        </div>
-
-                        <div class="handout-tip__seal-row">
-                            <div class="handout-tip__seal-line"></div>
-                            <div class="handout-tip__seal">
-                                <span class="handout-tip__seal-icon material-symbols-outlined">${(handout.icon || 'description').toLowerCase()}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="handout-tip__body">
-                        <p class="handout-tip__text">${handout.description || ''}</p>
-                        <div class="handout-tip__foot">
-                            <span class="handout-tip__place">
-                                <span class="handout-tip__place-icon material-symbols-outlined">location_on</span> ${handout.foundAt || ''}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        tt.style.left = `${e.clientX + 15}px`; 
-        tt.style.top = `${e.clientY + 20}px`;  
-        tt.style.display = 'block';
-    };
-
-    window.hideHandoutTooltip = () => {
-        const tt = document.getElementById('handout-tooltip');
-        if (tt) tt.style.display = 'none';
-    };
-
-    // --- DRAG & TIMER ENGINE ---
-    let tooltipTimeout;
-    const tt = document.getElementById('keyword-tooltip');
-    
-    if (tt) {
-        const ttHeader = tt.firstElementChild; 
-        
-        window.resetTooltipTimer = () => {
-            clearTimeout(tooltipTimeout);
-            tooltipTimeout = setTimeout(() => {
-                window.closeTooltip();
-            }, 8000); 
-        };
-
-        tt.addEventListener('mouseenter', () => clearTimeout(tooltipTimeout));
-        tt.addEventListener('mouseleave', window.resetTooltipTimer);
-
-        let isDragging = false;
-        let offsetX = 0;
-        let offsetY = 0;
-
-        if (ttHeader) {
-            ttHeader.style.cursor = 'grab';
-
-            ttHeader.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                ttHeader.style.cursor = 'grabbing';
-                
-                offsetX = e.clientX - parseInt(tt.style.left || 0, 10); 
-                offsetY = e.clientY - parseInt(tt.style.top || 0, 10);  
-                e.preventDefault(); 
-            });
-
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                tt.style.left = `${e.clientX - offsetX}px`; 
-                tt.style.top = `${e.clientY - offsetY}px`;  
-            });
-
-            document.addEventListener('mouseup', () => {
-                if (isDragging) {
-                    isDragging = false;
-                    ttHeader.style.cursor = 'grab';
-                }
-            });
-        }
-    }
+    // The same search from a term's preview card (the button of the sheet on phones)
+    Athenaeum.loreAction = { label: 'Search the Chronicle', run: id => window.triggerSearch(id) };
 
     // --- MODAL LOGIC ---
     window.openStoryFolio = () => {
@@ -447,7 +321,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <header class="folio__head">
                 <div class="folio__date-row">
                     <div class="folio__rule"></div>
-                    <p class="folio__date">${session.date || ''} — ${session.region || ''}</p>
+                    <p class="folio__date">${worldDate(session.date) || 'Unknown date'} — ${session.region || ''}</p>
                     <div class="folio__rule"></div>
                 </div>
                 <h1 class="folio__title">${session.name}</h1>

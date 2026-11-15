@@ -1,0 +1,124 @@
+{
+  "era": "LF",
+  "eraName": "Leviathans’ Fall",
+  "before": "The Old Days",
+  "months": [
+    {
+      "name": "Arawal",
+      "days": 31
+    },
+    {
+      "name": "Gemawal",
+      "days": 30
+    },
+    {
+      "name": "Mystawal",
+      "days": 30
+    },
+    {
+      "name": "Egirawal",
+      "days": 31
+    },
+    {
+      "name": "Pemdawal",
+      "days": 28
+    },
+    {
+      "name": "Pholawal",
+      "days": 31
+    },
+    {
+      "name": "Meliawal",
+      "days": 32
+    },
+    {
+      "name": "Nelawal",
+      "days": 29
+    },
+    {
+      "name": "Kiriawal",
+      "days": 27
+    },
+    {
+      "name": "Syrawal",
+      "days": 29
+    },
+    {
+      "name": "Morawal",
+      "days": 32
+    },
+    {
+      "name": "Hemawal",
+      "days": 31
+    },
+    {
+      "name": "Detrawal",
+      "days": 30
+    }
+  ],
+  "leap": {
+    "month": "Arawal",
+    "every": 3,
+    "year": 1693
+  },
+  "weekdays": [
+    "Protasten",
+    "Deftesten",
+    "Traensten",
+    "Tertasten",
+    "Pemtasten",
+    "Eksten",
+    "Evodosten",
+    "Egtosten"
+  ],
+  "anchor": {
+    "year": 1693,
+    "month": "Pholawal",
+    "day": 3
+  },
+  "anchorWeekday": "Deftesten",
+  "seasons": [
+    {
+      "name": "Spring",
+      "days": 93,
+      "colour": "#7fd39d"
+    },
+    {
+      "name": "Summer",
+      "days": 89,
+      "colour": "#e9c176"
+    },
+    {
+      "name": "Autumn",
+      "days": 102,
+      "colour": "#e0895a"
+    },
+    {
+      "name": "Winter",
+      "days": 108,
+      "colour": "#9fc4ff"
+    }
+  ],
+  "moons": [
+    {
+      "name": "Mel’Tara",
+      "cycle": 33,
+      "colour": "#a9c8ff",
+      "full": {
+        "year": 1693,
+        "month": "Arawal",
+        "day": 29
+      }
+    },
+    {
+      "name": "Ior’Tara",
+      "cycle": 196,
+      "colour": "#f4a9d2",
+      "full": {
+        "year": 1693,
+        "month": "Pholawal",
+        "day": 6
+      }
+    }
+  ]
+}

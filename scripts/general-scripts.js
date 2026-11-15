@@ -111,12 +111,14 @@ const SITE_NAV = [
         id: 'archive', name: 'Black Archive', url: 'library.html', icon: 'library_books', tone: 'violet',
         // Also the tab bar of the Archive pages (library.html has its cards instead)
         sub: [
+            // Same order as the doors of library.html: the world, then what the party finds, then time
+            { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] },
             { name: 'Elder Tarot', url: 'bestiary.html', icon: 'temp_preferences_custom', alias: ['beast.html'] },
-            { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' },
             { name: 'Reference', url: 'tomes.html', icon: 'menu_book' },
-            { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
             { name: 'Book of Shadows', url: 'spellbook.html', icon: 'auto_fix_high' },
-            { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] }
+            { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
+            { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' },
+            { name: 'The Astrolabe', url: 'timeline.html', icon: 'hourglass_top' }
         ]
     },
     { id: 'scriptorium', name: 'Scriptorium', url: 'scriptorium.html', icon: 'history_edu', tone: 'gold', sub: [] },
@@ -326,4 +328,19 @@ document.addEventListener("DOMContentLoaded", () => {
             card.style.setProperty('--mouse-y', `${y}px`);
         });
     });
+});
+// ==========================================
+// Preview cards over linked names (scripts/core/preview.js, styles/preview.css)
+// ==========================================
+// Every page that loads the store gets them; pages without it (home page,
+// library, sigil maker) have no linked names.
+document.addEventListener("DOMContentLoaded", () => {
+    if (!window.Athenaeum || !window.Athenaeum.ready) return;
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = SITE_ROOT + 'styles/preview.css';
+    document.head.appendChild(css);
+    const js = document.createElement('script');
+    js.src = SITE_ROOT + 'scripts/core/preview.js';
+    document.head.appendChild(js);
 });

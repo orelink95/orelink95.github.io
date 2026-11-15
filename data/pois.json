@@ -545,12 +545,31 @@
       "deities": [
         "pholtos"
       ],
+      "keepers": [
+        "lars-enrik"
+      ],
       "tier": "wealthy",
       "services": [
         "prayer-of-mending",
         "cure-wounds",
         "augury"
+      ],
+      "customServices": [
+        {
+          "category": "healing",
+          "name": "Pholto's Light",
+          "desc": "Washed by the Sun's light you regain 2 expended hit dice and up to half the HP you lost",
+          "price": 15000,
+          "unit": "1"
+        }
       ]
+    },
+    "divination": {
+      "practices": [
+        "wandering-star-reading"
+      ],
+      "title": "The Sun's Guidance",
+      "tier": "aristocratic"
     }
   },
   {
@@ -561,7 +580,7 @@
     "map": {
       "x": 352,
       "y": 973,
-      "icon": "house"
+      "icon": "bath"
     }
   }
 ]

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Astrolabe — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/timeline.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/calendar.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/core/sky.js"></script>
+    <script src="scripts/personae.js"></script>
+    <script src="scripts/timeline-scripts.js"></script>
+    <script src="scripts/astrolabe-calendar.js"></script>
+</head>
+
+<!-- No .mystical-bg here: its filter would pin the sky to the page instead of the window -->
+<body data-section="archive" class="page tl-page">
+
+    <!-- The night sky behind the page (scripts/core/sky.js) -->
+    <canvas id="sky" class="tl-sky" aria-hidden="true"></canvas>
+
+    <div id="header-placeholder" class="header-slot"></div>
+    <nav id="archive-tabs" class="archive-tabs"></nav>
+
+    <main class="tl-main">
+        <header class="tl-head">
+            <nav class="breadcrumbs tl-head__crumbs" aria-label="Breadcrumb">
+                <a href="index.html" class="breadcrumbs__link">Athenaeum</a>
+                <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                <a href="library.html" class="breadcrumbs__link">Black Archive</a>
+                <span class="breadcrumbs__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+                <span class="breadcrumbs__current" aria-current="page">The Astrolabe</span>
+            </nav>
+            <h1 class="tl-head__title">The Astrolabe</h1>
+            <div class="tl-head__ornament" aria-hidden="true"><span></span><span class="tl-star tl-star--small"></span><span></span></div>
+            <p class="tl-head__lede">Every age of Eraldom, from the year now back to the Old Days.</p>
+            <!-- Two views of the same page: scripts/astrolabe-calendar.js -->
+            <div class="tl-tabs" role="tablist" aria-label="The Astrolabe">
+                <button type="button" class="tl-tab is-on" role="tab" id="tab-timeline" aria-controls="view-timeline" aria-selected="true" data-view-tab="timeline"><span class="material-symbols-outlined" aria-hidden="true">timeline</span>Timeline</button>
+                <button type="button" class="tl-tab" role="tab" id="tab-calendar" aria-controls="view-calendar" aria-selected="false" tabindex="-1" data-view-tab="calendar"><span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>Calendar</button>
+            </div>
+        </header>
+
+        <section id="view-timeline" role="tabpanel" aria-labelledby="tab-timeline">
+        <div class="tl-glass tl-controls">
+            <label class="tl-controls__campaign" title="Hidden history stays sealed until this campaign has learned it">
+                <span class="tl-label tl-label--muted">Viewing as</span>
+                <!-- Shared with Dramatis Personae (scripts/personae.js) -->
+                <select id="tl-campaign" class="tl-select hidden"></select>
+            </label>
+            <div class="tl-controls__toggles">
+                <button type="button" class="tl-toggle is-on" data-toggle="world" aria-pressed="true"><span class="material-symbols-outlined" aria-hidden="true">public</span>World history</button>
+            </div>
+            <div class="tl-controls__sessions" role="group" aria-label="Show the sessions of">
+                <span class="tl-label tl-label--muted">Sessions</span>
+                <span id="tl-sessions-chips" class="tl-chips"></span>
+            </div>
+            <nav id="tl-jumps" class="tl-controls__jumps" aria-label="Jump to"></nav>
+        </div>
+
+        <!-- Filled by scripts/timeline-scripts.js -->
+        <div id="timeline" class="tl"></div>
+        </section>
+
+        <!-- The world's calendar: filled by scripts/astrolabe-calendar.js -->
+        <section id="view-calendar" role="tabpanel" aria-labelledby="tab-calendar" hidden>
+            <div id="cal-today" class="tl-glass cal-today"></div>
+            <div class="cal-layout">
+                <div id="cal-month" class="tl-glass cal-month"></div>
+                <aside id="cal-day" class="tl-glass cal-day" aria-live="polite"></aside>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+</body>
+
+</html>

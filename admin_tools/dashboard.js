@@ -220,6 +220,7 @@
             else if (f && f.kind === 'objects' && Array.isArray(v)) v = v.map(o => tidy(f.fields, o)).filter(o => !isEmpty(o));
             else if (f && f.kind === 'map' && v && typeof v === 'object') v = tidy({ x: {}, y: {}, icon: {}, layer: {}, on: {} }, v);
             else if (f && f.kind === 'mapImage' && v && typeof v === 'object') v = tidy({ src: {}, width: {}, height: {} }, v);
+            else if (f && f.kind === 'worlddate' && v && typeof v === 'object') { v = tidy({ year: {}, month: {}, day: {}, approx: {} }, v); if (!v.approx) delete v.approx; }
             else if ((k === 'aliases' || (f && (f.kind === 'list' || f.kind === 'refs'))) && Array.isArray(v)) v = v.map(s => String(s).trim()).filter(Boolean);
             else if (typeof v === 'string' && f && f.kind !== 'markdown') v = v.trim();
             if (!isEmpty(v) || (keepEmptyText && v === '' && k in obj)) out[k] = v;
@@ -415,7 +416,9 @@
             case 'spell': return [nb(r.level), r.school].filter(Boolean).join(' · ');
             case 'item': return [r.rarity, r.type].filter(Boolean).join(' · ');
             case 'campaign': return [r.partyName, (r.party || []).length ? `${r.party.length} heroes` : ''].filter(Boolean).join(' · ');
-            case 'session': return [r.number != null ? `#${r.number}` : '', r.arc || ''].filter(Boolean).join(' · ');
+            case 'session': return [r.number != null ? `#${r.number}` : '', r.date && S.store.calendar ? S.store.calendar.format(r.date, { weekday: false, era: false }) : '', r.arc || ''].filter(Boolean).join(' · ');
+            case 'festival': return [r.on && r.on.month ? `${r.on.day || '?'} ${r.on.month}${Number(r.days) > 1 ? ` · ${r.days} days` : ''}` : 'No date', r.kind && r.kind !== 'festival' ? enumLabel('festivalKind', r.kind) : ''].filter(Boolean).join(' · ');
+            case 'event': return [r.sealed ? 'Hidden' : '', eventWhen(r), r.kind && r.kind !== 'event' ? enumLabel('eventKind', r.kind).split(' (')[0] : ''].filter(Boolean).join(' · ');
             case 'hero': return [r.raceClass, r.level != null ? `level ${r.level}` : ''].filter(Boolean).join(' · ');
             case 'menuItem': return `${r.basePrice ?? '?'} cp · ${enumLabel('tavernTier', r.minTier)}–${enumLabel('tavernTier', r.maxTier)}`;
             case 'service': return [`${r.basePrice ?? '?'} cp`, r.unit].filter(Boolean).join(' · ');
@@ -433,6 +436,14 @@
             case 'prophecy': return [(r.campaigns || []).map(nameOf).join(', ') || 'No campaign', r.practice ? nameOf(r.practice) : ''].filter(Boolean).join(' · ');
         }
         return r.subtitle || '';
+    }
+    // When an event happens, in short: "1341 – 1381 LF", "c. 993 LF", "Old Days"
+    function eventWhen(r) {
+        const cal = S.store.calendar;
+        if (r.oldDays) return `${cal ? cal.before : 'The Old Days'}${r.order != null ? ' · #' + r.order : ''}`;
+        if (!cal || !r.date || r.date.year == null) return 'No date';
+        const end = r.end && r.end.year != null ? ' – ' + cal.format(r.end, { weekday: false }) : '';
+        return cal.format(r.date, { weekday: false, era: !end }) + end;
     }
     // Heading a record is grouped under in the list ({key, label, rank}), or null
     function listGroup(type, r) {
@@ -458,6 +469,21 @@
             case 'rumour': case 'notice': case 'prophecy': return r.where ? { key: r.where, label: nameOf(r.where) } : { key: '~', label: 'Nowhere', rank: 999 };
             case 'fortuneCard': return r.deck ? { key: r.deck, label: nameOf(r.deck) } : { key: '~', label: 'No deck', rank: 999 };
             case 'omen': return r.practice ? { key: r.practice, label: nameOf(r.practice) } : { key: '~', label: 'No practice', rank: 999 };
+            // Festivals, by month, in the order of the year
+            case 'festival': {
+                const cal = S.store.calendar;
+                const i = cal && r.on ? cal.months.findIndex(m => m.name === r.on.month) : -1;
+                return i < 0 ? { key: '~', label: 'No date', rank: 999 } : { key: 'm' + i, label: cal.months[i].name, rank: i };
+            }
+            // The timeline, oldest first: the Old Days, then by century
+            case 'event': {
+                if (r.oldDays) return { key: 'old', label: S.store.calendar ? S.store.calendar.before : 'The Old Days', rank: -1e9 };
+                const y = r.date && Number(r.date.year);
+                if (!y && y !== 0) return { key: '~', label: 'No date', rank: 1e9 };
+                const c = Math.floor(y / 100) * 100;
+                const era = S.store.calendar ? S.store.calendar.era : '';
+                return { key: 'c' + c, label: (c ? `${c}s ${era}` : `Years 1–99 ${era}`).trim(), rank: c };
+            }
         }
         return null;
     }
@@ -465,6 +491,14 @@
     function orderedRecords(type) {
         const recs = [...S.data[type]];
         if (TYPES[type].order) recs.sort(ATH.comparator(TYPES[type].order));
+        // Festivals: in the order of the year
+        if (type === 'festival') recs.sort((a, b) => ((a.on && a.on.day) || 99) - ((b.on && b.on.day) || 99));
+        // Events: in the order of the timeline (oldest first)
+        if (type === 'event' && S.store.calendar) {
+            const cal = S.store.calendar;
+            recs.sort((a, b) => (a.oldDays && b.oldDays ? (a.order ?? 1e9) - (b.order ?? 1e9) : 0)
+                || (!a.oldDays && !b.oldDays && cal.isDate(a.date) && cal.isDate(b.date) ? cal.compare(a.date, b.date) : 0));
+        }
         const groups = new Map();
         recs.forEach((r, i) => {
             const g = listGroup(type, r);
@@ -558,7 +592,7 @@
         { id: 'home', label: 'Home', icon: 'home', color: '#e9c176' },
         { id: 'atlas', label: 'Atlas', icon: 'travel_explore', color: '#6aa9fa', blurb: 'Every place in one tree: continents, countries, settlements, districts, points of interest and the places inside them.' },
         { id: 'cast', label: 'Cast', icon: 'groups', color: '#66c488', blurb: 'NPCs, factions, heroes and the Pantheon.' },
-        { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, rumours and notice boards, filtered by the campaign in the top bar.' },
+        { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, the Astrolabe (timeline and festivals), rumours and notice boards, filtered by the campaign in the top bar.' },
         { id: 'codex', label: 'Codex', icon: 'menu_book', color: '#b79cf5', blurb: 'Glossary, tomes, handouts, bestiary, spellbook and items.' },
         { id: 'tables', label: 'Tables', icon: 'table_view', color: '#f0a35e', blurb: 'The pools the site draws from, each one a grid: markets, faith, divination, alchemy, folios.' },
         { id: 'site', label: 'Site', icon: 'settings', color: '#b4bac2', bottom: true, blurb: 'World map, settings, upcoming sessions and the map icons.' },
@@ -940,6 +974,7 @@
         switch (f.kind) {
             case 'number': return f.range ? 6 : 3;
             case 'date': case 'time': return 3;
+            case 'worlddate': return 6;
             case 'enum': return Math.max(0, ...enumOpts(f).map(o => String(o.label).length)) > 18 ? 6 : 3;
             case 'ref': return 6;
             case 'text': return f.long ? 12 : 6;
@@ -960,6 +995,7 @@
             if (lf.kind === 'enum') return (enumOpts(lf).find(o => o.id === v) || {}).label || v;
             if (lf.kind === 'number') return '#' + v;
             if (lf.kind === 'date' && ATH.upcoming) return ATH.upcoming.formatDate(v) || v;
+            if (lf.kind === 'worlddate') return lf.yearly ? [v.day, v.month].filter(Boolean).join(' ') : S.store.calendar ? S.store.calendar.format(v, { weekday: false }) : '';
             return v;
         }).filter(v => v !== undefined && v !== null && v !== '').join(' · ');
     }
@@ -1001,6 +1037,24 @@
                 return `<input ${idA} type="${f.kind}" data-path="${p}" data-kind="text" value="${esc(value)}">`;
             case 'boolean':
                 return `<input ${idA} type="checkbox" data-path="${p}" data-kind="boolean" ${value ? 'checked' : ''}>`;
+            case 'worlddate': {
+                // A date of the world's calendar (data/calendar.json): day, month, year, “about”;
+                // the weekday is worked out and shown beside it
+                const d = value && typeof value === 'object' ? value : {};
+                const cal = S.store.calendar;
+                const months = cal ? cal.months.map(m => m.name) : [];
+                const sub = k => pathAttr([...path, k]);
+                return `<div class="row wdate">
+                    <input ${idA} class="num-s" type="number" min="1" data-path="${sub('day')}" data-kind="number" value="${d.day ?? ''}" placeholder="Day" aria-label="Day">
+                    <select data-path="${sub('month')}" data-kind="enum" aria-label="Month"><option value="">— month —</option>
+                        ${months.map(m => `<option value="${esc(m)}" ${m === d.month ? 'selected' : ''}>${esc(m)}</option>`).join('')}
+                        ${d.month && !months.includes(d.month) ? `<option value="${esc(d.month)}" selected>${esc(d.month)} (not a month)</option>` : ''}</select>
+                    ${f.yearly ? '<span class="mini">every year</span>' : `<input class="num-m" type="number" data-path="${sub('year')}" data-kind="number" value="${d.year ?? ''}" placeholder="Year" aria-label="Year">
+                    <span class="mini">${esc(cal ? cal.era : '')}</span>
+                    <label class="mini wdate__about"><input type="checkbox" data-path="${sub('approx')}" data-kind="boolean" ${d.approx ? 'checked' : ''}> about</label>
+                    <span class="mini wdate__day" data-weekday>${esc(cal ? cal.weekday(d) : '')}</span>`}
+                </div>`;
+            }
             case 'enum':
                 return `<select ${idA} data-path="${p}" data-kind="enum"><option value="">—</option>
                     ${enumOpts(f).map(o => `<option value="${esc(o.id)}" ${o.id === value ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}
@@ -1028,7 +1082,7 @@
         const id = fid(path);
         const help = helpHtml(f);
         switch (f.kind) {
-            case 'text': case 'url': case 'number': case 'date': case 'time': case 'enum': case 'ref':
+            case 'text': case 'url': case 'number': case 'date': case 'time': case 'enum': case 'ref': case 'worlddate':
                 return wrap(f, `${labelHtml(f, key, id)}${controlHtml(f, value, path, id)}${help}`);
             case 'boolean':
                 return `<label class="chk" for="${id}">${controlHtml(f, value, path, id)}<span><b>${esc(f.label || key)}</b>${f.help ? `<small>${esc(f.help)}</small>` : ''}</span></label>`;
@@ -3404,6 +3458,9 @@
             const ip = $('[data-icon-prev]', row); if (ip) ip.textContent = el.value || 'help';
             const sw = $('input[type=color]', row); if (sw && /^#[0-9a-f]{6}$/i.test(el.value)) sw.value = el.value;
             const rg = $('input[type=range]', row); if (rg && rg !== el) rg.value = el.value;
+            // A world date: its weekday follows
+            const wdd = row.classList.contains('wdate') && $('[data-weekday]', row);
+            if (wdd && S.store.calendar) wdd.textContent = S.store.calendar.weekday(getAt(holder, path.slice(0, -1)) || {});
         }
         const fb = el.closest('[data-focus-for]');
         if (fb && !('fx' in el.dataset) && !('fy' in el.dataset)) {

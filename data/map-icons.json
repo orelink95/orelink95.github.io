@@ -138,6 +138,11 @@
       "id": "cash",
       "label": "Cash",
       "cardIcon": "poker_chip"
+    },
+    {
+      "id": "bath",
+      "label": "Bath",
+      "cardIcon": "shower"
     }
   ]
 }

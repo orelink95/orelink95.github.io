@@ -9,6 +9,8 @@
   <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
   <script src="scripts/general-scripts.js"></script>
   <script src="scripts/upcoming-sessions.js" defer></script>
+  <script src="scripts/core/calendar.js" defer></script>
+  <script src="scripts/today-widget.js" defer></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Newsreader:ital,wght@0,400;0,600;1,400&amp;family=Manrope:wght@500;600&amp;display=swap"
     rel="stylesheet" />
@@ -141,6 +143,11 @@
           </div>
         </div>
       </div>
+    </section>
+
+    <!-- Today in Eraldom: filled by scripts/today-widget.js (date, season, moons, next festival) -->
+    <section class="today-eraldom" aria-label="Today in Eraldom">
+      <a id="today-eraldom" class="today-card" href="timeline.html?view=calendar" hidden></a>
     </section>
 
     <section class="sessions">

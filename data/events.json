@@ -1,0 +1,56 @@
+[
+  {
+    "id": "leviathans-fall",
+    "name": "The Leviathans’ Fall",
+    "kind": "age",
+    "date": {
+      "year": 1
+    }
+  },
+  {
+    "id": "doleris-vanish",
+    "name": "The Doleris vanish",
+    "summary": "The Doleris civilization supposedly vanished around 700 years ago.",
+    "date": {
+      "year": 993,
+      "approx": true
+    },
+    "links": [
+      "doleris",
+      "ekelph",
+      "maeravoss"
+    ]
+  },
+  {
+    "id": "the-ophrasian-war",
+    "name": "The Ophrasian War",
+    "kind": "major",
+    "summary": "A cataclysmic conflict that lasted for forty years, reshaping the borders of Maltona and leaving the Boundless Vale scarred by a new, dark form of magic.",
+    "date": {
+      "year": 1341
+    },
+    "end": {
+      "year": 1381
+    },
+    "icon": "skull",
+    "links": [
+      "maltona",
+      "eperina",
+      "ophrasian-war"
+    ]
+  },
+  {
+    "id": "nihilium-appears",
+    "name": "Nihilium appears",
+    "summary": "A crystallization of Void energy starts to plague the Material Plane, the result of a botched spell at the end of the Ophrasian War.",
+    "date": {
+      "year": 1381,
+      "approx": true
+    },
+    "icon": "diamond",
+    "links": [
+      "nihilium",
+      "ophrasian-war"
+    ]
+  }
+]

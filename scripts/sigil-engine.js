@@ -9,7 +9,8 @@
        S.generate(seed, archetypeId, purposeId)   -> rings
        S.validState(recipe) / S.normalise(recipe) -> a "Save recipe" file, checked and completed
        S.sceneSVG(state, {mode, bg, anim})        -> SVG markup of the circle
-       S.buildLore(state)                         -> the generated text of the book
+       S.buildLore(state)                         -> the generated text of the book (state.flavour: historical | fantasy)
+       S.loreOf(state, folio)                     -> the same, with a folio's flavour, school and own words
        S.applyText(lore, folio.text)              -> with the DM's own words
        S.renderBook(state, scale, {which, cover, text}) -> canvas of the open book
        S.bookPDF(state, {layout, text}) / S.bookPNG(state, {text}) / S.platePNG(state) -> Blob
@@ -1022,7 +1023,7 @@ async function drawRecto(c,x0,L,st){
 /* which: 'spread' | 'verso' | 'recto'; cover adds the green leather binding; text: the DM's own words (see applyText) */
 async function renderBook(st,scale,{which='spread',cover=false,text=null}={}){
   await ensureBookFonts();
-  const L=applyText(buildLore(st),text);
+  const L=loreOf(st,text);
   const bk=bookColours(st,text); L.capColour=bk.initial;
   const pages=which==='spread'?2:1; const border=cover?70:0;
   const W=(PG.w*pages+border*2), H=PG.h+border*2+(cover?16:0);
@@ -1063,7 +1064,7 @@ async function bookPDF(st,{layout='spread',text=null}={}){
     pdf.addPage('a4','portrait');
     const r=await renderBook(st,scale,{which:'recto',text}); pdf.addImage(r.toDataURL('image/jpeg',.9),'JPEG',0,0,210,297);
   }
-  const L=applyText(buildLore(st),text);
+  const L=loreOf(st,text);
   pdf.setProperties({title:L.titleLa||L.capTitle||'Folio',subject:L.titleEn||'',creator:'Sigil Grimoire'});
   return pdf.output('blob');
 }
@@ -1109,7 +1110,154 @@ function parasHTML(paras){
   return paras.map(runs=>runs.map(r=>r.sc?`<span class="inscr">${esc(r.t)}</span>`:r.it?`<i>${esc(r.t)}</i>`:esc(r.t)).join(''));
 }
 
+/* ---------- what the lore says about the circle (shared by both flavours) ---------- */
+function analyseCircle(st){
+  const vis=st.rings.filter(r=>r.visible);
+  const stars=vis.filter(r=>r.type==='star');
+  let starDesc=null, mainStar=null;
+  if(stars.length){
+    const maxR=Math.max(...stars.map(s=>s.p.r));
+    const top=stars.filter(s=>Math.abs(s.p.r-maxR)<2);
+    mainStar=top.find(s=>(s.p.shape||'star')==='star'&&s.p.k>1)||top[0];
+    const tri=top.filter(s=>(s.p.shape||'star')==='star'&&s.p.n===3&&s.p.k===1);
+    starDesc = tri.length>=2 ? 'hexagram of two interlaced triangles' : figureName(mainStar.p);
+  }
+  const spins=vis.map(r=>+r.p.spin).filter(Boolean);
+  return {
+    vis, mainStar, starDesc,
+    figs:stars.filter(s=>s!==mainStar&&(s.p.shape||'star')!=='star'),
+    insc:vis.filter(r=>r.type==='inscription').sort((a,b)=>b.p.r-a.p.r),
+    glyphRing:vis.find(r=>r.type==='glyphs'), core:vis.find(r=>r.type==='core'), orbits:vis.find(r=>r.type==='orbits'),
+    dir: spins.length && spins.filter(s=>s<0).length>spins.length/2 ? 'widdershins' : 'sunwise',
+    isStar: !!mainStar && (mainStar.p.shape||'star')==='star'
+  };
+}
+const an=w=>/^[aeiou]/i.test(w)?'an':'a';
+const numWord=n=>{ const u=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+  const t=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  return n<20?u[n]:n<100?t[Math.floor(n/10)]+(n%10?'-'+u[n%10]:''):String(n); };
+
+/* =====================================================================
+   FANTASY FLAVOUR — an arcane tome of the D&D world. Names nothing of the
+   setting except the schools of magic (same list as the spellSchool enum).
+   ===================================================================== */
+const FLAVOURS=[['historical','Grimoire (historical)'],['fantasy','Arcane tome (fantasy)']];
+const SCHOOLS=['Abjuration','Conjuration','Divination','Enchantment','Evocation','Illusion','Necromancy','Transmutation','Blood','Chaos','Void'];
+const SCHOOL_LINE={
+  Abjuration:'Its magic is abjuration: it shields, seals and banishes.',
+  Conjuration:'Its magic is conjuration: it brings what is far into this place.',
+  Divination:'Its magic is divination: it shows what is hidden, distant or yet to come.',
+  Enchantment:'Its magic is enchantment: it bends the minds of all who look upon it.',
+  Evocation:'Its magic is evocation: it calls up raw force and lets it loose.',
+  Illusion:'Its magic is illusion: it shows what is not there, and hides what is.',
+  Necromancy:'Its magic is necromancy: it speaks with what has died, and is answered.',
+  Transmutation:'Its magic is transmutation: it changes the nature of things.',
+  Blood:'It is blood magic, and it drinks before it works.',
+  Chaos:'It is chaos magic, and no two castings end alike.',
+  Void:'It is void magic: it opens onto the nothing between the stars.'
+};
+/* The school a circle falls under when the user leaves it on Auto */
+const SCHOOL_AUTO={
+  summoning:{_:['Conjuration'],infernal:['Blood','Necromancy','Conjuration'],inkwork:['Necromancy','Conjuration'],amethyst:['Conjuration','Void']},
+  warding:{_:['Abjuration'],heraldic:['Abjuration','Enchantment'],runic:['Abjuration']},
+  passage:{_:['Conjuration'],amethyst:['Conjuration','Void'],celestial:['Conjuration','Divination']},
+  transmutation:{_:['Transmutation'],infernal:['Transmutation','Blood']},
+  wild:{_:['Chaos','Void','Evocation','Divination','Illusion','Enchantment'],celestial:['Divination','Evocation'],amethyst:['Divination','Illusion','Void'],infernal:['Blood','Chaos','Necromancy'],inkwork:['Necromancy','Illusion']}
+};
+function schoolOf(st){
+  if(SCHOOLS.includes(st.school)) return st.school;
+  const T=SCHOOL_AUTO[purposeById(st.purpose).id]; const list=T[archById(st.arch).id]||T._;
+  return makeRng(`${st.seed}|school`).pick(list);
+}
+const F_PURPOSE={
+  summoning:{book:'Of Callings and Bindings', heads:['Circle','Calling','Binding','Summons'], noun:'summoning circle', verb:'calls and holds', object:'a creature of the outer planes',
+    rubric:'Speak the true name only once the last line is closed, and never set foot inside the circle.',
+    risk:'If a line breaks, the summoned is free, and remembers.', duration:['Until dispelled','24 hours','1 hour'], time:['1 hour','10 minutes','8 hours']},
+  warding:{book:'Of Wards and Seals', heads:['Ward','Seal','Bulwark','Aegis'], noun:'ward', verb:'turns aside', object:'spells and blades sent against those within',
+    rubric:'The ward holds until dawn, or until someone smudges a single stroke.',
+    risk:'A smudged glyph opens a door in the ward.', duration:['Until dispelled','Until dawn','24 hours'], time:['10 minutes','1 hour','1 minute']},
+  passage:{book:'Of Gates and Waystones', heads:['Gate','Waystone','Door','Threshold'], noun:'teleportation circle', verb:'binds', object:'two distant places into a single step',
+    rubric:'Both circles must be drawn alike: one wrong glyph and you arrive somewhere else.',
+    risk:'Travellers without the sigil sequence arrive scattered.', duration:['1 round','Instantaneous','1 minute'], time:['1 minute','10 minutes','1 hour']},
+  transmutation:{book:'Of Changing Things', heads:['Crucible','Array','Alembic','Matrix'], noun:'transmutation array', verb:'unmakes and remakes', object:'whatever is set upon it',
+    rubric:'What this circle has changed, it cannot change back.',
+    risk:'An unbalanced array turns lead to ash, not gold.', duration:['Instantaneous','Permanent','1 hour'], time:['1 hour','8 hours','10 minutes']},
+  wild:{book:'Of Wild Sigils', heads:['Sigil','Mark','Rune','Glyph'], noun:'sigil', verb:'gathers', object:'raw magic and the will of its maker',
+    rubric:'No two scribes have ever drawn this sigil the same way twice.',
+    risk:'Unknown. The last scribe did not write it down.', duration:['Concentration, up to 1 hour','1 minute','Until dispelled'], time:['1 action','1 minute','10 minutes']}
+};
+const F_OF=['of the Ashen Choir','of Nine Lanterns','of the Drowned Star','of Hollow Thrones','of the Unbidden Guest','of the Last Ember','of Whispering Iron',
+  'of Seven Thresholds','of the Starless Road','of Silver Rain','of the Sleeping Wyrm','of the Broken Crown','of Glass and Thunder','of the Hungering Dark',
+  'of the Pale Tide','of Bone and Lantern','of the Moth-Winged Door','of the Weeping Bell'];
+const F_ADJ=['Ninefold','Unbroken','Hollow','Ashen','Gilded','Thrice-Sealed','Crimson','Starbound','Sunken','Wailing','Silent','Iron'];
+const F_SOURCES=['a wizard’s travelling spellbook','a drowned grimoire','a dwarven rune-slate','an elven moon-scroll','a tiefling’s contract-ledger',
+  'a goblin’s scrawled notes','the margins of a temple psalter','a lich’s discarded notebook','a sea-hag’s bargain-book','an academy examination paper'];
+const F_SURFACES=['the floor of a tower room, in black marble','the deck of a ship at anchor','the flagstones of a forgotten crypt','the bark of an ancient oak',
+  'a tavern table, in spilled ale','the inside of a sealed door','fresh snow, before dawn','a slab of cold-forged iron'];
+const F_MATERIAL={verdant:['powdered emerald and dryad sap','emerald dust'],celestial:['liquid starlight and gold leaf','gold leaf'],infernal:['brimstone, ash and devil’s ichor','powdered brimstone'],
+  druidic:['oak ash, moss and moonwater','oak ash'],runic:['forge-iron filings and red ochre','iron filings'],amethyst:['amethyst dust and quicksilver','amethyst dust'],
+  inkwork:['squid ink and a raven-feather quill','ink of the finest kind'],tidal:['kraken ink and crushed pearl','crushed pearl'],heraldic:['vermilion and shell gold','shell gold']};
+const F_MARGIN=['Copied under a waning moon','Copied by candlelight, third watch','Ink still wet when the wards failed','Do not read aloud','Copied twice; the first copy burned','Mind the seventh line'];
+const F_SCRIPT={latin:'the high script',uncial:'the round hand of the scribes',blackletter:'court script',manuscript:'a hedge-wizard’s hand',arcane:'arcane capitals',
+  runic:'Dwarvish runes',ogham:'druidic notches',greek:'the tongue of the first mages',glagolitic:'a forgotten northern script',gothic:'giant-script',
+  phoenician:'the sea-folk’s merchant script',olditalic:'the letters of a dead tongue'};
+const F_SETS={zodiac:'signs of the twelve heavenly houses',planets:'wandering stars',alchemy:'alchemist’s marks',elements:'elemental sigils',aspects:'star-aspects',
+  hermetic:'warding signs',runic:'Dwarvish runes',ogham:'druidic marks',greek:'letters of the first mages',latin:'letters of the high script'};
+const ordinal=n=>n+(n%100>=11&&n%100<=13?'th':['th','st','nd','rd'][n%10]||'th');
+
+function buildLoreFantasy(st){
+  const A=archById(st.arch), P=purposeById(st.purpose), FP=F_PURPOSE[P.id];
+  const R=makeRng(`${st.seed}|tome|${P.id}`);
+  const C=analyseCircle(st); const school=schoolOf(st);
+  const head=R.pick(FP.heads), of=R.pick(F_OF), adj=R.pick(F_ADJ), source=R.pick(F_SOURCES), surface=R.pick(F_SURFACES);
+  const leaf=R.int(12,240), book=R.int(1,9), plate=R.int(1,60);
+  const [material,matShort]=F_MATERIAL[A.id]||F_MATERIAL.verdant;
+  const title=R.chance(.5)?`The ${head} ${of}`:`The ${adj} ${head}`;
+  const fset=id=>F_SETS[id]||SETS[id].plural, fscript=id=>F_SCRIPT[id]||SETS[id].lore||SETS[id].label;
+
+  const runs=[]; const T=t=>runs.push({t}); const SC=t=>runs.push({t,sc:true});
+  T(`This ${FP.noun} is inked in ${material} upon ${surface}.`);
+  if(C.starDesc) T(` Its ${C.starDesc} ${FP.verb} ${FP.object}.`);
+  if(C.figs.length) T(` Within it lies ${an(figureName(C.figs[0].p))} ${figureName(C.figs[0].p)}.`);
+  if(C.insc.length){
+    const i0=C.insc[0].p; const gl=MOTTO[String(i0.text).toUpperCase().trim()];
+    T(` The ${C.insc.length>1?'outer ':''}ring bears the words `); SC(String(i0.text).toUpperCase());
+    T(`${gl?`, “${gl}”,`:''} in ${fscript(i0.script)}.`);
+  }
+  if(C.glyphRing) T(` ${cap(numWord(C.glyphRing.p.count))} ${fset(C.glyphRing.p.set)} keep watch about the centre.`);
+  else if(C.orbits&&C.orbits.p.set!=='none') T(` ${cap(numWord(C.orbits.p.count))} lesser circles hold ${fset(C.orbits.p.set)}.`);
+  if(C.core) T(` At its heart burns the sign of ${glyphName(C.core.p.set,C.core.p.index)}.`);
+  T(` ${SCHOOL_LINE[school]}`);
+  if(!C.vis.length){ runs.length=0; T('This page waits for a circle. Add a ring from the stack to begin.'); }
+
+  const level=Math.max(1,Math.min(9,Math.round(C.vis.length*0.6)+(P.id==='passage'?2:0)-1));
+  const gp=[25,50,100,250,500,1000,1500,2500,5000][level-1];
+  const props=[
+    ['School', school],
+    ['Level', `${ordinal(level)} level`],
+    ['Casting time', R.pick(FP.time)],
+    ['Components', `V, S, M (${matShort} worth ${gp} gp, consumed)`],
+    ['Duration', R.pick(FP.duration)],
+    ['Risk', FP.risk]
+  ];
+  return finishLore({
+    titleLa:title, titleEn:`Copied from ${source}`,
+    chapter:`Book ${roman(book)} · ${FP.book}`, folioV:`Leaf ${leaf}`, folioR:`Leaf ${leaf+1}`,
+    tabula:`Plate ${plate}`, marginal:R.pick(F_MARGIN),
+    fullParas:[runs], dropCap:true,
+    rubricLabel:R.pick(['Mark well.','Warning.','Caution.']), rubricText:`Trace it ${C.dir}, from the outer ring inward. ${FP.rubric}`, props,
+    capTitle:title, capMeta:`Plate ${plate} · ${school} · Seed ${st.seed}`
+  });
+}
+/* The lore of a circle in its own flavour, or in the one a folio picks */
+function loreOf(st,text){
+  const t=text||{};
+  const s2={...st, flavour:t.flavour||st.flavour, school:t.school||st.school};
+  return applyText(s2.flavour==='fantasy'?buildLoreFantasy(s2):buildLore(s2), text);
+}
+
 function buildLore(st){
+  if(st.flavour==='fantasy') return buildLoreFantasy(st);
   const A=archById(st.arch), P=purposeById(st.purpose);
   const R=makeRng(`${st.seed}|lore|${P.id}`);
   const head=R.pick(HEADS), gen=R.pick(GENS);
@@ -1141,8 +1289,8 @@ function buildLore(st){
     T(` The ${insc.length>1?'outer ':''}band bears the words `); SC(String(i0.text).toUpperCase());
     T(`${gl?`, “${gl}”,`:''} written in ${S.lore||S.label}.`);
   }
-  if(glyphRing) T(` ${cap(NUMW[glyphRing.p.count]||String(glyphRing.p.count))} ${SETS[glyphRing.p.set].plural} stand in a ring about the centre.`);
-  else if(orbits&&orbits.p.set!=='none') T(` ${cap(NUMW[orbits.p.count]||String(orbits.p.count))} lesser circles hold ${SETS[orbits.p.set].plural}.`);
+  if(glyphRing) T(` ${cap(numWord(glyphRing.p.count))} ${SETS[glyphRing.p.set].plural} stand in a ring about the centre.`);
+  else if(orbits&&orbits.p.set!=='none') T(` ${cap(numWord(orbits.p.count))} lesser circles hold ${SETS[orbits.p.set].plural}.`);
   if(core) T(` At its heart is set the sign of ${glyphName(core.p.set,core.p.index)}.`);
   if(!vis.length){ runs.length=0; T('This page waits for a circle. Add a ring from the stack to begin.'); }
 
@@ -1205,12 +1353,13 @@ function normalise(o){
   o.arch=archById(o.arch).id; o.inkArch=archById(o.inkArch||o.arch).id; o.purpose=purposeById(o.purpose).id;
   o.inkOverride=o.inkOverride||{}; o.weight=+o.weight||1; o.wash=o.wash!==false;
   o.book={cover:bookColour((o.book||{}).cover).id, initial:bookColour((o.book||{}).initial).id};
+  o.flavour=o.flavour==='fantasy'?'fantasy':'historical'; o.school=SCHOOLS.includes(o.school)?o.school:'';
   o.rings.forEach(r=>{ r.p=Object.assign({spin:'0',period:120},TYPES[r.type].d,r.p); r.visible=r.visible!==false; r.locked=!!r.locked; });
   return o;
 }
 
 root.Athenaeum = root.Athenaeum || {};
 root.Athenaeum.sigil = {
-  hashStr, makeRng, SEED_WORDS, randomSeed, FONTS, g, AZ, SETS_RAW, SETS, alphabets, symbolSets, glyphChar, glyphName, TRANS, translitWord, translitSeq, MOTTO, ARCH, archById, PURPOSES, purposeById, INK_OPTS, FIXED_INKS, F, fInk, fColor, fW, setOpts, allSetOpts, SHAPES_LIST, SHAPE_COUNT_LABEL, FILL_OPTS, PETAL_OPTS, PETAL_PLURAL, TYPES, COMMON_FIELDS, TYPE_ORDER, mk, NUMW, starName, figureName, generate, rerollRing, rad, polar, f2, circlePath, gcd, FIGURES, RENDER, hexMix, PAPER, palette, ringPal, esc, DASH, FONT_CSS_URL, usedUserFonts, itemSVG, sceneSVG, ensureFonts, drawCanvas, USER_FONTS, fontFamilyOf, abToB64, b64ToAb, registerFont, saveUserFonts, loadUserFonts, FONT_MIME, PG, BOOKF, BINK, ensureBookFonts, setLS, pageBackground, runHead, layoutRuns, drawLines, drawVerso, layoutVerso, drawRecto, renderBook, loadJsPDF, bookPDF, canvasBlob, bookPNG, platePNG, HEADS, GENS, SURFACES, RITES, ZOD_GEN, HOURS, roman, cap, parseInline, parseParas, splitInitial, parasHTML, buildLore, finishLore, TEXT_KEYS, applyText, uid, validState, normalise, BOOK_COLOURS, bookColour, bookColours
+  hashStr, makeRng, SEED_WORDS, randomSeed, FONTS, g, AZ, SETS_RAW, SETS, alphabets, symbolSets, glyphChar, glyphName, TRANS, translitWord, translitSeq, MOTTO, ARCH, archById, PURPOSES, purposeById, INK_OPTS, FIXED_INKS, F, fInk, fColor, fW, setOpts, allSetOpts, SHAPES_LIST, SHAPE_COUNT_LABEL, FILL_OPTS, PETAL_OPTS, PETAL_PLURAL, TYPES, COMMON_FIELDS, TYPE_ORDER, mk, NUMW, starName, figureName, generate, rerollRing, rad, polar, f2, circlePath, gcd, FIGURES, RENDER, hexMix, PAPER, palette, ringPal, esc, DASH, FONT_CSS_URL, usedUserFonts, itemSVG, sceneSVG, ensureFonts, drawCanvas, USER_FONTS, fontFamilyOf, abToB64, b64ToAb, registerFont, saveUserFonts, loadUserFonts, FONT_MIME, PG, BOOKF, BINK, ensureBookFonts, setLS, pageBackground, runHead, layoutRuns, drawLines, drawVerso, layoutVerso, drawRecto, renderBook, loadJsPDF, bookPDF, canvasBlob, bookPNG, platePNG, HEADS, GENS, SURFACES, RITES, ZOD_GEN, HOURS, roman, cap, parseInline, parseParas, splitInitial, parasHTML, buildLore, finishLore, TEXT_KEYS, applyText, uid, validState, normalise, BOOK_COLOURS, bookColour, bookColours, FLAVOURS, SCHOOLS, schoolOf, buildLoreFantasy, loreOf, analyseCircle
 };
 })(window);

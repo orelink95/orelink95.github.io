@@ -201,6 +201,8 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
         enums: {
             /* Folios (Sigil Maker): colours of the binding and of the illuminated initial.
                Same ids as BOOK_COLOURS in scripts/sigil-engine.js. */
+            /* Folios: the voice of the generated text (scripts/sigil-engine.js FLAVOURS) */
+            loreFlavour: [{ id: 'historical', label: 'Grimoire (historical)' }, { id: 'fantasy', label: 'Arcane tome (fantasy)' }],
             bookColour: [
                 { id: 'verdigris', label: 'Verdigris' }, { id: 'oxblood', label: 'Oxblood' }, { id: 'lapis', label: 'Lapis' },
                 { id: 'sable', label: 'Sable' }, { id: 'tyrian', label: 'Tyrian purple' }, { id: 'indigo', label: 'Indigo' },
@@ -1322,6 +1324,8 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     folioRight: { kind: 'text', label: 'Folio number', section: 'Right page', width: 'half', help: 'Top right, in italics.' },
                     caption: { kind: 'text', label: 'Caption', section: 'Right page', width: 'half', help: 'Under the circle. Empty = the title.' },
                     captionNote: { kind: 'text', label: 'Caption note', section: 'Right page', width: 'half', help: 'Small capitals under the caption.' },
+                    flavour: { kind: 'enum', enum: 'loreFlavour', label: 'Flavour', section: 'Book', width: 'half', help: 'The voice of the generated text: Latin grimoire, or arcane tome of the D&D world. Empty = the circle’s own.' },
+                    school: { kind: 'enum', enum: 'spellSchool', label: 'School (fantasy)', section: 'Book', width: 'half', help: 'Arcane tome only. Empty = the circle’s own, or picked from its purpose.' },
                     coverColour: { kind: 'enum', enum: 'bookColour', label: 'Cover', section: 'Book', width: 'half', help: 'The leather of the book PNG. Empty = the circle’s own (picked in the Sigil Maker).' },
                     initialColour: { kind: 'enum', enum: 'bookColour', label: 'Illuminated initial', section: 'Book', width: 'half', help: 'Empty = the circle’s own (picked in the Sigil Maker).' },
                 },

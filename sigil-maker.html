@@ -409,7 +409,7 @@ input[type="checkbox"]{accent-color:var(--green);width:17px;height:17px;margin:0
       </div>
     </div>
     <div class="book-foot"><span>Click a ring on the plate to edit it.</span><span id="arch-now"></span></div>
-    <div class="binding" id="binding" role="group" aria-label="Colours of the book"></div>
+    <div class="binding" id="binding" role="group" aria-label="The book: flavour and colours"></div>
   </div>
 
   <section class="panel" aria-labelledby="h-editor">
@@ -536,7 +536,7 @@ const typeIcon = t => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor
    ENGINE (scripts/sigil-engine.js)
    ===================================================================== */
 const {
-  hashStr, makeRng, SEED_WORDS, randomSeed, FONTS, g, AZ, SETS_RAW, SETS, alphabets, symbolSets, glyphChar, glyphName, TRANS, translitWord, translitSeq, MOTTO, ARCH, archById, PURPOSES, purposeById, INK_OPTS, FIXED_INKS, F, fInk, fColor, fW, setOpts, allSetOpts, SHAPES_LIST, SHAPE_COUNT_LABEL, FILL_OPTS, PETAL_OPTS, PETAL_PLURAL, TYPES, COMMON_FIELDS, TYPE_ORDER, mk, NUMW, starName, figureName, generate, rerollRing, rad, polar, f2, circlePath, gcd, FIGURES, RENDER, hexMix, PAPER, palette, ringPal, esc, DASH, FONT_CSS_URL, usedUserFonts, itemSVG, sceneSVG, ensureFonts, drawCanvas, USER_FONTS, fontFamilyOf, abToB64, b64ToAb, registerFont, saveUserFonts, loadUserFonts, FONT_MIME, PG, BOOKF, BINK, ensureBookFonts, setLS, pageBackground, runHead, layoutRuns, drawLines, drawVerso, layoutVerso, drawRecto, renderBook, loadJsPDF, bookPDF, canvasBlob, bookPNG, platePNG, HEADS, GENS, SURFACES, RITES, ZOD_GEN, HOURS, roman, cap, parseInline, parseParas, splitInitial, parasHTML, buildLore, finishLore, TEXT_KEYS, applyText, uid, validState, normalise, BOOK_COLOURS, bookColour, bookColours
+  hashStr, makeRng, SEED_WORDS, randomSeed, FONTS, g, AZ, SETS_RAW, SETS, alphabets, symbolSets, glyphChar, glyphName, TRANS, translitWord, translitSeq, MOTTO, ARCH, archById, PURPOSES, purposeById, INK_OPTS, FIXED_INKS, F, fInk, fColor, fW, setOpts, allSetOpts, SHAPES_LIST, SHAPE_COUNT_LABEL, FILL_OPTS, PETAL_OPTS, PETAL_PLURAL, TYPES, COMMON_FIELDS, TYPE_ORDER, mk, NUMW, starName, figureName, generate, rerollRing, rad, polar, f2, circlePath, gcd, FIGURES, RENDER, hexMix, PAPER, palette, ringPal, esc, DASH, FONT_CSS_URL, usedUserFonts, itemSVG, sceneSVG, ensureFonts, drawCanvas, USER_FONTS, fontFamilyOf, abToB64, b64ToAb, registerFont, saveUserFonts, loadUserFonts, FONT_MIME, PG, BOOKF, BINK, ensureBookFonts, setLS, pageBackground, runHead, layoutRuns, drawLines, drawVerso, layoutVerso, drawRecto, renderBook, loadJsPDF, bookPDF, canvasBlob, bookPNG, platePNG, HEADS, GENS, SURFACES, RITES, ZOD_GEN, HOURS, roman, cap, parseInline, parseParas, splitInitial, parasHTML, buildLore, finishLore, TEXT_KEYS, applyText, uid, validState, normalise, BOOK_COLOURS, bookColour, bookColours, FLAVOURS, SCHOOLS, schoolOf, buildLoreFantasy, loreOf, analyseCircle
 } = Athenaeum.sigil;
 
 /* ---------- book export (engine: scripts/sigil-engine.js) ---------- */
@@ -558,7 +558,7 @@ const reduceMotion = window.matchMedia && matchMedia('(prefers-reduced-motion: r
 let state, selected=null;
 const ui={animate:!reduceMotion, codexSet:'runic', bg:'parchment', size:2048, svgAnim:false, pdfLayout:'spread'};
 const hist={past:[],future:[]};
-const snap=()=>JSON.stringify({seed:state.seed,arch:state.arch,inkArch:state.inkArch,purpose:state.purpose,rings:state.rings,inkOverride:state.inkOverride,weight:state.weight,wash:state.wash,book:state.book});
+const snap=()=>JSON.stringify({seed:state.seed,arch:state.arch,inkArch:state.inkArch,purpose:state.purpose,rings:state.rings,inkOverride:state.inkOverride,weight:state.weight,wash:state.wash,book:state.book,flavour:state.flavour,school:state.school});
 let lastSnap=null;
 function commit(){
   const s=snap(); if(s===lastSnap) return;
@@ -726,7 +726,10 @@ function renderBinding(){
   el.style.setProperty('--cap-a',bk.initial.cap[0]); el.style.setProperty('--cap-b',bk.initial.cap[1]); el.style.setProperty('--cap-letter',bk.initial.letter);
   const group=(part,label,current,swatchOf)=>`<div class="swatch-group"><span class="label">${label}</span>${BOOK_COLOURS.map(c=>
     `<button type="button" class="swatch" data-book="${part}" data-colour="${c.id}" aria-pressed="${c.id===current.id}" aria-label="${label}: ${esc(c.label)}" title="${esc(c.label)}" style="background:${swatchOf(c)}"></button>`).join('')}<span class="swatch-name">${esc(current.label)}</span></div>`;
-  $('binding').innerHTML=group('cover','Cover',bk.cover,c=>`linear-gradient(135deg,${c.cover[0]},${c.cover[2]})`)+group('initial','Initial',bk.initial,c=>`radial-gradient(circle at 35% 30%,${c.cap[0]},${c.cap[1]})`);
+  const fantasy=state.flavour==='fantasy';
+  const flav=`<div class="swatch-group"><span class="label" id="lbl-flavour">Flavour</span><div class="seg" role="group" aria-labelledby="lbl-flavour">${FLAVOURS.map(([id,l])=>`<button type="button" data-flavour="${id}" aria-pressed="${(state.flavour||'historical')===id}">${esc(l)}</button>`).join('')}</div>
+    ${fantasy?`<label class="label" for="sel-school" style="margin-left:8px">School</label><select id="sel-school" style="width:auto"><option value="">Auto (${esc(schoolOf({...state,school:''}))})</option>${SCHOOLS.map(sc=>`<option value="${sc}"${state.school===sc?' selected':''}>${sc}</option>`).join('')}</select>`:''}</div>`;
+  $('binding').innerHTML=flav+group('cover','Cover',bk.cover,c=>`linear-gradient(135deg,${c.cover[0]},${c.cover[2]})`)+group('initial','Initial',bk.initial,c=>`radial-gradient(circle at 35% 30%,${c.cap[0]},${c.cap[1]})`);
 }
 function renderAll(){
   $('seed').value=state.seed;
@@ -837,7 +840,9 @@ function bind(){
     if($('inks-only').checked){ state.inkArch=id; state.inkOverride={}; commit(); renderPlate(); renderLore(); renderInks(); toast(`Inks of ${archById(id).name}`); return; }
     state.arch=id; state.inkArch=id; state.inkOverride={}; regenerate(state.seed);
   });
-  $('binding').addEventListener('click',e=>{ const b=e.target.closest('[data-book]'); if(!b) return;
+  $('binding').addEventListener('change',e=>{ if(e.target.id!=='sel-school') return; state.school=e.target.value; commit(); renderLore(); });
+  $('binding').addEventListener('click',e=>{ const f=e.target.closest('[data-flavour]'); if(f){ state.flavour=f.dataset.flavour; commit(); renderLore(); renderBinding(); return; }
+    const b=e.target.closest('[data-book]'); if(!b) return;
     state.book={...(state.book||{}),[b.dataset.book]:b.dataset.colour}; commit(); renderBinding(); });
   $('purpose-row').addEventListener('click',e=>{ const b=e.target.closest('[data-purpose]'); if(!b) return; state.purpose=b.dataset.purpose; regenerate(state.seed); });
   $('inks-row').addEventListener('input',e=>{ const el=e.target; if(el.type!=='color') return; state.inkOverride={...state.inkOverride,[el.dataset.role]:el.value}; renderPlate(); });
@@ -906,7 +911,7 @@ function bind(){
   await loadUserFonts();
   let saved=null; try{ saved=JSON.parse(localStorage.getItem('sigil-grimoire-v1')); }catch(e){}
   if(validState(saved)) state=normalise(saved);
-  else { state={seed:'VERDANT-7A3F',arch:'verdant',inkArch:'verdant',purpose:'summoning',rings:[],inkOverride:{},weight:1,wash:true,book:{cover:'verdigris',initial:'verdigris'}}; state.rings=generate(state.seed,state.arch,state.purpose); }
+  else { state={seed:'VERDANT-7A3F',arch:'verdant',inkArch:'verdant',purpose:'summoning',rings:[],inkOverride:{},weight:1,wash:true,book:{cover:'verdigris',initial:'verdigris'},flavour:'historical',school:''}; state.rings=generate(state.seed,state.arch,state.purpose); }
   selected=(state.rings.find(r=>r.type==='star')||{}).id||null;
   bind(); commit(); renderAll(); renderCodex(); renderExport();
   getDownloads();

@@ -43,7 +43,7 @@
 
     const ID_RE = /^[a-z0-9][a-z0-9_-]*$/;
     const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
-    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object', spell: 'kw-spell', deity: 'kw-deity' };
+    const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object', spell: 'kw-spell', deity: 'kw-deity', plane: 'kw-plane' };
 
     // Comparator for a type's `order` option (see data/schema.js)
     function comparator(order) {
@@ -146,12 +146,12 @@
         }
         /* Gods of every tier are known to all, but an Elder god is sealed until a
            campaign lists it in `revealedIn`; so is an event of the timeline marked
-           `sealed` (hidden history). 'all' = revealed in at least one. */
+           `sealed` (hidden history), and a plane marked `sealed`. 'all' = revealed in at least one. */
         function revealed(x, cid) {
             const rec = resolve(x);
             if (!rec) return true;
             const t = typeOfRec.get(rec);
-            const sealed = (t === 'deity' && rec.tier === 'elder') || (t === 'event' && rec.sealed);
+            const sealed = (t === 'deity' && rec.tier === 'elder') || ((t === 'event' || t === 'plane') && rec.sealed);
             if (!sealed) return true;
             const list = rec.revealedIn || [];
             const c = cid === undefined ? viewCampaign() : cid;
@@ -252,6 +252,43 @@
                 .replace('{parent}', encodeURIComponent(r.parent || ''));
         }
 
+        /* ---------- the places and residents of a plane ----------
+           plane.places[] and plane.groups[].members[] are not records: they live in
+           their plane (plane.html), but their names link to it and have preview cards.
+           Each gets an id "<plane>~<key>" (key = its own id, else made from its name)
+           and an anchor on the plane's page (#place-<key>, #who-<key>). */
+        const slugOf = v => String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[’']/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+        const partIndex = new Map();
+        for (const plane of byType.plane || []) {
+            const add = (item, part, extra) => {
+                if (!item || !item.name) return;
+                const key = slugOf(item.id || item.name);
+                if (!key) return;
+                const id = `${plane.id}~${key}`;
+                if (!partIndex.has(id)) partIndex.set(id, { id, key, part, name: item.name, aliases: item.aliases || [], plane, item, anchor: `${part === 'place' ? 'place' : 'who'}-${key}`, ...extra });
+            };
+            (plane.places || []).forEach(p => add(p, 'place'));
+            (plane.groups || []).forEach(g => ((g && g.members) || []).forEach(m => add(m, 'resident', { group: g })));
+        }
+        const planePart = id => partIndex.get(id) || null;
+        const planeParts = (x, part) => { const r = resolve(x); return r ? [...partIndex.values()].filter(v => v.plane === r && (!part || v.part === part)) : []; };
+        // Sealed in the campaign viewed? (its plane sealed, or itself)
+        function partRevealed(x, cid) {
+            const v = typeof x === 'string' ? planePart(x) : x;
+            if (!v) return true;
+            if (!revealed(v.plane, cid)) return false;
+            if (!v.item.sealed) return true;
+            const list = v.item.revealedIn || [];
+            const c = cid === undefined ? viewCampaign() : cid;
+            return isAll(c) ? list.length > 0 : list.includes(c);
+        }
+        function partUrl(x) {
+            const v = typeof x === 'string' ? planePart(x) : x;
+            const u = v ? url(v.plane) : null;
+            return u ? `${u}#${v.anchor}` : null;
+        }
+
         /* ---------- shared enums ---------- */
         function enumOptions(name) {
             return (schema.enums[name] || []).map(o => (typeof o === 'string' ? { id: o, label: o } : o));
@@ -282,6 +319,15 @@
                     }
                 }
             }
+            // A plane's own places and residents link to its page
+            for (const v of partIndex.values()) {
+                const cls = v.part === 'place' ? 'kw-place' : (v.item.divine ? 'kw-deity' : 'kw-person');
+                for (const term of [v.name, ...v.aliases]) {
+                    if (!term || term.length < 3 || !/\p{L}/u.test(term)) continue;
+                    const key = termKey(term);
+                    if (!terms.has(key)) terms.set(key, { id: v.id, href: partUrl(v), cls, rec: v.plane, part: v });
+                }
+            }
             const sorted = [...terms.keys()].sort((a, b) => b.length - a.length);
             const re = sorted.length
                 ? new RegExp(`(?<![\\p{L}\\p{N}])(${sorted.map(looseRe).join('|')})(?![\\p{L}\\p{N}])`, 'giu')
@@ -307,6 +353,7 @@
                     const t = linkIndex.terms.get(termKey(match));
                     if (!t || exclude.has(t.id)) return match;
                     if (!revealed(t.rec, cid)) return match;
+                    if (t.part && !partRevealed(t.part, cid)) return match;
                     if (!t.href && !options.terms) return match;
                     const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
                     const attrs = typeof options.attrs === 'function' ? options.attrs(t.rec, match) : options.attrs;
@@ -647,6 +694,42 @@
                     if (card && pr.deck && card.deck !== pr.deck) warnings.push(`${where}.cards[${i}]: "${c.card}" is not in the deck of ${pr.id}`);
                 });
             }
+            // The orrery: every plane needs a place on it
+            const planes = byType.plane || [];
+            const centres = planes.filter(p => p.kind === 'centre');
+            if (centres.length > 2) warnings.push(`[plane] ${centres.slice(2).map(p => p.id).join(', ')}: only the first two planes of the centre are drawn`);
+            const beyond = planes.filter(p => p.kind === 'beyond');
+            if (beyond.length > 3) warnings.push(`[plane] ${beyond.slice(3).map(p => p.id).join(', ')}: only three planes fit beyond the circles`);
+            if (planes.filter(p => p.kind === 'between').length > 1) warnings.push('[plane] more than one plane between the planes: only the first is drawn');
+            for (const p of planes) {
+                const where = `[plane] ${p.id}`;
+                if (p.kind === 'circle' && !(Number(p.circle) >= 1)) warnings.push(`${where}.circle: not set (it goes on circle 1)`);
+                if (p.kind === 'overlay' && !p.over) warnings.push(`${where}.over: not set (its medallion sits on the first plane of the centre)`);
+                if (p.kind === 'overlay' && p.over && (resolve(p.over) || {}).kind !== 'centre') warnings.push(`${where}.over: "${p.over}" is not at the centre`);
+                if (p.sealed && !(p.revealedIn || []).length) warnings.push(`${where}.revealedIn: sealed and learned in no campaign yet`);
+                (p.roads || []).forEach((rd, i) => {
+                    const to = rd && rd.to ? resolve(rd.to) : null;
+                    if (to && (to.kind || 'circle') !== 'circle') warnings.push(`${where}.roads[${i}]: “${to.name}” is not on a circle, so the road is not drawn`);
+                    if ((p.kind || 'circle') === 'circle') warnings.push(`${where}.roads[${i}]: roads start from the centre, a ring or beneath it, not from a plane on a circle`);
+                });
+                // Its maps, places and residents
+                const mapIds = (p.maps || []).map(m => m && m.id).filter(Boolean);
+                const keys = new Map();
+                const seen = (key, label) => { if (keys.has(key)) warnings.push(`${where}: “${label}” and “${keys.get(key)}” share the id “${key}”: set an id on one of them`); else keys.set(key, label); };
+                (p.places || []).forEach((pl, i) => {
+                    if (!pl || !pl.name) return;
+                    seen(slugOf(pl.id || pl.name), pl.name);
+                    const on = pl.pin && pl.pin.on;
+                    if (pl.pin && pl.pin.x != null && !mapIds.length) warnings.push(`${where}.places[${i}]: “${pl.name}” is pinned but the plane has no map`);
+                    if (on && !mapIds.includes(on)) warnings.push(`${where}.places[${i}].pin.on: no map “${on}”`);
+                    if (pl.sealed && !(pl.revealedIn || []).length) warnings.push(`${where}.places[${i}]: “${pl.name}” is sealed and learned in no campaign yet`);
+                });
+                (p.groups || []).forEach((g, i) => ((g && g.members) || []).forEach((m, j) => {
+                    if (!m || !m.name) return;
+                    seen(slugOf(m.id || m.name), m.name);
+                    if (m.sealed && !(m.revealedIn || []).length) warnings.push(`${where}.groups[${i}].members[${j}]: “${m.name}” is sealed and met in no campaign yet`);
+                }));
+            }
             // The timeline: every event needs a place on it
             for (const ev of byType.event || []) {
                 const where = `[event] ${ev.id}`;
@@ -675,6 +758,7 @@
             autolink, validate,
             campaignEntries, inCampaign, standing,
             viewCampaign, revealed, calendar,
+            planePart, planeParts, partRevealed, partUrl,
         };
     }
 

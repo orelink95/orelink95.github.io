@@ -16,6 +16,7 @@
 .pv--object  { --pv: #7b49d8; --pv-ink: #ad8cf2; }
 .pv--spell   { --pv: #4fb8c4; --pv-ink: #5ec6d2; }
 .pv--deity   { --pv: #f3dc9b; --pv-ink: #f3dc9b; }
+.pv--plane   { --pv: #8fdcb0; --pv-ink: #8fdcb0; }
 
 /* Spell schools: the hues of styles/spell-card.css (.school--*) */
 .pv--school-abjuration    { --school: #3b67b0; }

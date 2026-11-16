@@ -376,6 +376,29 @@
     font-style: italic;
     color: color-mix(in srgb, var(--color-on-surface) 40%, transparent);
 }
+/* Phones: the box is short, so the message sits under the name label */
+@media (max-width: 767px) {
+    .continent-map-card__label {
+        left: 0.5rem;
+        top: 0.5rem;
+        padding: 0.4rem 0.6rem;
+    }
+    .continent-map-card__name {
+        margin-bottom: 0;
+        font-size: 1.25rem;
+        line-height: 1.75rem;
+    }
+    .continent-map-card__tagline {
+        font-size: 9px;
+    }
+    .map-empty {
+        align-items: flex-end;
+        padding: 4.5rem 1.25rem 1.25rem;
+        font-size: 0.9375rem;
+        line-height: 1.4;
+        text-align: center;
+    }
+}
 
 .continent-pin {
     position: relative;

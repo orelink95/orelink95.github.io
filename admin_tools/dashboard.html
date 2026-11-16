@@ -746,6 +746,12 @@
         .seal-status ul { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 4px; }
         .seal-status li span { display: inline-block; min-width: 92px; color: var(--ink-faint); }
         .seal-status li.is-open span { color: var(--gold); }
+        /* A plane's medallion (planes.html) */
+        .plane-prev__stage { display: flex; justify-content: center; padding: 18px 0 14px; background: radial-gradient(circle, #1a1230 0%, #050409 75%); border-radius: 8px; }
+        .plane-prev__medal { box-sizing: border-box; display: flex; align-items: center; justify-content: center; width: 88px; height: 88px; border: 1.5px solid; border-radius: 50%; }
+        .plane-prev__ic { font-size: 48px; }
+        .plane-prev__mask { display: block; width: 48px; height: 48px; -webkit-mask: center / contain no-repeat; mask: center / contain no-repeat; }
+        .plane-prev__img { width: 48px; height: 48px; object-fit: contain; }
         :where(.card-prev) :where(h2, p, ul) { margin: 0; }
 
         .empty { padding: 40px 16px; text-align: center; color: var(--ink-faint); font-style: italic; }

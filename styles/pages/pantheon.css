@@ -8,13 +8,14 @@
     min-height: 100vh;
     font-family: var(--font-body);
     color: var(--color-on-surface);
+    background: #020203;
 }
 
-.dust-layer {
+/* The night sky (canvas #sky, scripts/core/sky.js), fixed behind the page */
+.pantheon-sky {
     position: fixed;
     inset: 0;
     z-index: 0;
-    overflow: hidden;
     pointer-events: none;
 }
 
@@ -43,40 +44,56 @@
 }
 
 /* --- Head --- */
+/* The header: same as the Orrery's and the Astrolabe's (Cinzel title, an ornament
+   with a glowing dot, an italic line), the campaign drop-down under it */
 .pantheon-head {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 1rem 2rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     margin-bottom: 3.5rem;
 }
 
-.pantheon-head__text {
-    max-width: 44rem;
-}
-
 .pantheon-head__title {
-    margin: 0 0 1rem;
-    font-family: var(--font-headline);
-    font-size: 3rem;
-    line-height: 1;
+    margin: 0;
+    font-family: "Cinzel", var(--font-headline), serif;
+    font-size: clamp(2.4rem, 6vw, 3.75rem);
     font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.06em;
     color: #fff;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
 }
 
-@media (min-width: 768px) {
-    .pantheon-head__title {
-        font-size: 4.5rem;
-    }
+.pantheon-head__ornament {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 0.9rem;
+}
+.pantheon-head__ornament span:first-child,
+.pantheon-head__ornament span:last-child {
+    width: 70px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(233, 193, 118, 0.6));
+}
+.pantheon-head__ornament span:last-child { transform: scaleX(-1); }
+.pantheon-head__dot {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--color-secondary);
 }
 
 .pantheon-head__lede {
-    margin: 0;
-    font-size: 1.15rem;
+    margin: 0.9rem 0 0;
+    font-size: 1.2rem;
     font-style: italic;
     color: var(--color-on-surface-variant);
+}
+
+.pantheon-head .pantheon-picker {
+    margin-top: 1.5rem;
 }
 
 .pantheon-empty {

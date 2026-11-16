@@ -7,7 +7,7 @@
     <title>The Black Archive — The Athenaeum Vault</title>
     <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
     <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap"
         rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -48,187 +48,199 @@
                 </div>
             </header>
 
-            <div class="gateways">
+            <!-- Two wings. The heavens: what is above the world and around it (the gods, the planes,
+                 time). The holdings: what is known and what the party gathers. Same order as the
+                 Archive's tab bar (SITE_NAV in scripts/general-scripts.js). -->
+            <section class="archive-wing" aria-labelledby="wing-heavens">
+                <h2 id="wing-heavens" class="archive-wing__title"><span>The heavens</span></h2>
+                <div class="heavens">
+                    <a href="pantheon.html" style="animation-delay: -2.2s;" class="gateway-card heaven-door">
+                        <div class="heaven-door__art">
+                            <!-- A rose window: one pane per god, in their colour (data/deities.json), Eldur the Creator at the heart.
+                                 The rays behind turn slowly; light through the glass falls on the steps. -->
+                            <svg class="pantheon-door" viewBox="0 0 200 224" aria-hidden="true" focusable="false">
+                                <defs>
+                                    <radialGradient id="pd-glass" cx="40%" cy="35%" r="70%"><stop offset="0%" stop-color="#fff" stop-opacity=".55"/><stop offset="45%" stop-color="#fff" stop-opacity="0"/></radialGradient>
+                                    <radialGradient id="pd-heart"><stop offset="0%" stop-color="#d8ecff"/><stop offset="45%" stop-color="#4c91cd"/><stop offset="100%" stop-color="#1d3d66"/></radialGradient>
+                                    <linearGradient id="pd-beam" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe6a8" stop-opacity=".35"/><stop offset="100%" stop-color="#ffe6a8" stop-opacity="0"/></linearGradient>
+                                    <linearGradient id="pd-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#16131c"/><stop offset="100%" stop-color="#0a090d"/></linearGradient>
+                                    <radialGradient id="pd-halo"><stop offset="0%" stop-color="#e9c176" stop-opacity=".45"/><stop offset="100%" stop-color="#e9c176" stop-opacity="0"/></radialGradient>
+                                    <clipPath id="pd-arch"><path d="M32 216 V96 Q32 34 100 8 Q168 34 168 96 V216 Z"/></clipPath>
+                                </defs>
+                                <circle class="pantheon-door__halo" cx="100" cy="98" r="98" fill="url(#pd-halo)"/>
+                                <g class="pantheon-door__rays" fill="#e9c176" opacity=".22"><path d="M99.3 80 L100 -6 L100.7 80Z"/><path d="M104 80.4 L126.9 -2.5 L105.3 80.8Z"/><path d="M108.4 82.1 L152 7.9 L109.6 82.8Z"/><path d="M112.2 84.8 L173.5 24.5 L113.2 85.8Z"/><path d="M115.2 88.4 L190.1 46 L115.9 89.6Z"/><path d="M117.2 92.7 L200.5 71.1 L117.6 94Z"/><path d="M118 97.3 L204 98 L118 98.7Z"/><path d="M117.6 102 L200.5 124.9 L117.2 103.3Z"/><path d="M115.9 106.4 L190.1 150 L115.2 107.6Z"/><path d="M113.2 110.2 L173.5 171.5 L112.2 111.2Z"/><path d="M109.6 113.2 L152 188.1 L108.4 113.9Z"/><path d="M105.3 115.2 L126.9 198.5 L104 115.6Z"/><path d="M100.7 116 L100 202 L99.3 116Z"/><path d="M96 115.6 L73.1 198.5 L94.7 115.2Z"/><path d="M91.6 113.9 L48 188.1 L90.4 113.2Z"/><path d="M87.8 111.2 L26.5 171.5 L86.8 110.2Z"/><path d="M84.8 107.6 L9.9 150 L84.1 106.4Z"/><path d="M82.8 103.3 L-0.5 124.9 L82.4 102Z"/><path d="M82 98.7 L-4 98 L82 97.3Z"/><path d="M82.4 94 L-0.5 71.1 L82.8 92.7Z"/><path d="M84.1 89.6 L9.9 46 L84.8 88.4Z"/><path d="M86.8 85.8 L26.5 24.5 L87.8 84.8Z"/><path d="M90.4 82.8 L48 7.9 L91.6 82.1Z"/><path d="M94.7 80.8 L73.1 -2.5 L96 80.4Z"/></g>
+                                <path d="M32 216 V96 Q32 34 100 8 Q168 34 168 96 V216 Z" fill="url(#pd-stone)" stroke="#e9c176" stroke-opacity=".75" stroke-width="1.6"/>
+                                <path d="M39 216 V97 Q39 41 100 16 Q161 41 161 97 V216" fill="none" stroke="#e9c176" stroke-opacity=".3" stroke-width=".8"/>
+                                <g clip-path="url(#pd-arch)"><path class="pantheon-door__beam" d="M66 132 L134 132 L162 216 L38 216 Z" fill="url(#pd-beam)"/><g class="pantheon-door__patches"><ellipse cx="78" cy="196" rx="4.2" ry="1.6" fill="#fee543" opacity=".5"/><ellipse cx="84.3" cy="199" rx="4.2" ry="1.6" fill="#8ee6d8" opacity=".5"/><ellipse cx="90.6" cy="196" rx="4.2" ry="1.6" fill="#df5d5d" opacity=".5"/><ellipse cx="96.9" cy="199" rx="4.2" ry="1.6" fill="#20c70a" opacity=".5"/><ellipse cx="103.2" cy="196" rx="4.2" ry="1.6" fill="#ae00ff" opacity=".5"/><ellipse cx="109.5" cy="199" rx="4.2" ry="1.6" fill="#dab52f" opacity=".5"/><ellipse cx="115.8" cy="196" rx="4.2" ry="1.6" fill="#952af8" opacity=".5"/><ellipse cx="122.1" cy="199" rx="4.2" ry="1.6" fill="#d9dde6" opacity=".5"/></g></g>
+                                <g fill="none" stroke="#e9c176" stroke-opacity=".45" stroke-width=".8"><path d="M50 204 H150"/><path d="M42 210 H158"/><path d="M36 216 H164"/></g>
+                                <circle cx="100" cy="98" r="60" fill="#07060a" stroke="#e9c176" stroke-opacity=".85" stroke-width="1.4"/>
+                                <circle cx="100" cy="98" r="60" fill="none" stroke="#e9c176" stroke-opacity=".5" stroke-width="2.5" stroke-dasharray=".6 3.2"/>
+                                <g class="pantheon-door__glass">
+                                    <g><title>Oghma</title><path d="M91.3 74.6 L83.7 53.9 Q86.7 45.7 100 43 Q113.3 45.7 116.3 53.9 L108.7 74.6 A25 25 0 0 0 91.3 74.6Z" fill="#fee543" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M91.3 74.6 L83.7 53.9 Q86.7 45.7 100 43 Q113.3 45.7 116.3 53.9 L108.7 74.6 A25 25 0 0 0 91.3 74.6Z" fill="url(#pd-glass)"/><circle cx="100" cy="60" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="120.3" cy="49" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>Banem</title><path d="M110.4 75.3 L119.6 55.3 Q127.6 51.6 138.9 59.1 Q146.4 70.4 142.7 78.4 L122.7 87.6 A25 25 0 0 0 110.4 75.3Z" fill="#8ee6d8" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M110.4 75.3 L119.6 55.3 Q127.6 51.6 138.9 59.1 Q146.4 70.4 142.7 78.4 L122.7 87.6 A25 25 0 0 0 110.4 75.3Z" fill="url(#pd-glass)"/><circle cx="126.9" cy="71.1" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="149" cy="77.7" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>White Elk</title><path d="M123.4 89.3 L144.1 81.7 Q152.3 84.7 155 98 Q152.3 111.3 144.1 114.3 L123.4 106.7 A25 25 0 0 0 123.4 89.3Z" fill="#df5d5d" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M123.4 89.3 L144.1 81.7 Q152.3 84.7 155 98 Q152.3 111.3 144.1 114.3 L123.4 106.7 A25 25 0 0 0 123.4 89.3Z" fill="url(#pd-glass)"/><circle cx="138" cy="98" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="149" cy="118.3" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>Syr-Rion</title><path d="M122.7 108.4 L142.7 117.6 Q146.4 125.6 138.9 136.9 Q127.6 144.4 119.6 140.7 L110.4 120.7 A25 25 0 0 0 122.7 108.4Z" fill="#20c70a" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M122.7 108.4 L142.7 117.6 Q146.4 125.6 138.9 136.9 Q127.6 144.4 119.6 140.7 L110.4 120.7 A25 25 0 0 0 122.7 108.4Z" fill="url(#pd-glass)"/><circle cx="126.9" cy="124.9" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="120.3" cy="147" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>Arawan</title><path d="M108.7 121.4 L116.3 142.1 Q113.3 150.3 100 153 Q86.7 150.3 83.7 142.1 L91.3 121.4 A25 25 0 0 0 108.7 121.4Z" fill="#ae00ff" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M108.7 121.4 L116.3 142.1 Q113.3 150.3 100 153 Q86.7 150.3 83.7 142.1 L91.3 121.4 A25 25 0 0 0 108.7 121.4Z" fill="url(#pd-glass)"/><circle cx="100" cy="136" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="79.7" cy="147" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>Gagiel</title><path d="M89.6 120.7 L80.4 140.7 Q72.4 144.4 61.1 136.9 Q53.6 125.6 57.3 117.6 L77.3 108.4 A25 25 0 0 0 89.6 120.7Z" fill="#dab52f" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M89.6 120.7 L80.4 140.7 Q72.4 144.4 61.1 136.9 Q53.6 125.6 57.3 117.6 L77.3 108.4 A25 25 0 0 0 89.6 120.7Z" fill="url(#pd-glass)"/><circle cx="73.1" cy="124.9" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="51" cy="118.3" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>Shub-Niggurath</title><path d="M76.6 106.7 L55.9 114.3 Q47.7 111.3 45 98 Q47.7 84.7 55.9 81.7 L76.6 89.3 A25 25 0 0 0 76.6 106.7Z" fill="#952af8" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M76.6 106.7 L55.9 114.3 Q47.7 111.3 45 98 Q47.7 84.7 55.9 81.7 L76.6 89.3 A25 25 0 0 0 76.6 106.7Z" fill="url(#pd-glass)"/><circle cx="62" cy="98" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="51" cy="77.7" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                    <g><title>Pholtos</title><path d="M77.3 87.6 L57.3 78.4 Q53.6 70.4 61.1 59.1 Q72.4 51.6 80.4 55.3 L89.6 75.3 A25 25 0 0 0 77.3 87.6Z" fill="#d9dde6" fill-opacity=".62" stroke="#e9c176" stroke-opacity=".9" stroke-width="1.1"/><path d="M77.3 87.6 L57.3 78.4 Q53.6 70.4 61.1 59.1 Q72.4 51.6 80.4 55.3 L89.6 75.3 A25 25 0 0 0 77.3 87.6Z" fill="url(#pd-glass)"/><circle cx="73.1" cy="71.1" r="3.4" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/></g>
+                                    <circle cx="79.7" cy="49" r="2.6" fill="#e9c176" fill-opacity=".25" stroke="#e9c176" stroke-opacity=".7" stroke-width=".7"/>
+                                </g>
+                                <g><title>Eldur</title><circle cx="100" cy="98" r="21" fill="#07060a" stroke="#e9c176" stroke-width="1.3"/><circle class="pantheon-door__heart" cx="100" cy="98" r="19" fill="url(#pd-heart)" fill-opacity=".9"/><polygon points="100,81 103.3,90.1 112,86 107.9,94.7 117,98 107.9,101.3 112,110 103.3,105.9 100,115 96.7,105.9 88,110 92.1,101.3 83,98 92.1,94.7 88,86 96.7,90.1" fill="#e9c176" fill-opacity=".9" stroke="#fff3cf" stroke-opacity=".6" stroke-width=".6"/><circle cx="100" cy="98" r="4" fill="#fff6dc"/></g>
+                            </svg>
+                        </div>
+                        <div class="heaven-door__body">
+                            <h3 class="gateway-card__title">The Pantheon</h3>
+                            <p class="heaven-door__text">The gods of Eraldom, their domains and the temples raised to them.</p>
+                            <span class="gateway-card__cta">Kneel and Read <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                    <a href="planes.html" style="animation-delay: -4.1s;" class="gateway-card heaven-door">
+                        <div class="heaven-door__art">
+                            <!-- The cosmos in small (same layout as planes.html; colours from data/planes.json).
+                                 Its two circles turn; they stop while the card is hovered (styles/pages/library.css). -->
+                            <svg class="orrery-door" viewBox="-100 -100 200 200" aria-hidden="true" focusable="false">
+                                <defs>
+                                    <radialGradient id="od-void"><stop offset="25%" stop-color="#2a1250" stop-opacity="0"/><stop offset="70%" stop-color="#3a1a78" stop-opacity=".28"/><stop offset="100%" stop-color="#1a0a36" stop-opacity=".7"/></radialGradient>
+                                    <radialGradient id="od-medal"><stop offset="0%" stop-color="#1c1a26"/><stop offset="100%" stop-color="#08070d"/></radialGradient>
+                                    <linearGradient id="od-core" x1="0" y1="1" x2="1" y2="0"><stop offset="0%" stop-color="#2c2548"/><stop offset="50%" stop-color="#584c8a"/><stop offset="50%" stop-color="#27666c"/><stop offset="100%" stop-color="#6fb9be"/></linearGradient>
+                                    <linearGradient id="od-dream" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c79cf0" stop-opacity=".6"/><stop offset="55%" stop-color="#c79cf0" stop-opacity=".12"/><stop offset="100%" stop-color="#c79cf0" stop-opacity=".05"/></linearGradient>
+                                <linearGradient id="od-mobius" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#9fb8ff" stop-opacity=".05"/><stop offset="45%" stop-color="#9fb8ff" stop-opacity=".1"/><stop offset="100%" stop-color="#9fb8ff" stop-opacity=".5"/></linearGradient>
+                                </defs>
+                                <!-- beyond the circles: Mobius, the Dreamlands -->
+                                <circle r="95.5" fill="none" stroke="url(#od-mobius)" stroke-width="6"/>
+                                <circle r="89.5" fill="none" stroke="url(#od-dream)" stroke-width="5"/>
+                                <!-- the Void, and the rim's ticks -->
+                                <circle r="86" fill="url(#od-void)"/>
+                                <circle r="84.5" fill="none" stroke="#e9c176" stroke-opacity=".55" stroke-width="3" stroke-dasharray=".7 4.6"/>
+                                <circle r="86.6" fill="none" stroke="#e9c176" stroke-opacity=".35" stroke-width=".6"/>
+                                <!-- the orbits -->
+                                <circle r="67" fill="none" stroke="#e9c176" stroke-opacity=".22" stroke-width=".7"/>
+                                <circle r="47" fill="none" stroke="#e9c176" stroke-opacity=".18" stroke-width=".7" stroke-dasharray="2 2.5"/>
+                                <!-- the Astral Ring -->
+                                <circle r="32" fill="none" stroke="#cfd6ff" stroke-opacity=".1" stroke-width="5"/>
+                                <circle r="34.5" fill="none" stroke="#cfd6ff" stroke-opacity=".55" stroke-width=".8"/>
+                                <circle r="29.5" fill="none" stroke="#cfd6ff" stroke-opacity=".3" stroke-width=".6"/>
+                                <!-- the Underworld, beneath the centre -->
+                                <circle r="24" fill="none" stroke="#7a1d26" stroke-opacity=".75" stroke-width="5.5"/>
+                                <circle r="24" fill="none" stroke="#e0605a" stroke-opacity=".8" stroke-width="5.5" stroke-dasharray=".6 5.68"/>
+                                <!-- the centre: the Material Plane and the Shadow Plane, the Ethereal veil over them -->
+                                <circle r="19" fill="none" stroke="#b9e3ef" stroke-opacity=".55" stroke-width=".7" stroke-dasharray="1.6 1.6"/>
+                                <circle class="orrery-door__core" r="14.5" fill="url(#od-core)" stroke="#e9c176" stroke-opacity=".7" stroke-width="1"/>
+                                <line x1="-10.2" y1="10.2" x2="10.2" y2="-10.2" stroke="#e9c176" stroke-opacity=".85" stroke-width=".9"/>
+                                <!-- the Dreamlands and Mobius on their bands -->
+                                <g transform="translate(0.0 -89.5)"><circle r="7.0" fill="#050409"/><circle class="orrery-door__rim" r="5.2" fill="url(#od-medal)" stroke="#c79cf0" stroke-width="1.4" style="--c: #c79cf0"/><circle r="1.9" fill="#c79cf0" opacity=".85"/></g>
+                                <g transform="translate(0.0 95.5)"><circle r="7.0" fill="#050409"/><circle class="orrery-door__rim" r="5.2" fill="url(#od-medal)" stroke="#9fb8ff" stroke-width="1.4" style="--c: #9fb8ff"/><circle r="1.9" fill="#9fb8ff" opacity=".85"/></g>
+                                <!-- the first circle (Water, Air, Fire, Stone) and the second (Ydalheim, Aran, Tal'Mavhet, Tartarus) -->
+                                <g class="orrery-door__turn" style="--turn: 70s"><circle r="60" fill="none" stroke="none"/><g transform="translate(0.0 -47.0)"><circle r="8.2" fill="#050409"/><circle class="orrery-door__rim" r="6.4" fill="url(#od-medal)" stroke="#6fb6e8" stroke-width="1.4" style="--c: #6fb6e8"/><circle r="2.3" fill="#6fb6e8" opacity=".85"/></g><g transform="translate(47.0 -0.0)"><circle r="8.2" fill="#050409"/><circle class="orrery-door__rim" r="6.4" fill="url(#od-medal)" stroke="#a8dccf" stroke-width="1.4" style="--c: #a8dccf"/><circle r="2.3" fill="#a8dccf" opacity=".85"/></g><g transform="translate(0.0 47.0)"><circle r="8.2" fill="#050409"/><circle class="orrery-door__rim" r="6.4" fill="url(#od-medal)" stroke="#f08a5d" stroke-width="1.4" style="--c: #f08a5d"/><circle r="2.3" fill="#f08a5d" opacity=".85"/></g><g transform="translate(-47.0 0.0)"><circle r="8.2" fill="#050409"/><circle class="orrery-door__rim" r="6.4" fill="url(#od-medal)" stroke="#c9a878" stroke-width="1.4" style="--c: #c9a878"/><circle r="2.3" fill="#c9a878" opacity=".85"/></g></g>
+                                <g class="orrery-door__turn" style="--turn: 120s"><circle r="80" fill="none" stroke="none"/><g transform="translate(-47.4 -47.4)"><circle r="9.0" fill="#050409"/><circle class="orrery-door__rim" r="7.2" fill="url(#od-medal)" stroke="#7fd0a2" stroke-width="1.4" style="--c: #7fd0a2"/><circle r="2.6" fill="#7fd0a2" opacity=".85"/></g><g transform="translate(47.4 -47.4)"><circle r="9.0" fill="#050409"/><circle class="orrery-door__rim" r="7.2" fill="url(#od-medal)" stroke="#f2c35b" stroke-width="1.4" style="--c: #f2c35b"/><circle r="2.6" fill="#f2c35b" opacity=".85"/></g><g transform="translate(47.4 47.4)"><circle r="9.0" fill="#050409"/><circle class="orrery-door__rim" r="7.2" fill="url(#od-medal)" stroke="#8fb4ff" stroke-width="1.4" style="--c: #8fb4ff"/><circle r="2.6" fill="#8fb4ff" opacity=".85"/></g><g transform="translate(-47.4 47.4)"><circle r="9.0" fill="#050409"/><circle class="orrery-door__rim" r="7.2" fill="url(#od-medal)" stroke="#e0605a" stroke-width="1.4" style="--c: #e0605a"/><circle r="2.6" fill="#e0605a" opacity=".85"/></g></g>
+                            </svg>
+                        </div>
+                        <div class="heaven-door__body">
+                            <h3 class="gateway-card__title">The Orrery</h3>
+                            <p class="heaven-door__text">The planes of existence, turning around the Material Plane.</p>
+                            <span class="gateway-card__cta">Read the Heavens <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                    <a href="timeline.html" style="animation-delay: -1.2s;" class="gateway-card heaven-door">
+                        <div class="heaven-door__art">
+                            <!-- A brass astrolabe: the rete (star map) and the rule turn, the other way; the limb carries the ages
+                                 as on timeline.html: the Old Days, the Ophrasian War, two later ages, the glowing present. -->
+                            <svg class="astrolabe-door" viewBox="0 0 200 224" aria-hidden="true" focusable="false">
+                                <defs>
+                                    <radialGradient id="ad-brass" cx="40%" cy="35%" r="75%"><stop offset="0%" stop-color="#5a4524"/><stop offset="60%" stop-color="#2d2213"/><stop offset="100%" stop-color="#17110a"/></radialGradient>
+                                    <linearGradient id="ad-rim" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffe2a3"/><stop offset="45%" stop-color="#c99a4a"/><stop offset="100%" stop-color="#7a5524"/></linearGradient>
+                                    <radialGradient id="ad-now"><stop offset="0%" stop-color="#fff6d8"/><stop offset="40%" stop-color="#ffd772"/><stop offset="100%" stop-color="#ffd772" stop-opacity="0"/></radialGradient>
+                                </defs>
+                                <circle cx="100" cy="15" r="9" fill="none" stroke="url(#ad-rim)" stroke-width="2.6"/>
+                                <path d="M80 50 Q78 34 92 30 Q96 22 100 22 Q104 22 108 30 Q122 34 120 50 Z" fill="url(#ad-brass)" stroke="url(#ad-rim)" stroke-width="1.6"/>
+                                <circle cx="100" cy="37" r="4" fill="none" stroke="#e9c176" stroke-opacity=".8" stroke-width="1"/>
+                                <circle class="astrolabe-door__body" cx="100" cy="128" r="82" fill="url(#ad-brass)" stroke="url(#ad-rim)" stroke-width="3"/>
+                                <circle cx="100" cy="128" r="71" fill="none" stroke="#e9c176" stroke-opacity=".55" stroke-width=".8"/>
+                                <g stroke="#e9c176" stroke-opacity=".75" stroke-width=".7"><path d="M100 48 L100 52.5"/><path d="M107 48.3 L106.9 49.1"/><path d="M113.9 49.2 L113.5 51.2"/><path d="M120.7 50.7 L120.5 51.5"/><path d="M127.4 52.8 L126.7 54.7"/><path d="M133.8 55.5 L133.5 56.2"/><path d="M140 58.7 L137.8 62.6"/><path d="M145.9 62.5 L145.4 63.1"/><path d="M151.4 66.7 L150.1 68.2"/><path d="M156.6 71.4 L156 72"/><path d="M161.3 76.6 L159.8 77.9"/><path d="M165.5 82.1 L164.9 82.6"/><path d="M169.3 88 L165.4 90.2"/><path d="M172.5 94.2 L171.8 94.5"/><path d="M175.2 100.6 L173.3 101.3"/><path d="M177.3 107.3 L176.5 107.5"/><path d="M178.8 114.1 L176.8 114.5"/><path d="M179.7 121 L178.9 121.1"/><path d="M180 128 L175.5 128"/><path d="M179.7 135 L178.9 134.9"/><path d="M178.8 141.9 L176.8 141.5"/><path d="M177.3 148.7 L176.5 148.5"/><path d="M175.2 155.4 L173.3 154.7"/><path d="M172.5 161.8 L171.8 161.5"/><path d="M169.3 168 L165.4 165.8"/><path d="M165.5 173.9 L164.9 173.4"/><path d="M161.3 179.4 L159.8 178.1"/><path d="M156.6 184.6 L156 184"/><path d="M151.4 189.3 L150.1 187.8"/><path d="M145.9 193.5 L145.4 192.9"/><path d="M140 197.3 L137.8 193.4"/><path d="M133.8 200.5 L133.5 199.8"/><path d="M127.4 203.2 L126.7 201.3"/><path d="M120.7 205.3 L120.5 204.5"/><path d="M113.9 206.8 L113.5 204.8"/><path d="M107 207.7 L106.9 206.9"/><path d="M100 208 L100 203.5"/><path d="M93 207.7 L93.1 206.9"/><path d="M86.1 206.8 L86.5 204.8"/><path d="M79.3 205.3 L79.5 204.5"/><path d="M72.6 203.2 L73.3 201.3"/><path d="M66.2 200.5 L66.5 199.8"/><path d="M60 197.3 L62.2 193.4"/><path d="M54.1 193.5 L54.6 192.9"/><path d="M48.6 189.3 L49.9 187.8"/><path d="M43.4 184.6 L44 184"/><path d="M38.7 179.4 L40.2 178.1"/><path d="M34.5 173.9 L35.1 173.4"/><path d="M30.7 168 L34.6 165.8"/><path d="M27.5 161.8 L28.2 161.5"/><path d="M24.8 155.4 L26.7 154.7"/><path d="M22.7 148.7 L23.5 148.5"/><path d="M21.2 141.9 L23.2 141.5"/><path d="M20.3 135 L21.1 134.9"/><path d="M20 128 L24.5 128"/><path d="M20.3 121 L21.1 121.1"/><path d="M21.2 114.1 L23.2 114.5"/><path d="M22.7 107.3 L23.5 107.5"/><path d="M24.8 100.6 L26.7 101.3"/><path d="M27.5 94.2 L28.2 94.5"/><path d="M30.7 88 L34.6 90.2"/><path d="M34.5 82.1 L35.1 82.6"/><path d="M38.7 76.6 L40.2 77.9"/><path d="M43.4 71.4 L44 72"/><path d="M48.6 66.7 L49.9 68.2"/><path d="M54.1 62.5 L54.6 63.1"/><path d="M60 58.7 L62.2 62.6"/><path d="M66.2 55.5 L66.5 56.2"/><path d="M72.6 52.8 L73.3 54.7"/><path d="M79.3 50.7 L79.5 51.5"/><path d="M86.1 49.2 L86.5 51.2"/><path d="M93 48.3 L93.1 49.1"/></g>
+                                <path d="M74.9 197.1 A73.5 73.5 0 0 1 27.2 138.2" fill="none" stroke="#e9c176" stroke-opacity=".5" stroke-width="2" stroke-dasharray="3 3"/>
+                                <path d="M27.2 138.2 A73.5 73.5 0 0 1 87.2 55.6" fill="none" stroke="#e9c176" stroke-opacity=".85" stroke-width="1.1"/>
+                                <path d="M27.2 117.8 A73.5 73.5 0 0 1 36.3 91.2" fill="none" stroke="#e08585" stroke-width="3.6" stroke-linecap="round"/>
+                                <circle cx="50.8" cy="73.4" r="2.2" fill="#17110a" stroke="#e9c176" stroke-width="1"/>
+                                <circle cx="70.1" cy="60.9" r="2.2" fill="#17110a" stroke="#e9c176" stroke-width="1"/>
+                                <circle class="astrolabe-door__now" cx="89.8" cy="55.2" r="7" fill="url(#ad-now)"/><circle cx="89.8" cy="55.2" r="2.6" fill="#fff3c8"/>
+                                <g fill="none" stroke="#e9c176" stroke-opacity=".28" stroke-width=".6"><circle cx="100" cy="122" r="58"/><circle cx="100" cy="116" r="48"/><circle cx="100" cy="111" r="38"/><circle cx="100" cy="107" r="28"/><circle cx="100" cy="104" r="18"/><path d="M29 128 H171"/><path d="M100 57 V199"/><path d="M38 150 Q100 108 162 150"/><path d="M44 168 Q100 132 156 168"/></g>
+                                <g class="astrolabe-door__rete"><circle cx="100" cy="114" r="44" fill="none" stroke="url(#ad-rim)" stroke-width="3"/><circle cx="100" cy="114" r="44" fill="none" stroke="#17110a" stroke-width="1" stroke-dasharray="1 3.6"/><circle cx="100" cy="128" r="69" fill="none" stroke="url(#ad-rim)" stroke-width="1.6"/><path d="M100 116 L100 59" stroke="url(#ad-rim)" stroke-width="1.3"/><path d="M112 128 L169 128" stroke="url(#ad-rim)" stroke-width="1.3"/><path d="M100 140 L100 197" stroke="url(#ad-rim)" stroke-width="1.3"/><path d="M88 128 L31 128" stroke="url(#ad-rim)" stroke-width="1.3"/><path d="M112.4 92.1 Q120.2 90 124.4 82.1 Q120.2 90 122.9 97.7" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="119.2" cy="91.8" r="2.1" fill="#9fd3ff" style="--c: #9fd3ff"/><path d="M120.1 119.1 Q126.1 121 134.8 118.7 Q126.1 121 121.9 125.7" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="124.1" cy="121.5" r="2.1" fill="#ffd36e" style="--c: #ffd36e"/><path d="M137.7 150.7 Q137.5 159.5 144.4 165.3 Q137.5 159.5 128.9 161.2" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="136" cy="158.2" r="2.1" fill="#ff8d7a" style="--c: #ff8d7a"/><path d="M91.2 158.8 Q84.4 161.5 80.6 169.7 Q84.4 161.5 82.1 154.5" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="85.2" cy="159.7" r="2.1" fill="#c79cf0" style="--c: #c79cf0"/><path d="M58 151.3 Q50.2 146.1 41.7 149.2 Q50.2 146.1 52.9 137.2" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="52.1" cy="145.4" r="2.1" fill="#9fd3ff" style="--c: #9fd3ff"/><path d="M77.7 114.6 Q76.3 108.1 69.4 102.3 Q76.3 108.1 82.9 108.4" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="77.8" cy="109.4" r="2.1" fill="#a8f0c8" style="--c: #a8f0c8"/><path d="M79.7 82.3 Q85.8 74.9 83.4 66.2 Q85.8 74.9 94.8 78.3" fill="none" stroke="url(#ad-rim)" stroke-width="1.2"/><circle class="astrolabe-door__star" cx="86.3" cy="76.8" r="2.1" fill="#ffd36e" style="--c: #ffd36e"/></g>
+                                <g class="astrolabe-door__rule"><circle cx="100" cy="128" r="80" fill="none" stroke="none"/><path d="M22 128 L90 124.8 L110 124.8 L178 128 L110 131.2 L90 131.2 Z" fill="url(#ad-rim)" stroke="#5a3f1a" stroke-width=".6"/><path d="M28 128 H172" stroke="#5a3f1a" stroke-width=".5"/></g>
+                                <circle cx="100" cy="128" r="6" fill="url(#ad-rim)" stroke="#5a3f1a" stroke-width=".8"/><circle cx="100" cy="128" r="2" fill="#5a3f1a"/>
+                            </svg>
+                        </div>
+                        <div class="heaven-door__body">
+                            <h3 class="gateway-card__title">The Astrolabe</h3>
+                            <p class="heaven-door__text">Every age of Eraldom in order, from the Old Days to the present.</p>
+                            <span class="gateway-card__cta">Walk the Ages <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                </div>
+            </section>
 
-                <!-- The world as it is (the gods, the creatures, what is known), then what the party
-                     carries and finds (spells, relics, evidence); the Astrolabe holds all of it in time -->
-
-                <a href="pantheon.html" style="animation-delay: -2.2s;"
-                    class="gateway-card">
-
-                    <div
-                        class="gateway-card__face">
-                        <span
-                            class="gateway-card__icon card-icon material-symbols-outlined">brightness_7</span>
-                        <h3 class="gateway-card__title">
-                            The Pantheon</h3>
-                    </div>
-
-                    <div
-                        class="gateway-card__reveal">
-                        <p
-                            class="gateway-card__text">
-                            The gods of Eraldom, their domains and the temples raised to them.
-                        </p>
-                        <span
-                            class="gateway-card__cta">
-                            Kneel and Read <span
-                                class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                </a>
-
-                <a href="bestiary.html"
-                    class="gateway-card">
-
-                    <div
-                        class="gateway-card__face">
-                        <span
-                            class="gateway-card__icon card-icon material-symbols-outlined">temp_preferences_custom</span>
-                        <h3 class="gateway-card__title">
-                            Elder Tarot</h3>
-                    </div>
-
-                    <div
-                        class="gateway-card__reveal">
-                        <p
-                            class="gateway-card__text">
-                            Entities and cosmic horrors, bound within the Major Arcana.
-                        </p>
-                        <span
-                            class="gateway-card__cta">
-                            Draw a Card <span
-                                class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                </a>
-
-                <a href="tomes.html"
-                    class="gateway-card">
-
-                    <div
-                        class="gateway-card__face">
-                        <span
-                            class="gateway-card__icon card-icon material-symbols-outlined">menu_book</span>
-                        <h3 class="gateway-card__title">
-                            Tomes of Reference</h3>
-                    </div>
-
-                    <div
-                        class="gateway-card__reveal">
-                        <p
-                            class="gateway-card__text">
-                            The grand bibliography of historical events and forbidden art.
-                        </p>
-                        <span
-                            class="gateway-card__cta">
-                            Study the Source <span
-                                class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                </a>
-
-                <a href="spellbook.html" style="animation-delay: -4.5s;"
-                    class="gateway-card">
-
-                    <div
-                        class="gateway-card__face">
-                        <span
-                            class="gateway-card__icon card-icon material-symbols-outlined">auto_fix_high</span>
-                        <h3 class="gateway-card__title">
-                            Book of Shadows</h3>
-                    </div>
-
-                    <div
-                        class="gateway-card__reveal">
-                        <p
-                            class="gateway-card__text">
-                            The spells each hero carries, campaign by campaign.
-                        </p>
-                        <span
-                            class="gateway-card__cta">
-                            Open the Book <span
-                                class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                </a>
-
-                <a href="vault.html" style="animation-delay: -1.5s;"
-                    class="gateway-card">
-
-                    <div
-                        class="gateway-card__face">
-                        <span
-                            class="gateway-card__icon card-icon material-symbols-outlined">diamond</span>
-                        <h3 class="gateway-card__title">
-                            The Artifact Vault</h3>
-                    </div>
-
-                    <div
-                        class="gateway-card__reveal">
-                        <p
-                            class="gateway-card__text">
-                            Relics and curios carried out of the dark, card by card.
-                        </p>
-                        <span
-                            class="gateway-card__cta">
-                            Turn a Card <span
-                                class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                </a>
-
-                <a href="handouts.html" style="animation-delay: -3s;"
-                    class="gateway-card">
-
-                    <div
-                        class="gateway-card__face">
-                        <span
-                            class="gateway-card__icon card-icon material-symbols-outlined">history_edu</span>
-                        <h3 class="gateway-card__title">
-                            Archival Handouts</h3>
-                    </div>
-
-                    <div
-                        class="gateway-card__reveal">
-                        <p
-                            class="gateway-card__text">
-                            Physical evidence, decrypted letters, and field maps.
-                        </p>
-                        <span
-                            class="gateway-card__cta">
-                            Examine Evidence <span
-                                class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                </a>
-
-                <!-- The seventh door, under the six: a strip of the timeline (styles/pages/library.css) -->
-                <a href="timeline.html" class="gateway-banner">
-                    <div class="gateway-banner__text">
-                        <span class="gateway-banner__icon card-icon material-symbols-outlined" aria-hidden="true">hourglass_top</span>
-                        <h3 class="gateway-banner__title">The Astrolabe</h3>
-                        <p class="gateway-banner__lede">Every age of Eraldom in order, from the Old Days to the present.</p>
-                        <span class="gateway-card__cta">
-                            Walk the Ages <span class="gateway-card__cta-icon material-symbols-outlined">arrow_forward</span>
-                        </span>
-                    </div>
-                    <div class="gateway-banner__strip" aria-hidden="true">
-                        <span class="gateway-banner__old"></span>
-                        <span class="gateway-banner__line"></span>
-                        <span class="gateway-banner__war"></span>
-                        <span class="gateway-banner__gap">≈</span>
-                        <span class="gateway-banner__dot" style="left: 22%"></span>
-                        <span class="gateway-banner__dot" style="left: 38%"></span>
-                        <span class="gateway-banner__now"></span>
-                        <span class="gateway-banner__label" style="left: 11%; top: 96px">Before any calendar<b>The Old Days</b></span>
-                        <span class="gateway-banner__label" style="left: 22%; top: 14px">The count begins<b>The Leviathans’ Fall</b></span>
-                        <span class="gateway-banner__label" style="left: 52%; top: 96px">Forty years<b>The Ophrasian War</b></span>
-                        <span class="gateway-banner__label gateway-banner__label--now" style="left: 92%; top: 14px">Now<b>The Year Now</b></span>
-                    </div>
-                </a>
-
-            </div>
+            <section class="archive-wing" aria-labelledby="wing-holdings">
+                <h2 id="wing-holdings" class="archive-wing__title"><span>The holdings</span></h2>
+                <div class="holdings">
+                    <a href="bestiary.html" class="gateway-card holding">
+                        <div class="gateway-card__face">
+                            <span class="gateway-card__icon card-icon material-symbols-outlined" aria-hidden="true">temp_preferences_custom</span>
+                            <h3 class="gateway-card__title">Elder Tarot</h3>
+                        </div>
+                        <div class="gateway-card__reveal">
+                            <p class="gateway-card__text">Entities and cosmic horrors, bound within the Major Arcana.</p>
+                            <span class="gateway-card__cta">Draw a Card <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                    <a href="tomes.html" style="animation-delay: -3.4s;" class="gateway-card holding">
+                        <div class="gateway-card__face">
+                            <span class="gateway-card__icon card-icon material-symbols-outlined" aria-hidden="true">menu_book</span>
+                            <h3 class="gateway-card__title">Tomes of Reference</h3>
+                        </div>
+                        <div class="gateway-card__reveal">
+                            <p class="gateway-card__text">The grand bibliography of historical events and forbidden art.</p>
+                            <span class="gateway-card__cta">Study the Source <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                    <a href="spellbook.html" style="animation-delay: -4.5s;" class="gateway-card holding">
+                        <div class="gateway-card__face">
+                            <span class="gateway-card__icon card-icon material-symbols-outlined" aria-hidden="true">auto_fix_high</span>
+                            <h3 class="gateway-card__title">Book of Shadows</h3>
+                        </div>
+                        <div class="gateway-card__reveal">
+                            <p class="gateway-card__text">The spells each hero carries, campaign by campaign.</p>
+                            <span class="gateway-card__cta">Open the Book <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                    <a href="vault.html" style="animation-delay: -1.5s;" class="gateway-card holding">
+                        <div class="gateway-card__face">
+                            <span class="gateway-card__icon card-icon material-symbols-outlined" aria-hidden="true">diamond</span>
+                            <h3 class="gateway-card__title">The Artifact Vault</h3>
+                        </div>
+                        <div class="gateway-card__reveal">
+                            <p class="gateway-card__text">Relics and curios carried out of the dark, card by card.</p>
+                            <span class="gateway-card__cta">Turn a Card <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                    <a href="handouts.html" style="animation-delay: -3s;" class="gateway-card holding">
+                        <div class="gateway-card__face">
+                            <span class="gateway-card__icon card-icon material-symbols-outlined" aria-hidden="true">history_edu</span>
+                            <h3 class="gateway-card__title">Archival Handouts</h3>
+                        </div>
+                        <div class="gateway-card__reveal">
+                            <p class="gateway-card__text">Physical evidence, decrypted letters, and field maps.</p>
+                            <span class="gateway-card__cta">Examine Evidence <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                        </div>
+                    </a>
+                </div>
+            </section>
 
         </div>
     </main>

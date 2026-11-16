@@ -20,5 +20,13 @@
     "spreads": [
       "spread-three"
     ]
+  },
+  {
+    "id": "star-reading",
+    "name": "Star Reading",
+    "method": "omen",
+    "basePrice": 1000,
+    "unit": "per question",
+    "icon": "star"
   }
 ]

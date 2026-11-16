@@ -112,14 +112,16 @@ const SITE_NAV = [
         id: 'archive', name: 'Black Archive', url: 'library.html', icon: 'library_books', tone: 'violet',
         // Also the tab bar of the Archive pages (library.html has its cards instead)
         sub: [
-            // Same order as the doors of library.html: the world, then what the party finds, then time
+            // Same order as the doors of library.html: the heavens (the gods, the planes, time),
+            // then the holdings (what is known, what the party gathers)
             { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] },
+            { name: 'The Planes', url: 'planes.html', icon: 'blur_circular', alias: ['plane.html'] },
+            { name: 'The Astrolabe', url: 'timeline.html', icon: 'hourglass_top' },
             { name: 'Elder Tarot', url: 'bestiary.html', icon: 'temp_preferences_custom', alias: ['beast.html'] },
             { name: 'Reference', url: 'tomes.html', icon: 'menu_book' },
             { name: 'Book of Shadows', url: 'spellbook.html', icon: 'auto_fix_high' },
             { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
-            { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' },
-            { name: 'The Astrolabe', url: 'timeline.html', icon: 'hourglass_top' }
+            { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' }
         ]
     },
     { id: 'scriptorium', name: 'Scriptorium', url: 'scriptorium.html', icon: 'history_edu', tone: 'gold', sub: [] },

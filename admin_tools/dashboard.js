@@ -418,6 +418,7 @@
             case 'campaign': return [r.partyName, (r.party || []).length ? `${r.party.length} heroes` : ''].filter(Boolean).join(' · ');
             case 'session': return [r.number != null ? `#${r.number}` : '', r.date && S.store.calendar ? S.store.calendar.format(r.date, { weekday: false, era: false }) : '', r.arc || ''].filter(Boolean).join(' · ');
             case 'festival': return [r.on && r.on.month ? `${r.on.day || '?'} ${r.on.month}${Number(r.days) > 1 ? ` · ${r.days} days` : ''}` : 'No date', r.kind && r.kind !== 'festival' ? enumLabel('festivalKind', r.kind) : ''].filter(Boolean).join(' · ');
+            case 'plane': return [r.sealed ? 'Sealed' : '', r.kind === 'circle' ? `circle ${r.circle || '?'}` : '', r.kind === 'demiplane' && r.anchor ? `in ${nameOf(r.anchor)}` : ''].filter(Boolean).join(' · ');
             case 'event': return [r.sealed ? 'Hidden' : '', eventWhen(r), r.kind && r.kind !== 'event' ? enumLabel('eventKind', r.kind).split(' (')[0] : ''].filter(Boolean).join(' · ');
             case 'hero': return [r.raceClass, r.level != null ? `level ${r.level}` : ''].filter(Boolean).join(' · ');
             case 'menuItem': return `${r.basePrice ?? '?'} cp · ${enumLabel('tavernTier', r.minTier)}–${enumLabel('tavernTier', r.maxTier)}`;
@@ -461,6 +462,7 @@
             case 'spell': return typeof r.level === 'number' ? { key: 'l' + r.level, label: r.level === 0 ? 'Cantrips' : `Level ${r.level}`, rank: r.level } : { key: '~', label: 'No level', rank: 99 };
             case 'item': return byEnum('itemRarity', r.rarity, 'No rarity');
             case 'deity': return byEnum('deityTier', r.tier, 'No tier');
+            case 'plane': { const g = byEnum('planeKind', r.kind, 'No kind'); return { ...g, label: g.label.split(' (')[0] }; }
             case 'menuItem': return byEnum('menuCategory', r.category, 'No category');
             case 'shopGood': return byEnum('shopCategory', r.category, 'No shelf');
             case 'templeService': return byEnum('templeCategory', r.category, 'No kind');
@@ -593,7 +595,7 @@
         { id: 'atlas', label: 'Atlas', icon: 'travel_explore', color: '#6aa9fa', blurb: 'Every place in one tree: continents, countries, settlements, districts, points of interest and the places inside them.' },
         { id: 'cast', label: 'Cast', icon: 'groups', color: '#66c488', blurb: 'NPCs, factions, heroes and the Pantheon.' },
         { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, the Astrolabe (timeline and festivals), rumours and notice boards, filtered by the campaign in the top bar.' },
-        { id: 'codex', label: 'Codex', icon: 'menu_book', color: '#b79cf5', blurb: 'Glossary, tomes, handouts, bestiary, spellbook and items.' },
+        { id: 'codex', label: 'Codex', icon: 'menu_book', color: '#b79cf5', blurb: 'Glossary, tomes, handouts, bestiary, spellbook, items and the planes of existence.' },
         { id: 'tables', label: 'Tables', icon: 'table_view', color: '#f0a35e', blurb: 'The pools the site draws from, each one a grid: markets, faith, divination, alchemy, folios.' },
         { id: 'site', label: 'Site', icon: 'settings', color: '#b4bac2', bottom: true, blurb: 'World map, settings, upcoming sessions and the map icons.' },
     ];
@@ -1211,11 +1213,13 @@
         const m = value || {};
         const rec = curRecord(), def = curDef();
         const hostType = def.parent && def.parent.length ? typeOfId(rec && rec.parent) : null;
+        // A place of a plane (plane.places[].pin) is pinned on one of the plane's own maps
+        const planeMaps = S.view.key === 'plane' ? ((rec && rec.maps) || []).filter(x => x && x.id) : null;
         // A place inside an institution (its parent is a POI) is pinned on one of the institution's maps
-        const hostMaps = hostType === 'poi' ? (((S.store.get(rec.parent) || {}).institution || {}).maps || []).filter(x => x && x.id) : null;
-        const noMap = hostType && (hostMaps ? !hostMaps.length : !TYPES[hostType].fields.mapImage);
+        const hostMaps = planeMaps || (hostType === 'poi' ? (((S.store.get(rec.parent) || {}).institution || {}).maps || []).filter(x => x && x.id) : null);
+        const noMap = planeMaps ? !planeMaps.length : hostType && (hostMaps ? !hostMaps.length : !TYPES[hostType].fields.mapImage);
         const head = `<div class="sub-head">${labelHtml(f, key)}${value ? `<button class="btn sm" data-action="remove" data-path="${pathAttr(path)}">Remove the pin</button>` : ''}</div>`;
-        if (noMap) return `${head}<p class="help">${esc(hostMaps ? 'The place it sits in has no map yet: add one in that place’s Institution card, then pin this one on it.' : (f.noPin || 'The parent has no map of its own.'))}</p>`;
+        if (noMap) return `${head}<p class="help">${esc(planeMaps ? 'The plane has no map yet: add one under Maps above, then pin the place on it.' : hostMaps ? 'The place it sits in has no map yet: add one in that place’s Institution card, then pin this one on it.' : (f.noPin || 'The parent has no map of its own.'))}</p>`;
         return `${head}<div class="row map-row">
             <span class="mini">X</span><input class="num-s" type="number" data-path="${pathAttr([...path, 'x'])}" data-kind="number" value="${m.x ?? ''}" aria-label="X">
             <span class="mini">Y</span><input class="num-s" type="number" data-path="${pathAttr([...path, 'y'])}" data-kind="number" value="${m.y ?? ''}" aria-label="Y">
@@ -1502,9 +1506,10 @@
             if (['solvent', 'principle', 'catalyst', 'vessel'].includes(S.view.key)) parts.unshift(reagentPanel(rec, S.view.key));
             if (S.view.key === 'spell' && ATH.spellCard) parts.unshift(spellPreview(rec), knownBy(rec));
             if (S.view.key === 'deity' && ATH.deityCard) parts.unshift(deityPreview(rec), sealStatus(rec));
+            if (S.view.key === 'plane') parts.unshift(planePreview(rec), planeSeal(rec));
             if (S.view.key === 'item' && ATH.deityCard) parts.unshift(artifactOf(rec));
             if (ATH.fortuneCard && ATH.divination) parts.unshift(...divinationPreview(rec));
-            if ((S.view.key === 'poi' || S.view.key === 'creature') && ATH.look && lookOf(rec).look) parts.unshift(lookPreview(rec));
+            if (['poi', 'creature', 'plane'].includes(S.view.key) && ATH.look && lookOf(rec).look) parts.unshift(lookPreview(rec));
             if (S.view.key === 'creature' && rec.image) parts.unshift(beastFramePreview(rec));
             if (S.view.key === 'folio' && ATH.sigil) parts.unshift(folioPreview(rec));
         }
@@ -1512,7 +1517,7 @@
         side.innerHTML = html ? `<div class="side-head"><span>Previews & links</span><button class="btn icon" data-action="toggle-side" title="Close"><span class="material-symbols-outlined">close</span></button></div>${html}` : '';
         $('.ed-wrap').classList.toggle('no-side', !html);
         const sb = $('#side-btn'); if (sb) sb.hidden = !html;
-        if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen'].includes(S.view.key)) loadThumbs();
+        if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen', 'plane'].includes(S.view.key)) loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
         if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
         if (S.view.key === 'folio' && ATH.sigil) drawFolioPreview(rec);
@@ -1543,8 +1548,11 @@
         const text = esc(words.slice(0, 26).join(' ')) + (words.length > 26 ? '…' : '');
         const eyebrow = type === 'poi'
             ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || String(rec.typeLabel || '').trim() || (rec.danger ? 'Danger Zone' : rec.featured ? 'Featured Landmark' : '')
+            : type === 'plane' ? (rec.kind === 'demiplane' ? 'Demiplane' : 'Plane of existence')
             : (rec.arcana || 'Specimen');
-        const extra = type === 'poi'
+        const extra = type === 'plane'
+            ? `<div class="look-prev__box"><p class="look-prev__eyebrow">${esc(((rec.traits || [])[0] || {}).label || 'Trait')}</p><p class="look-prev__text">${esc(((rec.traits || [])[0] || {}).value || 'A short fact about the plane')}</p></div>`
+            : type === 'poi'
             ? `<div class="look-prev__box look-prev__box--card"><p class="look-prev__eyebrow">Today at the Bar</p><h5 class="look-prev__heading">Bill of Fare</h5>
                 <div class="look-prev__rule"></div><div class="look-prev__item"><span>Spiced ale</span><i></i><b>4 cp</b></div></div>`
             : `<div class="look-prev__box"><p class="look-prev__eyebrow">Threat Assessment</p>
@@ -1553,14 +1561,14 @@
         return `<div class="box"><div class="box-head"><h4>Look preview</h4></div>
             <div class="look-prev" data-type="${type}" id="look-prev">
                 <p class="look-prev__crumbs">${esc(rec.name || 'Name')}</p>
-                <div class="look-prev__box"><p class="look-prev__eyebrow">${esc(eyebrow)}</p><h3 class="look-prev__title">${esc(rec.name || 'Name')}</h3>${rec.subtitle ? `<p class="look-prev__sub">${esc(rec.subtitle)}</p>` : ''}
+                <div class="look-prev__box"><p class="look-prev__eyebrow">${esc(eyebrow)}</p><h3 class="look-prev__title">${esc(rec.name || 'Name')}</h3>${rec.subtitle || rec.epithet ? `<p class="look-prev__sub">${esc(rec.subtitle || rec.epithet)}</p>` : ''}
                     ${type === 'creature' ? `<div class="look-prev__tags">${(rec.tags && rec.tags.length ? rec.tags.slice(0, 3) : ['Tag', 'Tag']).map(t => `<span class="look-prev__tag">${esc(t)}</span>`).join('')}</div>` : ''}</div>
-                <div class="look-prev__box"><p class="look-prev__label">${type === 'poi' ? 'Archive Entry' : esc(rec.loreTitle || 'Archival Record')}</p><p class="look-prev__text">${text} <b>keyword</b></p></div>
+                <div class="look-prev__box"><p class="look-prev__label">${type === 'poi' ? 'Archive Entry' : type === 'plane' ? 'The plane' : esc(rec.loreTitle || 'Archival Record')}</p><p class="look-prev__text">${text} <b>keyword</b></p></div>
                 ${extra}
             </div>
             ${lookOf(rec).from ? `<p class="hint">Taken from <span class="chip" data-jump="${esc(lookOf(rec).from.id)}">${esc(lookOf(rec).from.name)}</span> (“Also for the places inside”). Give this place a look of its own to replace it.</p>`
                 : rec.look && rec.look.inherit ? `<p class="hint">Also used by the places inside this one that have no look of their own.</p>` : ''}
-            <p class="hint">A sketch of the page: on the site, every box of the page follows the same look.</p></div>`;
+            <p class="hint">A sketch of the page: on the site, every box of the page follows the same look${type === 'plane' ? ', and the theme draws its own decoration around it (canopy, shards…)' : ''}.</p></div>`;
     }
     async function applyLookPreview(rec) {
         const el = document.getElementById('look-prev');
@@ -2072,6 +2080,37 @@
         return `<div class="box seal-status"><h4>Seal</h4><ul>${lines}</ul>
             <p class="hint">Sealed: a nameless slot in the Pantheon, no page, no keyword link, hidden from its temples. Add the campaigns to “Revealed in” to reveal it.</p></div>`;
     }
+    // A plane: its medallion as the orrery draws it (planes.html), and where it sits
+    function planePreview(rec) {
+        const p = S.store.get(rec.id) || rec;
+        const raw = String(p.colour || '').trim();
+        const c = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/i.test(raw) ? raw : '#e9c176';
+        const glow = p.glow ? `;filter:drop-shadow(0 0 5px ${c})` : '';
+        const icon = p.iconImage
+            ? (/\.svg(\?|#|$)/i.test(p.iconImage)
+                ? `<span class="plane-prev__mask" data-mask="${esc(p.iconImage)}" style="background-color:${c}${glow}"></span>`
+                : `<img class="plane-prev__img" data-thumb="${esc(p.iconImage)}" alt="">`)
+            : `<span class="material-symbols-outlined plane-prev__ic" style="color:${c}${glow}">${esc(p.icon || 'radio_button_unchecked')}</span>`;
+        const ring = `0 0 0 3px #050409,0 0 0 4px color-mix(in srgb,${c} 35%,transparent)`;
+        const medal = `<span class="plane-prev__medal" style="border-color:${c};background:radial-gradient(circle,color-mix(in srgb,${c} 20%,transparent) 0%,#0a0910 72%);box-shadow:${ring}${p.glow ? `,0 0 18px color-mix(in srgb,${c} 60%,transparent)` : ''}">${icon}</span>`;
+        const kind = (S.store.enumOptions('planeKind').find(o => o.id === p.kind) || {}).label || 'No kind set';
+        return `<div class="box plane-prev"><h4>On the orrery</h4>
+            <div class="plane-prev__stage">${medal}</div>
+            <p class="hint">${esc(kind)}${p.kind === 'circle' ? ` · circle ${esc(p.circle || '?')}${p.angle !== undefined && p.angle !== '' ? `, at ${esc(p.angle)}°` : ''}` : ''}</p></div>`;
+    }
+    // A sealed plane: where it is learned, campaign by campaign
+    function planeSeal(rec) {
+        const p = S.store.get(rec.id) || rec;
+        if (!p.sealed) return '';
+        const camps = S.store.all('campaign');
+        if (!camps.length) return '';
+        const lines = camps.map(c => {
+            const open = S.store.revealed(p, c.id);
+            return `<li class="${open ? 'is-open' : ''}"><span>${open ? '✓ Learned' : 'Sealed'}</span> ${esc(c.name)}</li>`;
+        }).join('');
+        return `<div class="box seal-status"><h4>Seal</h4><ul>${lines}</ul>
+            <p class="hint">Sealed: a locked medallion with no name on a circle or beyond them, a sealed card among the demiplanes, not drawn at all elsewhere. Add the campaigns to “Learned in” to reveal it.</p></div>`;
+    }
     // An item that is a god's artifact: a legend on the god's page until a party finds it
     function artifactOf(rec) {
         const gods = S.store.backrefs(rec.id, 'deity', 'artifact');
@@ -2577,6 +2616,11 @@
             const url = await thumbUrl(img.dataset.thumb);
             img.src = url || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
             img.classList.toggle('none', !url);
+        });
+        // An SVG drawn in a colour (a plane's icon): the picture is the mask
+        document.querySelectorAll('[data-mask]').forEach(async el => {
+            const url = await thumbUrl(el.dataset.mask);
+            el.style.webkitMaskImage = el.style.maskImage = url ? `url("${url}")` : 'none';
         });
     }
 
@@ -3355,6 +3399,7 @@
     async function placeOnMap(path) {
         const rec = curRecord(), def = curDef();
         if (typeof L === 'undefined') { alertBox('Map unavailable', '<p>Leaflet could not be loaded (offline?). Type X and Y instead.</p>'); return; }
+        if (S.view.key === 'plane') return placeOnPlaneMap(rec, path);
         const host = def.parent && def.parent.length ? S.store.get(rec.parent) : S.store.world;
         const cur = getAt(rec, path) || {};
         let img = host && host.mapImage;
@@ -3387,6 +3432,43 @@
         sibs.filter(r => r !== rec && r.map && r.map.x != null && (!inInstitution || (r.map.on || firstMapId) === onMap.id)).forEach(r =>
             L.marker([r.map.y, r.map.x], { icon: L.divIcon({ className: '', html: '<div class="pin-dot"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }) })
                 .bindTooltip(r.name).addTo(map));
+        const me = L.marker(pos, { draggable: true, icon: L.divIcon({ className: '', html: '<div class="pin-dot me"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(map);
+        const show = () => { $('#placer-pos', dlg).textContent = `X ${Math.round(pos[1])} · Y ${Math.round(pos[0])}`; };
+        show();
+        map.on('click', e => { pos = [e.latlng.lat, e.latlng.lng]; me.setLatLng(e.latlng); show(); });
+        me.on('drag', e => { const ll = e.target.getLatLng(); pos = [ll.lat, ll.lng]; show(); });
+        setTimeout(() => map.invalidateSize(), 50);
+        $('#placer-ok', dlg).addEventListener('click', () => {
+            setAt(rec, [...path, 'x'], Math.round(pos[1]));
+            setAt(rec, [...path, 'y'], Math.round(pos[0]));
+            closeModal(); edited(true);
+        });
+    }
+
+    // A place of a plane, on one of the plane's maps (its “Map”, else the first)
+    async function placeOnPlaneMap(rec, path) {
+        const cur = getAt(rec, path) || {};
+        const place = getAt(rec, path.slice(0, -1)) || {};
+        const maps = (rec.maps || []).filter(x => x && x.id);
+        const onMap = cur.on ? maps.find(x => x.id === cur.on) : maps[0];
+        const img = onMap && onMap.image;
+        if (!img || !img.src || !img.width || !img.height) {
+            alertBox('No map to place on', `<p>${onMap ? `The map “${esc(onMap.name || onMap.id)}” has` : 'The plane has'} no image with a width and height yet (Maps card).</p>`);
+            return;
+        }
+        let pos = cur.x != null && cur.y != null ? [cur.y, cur.x] : [img.height / 2, img.width / 2];
+        const dlg = modal(`<h3>Place “${esc(place.name || 'this place')}” on ${esc(rec.name)} · ${esc(onMap.name || onMap.id)}</h3>
+            <p class="muted" style="margin-top:-6px">Click the map or drag the gold pin. The other places on this map are shown in white.</p>
+            <div id="placer"></div>
+            <div class="foot"><span id="placer-pos" class="muted" style="margin-right:auto"></span>
+                <button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="placer-ok">Use this position</button></div>`, 'xwide');
+        const map = L.map($('#placer', dlg), { crs: L.CRS.Simple, minZoom: -3, maxZoom: 2, attributionControl: false });
+        const bounds = [[0, 0], [img.height, img.width]];
+        L.imageOverlay(await thumbUrl(img.src), bounds).addTo(map);
+        map.fitBounds(bounds);
+        (rec.places || []).filter(pl => pl && pl !== place && pl.pin && pl.pin.x != null && (pl.pin.on || maps[0].id) === onMap.id).forEach(pl =>
+            L.marker([pl.pin.y, pl.pin.x], { icon: L.divIcon({ className: '', html: '<div class="pin-dot"></div>', iconSize: [14, 14], iconAnchor: [7, 7] }) })
+                .bindTooltip(pl.name || '').addTo(map));
         const me = L.marker(pos, { draggable: true, icon: L.divIcon({ className: '', html: '<div class="pin-dot me"></div>', iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(map);
         const show = () => { $('#placer-pos', dlg).textContent = `X ${Math.round(pos[1])} · Y ${Math.round(pos[0])}`; };
         show();

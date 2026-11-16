@@ -8,7 +8,7 @@
    The canvas fills the window (position: fixed, behind the page). Readers
    who ask their system for less motion get a still sky with one
    constellation. Nothing is drawn while the tab is hidden.
-   Used by timeline.html.
+   Used by timeline.html, planes.html, plane.html and pantheon.html.
    ===================================================================== */
 (function (root) {
     const ATH = root.Athenaeum = root.Athenaeum || {};

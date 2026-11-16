@@ -7,7 +7,7 @@
     <title>The Pantheon — The Athenaeum Vault</title>
     <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
     <link href="styles/tokens.css" rel="stylesheet" />
@@ -18,6 +18,7 @@
     <link href="styles/main-style.css" rel="stylesheet" />
 
     <script src="scripts/general-scripts.js"></script>
+    <script src="scripts/core/sky.js"></script>
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
     <script src="scripts/core/store.js"></script>
@@ -26,21 +27,23 @@
     <script src="scripts/pantheon-scripts.js"></script>
 </head>
 
-<body data-section="archive" class="page mystical-bg">
+<!-- No .mystical-bg here: its filter would pin the sky to the page instead of the window -->
+<body data-section="archive" class="page">
 
-    <div id="dust-container" class="dust-layer"></div>
+    <!-- The night sky behind the page, as on the Orrery and the Astrolabe (scripts/core/sky.js) -->
+    <canvas id="sky" class="pantheon-sky" aria-hidden="true"></canvas>
     <div id="header-placeholder" class="header-slot"></div>
     <nav class="section-tabs" data-section="archive"></nav>
 
     <main class="pantheon-main">
-        <div class="pantheon-head">
-            <div class="pantheon-head__text">
-                <h1 class="pantheon-head__title">The Pantheon</h1>
-                <p class="pantheon-head__lede">The gods who are prayed to, feared and bargained with, and the temples raised in their names.</p>
-            </div>
+        <!-- Same header as the Orrery (planes.html) and the Astrolabe (timeline.html) -->
+        <header class="pantheon-head">
+            <h1 class="pantheon-head__title">The Pantheon</h1>
+            <div class="pantheon-head__ornament" aria-hidden="true"><span></span><span class="pantheon-head__dot"></span><span></span></div>
+            <p class="pantheon-head__lede">The gods who are prayed to, feared and bargained with, and the temples raised in their names.</p>
             <!-- Which campaign: decides which Elder gods are revealed (shared with Dramatis Personae) -->
             <select id="pantheon-campaign" class="pantheon-picker hidden" aria-label="Campaign"></select>
-        </div>
+        </header>
 
         <!-- One section per tier (data/schema.js, enum deityTier), filled by scripts/pantheon-scripts.js -->
         <div id="pantheon-tiers" class="pantheon-tiers"></div>

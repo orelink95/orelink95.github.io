@@ -1,0 +1,233 @@
+[
+  {
+    "id": "material-plane",
+    "name": "The Material Plane",
+    "kind": "centre",
+    "summary": "The plane of Eraldom. It shares the centre with the Shadow Plane.",
+    "colour": "#7cc4c9",
+    "icon": "public",
+    "glow": true,
+    "atlas": true
+  },
+  {
+    "id": "shadow-plane",
+    "name": "The Shadow Plane",
+    "aliases": [
+      "Plane of Shadows"
+    ],
+    "kind": "centre",
+    "summary": "The other half of the centre.",
+    "colour": "#a395cf",
+    "icon": "dark_mode",
+    "links": [
+      "sephet",
+      "echoes-session-6"
+    ]
+  },
+  {
+    "id": "ethereal-plane",
+    "name": "The Ethereal Plane",
+    "kind": "overlay",
+    "summary": "Superimposed on the Material Plane.",
+    "over": "material-plane",
+    "colour": "#b9e3ef",
+    "icon": "blur_on",
+    "glow": true,
+    "links": [
+      "void-crystal"
+    ]
+  },
+  {
+    "id": "astral-ring",
+    "name": "The Astral Ring",
+    "kind": "ring",
+    "colour": "#cfd6ff",
+    "icon": "auto_awesome",
+    "glow": true
+  },
+  {
+    "id": "underworld",
+    "name": "The Underworld",
+    "aliases": [
+      "Realm of the Dead",
+      "Realm of the dead"
+    ],
+    "kind": "beneath",
+    "epithet": "The realm of the dead",
+    "summary": "Where every soul goes when it dies, to be judged.",
+    "roads": [
+      {
+        "to": "aran",
+        "colour": "#f2c35b"
+      },
+      {
+        "to": "tartarus",
+        "colour": "#c2474f"
+      }
+    ],
+    "colour": "#c2474f",
+    "icon": "skull",
+    "glow": true
+  },
+  {
+    "id": "plane-of-water",
+    "name": "The Elemental Plane of Water",
+    "kind": "circle",
+    "circle": 1,
+    "angle": 0,
+    "colour": "#6fb6e8",
+    "icon": "water_drop",
+    "glow": true,
+    "sealed": true
+  },
+  {
+    "id": "plane-of-air",
+    "name": "The Elemental Plane of Air",
+    "kind": "circle",
+    "circle": 1,
+    "angle": 90,
+    "colour": "#a8dccf",
+    "icon": "cyclone",
+    "glow": true,
+    "sealed": true
+  },
+  {
+    "id": "plane-of-fire",
+    "name": "The Elemental Plane of Fire",
+    "kind": "circle",
+    "circle": 1,
+    "angle": 180,
+    "colour": "#f08a5d",
+    "icon": "local_fire_department",
+    "glow": true,
+    "sealed": true
+  },
+  {
+    "id": "plane-of-stone",
+    "name": "The Elemental Plane of Stone",
+    "kind": "circle",
+    "circle": 1,
+    "angle": 270,
+    "colour": "#c9a878",
+    "icon": "landslide",
+    "glow": true,
+    "sealed": true
+  },
+  {
+    "id": "ydalheim",
+    "name": "Ydalheim",
+    "kind": "circle",
+    "epithet": "The shattered realm",
+    "summary": "In elven legend, the realm the elves came from when it collided with the Material Plane, in ages long forgotten.",
+    "circle": 2,
+    "angle": 315,
+    "colour": "#7fd0a2",
+    "icon": "eco",
+    "glow": true,
+    "look": {
+      "theme": "ydalheim"
+    },
+    "links": [
+      "eldenna"
+    ]
+  },
+  {
+    "id": "aran",
+    "name": "Aran",
+    "kind": "circle",
+    "circle": 2,
+    "angle": 45,
+    "colour": "#f2c35b",
+    "icon": "sunny",
+    "glow": true,
+    "sealed": true
+  },
+  {
+    "id": "tal-mavhet",
+    "name": "Tal’Mavhet",
+    "aliases": [
+      "Tal'Mavhet"
+    ],
+    "kind": "circle",
+    "circle": 2,
+    "angle": 135,
+    "colour": "#8fb4ff",
+    "icon": "adjust",
+    "glow": true,
+    "sealed": true
+  },
+  {
+    "id": "tartarus",
+    "name": "Tartarus",
+    "kind": "circle",
+    "circle": 2,
+    "angle": 225,
+    "colour": "#e0605a",
+    "icon": "bolt",
+    "glow": true,
+    "iconImage": "images/planes-icons/hades-symbol.svg",
+    "sealed": true
+  },
+  {
+    "id": "dreamlands",
+    "name": "The Dreamlands",
+    "aliases": [
+      "Saoghal",
+      "The Saoghal"
+    ],
+    "kind": "beyond",
+    "epithet": "The Saoghal, in The Sleeper’s Oath",
+    "summary": "It lies outside the planes and touches every one of them.",
+    "angle": 0,
+    "touchesAll": true,
+    "colour": "#c79cf0",
+    "icon": "bedtime",
+    "glow": true,
+    "links": [
+      "sleepers-oath",
+      "flesh-hound",
+      "just-a-dream"
+    ]
+  },
+  {
+    "id": "mobius",
+    "name": "Mobius",
+    "kind": "beyond",
+    "summary": "It lies outside the planes and touches every one of them.",
+    "angle": 180,
+    "touchesAll": true,
+    "colour": "#9fb8ff",
+    "icon": "all_inclusive",
+    "glow": true,
+    "iconImage": "images/planes-icons/moebius-trefoil.svg",
+    "sealed": true
+  },
+  {
+    "id": "the-void",
+    "name": "The Void",
+    "kind": "between",
+    "summary": "The space between the planes.",
+    "colour": "#9a78f0",
+    "icon": "blur_circular",
+    "glow": true,
+    "links": [
+      "nihilium",
+      "sigil-session-9"
+    ]
+  },
+  {
+    "id": "vale-house-demiplane",
+    "name": "The Vale House",
+    "kind": "demiplane",
+    "summary": "A mysterious demi-plane: a pristine, apparently abandoned mansion, once inhabited by a spellcaster named Alensia.",
+    "anchor": "material-plane",
+    "way": "The Ninefold Commentary, the book in Maera Voss’s study, served as its gateway.",
+    "icon": "door_open",
+    "links": [
+      "vale-house",
+      "echoes-session-3",
+      "echoes-session-2",
+      "echoes-session-1"
+    ]
+  }
+]

@@ -7,7 +7,8 @@
    Reads only data/calendar.json, festivals.json, sessions.json and
    settings.json (not the whole store); dates: scripts/core/calendar.js.
    A festival limited to campaigns shows only if the current campaign
-   (settings) is one of them. Styles: styles/pages/index.css (.today-card).
+   (settings) is one of them. Styles: styles/pages/index.css (.today-card),
+   in the family of the session cards under it.
    ===================================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
     const card = document.getElementById('today-eraldom');
@@ -55,21 +56,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     card.href = `timeline.html?view=calendar`;
     card.setAttribute('aria-label', `Today in Eraldom: ${cal.format(today)}. Open the calendar.`);
+    // One set of parts, laid out by CSS grid: four columns on wide screens; on phones
+    // the date and the moons side by side, the season, then the next celebration
     card.innerHTML = `
-        <div class="today-card__date">
+        <span class="today-card__bar" aria-hidden="true"></span>
+        <div class="today-card__part today-card__date">
             <span class="today-card__label">Today in Eraldom</span>
             <span class="today-card__day">${esc(today.day)} ${esc(today.month)}</span>
             <span class="today-card__sub">${esc(cal.weekday(today))} · ${esc(today.year)} ${esc(cal.era)}</span>
         </div>
         ${se ? `<div class="today-card__part today-card__season" style="--season:${esc(se.colour || '#e9c176')}">
             <span class="today-card__label today-card__label--muted">Season</span>
-            <span class="today-card__name">${esc(se.name)}</span>
-            <span class="today-card__bar"><span style="width:${Math.round(se.day / se.of * 100)}%"></span></span>
-            <span class="today-card__sub">Day ${se.day} of ${se.of}${nextSeason && se.left > 0 ? ` · ${esc(nextSeason.toLowerCase())} in ${se.left + 1} days` : ''}</span>
+            <span class="today-card__name">${esc(se.name)} <span class="today-card__sub">· day ${se.day} of ${se.of}</span></span>
+            <span class="today-card__progress"><span style="width:${Math.round(se.day / se.of * 100)}%"></span></span>
+            ${nextSeason && se.left > 0 ? `<span class="today-card__sub">${esc(nextSeason)} in ${se.left + 1} days</span>` : ''}
         </div>` : ''}
         ${moons.length ? `<div class="today-card__part today-card__moons">
             <span class="today-card__label today-card__label--muted">The moons</span>
-            ${moons.map(m => `<span class="today-card__moonline">${moon(m, 22)}<span><b>${esc(m.name)}</b> · ${esc(m.phase)}</span></span>`).join('')}
+            ${moons.map(m => `<span class="today-card__moonline">${moon(m, 18)}<span><b>${esc(m.name)}</b><span class="today-card__phase">${esc(m.phase)}</span></span></span>`).join('')}
         </div>` : ''}
         <div class="today-card__part today-card__next">
             <span class="today-card__label today-card__label--muted">Next celebration</span>
@@ -77,10 +81,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <span class="today-card__sub">${esc(coming.f.on.day)} ${esc(coming.f.on.month)}${span(coming.f)} · ${when}</span>`
                 : '<span class="today-card__sub">None written yet</span>'}
             <span class="today-card__cta">Open the calendar <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
-        </div>
-        <span class="today-card__phone" aria-hidden="true">
-            <span class="today-card__phone-moons">${moons.map(m => moon(m, 18)).join('')}</span>
-            ${se ? `<span class="today-card__sub">${esc(se.name)}</span>` : ''}
-        </span>`;
+        </div>`;
     card.hidden = false;
 });

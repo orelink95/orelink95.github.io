@@ -151,6 +151,7 @@
     // Any other Leaflet option can be passed too (zoomSnap…).
     function createMap(elementId, { minZoom = -1, maxZoom = 2, ...more } = {}) {
         const map = L.map(elementId, {
+            zoomSnap: 0.25,           // fitBounds fills the box, not the nearest whole zoom
             ...more,
             crs: L.CRS.Simple,
             minZoom, maxZoom,
@@ -166,7 +167,22 @@
     function showImage(map, image, previous) {
         if (previous) map.removeLayer(previous);
         const bounds = [[0, 0], [image.height, image.width]];
+        // Phones: the map box takes the image's shape (atlas-style.css)
+        if (image.width && image.height) {
+            const box = map.getContainer();
+            (box.closest('.map-frame, .atlas-map-frame') || box)
+                .style.setProperty('--map-aspect', `${image.width} / ${image.height}`);
+            map.invalidateSize({ animate: false });
+        }
         const overlay = L.imageOverlay(image.src, bounds).addTo(map);
+        // A narrow screen may need to zoom out further than the page's minZoom
+        // to show the whole image
+        // (CRS.Simple: 1 image pixel = 2^zoom screen pixels)
+        const size = map.getSize();
+        if (image.width && image.height && size.x && size.y) {
+            const fit = Math.floor(4 * Math.log2(Math.min(size.x / image.width, size.y / image.height))) / 4;
+            if (fit < map.getMinZoom()) map.setMinZoom(fit);
+        }
         map.fitBounds(bounds);
         return overlay;
     }

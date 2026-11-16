@@ -282,6 +282,17 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 { id: 'remembrance', label: 'Day of remembrance' },
             ],
             /* How an event looks on the timeline (timeline.html) */
+            /* Where a plane sits on the orrery (planes.html, scripts/planes-scripts.js) */
+            planeKind: [
+                { id: 'centre', label: 'At the centre (the first two share the disc, cut in two)' },
+                { id: 'overlay', label: 'Laid over a plane of the centre (a veil around it)' },
+                { id: 'ring', label: 'A ring around the centre (a band with its name)' },
+                { id: 'beneath', label: 'Beneath the centre (a dark ring between the veil and the rings)' },
+                { id: 'circle', label: 'On a circle (a medallion that orbits)' },
+                { id: 'beyond', label: 'Beyond the circles (a band around the whole orrery)' },
+                { id: 'between', label: 'Between the planes (the field between the circles)' },
+                { id: 'demiplane', label: 'Demiplane (a card under the orrery)' },
+            ],
             eventKind: [
                 { id: 'event', label: 'Event' },
                 { id: 'major', label: 'Major event (a wide panel across the line)' },
@@ -457,6 +468,11 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 { id: 'infernal', label: 'Infernal (embers, iron)' },
                 { id: 'den', label: 'Shadowed Den (tarnished brass)' },
                 { id: 'ruins', label: 'Ruins (weathered stone, lichen)' },
+            ],
+            /* One theme per plane, mostly: colours and fonts in styles/looks.css
+               (.look--plane-<id>), its decoration in scripts/plane-themes.js */
+            planeTheme: [
+                { id: 'ydalheim', label: 'Verdant Wilds (canopy, light, shards of wild magic)' },
             ],
             creatureTheme: [
                 { id: 'abyssal', label: 'Abyssal (deep sea, scales)' },
@@ -938,6 +954,109 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     description: { kind: 'text', label: 'Description', long: true },
                     thumbnail: { kind: 'image', label: 'Card image', section: 'Picture & file' },
                     file: { kind: 'url', label: 'File to open', section: 'Picture & file', help: 'An image in the site’s folders, or a link.' },
+                },
+            },
+            /* The cosmos (planes.html): the orrery. The Material Plane and its twin share
+               the centre; overlays veil it; rings circle it; the planes of each circle orbit
+               it (a circle turns as one, the farther the slower); planes beyond the circles
+               are bands around everything; the plane between the planes is the field under
+               them; demiplanes are cards under the orrery. */
+            plane: {
+                label: 'Plane', plural: 'Planes of Existence', navLabel: 'Planes', icon: 'blur_circular', group: 'Library', workspace: 'codex',
+                file: 'data/planes.json',
+                page: 'plane.html?id={id}',
+                autolink: true,
+                sections: ['Essentials', 'On the orrery', 'Look', 'Lore', 'Maps', 'Residents', 'Hidden'],
+                fields: {
+                    kind: { kind: 'enum', enum: 'planeKind', label: 'Kind', required: true, help: 'Where it sits on the orrery.' },
+                    epithet: { kind: 'text', label: 'Epithet', help: 'Under its name in the panel.' },
+                    summary: { kind: 'text', label: 'Summary', long: true, help: 'Shown in the panel when the plane is chosen (a demiplane: on its card).' },
+                    circle: { kind: 'number', label: 'Circle', section: 'On the orrery', width: 'third', showIf: { key: 'kind', is: ['circle'] }, help: '1 = the circle nearest the centre. The planes of a circle turn together; the farther the circle, the slower.' },
+                    angle: { kind: 'number', label: 'Position (degrees)', section: 'On the orrery', range: [0, 359], showIf: { key: 'kind', is: ['circle', 'beyond'] }, help: '0 = top, 90 = right, 180 = bottom, 270 = left. Where it starts (a plane beyond the circles: where its medallion sits on its band). Empty = spread evenly.' },
+                    over: { kind: 'ref', to: ['plane'], label: 'Laid over', section: 'On the orrery', showIf: { key: 'kind', is: ['overlay'] }, help: 'A plane of the centre: the veil’s medallion sits on its side.' },
+                    touchesAll: { kind: 'boolean', label: 'Touches every plane', section: 'On the orrery', showIf: { key: 'kind', is: ['beyond'] }, help: 'Hovered or chosen, threads of its colour run from its band to every plane.' },
+                    anchor: { kind: 'ref', to: ['plane'], label: 'Anchored to', section: 'On the orrery', showIf: { key: 'kind', is: ['demiplane'] } },
+                    roads: {
+                        kind: 'objects', label: 'Roads', section: 'On the orrery', itemLabel: 'to',
+                        help: 'Roads from this plane to planes on the circles (the Underworld: to Aran and to Tartarus). Hovered or chosen, they light up, souls flowing along them.',
+                        fields: {
+                            to: { kind: 'ref', to: ['plane'], label: 'To', required: true, width: 'half' },
+                            colour: { kind: 'text', color: true, label: 'Colour', width: 'half', help: 'Empty = the colour of the plane it leads to.' },
+                        },
+                    },
+                    way: { kind: 'text', label: 'Way in', long: true, section: 'On the orrery', showIf: { key: 'kind', is: ['demiplane'] }, help: 'On its card.' },
+                    colour: { kind: 'text', color: true, label: 'Colour', section: 'Look', width: 'third', help: 'The rim, the icon, the band, the threads. Empty = gold.' },
+                    icon: { kind: 'text', icon: true, label: 'Icon', section: 'Look', width: 'third', help: 'A Material Symbols name, until it has its own picture.' },
+                    glow: { kind: 'boolean', label: 'Glow', section: 'Look', width: 'third', help: 'A halo of its colour around the medallion and the icon.' },
+                    iconImage: { kind: 'image', label: 'Icon (your own picture)', section: 'Look', help: 'Replaces the Material icon. An SVG (black on a transparent background) is filled with the plane’s colour; another picture is shown as it is.' },
+                    look: { ...lookField('planeTheme', false), help: 'The plane’s own page (plane.html). Pick its theme, then change any part of it below (an empty field keeps the theme’s).' },
+                    traits: {
+                        kind: 'objects', label: 'Traits', section: 'Lore', itemLabel: 'label',
+                        help: 'Short facts in a row under the title: Time, Magic, Danger… Your own labels.',
+                        fields: {
+                            label: { kind: 'text', label: 'Label', required: true, width: 'half' },
+                            value: { kind: 'text', label: 'Value', width: 'half' },
+                        },
+                    },
+                    body: { kind: 'markdown', label: 'Lore', section: 'Lore', help: 'The main text of the plane’s page.' },
+                    ways: {
+                        kind: 'objects', label: 'Ways in', section: 'Lore', itemLabel: 'text',
+                        help: 'Portals, spells, places that lead there. Beside the lore.',
+                        fields: {
+                            icon: { kind: 'text', icon: true, label: 'Icon', width: 'third', help: 'Material Symbols name. Empty = door_open.' },
+                            text: { kind: 'text', label: 'Text', long: true, required: true, help: 'Names of the site in it become links.' },
+                        },
+                    },
+                    atlas: { kind: 'boolean', label: 'Shows the Grand Atlas', section: 'Maps', help: 'The world of Eraldom on this plane’s page: its map and its continents, leading to the Atlas (the Material Plane).' },
+                    maps: {
+                        kind: 'objects', label: 'Maps', section: 'Maps', itemLabel: 'name',
+                        help: 'Maps of the plane, one tab each, in this order. Its places are pinned on them.',
+                        fields: {
+                            id: { kind: 'text', label: 'Id', required: true, width: 'half', help: 'Lowercase, no spaces (main, the-deep-wood…). Pins point to it: do not change it once pins are placed.' },
+                            name: { kind: 'text', label: 'Name', required: true, width: 'half', help: 'On the map tab.' },
+                            image: { kind: 'mapImage', label: 'Map image' },
+                            note: { kind: 'text', label: 'Caption', long: true, help: 'Under the map until a pin is chosen.' },
+                        },
+                    },
+                    places: {
+                        kind: 'objects', label: 'Places', section: 'Maps', itemLabel: 'name',
+                        help: 'Places that exist only on this plane, pinned on its maps. Their names (and other names) link to this page from the rest of the site, with a preview card.',
+                        fields: {
+                            name: { kind: 'text', label: 'Name', required: true, width: 'half' },
+                            id: { kind: 'text', label: 'Id', width: 'half', help: 'Empty = made from the name. Links point to it: keep it once set.' },
+                            aliases: { kind: 'list', label: 'Other names', help: 'They become links too.' },
+                            pin: { kind: 'map', label: 'Pin', help: 'Choose the map, then place the pin on it.' },
+                            image: { kind: 'image', label: 'Picture', help: 'On its card and its preview card.' },
+                            summary: { kind: 'text', label: 'Summary', long: true, help: 'On its card and its preview card.' },
+                            sealed: { kind: 'boolean', label: 'Sealed', help: 'Not drawn, and not linked, until a campaign learns it.' },
+                            revealedIn: { kind: 'refs', to: ['campaign'], label: 'Learned in', showIf: { key: 'sealed', set: true } },
+                        },
+                    },
+                    groups: {
+                        kind: 'objects', label: 'Who dwells there', section: 'Residents', itemLabel: 'name',
+                        help: 'The plane’s own people and powers, seen nowhere else on the site, in groups of your choosing (in this order). Their names link to this page, with a preview card.',
+                        fields: {
+                            name: { kind: 'text', label: 'Group', required: true, help: 'The Powers, the Courts…' },
+                            desc: { kind: 'text', label: 'Description', long: true },
+                            members: {
+                                kind: 'objects', label: 'Members', itemLabel: 'name',
+                                fields: {
+                                    name: { kind: 'text', label: 'Name', required: true, width: 'half' },
+                                    id: { kind: 'text', label: 'Id', width: 'half', help: 'Empty = made from the name. Links point to it: keep it once set.' },
+                                    title: { kind: 'text', label: 'Title', width: 'half', help: 'Archfey, Warden of the Roots, Deity of…' },
+                                    divine: { kind: 'boolean', label: 'A deity', width: 'half', help: 'Its links take the deities’ colour.' },
+                                    aliases: { kind: 'list', label: 'Other names', help: 'They become links too.' },
+                                    portrait: { kind: 'image', label: 'Portrait', help: 'Tall, like the NPC portraits.' },
+                                    summary: { kind: 'text', label: 'Text', long: true, help: 'On its card and its preview card.' },
+                                    sealed: { kind: 'boolean', label: 'Sealed', help: '“Not yet met” in the campaigns that have not met them, and not linked there.' },
+                                    revealedIn: { kind: 'refs', to: ['campaign'], label: 'Met in', showIf: { key: 'sealed', set: true } },
+                                },
+                            },
+                        },
+                    },
+                    links: { kind: 'refs', to: ['continent', 'country', 'settlement', 'district', 'poi', 'npc', 'faction', 'deity', 'creature', 'item', 'tome', 'handout', 'lore', 'session', 'event', 'plane'], label: 'Spoken of in', section: 'Lore', help: 'Shown in the panel, with their preview cards.' },
+                    sealed: { kind: 'boolean', label: 'Sealed', section: 'Hidden', help: 'Unknown until a campaign learns it: on a circle or beyond them, a locked medallion with no name; elsewhere, not drawn at all; a demiplane, a sealed card.' },
+                    revealedIn: { kind: 'refs', to: ['campaign'], label: 'Learned in', section: 'Hidden', showIf: { key: 'sealed', set: true } },
                 },
             },
             creature: {

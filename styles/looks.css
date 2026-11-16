@@ -352,6 +352,38 @@
 
 
 /* ---------------------------------------------------------------------
+   3b. PLANE THEMES  (planeTheme enum): the page of a plane (plane.html).
+   What a theme draws around the page (canopy, shards…) is in
+   scripts/plane-themes.js; its colours, fonts and headings are here.
+   --------------------------------------------------------------------- */
+
+/* Verdant Wilds (Ydalheim): under the canopy, sunlight and wild magic */
+.look--plane-ydalheim {
+    --look-accent: #e6c873;
+    --look-ink: #e9eadb;
+    --look-panel: rgba(12, 24, 15, 0.84);
+    --look-page: #07120b;
+    --look-font-title: "Metamorphous";
+    --look-font-body: "Spectral";
+    --look-epithet: #c9dca6;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 220, 140, 0.22), transparent 45%),
+        linear-gradient(180deg, #0d1f12 0%, #0a1a10 30%, #07120b 70%, #050c08 100%);
+}
+/* A glowing shard of wild magic before each heading */
+.look--plane-ydalheim .pp-h2::before {
+    content: "";
+    flex-shrink: 0;
+    width: 14px;
+    height: 19px;
+    background: linear-gradient(140deg, #fff, #3ff0c8 35%, #9b7bff 70%, #ff5fb8);
+    clip-path: polygon(50% 0, 100% 38%, 78% 100%, 12% 82%, 0 30%);
+    filter: drop-shadow(0 0 6px #3ff0c8) drop-shadow(0 0 12px #9b7bff);
+}
+.look--plane-ydalheim .pp-title { text-shadow: 0 0 40px rgba(255, 220, 140, 0.35); }
+
+
+/* ---------------------------------------------------------------------
    4. TEXTURES  (lookTexture enum) — picked on the page, they replace the
    theme's. "Image" is set by look.js as an inline --look-texture.
    --------------------------------------------------------------------- */
@@ -501,7 +533,7 @@ body > .look-banner { z-index: -1; }
    7. Drawing the frame on the boxes of both pages
    (.look-prev__box = the dashboard's preview)
    --------------------------------------------------------------------- */
-[class*="look-frame--"] :is(.poi-hero, .poi-panel, .poi-menu-card, .beast-stats, .beast-lore, .beast-traits__panel, .beast-scholar, .look-prev__box) {
+[class*="look-frame--"] :is(.poi-hero, .poi-panel, .poi-menu-card, .beast-stats, .beast-lore, .beast-traits__panel, .beast-scholar, .pp-panel, .look-prev__box) {
     position: relative;
     border: var(--frame-border);
     border-radius: var(--frame-radius, 0.25rem);
@@ -510,7 +542,7 @@ body > .look-banner { z-index: -1; }
     box-shadow: var(--frame-shadow, 0 20px 50px rgb(0 0 0 / 0.35)), var(--frame-glow, 0 0 0 transparent);
 }
 /* corner ornaments (filigree, ornate) or rivets (iron) */
-[class*="look-frame--"] :is(.poi-hero, .poi-panel, .poi-menu-card, .beast-stats, .beast-lore, .beast-traits__panel, .beast-scholar, .look-prev__box)::before {
+[class*="look-frame--"] :is(.poi-hero, .poi-panel, .poi-menu-card, .beast-stats, .beast-lore, .beast-traits__panel, .beast-scholar, .pp-panel, .look-prev__box)::before {
     content: '';
     position: absolute;
     inset: 5px;
@@ -521,7 +553,7 @@ body > .look-banner { z-index: -1; }
     mask: var(--frame-mask, none);
 }
 /* inner rule (runic) */
-[class*="look-frame--"] :is(.poi-hero, .poi-panel, .poi-menu-card, .beast-stats, .beast-lore, .beast-traits__panel, .beast-scholar, .look-prev__box)::after {
+[class*="look-frame--"] :is(.poi-hero, .poi-panel, .poi-menu-card, .beast-stats, .beast-lore, .beast-traits__panel, .beast-scholar, .pp-panel, .look-prev__box)::after {
     content: '';
     position: absolute;
     inset: 7px;

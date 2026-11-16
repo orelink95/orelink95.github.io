@@ -5,9 +5,10 @@
    page (deity.html). Elder gods not revealed in the chosen campaign
    (deity.revealedIn) are sealed slots: no name, no link.
    The campaign drop-down is shared with Dramatis Personae (scripts/personae.js).
-   Cards: scripts/deity-card.js. Styles: styles/pages/pantheon.css.
+   Cards: scripts/deity-card.js. Sky: scripts/core/sky.js. Styles: styles/pages/pantheon.css.
    ===================================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
+    Athenaeum.sky(document.getElementById('sky'));
     const store = await Athenaeum.ready;
     const Card = Athenaeum.deityCard;
     const esc = s => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');

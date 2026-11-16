@@ -52,5 +52,22 @@
       "nihilium",
       "ophrasian-war"
     ]
+  },
+  {
+    "id": "sunbreak",
+    "name": "The Sunbreak",
+    "kind": "major",
+    "summary": "For 2 years, the sun didn't rise. Crops died, many animals followed. People grew sick, physically and mentally.",
+    "date": {
+      "year": 756
+    },
+    "end": {
+      "year": 758
+    },
+    "colour": "#635f5f",
+    "body": "One of the few fragments of pre-Doleris history to survive the erosion of time unchanged is the tale of the Sunbreak. Though sources differ wildly on what triggered the event, all recount it in chillingly similar detail—a shared memory etched into the soul and body of Eraldom. \n\nFor three long years, the sun did not rise.\n\nSome claim the god Pholtos, heartbroken by Neluthien, fell into rage and despair to the point where he prevented the sun from shining. Months passed in silence and darkness until, wrecked by feelings he could not control, he unleashed solar flares of unimaginable fury. They tore through the night, incinerated forests, blackened cities, and scorched the world. No place suffered more than Etmedir, now known only as the Scorched Grounds, a wasteland that still smolders with divine wrath.\n\nMelior tried in vain to reason with his brother.For him to stop destroying the world in fits of absolute furry, the Moon God trapped his brother deep into the Dreamlands, in the Dystopian Weald.\n\nIn those dark years, mortals had no choice but to adapt—and to survive. Plants died, cattle dwindled and spellcasters’s bond with Ethirya suffered as well.\n\nAfter three years of endless night, the sun rose once more.",
+    "links": [
+      "pholtos"
+    ]
   }
 ]

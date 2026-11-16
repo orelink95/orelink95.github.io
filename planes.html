@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>The Planes of Existence — The Athenaeum Vault</title>
+    <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Noto+Serif:wght@400;600;700&family=Newsreader:ital,wght@0,400;0,600;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <link href="styles/tokens.css" rel="stylesheet" />
+    <link href="styles/base.css" rel="stylesheet" />
+    <link href="styles/components.css" rel="stylesheet" />
+    <link href="styles/pages/planes.css" rel="stylesheet" />
+    <link href="styles/main-style.css" rel="stylesheet" />
+
+    <script src="scripts/general-scripts.js"></script>
+    <script src="data/schema.js"></script>
+    <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/calendar.js"></script>
+    <script src="scripts/core/store.js"></script>
+    <script src="scripts/core/sky.js"></script>
+    <script src="scripts/personae.js"></script>
+    <script src="scripts/planes-common.js"></script>
+    <script src="scripts/planes-scripts.js"></script>
+</head>
+
+<!-- No .mystical-bg here: its filter would pin the sky to the page instead of the window -->
+<body data-section="archive" class="page pl-page">
+
+    <!-- The night sky behind the page (scripts/core/sky.js) -->
+    <canvas id="sky" class="pl-sky" aria-hidden="true"></canvas>
+
+    <div id="header-placeholder" class="header-slot"></div>
+    <nav class="section-tabs" data-section="archive"></nav>
+
+    <main class="pl-main">
+        <header class="pl-head">
+            <p class="pl-label">The cosmos of Eraldom</p>
+            <h1 class="pl-head__title">The Planes of Existence</h1>
+            <div class="pl-head__ornament" aria-hidden="true"><span></span><span class="pl-head__dot"></span><span></span></div>
+        </header>
+
+        <div class="pl-glass pl-controls">
+            <label class="pl-controls__campaign" title="A sealed plane stays unknown until this campaign has learned it">
+                <span class="pl-label pl-label--muted">Viewing as</span>
+                <!-- Shared with Dramatis Personae (scripts/personae.js) -->
+                <select id="pl-campaign" class="pl-select hidden"></select>
+            </label>
+            <p class="pl-controls__hint">Hover a plane to hold the orrery still · choose one to read about it</p>
+            <button type="button" id="pl-still" class="pl-toggle" aria-pressed="false"><span class="material-symbols-outlined" aria-hidden="true">pause</span><span>Hold still</span></button>
+        </div>
+
+        <div class="pl-layout">
+            <!-- The orrery: drawn by scripts/planes-scripts.js from data/planes.json -->
+            <div class="pl-orrery-wrap">
+                <div id="orrery" class="plate" role="group" aria-label="Orrery of the planes"></div>
+            </div>
+            <aside id="pl-panel" class="pl-glass pl-panel" aria-live="polite"></aside>
+        </div>
+
+        <section id="pl-demis" class="pl-demis" aria-labelledby="pl-demis-title" hidden>
+            <h2 id="pl-demis-title" class="pl-h2">Demiplanes</h2>
+            <div id="pl-demis-list" class="pl-demis__list"></div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+</body>
+
+</html>

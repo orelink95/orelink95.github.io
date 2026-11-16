@@ -1767,8 +1767,10 @@
 }
 
 /* ---------- Today in Eraldom (scripts/today-widget.js) ----------
-   A starry card between the gateways and the upcoming sessions: the date,
-   the season, the moons, the next festival. Opens the Astrolabe's calendar. */
+   A card between the gateways and the upcoming sessions, in the family of the
+   session cards: dark glass, a thin gold bar on the left, a gold lift on hover.
+   Wide screens: four parts in a row (date · season · moons · next celebration).
+   Phones: the date and the moons side by side, the season, the next celebration. */
 .today-eraldom {
     position: relative;
     z-index: 20;
@@ -1781,88 +1783,117 @@
     .today-eraldom { padding-left: 3rem; padding-right: 3rem; }
 }
 .today-card {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    padding: 26px 32px;
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(12rem, 1.1fr) repeat(3, minmax(0, 1fr));
+    align-items: start;
+    overflow: hidden;
+    padding: 1.5rem 1.75rem;
     box-sizing: border-box;
-    border: 1px solid rgba(233, 193, 118, 0.35);
-    border-radius: 10px;
-    background-color: #07060c;
-    background-image:
-        radial-gradient(ellipse at 15% 0%, rgba(88, 40, 150, 0.45), transparent 55%),
-        radial-gradient(ellipse at 90% 100%, rgba(30, 60, 140, 0.45), transparent 55%),
-        radial-gradient(rgba(255, 255, 255, 0.5) 0.6px, transparent 0.8px),
-        radial-gradient(rgba(255, 243, 214, 0.35) 0.8px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 37px 41px, 83px 67px;
-    background-position: 0 0, 0 0, 7px 11px, 31px 23px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 0.5rem;
+    background-color: rgb(10 11 10 / 0.8);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
     color: var(--color-on-surface);
     text-decoration: none;
-    transition: border-color 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    transition: border-color 500ms var(--ease), transform 500ms var(--ease), box-shadow 500ms var(--ease);
 }
 .today-card[hidden] { display: none; }
 .today-card:hover,
-.today-card:focus-visible { border-color: rgba(233, 193, 118, 0.7); box-shadow: 0 0 40px rgba(233, 193, 118, 0.15); }
-.today-card__date,
-.today-card__part { display: flex; flex-direction: column; gap: 6px; }
-.today-card__date { min-width: 15rem; }
-.today-card__part { padding-left: 32px; border-left: 1px solid rgba(233, 193, 118, 0.25); }
-.today-card__next { flex: 1; }
+.today-card:focus-visible {
+    border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+    transform: translateY(-0.25rem);
+    box-shadow: 0 10px 40px rgba(233, 193, 118, 0.15);
+}
+.today-card__bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0.25rem;
+    height: 100%;
+    background-image: linear-gradient(to bottom, var(--color-secondary), transparent);
+    opacity: 0.5;
+    transition: opacity 150ms var(--ease);
+}
+.today-card:hover .today-card__bar { opacity: 1; }
+
+.today-card__part {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+    padding: 0 1.5rem;
+    border-left: 1px solid rgb(255 255 255 / 0.08);
+}
+.today-card__date { padding-left: 0; border-left: 0; }
 .today-card__label {
     font-family: var(--font-label);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--color-secondary);
 }
-.today-card__label--muted { color: #8d8aa0; }
+.today-card__label--muted { color: var(--color-outline); }
 .today-card__day {
-    font-family: "Cinzel", var(--font-headline), serif;
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 1.1;
-    color: #fff;
+    font-family: var(--font-headline);
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+    color: var(--color-on-surface);
 }
-.today-card__name { font-family: var(--font-headline); font-size: 18px; font-weight: 600; color: #fff; }
+.today-card__name { font-family: var(--font-headline); font-size: 1.125rem; color: var(--color-on-surface); }
 .today-card__season .today-card__name { color: var(--season); }
-.today-card__sub { font-family: var(--font-label); font-size: 12px; color: #a9a6bb; }
-.today-card__bar { display: block; width: 180px; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, 0.1); }
-.today-card__bar span { display: block; height: 4px; border-radius: 2px; background: var(--season); }
-.today-card__moonline { display: flex; align-items: center; gap: 10px; font-family: var(--font-label); font-size: 13px; color: #c3c8c0; }
-.today-card__moonline b { font-family: var(--font-headline); color: #f3f3ef; }
+.today-card__sub { font-family: var(--font-label); font-size: 12px; color: var(--color-on-surface-variant); }
+.today-card__progress { display: block; height: 3px; border-radius: 2px; background: rgb(255 255 255 / 0.08); }
+.today-card__progress span { display: block; height: 3px; border-radius: 2px; background: var(--season); }
+.today-card__moonline { display: flex; align-items: center; gap: 0.6rem; }
+.today-card__moonline > span { display: flex; flex-wrap: wrap; column-gap: 0.4rem; align-items: baseline; }
+.today-card__moonline b { font-family: var(--font-headline); font-weight: 400; font-size: 0.95rem; color: var(--color-on-surface); }
+.today-card__phase { font-family: var(--font-label); font-size: 12px; color: var(--color-on-surface-variant); }
 .today-card__moon { display: inline-block; flex-shrink: 0; box-sizing: border-box; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 50%; }
 .today-card__cta {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 0.35rem;
+    margin-top: 0.35rem;
     font-family: var(--font-label);
     font-size: 10px;
     font-weight: 700;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--color-secondary);
 }
 .today-card__cta .material-symbols-outlined { font-size: 14px; transition: transform 0.3s var(--ease); }
 .today-card:hover .today-card__cta .material-symbols-outlined { transform: translateX(4px); }
-.today-card__phone { display: none; }
 
 /* Tablets: two by two */
 @media (max-width: 1023.98px) {
-    .today-card { flex-wrap: wrap; gap: 20px 28px; }
-    .today-card__moons { border-left: 0; padding-left: 0; }
+    .today-card { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.25rem; }
+    .today-card__moons { padding-left: 0; border-left: 0; }
 }
-/* Phones: folded — date and moons on top, the next festival under */
+/* Phones */
 @media (max-width: 639.98px) {
-    .today-card { position: relative; flex-direction: column; align-items: stretch; gap: 14px; padding: 20px; }
-    .today-card__date { min-width: 0; }
-    .today-card__day { font-size: 26px; }
-    .today-card__season, .today-card__moons { display: none; }
-    .today-card__part { padding: 12px 0 0; border-left: 0; border-top: 1px solid rgba(233, 193, 118, 0.18); }
-    .today-card__phone { position: absolute; top: 20px; right: 20px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-    .today-card__phone-moons { display: flex; gap: 6px; }
+    .today-eraldom { padding-bottom: 2rem; }
+    .today-card {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "date moons" "season season" "next next";
+        gap: 1rem 0.75rem;
+        padding: 1.25rem 1.25rem 1.25rem 1.5rem;
+    }
+    .today-card__part { padding: 0; border-left: 0; }
+    .today-card__date { grid-area: date; }
+    .today-card__moons { grid-area: moons; align-items: flex-end; gap: 0.5rem; }
+    .today-card__moons .today-card__label,
+    .today-card__moonline b { display: none; }
+    .today-card__moonline { flex-direction: row-reverse; }
+    .today-card__season,
+    .today-card__next { padding-top: 1rem; border-top: 1px solid rgb(255 255 255 / 0.08); }
+    .today-card__season { grid-area: season; }
+    .today-card__next { grid-area: next; }
+    .today-card__day { font-size: 1.6rem; line-height: 2rem; }
 }
 @media (prefers-reduced-motion: reduce) {
     .today-card, .today-card__cta .material-symbols-outlined { transition: none; }
+    .today-card:hover { transform: none; }
 }

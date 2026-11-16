@@ -54,8 +54,10 @@
     const tone = s => String(s || '').toLowerCase().replace(/\s*\(.*\)/, '').replace(/[^a-z]+/g, '-');
 
     const PLACE_TYPES = { continent: 'Continent', country: 'Country', settlement: 'Settlement', district: 'District', poi: 'Place' };
-    const KIND = { npc: 'person', faction: 'faction', creature: 'monster', item: 'object', spell: 'spell', deity: 'deity', handout: 'object' };
-    const kindOf = (type, rec) => (type === 'lore' ? (rec.kind || 'lore') : KIND[type] || 'place');
+    const KIND = { npc: 'person', faction: 'faction', creature: 'monster', item: 'object', spell: 'spell', deity: 'deity', handout: 'object', plane: 'plane' };
+    const kindOf = (type, rec) => (type === 'lore' ? (rec.kind || 'lore')
+        : type === 'planePart' ? (rec._part.part === 'place' ? 'place' : rec._part.item.divine ? 'deity' : 'person')
+        : KIND[type] || 'place');
     // An NPC's relation -> the tone of its badge
     const RELATION_TONE = { ally: 'ally', neutral: 'neutral', displeased: 'wary', hostile: 'hostile', enemy: 'hostile', killed: 'killed', unknown: 'unknown', allied: 'ally' };
     // Faction threat levels -> the creature threat tones of components.css (.threat--*)
@@ -99,9 +101,11 @@
        summary, quote, chips and campaign row it has, then a foot with where
        it belongs and the way to its page. */
     function card(id, { sheet: asSheet = false } = {}) {
-        const rec = store.get(id);
+        // A plane's own place or resident (not a record: see store.planePart)
+        const part = !store.get(id) && store.planePart ? store.planePart(id) : null;
+        const rec = part ? { id, name: part.name, _part: part } : store.get(id);
         if (!rec) return '';
-        const type = store.typeOf(rec);
+        const type = part ? 'planePart' : store.typeOf(rec);
         const kind = kindOf(type, rec);
         const v = {
             layout: 'text', image: '', focus: '', zoom: 0, thumb: '', kicker: '', sub: '',
@@ -180,6 +184,24 @@
                 foot: known(rec.foundAt) ? `Found at ${rec.foundAt}` : '',
             });
             if (rec.campaign && nameOf(rec.campaign)) v.chips.push(chip(nameOf(rec.campaign)));
+        } else if (type === 'plane') {
+            Object.assign(v, {
+                kicker: rec.kind === 'demiplane' ? 'Demiplane' : 'Plane of existence', sub: rec.epithet, summary: rec.summary,
+                foot: 'The Planes of Existence',
+            });
+        } else if (part) {
+            const it = part.item;
+            if (part.part === 'resident') {
+                Object.assign(v, {
+                    layout: 'media', image: it.portrait, thumb: 'round', kicker: it.divine ? 'Deity' : 'Resident',
+                    sub: it.title, summary: it.summary, foot: [part.plane.name, part.group && part.group.name].filter(known).join(' · '),
+                });
+            } else {
+                Object.assign(v, {
+                    layout: it.image ? 'banner' : 'text', image: it.image, kicker: 'Place', summary: it.summary,
+                    foot: part.plane.name,
+                });
+            }
         } else if (type === 'lore') {
             Object.assign(v, {
                 kicker: 'Glossary · ' + label('loreKind', rec.kind || 'lore'), summary: rec.definition,
@@ -242,6 +264,7 @@
 
     // Where a card leads: the record's page, or a handout's file (in a new tab)
     function pageOf(rec) {
+        if (rec && rec._part) { const href = store.partUrl(rec._part); return href ? { href, newTab: false } : null; }
         if (store.typeOf(rec) === 'handout') return rec.file ? { href: src(rec.file), newTab: true } : null;
         const href = store.url(rec);
         return href ? { href, newTab: false } : null;
@@ -364,7 +387,8 @@
         const html = card(id, { sheet: true });
         if (!html) return false;
         const el = ensureSheet();
-        const rec = store.get(id);
+        const part = !store.get(id) && store.planePart ? store.planePart(id) : null;
+        const rec = part ? { id, name: part.name, _part: part } : store.get(id);
         const page = pageOf(rec);
         const lore = store.typeOf(rec) === 'lore' && loreAction();
         el.querySelector('.pv-sheet__card').innerHTML = html;

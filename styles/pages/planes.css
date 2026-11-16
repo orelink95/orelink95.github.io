@@ -1,0 +1,774 @@
+/* The Planes of Existence (planes.html, scripts/planes-scripts.js): the orrery.
+   The Astrolabe's night sky (canvas #sky, scripts/core/sky.js) and glass panels;
+   an engraved gold plate where the planes turn around the centre, flat medallions
+   in each plane's colour. Positions and sizes are set by the script (inline
+   styles and --in / --out / --c); this file holds the look and the motion.
+   Wide screens: the orrery and the panel side by side; narrower: one under the other. */
+
+.page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+    background: #020203;
+}
+
+.pl-page {
+    --pl-gold: #e9c176;
+    --pl-gold-pale: #f3dc9b;
+    --pl-muted: #8d8aa0;
+    --pl-ink: #050409;
+    --pl-display: "Cinzel", var(--font-headline), serif;
+}
+
+.pl-sky {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.header-slot {
+    position: relative;
+    z-index: 50;
+}
+
+.pl-main {
+    position: relative;
+    z-index: 10;
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 6rem 1rem 6rem;
+    box-sizing: border-box;
+}
+
+/* ---------- shared pieces ---------- */
+.pl-label {
+    margin: 0;
+    font-family: var(--font-label);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--pl-gold);
+}
+.pl-label--muted { color: var(--pl-muted); }
+
+/* Glass panels: the library cards' texture, opaque enough to read over the sky */
+.pl-glass {
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--pl-gold) 16%, transparent);
+    border-radius: 8px;
+    background-color: rgba(8, 8, 12, 0.8);
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(233, 193, 118, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 100% 100%, rgba(26, 11, 46, 0.65) 0%, transparent 60%),
+        radial-gradient(rgba(233, 193, 118, 0.06) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 16px 16px;
+    color: inherit;
+}
+
+/* ---------- head ---------- */
+.pl-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.pl-head__title {
+    margin: 0.6rem 0 0;
+    font-family: var(--pl-display);
+    font-size: clamp(2.1rem, 6vw, 3.6rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 0.06em;
+    color: #fff;
+}
+.pl-head__ornament {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 0.9rem;
+}
+.pl-head__ornament span:first-child,
+.pl-head__ornament span:last-child {
+    width: 70px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(233, 193, 118, 0.6));
+}
+.pl-head__ornament span:last-child { transform: scaleX(-1); }
+.pl-head__dot {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--pl-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--pl-gold);
+}
+
+/* ---------- controls ---------- */
+.pl-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    max-width: 1232px;
+    margin: 0 auto 1.5rem;
+    padding: 12px 18px;
+}
+.pl-controls__campaign { display: flex; align-items: center; gap: 10px; }
+.pl-controls__hint {
+    margin: 0;
+    font-family: var(--font-label);
+    font-size: 13px;
+    color: #a9a6bb;
+}
+.pl-select {
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid #3d3a4a;
+    border-radius: 8px;
+    background: #0b0a10;
+    color: var(--color-on-surface);
+    font-family: var(--font-label);
+    font-size: 13px;
+}
+.pl-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid #3d3a4a;
+    border-radius: 999px;
+    background: rgba(8, 8, 12, 0.7);
+    color: var(--color-on-surface-variant);
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+}
+.pl-toggle .material-symbols-outlined { font-size: 18px; }
+.pl-toggle:hover { color: var(--pl-gold-pale); }
+.pl-toggle.is-on {
+    border-color: rgba(233, 193, 118, 0.6);
+    background: rgba(233, 193, 118, 0.08);
+    color: var(--pl-gold);
+}
+
+/* ---------- layout ---------- */
+.pl-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 840px) minmax(300px, 360px);
+    justify-content: center;
+    align-items: start;
+    gap: 32px;
+}
+.pl-orrery-wrap { padding: 28px 0; }
+
+/* =====================================================================
+   THE ORRERY
+   ===================================================================== */
+.plate {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    margin: 0 auto;
+    background: radial-gradient(circle, rgba(120, 200, 190, 0.12) 0%, rgba(88, 40, 150, 0.1) 35%, rgba(8, 8, 12, 0.5) 62%, transparent 71%);
+    border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+}
+.plate button { font: inherit; color: inherit; }
+.plate :focus-visible { outline: none; }
+
+@keyframes pl-turn { to { transform: rotate(360deg); } }
+
+/* The graduated rim, slowly turning */
+.pl-ticks {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-conic-gradient(rgba(233, 193, 118, 0.55) 0 0.35deg, transparent 0.35deg 5deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 calc(var(--in) - 1px), #000 var(--in) var(--out), transparent calc(var(--out) + 1px));
+    mask: radial-gradient(circle, transparent 0 calc(var(--in) - 1px), #000 var(--in) var(--out), transparent calc(var(--out) + 1px));
+    animation: pl-turn 900s linear infinite;
+    pointer-events: none;
+}
+.pl-ticks--fine { background: repeating-conic-gradient(rgba(233, 193, 118, 0.3) 0 0.2deg, transparent 0.2deg 1deg); }
+
+/* The path of each circle (the outermost dashed) */
+.pl-path {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px solid rgba(233, 193, 118, 0.2);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: border-color 0.4s, box-shadow 0.4s;
+}
+.pl-path--outer { border-style: dashed; }
+.pl-path.is-lit {
+    border-color: rgba(233, 193, 118, 0.6);
+    box-shadow: 0 0 18px rgba(233, 193, 118, 0.15), inset 0 0 18px rgba(233, 193, 118, 0.08);
+}
+
+/* ---------- between the planes: the field under everything ---------- */
+.pl-void {
+    position: absolute;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    background: radial-gradient(circle, transparent 0 22%, color-mix(in srgb, var(--c) 9%, transparent) 55%, color-mix(in srgb, var(--c) 18%, rgba(8, 4, 20, 0.5)) 100%);
+}
+.pl-void::before {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--c) 16%, transparent), transparent 18%,
+        color-mix(in srgb, var(--c) 10%, transparent), transparent 40%, color-mix(in srgb, var(--c) 12%, transparent), transparent 62%,
+        color-mix(in srgb, var(--c) 15%, transparent), transparent 85%);
+    filter: blur(14px);
+    animation: pl-turn 300s linear infinite;
+}
+.pl-void::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 60px color-mix(in srgb, var(--c) 50%, transparent);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+.pl-void:hover::after,
+.pl-void:focus-visible::after,
+.pl-void.is-sel::after { opacity: 1; }
+
+/* ---------- beyond the circles: bands around everything ---------- */
+.pl-band {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg,
+        color-mix(in srgb, var(--c) 55%, transparent), color-mix(in srgb, var(--c) 15%, transparent) 12%,
+        color-mix(in srgb, var(--c) 45%, white 5%) 25%, color-mix(in srgb, var(--c) 12%, transparent) 40%,
+        color-mix(in srgb, var(--c) 50%, transparent) 55%, color-mix(in srgb, var(--c) 15%, transparent) 70%,
+        color-mix(in srgb, var(--c) 45%, transparent) 85%, color-mix(in srgb, var(--c) 55%, transparent));
+    -webkit-mask: radial-gradient(circle, transparent 0 calc(var(--in) - 1px), #000 var(--in) var(--out), transparent calc(var(--out) + 1px));
+    mask: radial-gradient(circle, transparent 0 calc(var(--in) - 1px), #000 var(--in) var(--out), transparent calc(var(--out) + 1px));
+    filter: blur(2px);
+    opacity: 0.5;
+    animation: pl-turn 240s linear infinite;
+    transition: opacity 0.4s;
+    pointer-events: none;
+}
+.pl-band.is-lit { opacity: 1; }
+
+/* Threads from a plane beyond to every plane */
+.pl-thread {
+    position: absolute;
+    left: -0.5px;
+    width: 1px;
+    background: repeating-linear-gradient(180deg, color-mix(in srgb, var(--c) 85%, transparent) 0 4px, transparent 4px 9px);
+    opacity: 0;
+    transition: opacity 0.5s;
+    pointer-events: none;
+}
+.pl-thread.is-on { opacity: 1; }
+
+/* ---------- rings around the centre ---------- */
+.pl-ringset { position: absolute; inset: 0; pointer-events: none; }
+.pl-ring {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    pointer-events: auto;
+    background: radial-gradient(circle, transparent 0 var(--in), color-mix(in srgb, var(--c) 8%, transparent) var(--in) var(--out), transparent var(--out));
+    transition: background 0.3s;
+}
+.pl-ring:hover,
+.pl-ring:focus-visible,
+.pl-ring.is-sel {
+    background: radial-gradient(circle, transparent 0 var(--in), color-mix(in srgb, var(--c) 20%, transparent) var(--in) var(--out), transparent var(--out));
+}
+.pl-ring__edge {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px solid color-mix(in srgb, var(--c) 45%, transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    transition: border-color 0.3s;
+}
+.pl-ringset:has(.pl-ring.is-sel) .pl-ring__edge { border-color: var(--pl-gold); }
+.pl-ring__text {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    pointer-events: none;
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    letter-spacing: 3px;
+    fill-opacity: 0.75;
+}
+
+/* ---------- beneath the centre (the Underworld): a dark ring with embers ---------- */
+.pl-under {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    pointer-events: auto;
+    background: radial-gradient(circle, transparent 0 var(--in), color-mix(in srgb, var(--c) 30%, #12020a) var(--in), color-mix(in srgb, var(--c) 18%, #0a0106) calc((var(--in) + var(--out)) / 2), color-mix(in srgb, var(--c) 30%, #12020a) var(--out), transparent var(--out));
+    transition: filter 0.3s;
+}
+.pl-under:hover, .pl-under:focus-visible, .pl-under.is-sel { filter: brightness(1.7); outline: none; }
+.pl-under__embers {
+    position: absolute;
+    border-radius: 50%;
+    background: repeating-conic-gradient(transparent 0 7deg, color-mix(in srgb, #ff7850 60%, var(--c)) 7deg 7.6deg, transparent 7.6deg 19deg);
+    -webkit-mask: radial-gradient(circle, transparent 0 var(--in), #000 var(--in) var(--out), transparent var(--out));
+    mask: radial-gradient(circle, transparent 0 var(--in), #000 var(--in) var(--out), transparent var(--out));
+    opacity: 0.7;
+    animation: pl-turn 200s linear infinite reverse;
+    pointer-events: none;
+}
+.pl-underset:has(.pl-under.is-sel) .pl-ring__edge { border-color: var(--pl-gold); }
+.pl-underset:has(.pl-under:hover) .pl-tag--ring,
+.pl-underset:has(.pl-under:focus-visible) .pl-tag--ring,
+.pl-underset:has(.pl-under.is-sel) .pl-tag--ring { opacity: 1; }
+/* Roads (plane.roads): souls flowing out to the plane, hidden until wanted */
+.pl-road {
+    position: absolute;
+    left: -1.5px;
+    width: 3px;
+    border-radius: 2px;
+    background: repeating-linear-gradient(0deg, var(--c) 0 6px, transparent 6px 14px);
+    filter: drop-shadow(0 0 4px var(--c)) drop-shadow(0 0 10px var(--c));
+    opacity: 0;
+    transition: opacity 0.5s;
+    animation: pl-souls 1.6s linear infinite;
+    pointer-events: none;
+}
+.pl-road.is-on { opacity: 1; }
+@keyframes pl-souls { from { background-position: 0 0; } to { background-position: 0 -14px; } }
+
+/* ---------- the centre ---------- */
+.pl-core {
+    position: absolute;
+    border-radius: 50%;
+}
+.pl-half {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border: 2px solid var(--c);
+    border-radius: 50%;
+    background: radial-gradient(circle at 70% 30%, var(--wash) 0%, #0a0910 75%);
+    cursor: pointer;
+    transition: filter 0.3s, border-color 0.3s;
+}
+.pl-half--a { clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.pl-half--b { clip-path: polygon(0 0, 0 100%, 100% 100%); background: radial-gradient(circle at 30% 70%, var(--wash) 0%, #07060b 75%); }
+.pl-half--whole { clip-path: none; background: radial-gradient(circle, var(--wash) 0%, #0a0910 75%); display: flex; align-items: center; justify-content: center; }
+.pl-half:hover,
+.pl-half:focus-visible { filter: brightness(1.35); }
+.pl-half.is-sel { border-color: var(--pl-gold); }
+.pl-half .pl-ic { position: absolute; transform: translate(-50%, -50%); }
+.pl-half--a .pl-ic { left: 66%; top: 34%; }
+.pl-half--b .pl-ic { left: 34%; top: 66%; }
+.pl-half--whole .pl-ic { left: 50%; top: 50%; }
+.pl-core__seam {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 141%;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, var(--pl-gold) 15%, var(--pl-gold) 85%, transparent);
+    transform: translate(-50%, -50%) rotate(45deg);
+    pointer-events: none;
+}
+
+/* A veil laid over the centre */
+.pl-veil {
+    position: absolute;
+    padding: 0;
+    box-sizing: border-box;
+    border: 1px dashed color-mix(in srgb, var(--c) 45%, transparent);
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent 0 58%, color-mix(in srgb, var(--c) 10%, transparent) 68%, color-mix(in srgb, var(--c) 4%, transparent) 100%);
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.pl-veil::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--c) 40%, white 10%), transparent 20%, transparent 50%, color-mix(in srgb, var(--c) 35%, transparent), transparent 70%);
+    -webkit-mask: radial-gradient(circle, transparent 0 62%, #000 70%);
+    mask: radial-gradient(circle, transparent 0 62%, #000 70%);
+    filter: blur(3px);
+    animation: pl-turn 40s linear infinite;
+    pointer-events: none;
+}
+.pl-veil:hover,
+.pl-veil:focus-visible { border-color: color-mix(in srgb, var(--c) 85%, transparent); }
+.pl-veil.is-sel { border: 1px solid var(--pl-gold); box-shadow: 0 0 24px rgba(233, 193, 118, 0.3); }
+.pl-veil__badge { position: absolute; }
+
+/* ---------- medallions ---------- */
+.pl-medal {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.pl-ic { line-height: 1; flex-shrink: 0; }
+.pl-ic--mask {
+    display: block;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+.pl-ic--img { display: block; object-fit: contain; }
+
+.pl-arm {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+}
+.pl-spin {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 0;
+    animation: pl-turn 150s linear infinite;
+}
+.pl-spin--back { animation-direction: reverse; }
+/* Hovering a medallion holds the whole orrery still */
+.plate:has(.pl-orb:hover) .pl-spin,
+.plate:has(.pl-orb:focus-visible) .pl-spin,
+.plate.is-still .pl-spin { animation-play-state: paused; }
+
+.pl-orb {
+    position: absolute;
+    z-index: 2;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    cursor: pointer;
+}
+.pl-orb::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+}
+.pl-orb:hover .pl-medal,
+.pl-orb:focus-visible .pl-medal { transform: scale(1.12); }
+.pl-orb.is-sel .pl-medal,
+.pl-veil.is-sel .pl-medal { box-shadow: 0 0 0 3px var(--pl-ink), 0 0 0 4px var(--pl-gold), 0 0 26px rgba(233, 193, 118, 0.55) !important; }
+
+/* Names: on hover, focus, or when chosen */
+.pl-name,
+.pl-tag {
+    position: absolute;
+    z-index: 5;
+    white-space: nowrap;
+    padding: 4px 10px;
+    border: 1px solid rgba(233, 193, 118, 0.4);
+    border-radius: 999px;
+    background: rgba(5, 4, 9, 0.92);
+    font-family: var(--pl-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--pl-gold-pale);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s;
+}
+.pl-name { left: 50%; top: calc(100% + 10px); transform: translateX(-50%); }
+.pl-orb.is-below .pl-name { top: auto; bottom: calc(100% + 10px); }
+.pl-tag { left: 50%; transform: translate(-50%, -50%); }
+.pl-tag--void { border-color: color-mix(in srgb, #9a78f0 50%, transparent); color: #cbb8ff; }
+.plate.is-small .pl-name,
+.plate.is-small .pl-tag { padding: 3px 8px; font-size: 11px; }
+
+.pl-orb:hover .pl-name,
+.pl-orb:focus-visible .pl-name,
+.pl-orb.is-sel .pl-name,
+.pl-veil:hover .pl-name,
+.pl-veil:focus-visible .pl-name,
+.pl-veil.is-sel .pl-name,
+.plate:has(.pl-void:hover) .pl-tag--void,
+.plate:has(.pl-void:focus-visible) .pl-tag--void,
+.plate:has(.pl-void.is-sel) .pl-tag--void,
+.pl-ringset:has(.pl-ring:hover) .pl-tag--ring,
+.pl-ringset:has(.pl-ring:focus-visible) .pl-tag--ring,
+.pl-ringset:has(.pl-ring.is-sel) .pl-tag--ring,
+.plate:has(.pl-half--a:hover) .pl-tag--a,
+.plate:has(.pl-half--a:focus-visible) .pl-tag--a,
+.plate:has(.pl-half--a.is-sel) .pl-tag--a,
+.plate:has(.pl-half--b:hover) .pl-tag--b,
+.plate:has(.pl-half--b:focus-visible) .pl-tag--b,
+.plate:has(.pl-half--b.is-sel) .pl-tag--b { opacity: 1; }
+
+/* Keyboard focus: a gold ring on what is focused */
+.pl-orb:focus-visible .pl-medal,
+.pl-half:focus-visible { outline: 2px solid var(--pl-gold); outline-offset: 3px; }
+.pl-veil:focus-visible,
+.pl-void:focus-visible,
+.pl-ring:focus-visible { outline: none; }
+
+/* =====================================================================
+   THE PANEL
+   ===================================================================== */
+.pl-panel {
+    position: sticky;
+    top: 6rem;
+    margin-top: 28px;
+    padding: 18px 18px 20px;
+}
+.pl-legend { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.pl-leg__head { margin: 14px 0 4px 10px; }
+.pl-leg {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--color-on-surface);
+    text-align: left;
+    cursor: pointer;
+    font: inherit;
+    transition: background-color 0.2s;
+}
+.pl-leg:hover,
+.pl-leg:focus-visible { background: rgba(233, 193, 118, 0.08); outline: none; }
+.pl-leg:focus-visible { box-shadow: inset 0 0 0 1px rgba(233, 193, 118, 0.6); }
+.pl-leg__name {
+    flex: 1;
+    font-family: "Noto Serif", serif;
+    font-size: 16px;
+    font-weight: 600;
+}
+.pl-leg__name.is-sealed { font-style: italic; font-weight: 400; color: var(--pl-muted); }
+
+.pl-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    min-height: 40px;
+    padding: 0 10px 0 2px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: #a9a6bb;
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.pl-back:hover,
+.pl-back:focus-visible { color: var(--pl-gold); }
+.pl-detail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px 6px 0;
+}
+.pl-medal--big { margin-bottom: 16px; }
+.pl-detail__name {
+    margin: 8px 0 0;
+    font-family: var(--pl-display);
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    color: #fff;
+}
+.pl-detail__name.is-sealed { color: var(--pl-muted); }
+.pl-detail__epithet {
+    margin: 4px 0 0;
+    font-style: italic;
+    font-size: 18px;
+    color: #c9c6d6;
+}
+.pl-detail__sum {
+    margin: 14px 0 0;
+    font-size: 17px;
+    line-height: 1.55;
+    text-align: left;
+    align-self: stretch;
+}
+.pl-detail__h { margin: 18px 0 6px; align-self: flex-start; }
+.pl-detail__links {
+    align-self: stretch;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 600;
+}
+.pl-detail__links li + li { margin-top: 4px; }
+
+/* =====================================================================
+   DEMIPLANES
+   ===================================================================== */
+.pl-demis { max-width: 1232px; margin: 3.5rem auto 0; }
+.pl-h2 {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin: 0 0 1.25rem;
+    font-family: var(--pl-display);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--pl-gold-pale);
+}
+.pl-h2::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(233, 193, 118, 0.5), transparent);
+}
+.pl-demis__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+}
+.pl-demi {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 22px;
+}
+.pl-demi__top { display: flex; align-items: center; gap: 14px; }
+.pl-demi__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    border: 1px solid color-mix(in srgb, var(--c, var(--pl-gold)) 55%, transparent);
+    border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--c, var(--pl-gold)) 14%, transparent), transparent 70%);
+    box-shadow: 0 0 0 4px rgba(5, 4, 9, 0.9), 0 0 0 5px color-mix(in srgb, var(--c, var(--pl-gold)) 20%, transparent);
+}
+.pl-demi__icon .pl-ic { font-size: 22px !important; width: 22px !important; height: 22px !important; }
+.pl-demi.is-sealed { flex-direction: row; align-items: center; border-style: dashed; border-color: #3d3a4a; background-image: none; }
+.pl-demi.is-sealed .pl-demi__icon { border-style: dashed; border-color: #5d5a6b; color: #7d7a8c; }
+.pl-demi.is-sealed .pl-demi__name { font-style: italic; font-weight: 400; color: var(--pl-muted); }
+.pl-demi__name {
+    margin: 0 0 3px;
+    font-family: "Noto Serif", serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+}
+.pl-demi__sum,
+.pl-demi__way { margin: 0; font-size: 16px; line-height: 1.5; color: var(--color-on-surface-variant); }
+.pl-demi__links {
+    margin: 0;
+    padding-top: 8px;
+    border-top: 1px solid rgba(233, 193, 118, 0.12);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* =====================================================================
+   NARROWER SCREENS
+   ===================================================================== */
+@media (max-width: 1099.98px) {
+    .pl-layout { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+    .pl-orrery-wrap { width: min(100%, 720px); margin: 0 auto; }
+    .pl-panel { position: static; width: min(100%, 640px); margin: 0 auto; }
+    .pl-controls__hint { display: none; }
+}
+@media (max-width: 767.98px) {
+    .pl-main { padding: 5rem 0.75rem 4rem; }
+    .pl-controls { padding: 12px; }
+    .pl-controls__campaign { flex: 1; flex-direction: column; align-items: stretch; gap: 4px; }
+    .pl-select { min-height: 44px; font-size: 14px; }
+    .pl-toggle { align-self: flex-end; min-height: 44px; }
+    .pl-orrery-wrap { padding: 22px 0; }
+    .pl-panel { padding: 14px; }
+    .pl-detail__name { font-size: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pl-spin,
+    .pl-ticks,
+    .pl-band,
+    .pl-void::before,
+    .pl-veil::before,
+    .pl-under__embers,
+    .pl-road { animation: none; }
+}
+
+/* Links with no keyword colour of their own (a tome, a session): gold, dotted */
+.pl-detail__links a:not([class*="kw-"]),
+.pl-demi__links a:not([class*="kw-"]) {
+    color: var(--pl-gold);
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(233, 193, 118, 0.5);
+}
+.pl-detail__links a:not([class*="kw-"]):hover,
+.pl-demi__links a:not([class*="kw-"]):hover { color: var(--pl-gold-pale); }
+
+/* "Enter the plane": its own page (plane.html) */
+.pl-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    margin-top: 22px;
+    padding: 0 20px;
+    border: 1px solid rgba(233, 193, 118, 0.6);
+    border-radius: 999px;
+    background: rgba(233, 193, 118, 0.1);
+    color: var(--pl-gold);
+    font-family: var(--font-label);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+.pl-cta:hover { background: rgba(233, 193, 118, 0.2); color: var(--pl-gold-pale); }
+.pl-cta .material-symbols-outlined { font-size: 18px; }
+.pl-demi__name a { color: inherit; text-decoration: none; }
+.pl-demi__name a:hover { color: var(--pl-gold-pale); }

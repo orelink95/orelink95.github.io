@@ -164,7 +164,7 @@
                 layout: 'spell', mark: lvl ? String(lvl) : 'C', kicker: 'Spell',
                 sub: `${lvl ? `Level ${lvl}` : 'Cantrip'} · ${rec.school || ''}`, summary: rec.summary || rec.body,
                 stats: [['Casting', rec.castingTime], ['Range', rec.range], ['Duration', rec.duration]],
-                foot: 'Book of Shadows', extraClass: `pv--school-${tone(rec.school)}`,
+                foot: 'Tome of Shadows', extraClass: `pv--school-${tone(rec.school)}`,
             });
             ['verbal:V', 'somatic:S', 'material:M'].forEach(p => { const [f, l] = p.split(':'); if (rec[f]) v.chips.push(chip(l)); });
             if (rec.concentration) v.chips.push(chip('Concentration', 'pv-chip--offer'));
@@ -404,7 +404,7 @@
         el.querySelector('.pv-sheet__panel').focus({ preventScroll: true });
         return true;
     }
-    const openLabel = type => ({ item: 'Open in the Vault', spell: 'Open in the Book of Shadows', handout: 'Open the handout' }[type] || 'Open page');
+    const openLabel = type => ({ item: 'Open in the Vault', spell: 'Open in the Tome of Shadows', handout: 'Open the handout' }[type] || 'Open page');
 
     function closeSheet() {
         if (!sheet || sheet.hidden) return;

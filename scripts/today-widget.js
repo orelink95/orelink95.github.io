@@ -3,7 +3,7 @@
    ---------------------------------------------------------------------
    Today's date in the world (calendar.now, else the latest session's
    date), its season and how far into it, both moons, and the next
-   festival. The whole card opens the Calendar tab of the Astrolabe.
+   festival. The whole card opens the Calendar tab of the Book of Days.
    Reads only data/calendar.json, festivals.json, sessions.json and
    settings.json (not the whole store); dates: scripts/core/calendar.js.
    A festival limited to campaigns shows only if the current campaign

@@ -116,10 +116,10 @@ const SITE_NAV = [
             // then the holdings (what is known, what the party gathers)
             { name: 'The Pantheon', url: 'pantheon.html', icon: 'brightness_7', alias: ['deity.html'] },
             { name: 'The Planes', url: 'planes.html', icon: 'blur_circular', alias: ['plane.html'] },
-            { name: 'The Astrolabe', url: 'timeline.html', icon: 'hourglass_top' },
+            { name: 'The Book of Days', url: 'timeline.html', icon: 'hourglass_top' },
             { name: 'Elder Tarot', url: 'bestiary.html', icon: 'temp_preferences_custom', alias: ['beast.html'] },
             { name: 'Reference', url: 'tomes.html', icon: 'menu_book' },
-            { name: 'Book of Shadows', url: 'spellbook.html', icon: 'auto_fix_high' },
+            { name: 'Tome of Shadows', url: 'spellbook.html', icon: 'auto_fix_high' },
             { name: 'Artifact Vault', url: 'vault.html', icon: 'diamond' },
             { name: 'Handouts', url: 'handouts.html', icon: 'history_edu' }
         ]

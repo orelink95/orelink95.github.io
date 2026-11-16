@@ -274,7 +274,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* Each school has its hue and symbols in styles/spell-card.css (.school--<name in lowercase>) */
             spellSchool: ['Abjuration', 'Conjuration', 'Divination', 'Enchantment', 'Evocation', 'Illusion', 'Necromancy', 'Transmutation', 'Blood', 'Chaos', 'Void'],
             questStatus: ['Primary', 'Secondary'],
-            /* Festivals of the calendar (the Astrolabe's Calendar tab) */
+            /* Festivals of the calendar (the Book of Days' Calendar tab) */
             festivalKind: [
                 { id: 'festival', label: 'Festival' },
                 { id: 'holy', label: 'Holy day' },
@@ -1229,11 +1229,11 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     body: { kind: 'markdown', label: 'Transcript', section: 'Transcript' },
                 },
             },
-            /* The Astrolabe (timeline.html), the timeline: the world's history. Sessions take their place on it too, by
+            /* The Book of Days (timeline.html), the timeline: the world's history. Sessions take their place on it too, by
                their own date. An event marked `sealed` is hidden history: a sealed page until a campaign
                lists it in `revealedIn` (store.revealed), like the Elder gods. */
             event: {
-                label: 'Event', plural: 'The Astrolabe', navLabel: 'Astrolabe', icon: 'hourglass_top', group: 'Campaigns', workspace: 'chronicle',
+                label: 'Event', plural: 'The Book of Days', navLabel: 'Book of Days', icon: 'hourglass_top', group: 'Campaigns', workspace: 'chronicle',
                 file: 'data/events.json',
                 page: 'timeline.html?event={id}',
                 sections: ['Essentials', 'When', 'Look', 'Lore', 'Hidden history'],
@@ -1255,7 +1255,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     revealedIn: { kind: 'refs', to: ['campaign'], label: 'Learned in', section: 'Hidden history', showIf: { key: 'sealed', set: true } },
                 },
             },
-            /* Celebrations that come back every year, on the Astrolabe's Calendar tab and the
+            /* Celebrations that come back every year, on the Book of Days' Calendar tab and the
                homepage's “Today in Eraldom” card. `campaigns` empty = known in every campaign. */
             festival: {
                 label: 'Festival', plural: 'Festivals', icon: 'celebration', group: 'Campaigns', workspace: 'chronicle',

@@ -594,7 +594,7 @@
         { id: 'home', label: 'Home', icon: 'home', color: '#e9c176' },
         { id: 'atlas', label: 'Atlas', icon: 'travel_explore', color: '#6aa9fa', blurb: 'Every place in one tree: continents, countries, settlements, districts, points of interest and the places inside them.' },
         { id: 'cast', label: 'Cast', icon: 'groups', color: '#66c488', blurb: 'NPCs, factions, heroes and the Pantheon.' },
-        { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, the Astrolabe (timeline and festivals), rumours and notice boards, filtered by the campaign in the top bar.' },
+        { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, the Book of Days (timeline and festivals), rumours and notice boards, filtered by the campaign in the top bar.' },
         { id: 'codex', label: 'Codex', icon: 'menu_book', color: '#b79cf5', blurb: 'Glossary, tomes, handouts, bestiary, spellbook, items and the planes of existence.' },
         { id: 'tables', label: 'Tables', icon: 'table_view', color: '#f0a35e', blurb: 'The pools the site draws from, each one a grid: markets, faith, divination, alchemy, folios.' },
         { id: 'site', label: 'Site', icon: 'settings', color: '#b4bac2', bottom: true, blurb: 'World map, settings, upcoming sessions and the map icons.' },

@@ -1,5 +1,5 @@
 /* =====================================================================
-   THE ASTROLABE (timeline.html) — the timeline of the world, newest first.
+   THE BOOK OF DAYS (timeline.html) — the timeline of the world, newest first.
    ---------------------------------------------------------------------
    - The year now (calendar.now, else the latest session's date). Sessions
      are hidden until the reader shows one campaign or more (the chips under

@@ -144,7 +144,7 @@
 }
 
 /* ---------- The two wings ----------
-   The heavens (three tall doors: the Pantheon, the Orrery, the Astrolabe), then
+   The heavens (three tall doors: the Pantheon, the Orrery, the Book of Days), then
    the holdings (five smaller doors). Each wing has a heading between two rules. */
 .archive-wing {
     width: 100%;
@@ -279,7 +279,8 @@
    The rays behind it turn slowly; on hover the glass lights up, the rays stop and
    brighten, and the light falling on the steps grows. */
 .pantheon-door,
-.astrolabe-door {
+.astrolabe-door,
+.wheel-door {
     display: block;
     width: 12.5rem;
     height: 14rem;
@@ -288,7 +289,8 @@
     transition: filter 0.7s var(--ease), transform 0.7s var(--ease);
 }
 .heaven-door:hover .pantheon-door,
-.heaven-door:hover .astrolabe-door {
+.heaven-door:hover .astrolabe-door,
+.heaven-door:hover .wheel-door {
     filter: brightness(1) saturate(1) drop-shadow(0 0 18px rgba(233, 193, 118, 0.22));
     transform: scale(1.04);
 }
@@ -326,9 +328,9 @@
     50% { opacity: 1; }
 }
 
-/* The Astrolabe's picture: a brass astrolabe (an SVG in library.html). The rete (the
-   star map) turns one way, the rule the other; both stop on hover, when the stars
-   and the present on the limb glow. */
+/* The brass astrolabe (commented out in library.html, kept for later use). The rete
+   (the star map) turns one way, the rule the other; both stop on hover, when the
+   stars and the present on the limb glow. */
 .astrolabe-door__rete,
 .astrolabe-door__rule {
     transform-box: fill-box;
@@ -358,6 +360,49 @@
 }
 @keyframes astrolabe-now {
     0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+/* The Book of Days' picture: a tome whose cover holds a painted wheel of the year (an
+   SVG in library.html). The wheel of seasons and months turns one way, the eight stars
+   of the week the other; both stop on hover, when the warm light, the moons and the
+   "now" on the wheel brighten. */
+.wheel-door__wheel,
+.wheel-door__week {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: heaven-turn 160s linear infinite;
+}
+.wheel-door__week {
+    animation-duration: 90s;
+    animation-direction: reverse;
+}
+.heaven-door:hover .wheel-door__wheel,
+.heaven-door:hover .wheel-door__week,
+.heaven-door:focus-visible .wheel-door__wheel,
+.heaven-door:focus-visible .wheel-door__week {
+    animation-play-state: paused;
+}
+.wheel-door__halo {
+    opacity: 0.6;
+    transition: opacity 0.7s var(--ease);
+}
+.heaven-door:hover .wheel-door__halo {
+    opacity: 1;
+}
+.wheel-door__glow {
+    animation: wheel-glow 5s ease-in-out infinite;
+}
+.wheel-door__glow--late {
+    animation-delay: -2s;
+}
+.wheel-door__now {
+    animation: astrolabe-now 4s ease-in-out infinite;
+}
+.heaven-door:hover .wheel-door__now {
+    filter: drop-shadow(0 0 3px #ffd772);
+}
+@keyframes wheel-glow {
+    0%, 100% { opacity: 0.55; }
     50% { opacity: 1; }
 }
 @keyframes heaven-turn {
@@ -499,7 +544,7 @@
     .heaven-door__text { margin: 0.375rem 0 0.875rem; }
     .heaven-door .gateway-card__cta { margin-top: 0; }
     .orrery-door { width: 9.5rem; height: 9.5rem; }
-    .pantheon-door, .astrolabe-door { width: 8.5rem; height: 9.5rem; }
+    .pantheon-door, .astrolabe-door, .wheel-door { width: 8.5rem; height: 9.5rem; }
 }
 
 /* ---------- Phones ----------
@@ -537,7 +582,7 @@
         letter-spacing: 0.22em;
     }
     .orrery-door { width: 6.75rem; height: 6.75rem; }
-    .pantheon-door, .astrolabe-door { width: 6.1rem; height: 6.75rem; }
+    .pantheon-door, .astrolabe-door, .wheel-door { width: 6.1rem; height: 6.75rem; }
 
     .holdings {
         display: grid;
@@ -572,11 +617,13 @@
     .gateway-card:hover .gateway-card__face { transform: none; }
     .heaven-door:hover .orrery-door,
     .heaven-door:hover .pantheon-door,
-    .heaven-door:hover .astrolabe-door { transform: none; }
+    .heaven-door:hover .astrolabe-door,
+    .heaven-door:hover .wheel-door { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .orrery-door__turn, .pantheon-door__rays, .pantheon-door__glass,
-    .astrolabe-door__rete, .astrolabe-door__rule, .astrolabe-door__now { animation: none; }
-    .orrery-door, .pantheon-door, .astrolabe-door { transition: none; }
+    .astrolabe-door__rete, .astrolabe-door__rule, .astrolabe-door__now,
+    .wheel-door__wheel, .wheel-door__week, .wheel-door__glow, .wheel-door__now { animation: none; }
+    .orrery-door, .pantheon-door, .astrolabe-door, .wheel-door { transition: none; }
 }

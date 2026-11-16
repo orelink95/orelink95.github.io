@@ -1,5 +1,5 @@
 /* The Planes of Existence (planes.html, scripts/planes-scripts.js): the orrery.
-   The Astrolabe's night sky (canvas #sky, scripts/core/sky.js) and glass panels;
+   The Book of Days' night sky (canvas #sky, scripts/core/sky.js) and glass panels;
    an engraved gold plate where the planes turn around the centre, flat medallions
    in each plane's colour. Positions and sizes are set by the script (inline
    styles and --in / --out / --c); this file holds the look and the motion.

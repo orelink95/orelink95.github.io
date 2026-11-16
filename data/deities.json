@@ -37,7 +37,7 @@
     "portraitZoom": 117,
     "symbol": "images/Eraldom Gods Symbols/Oghma Symbol.png",
     "symbolText": "A Golden Key in a Triangle",
-    "colour": "#fee543",
+    "colour": "#a3a29f",
     "worshippers": "Scholars, Spellcasters, Sages",
     "body": "Oghma, *the All-Knowing*, is revered as the divine patron of scholars, artisans, and sages. Also known as the \"Whisperer of Truths\", Oghma governs the realms of knowledge, eloquence, and craftsmanship, blessing those who pursue understanding and creation. Temples dedicated to Oghma often double as libraries or workshops, called Scriptoriums, where his followers catalog discoveries, refine their crafts, and promote free speech. His followers also set up Lodges of Candor for those who seek arbitrations."
   },
@@ -163,5 +163,27 @@
     "symbol": "images/Eraldom Gods Symbols/Pholtos Symbol.png",
     "symbolText": "A white sun",
     "body": "Pholtos walks the line between light and shadow, the eternal blaze that pushes back the dark without ever truly banishing it. A radiant feline figure cloaked in shifting robes of sunrise hues, he bears the First Torch—a flame that never dims, even in the depths of night. He teaches that fire is knowledge, light is courage, and even shadows have their place beneath the sun."
+  },
+  {
+    "id": "melior",
+    "name": "Melior",
+    "tier": "great",
+    "epithet": "The Moon",
+    "domains": [
+      "Darkness",
+      "Moon",
+      "Secret",
+      "Twilight",
+      "Dream",
+      "Night"
+    ],
+    "portrait": "images/Melior.png",
+    "portraitFocus": "45% 0%",
+    "portraitZoom": 105,
+    "symbol": "images/Eraldom Gods Symbols/Melior Symbol.png",
+    "symbolText": "A moon crescent with two stars",
+    "colour": "#0892b5",
+    "worshippers": "Dreamwalkers, nigh workers, scholars, people in mourning, thieves",
+    "body": "“In the silence of the twilight, he waits—not to speak, but to listen. In every shadow, a secret. In every dream, a truth.”\n\nMelior is the hush between heartbeats, the stillness of a moonlit glade, the whisper of wings in the dark. Where light fades, his watch begins—not as a hunter, but as a guardian of secrets too delicate for the day. Shrouded in robes of starlight and mist, his face is rarely seen, though his many-eyed owls are ever watching. Melior governs dreams, unspoken truths, and the mysteries hidden in shadow. To follow him is to seek meaning in silence, and to understand that not all darkness is to be feared.\n\nHe is said to have shaped the first Owlins from feathers woven with moonlight and gifted the Kenkus with voices borrowed from dreams. Every nocturnal bird is his eye in the world."
   }
 ]

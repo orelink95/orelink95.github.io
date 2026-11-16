@@ -151,8 +151,9 @@
                     </a>
                     <a href="timeline.html" style="animation-delay: -1.2s;" class="gateway-card heaven-door">
                         <div class="heaven-door__art">
-                            <!-- A brass astrolabe: the rete (star map) and the rule turn, the other way; the limb carries the ages
-                                 as on timeline.html: the Old Days, the Ophrasian War, two later ages, the glowing present. -->
+                            <!-- UNUSED, kept for later: the former picture of this door.
+                                 A brass astrolabe: the rete (star map) and the rule turn, the other way; the limb carries the ages
+                                 as on timeline.html: the Old Days, the Ophrasian War, two later ages, the glowing present.
                             <svg class="astrolabe-door" viewBox="0 0 200 224" aria-hidden="true" focusable="false">
                                 <defs>
                                     <radialGradient id="ad-brass" cx="40%" cy="35%" r="75%"><stop offset="0%" stop-color="#5a4524"/><stop offset="60%" stop-color="#2d2213"/><stop offset="100%" stop-color="#17110a"/></radialGradient>
@@ -176,10 +177,126 @@
                                 <g class="astrolabe-door__rule"><circle cx="100" cy="128" r="80" fill="none" stroke="none"/><path d="M22 128 L90 124.8 L110 124.8 L178 128 L110 131.2 L90 131.2 Z" fill="url(#ad-rim)" stroke="#5a3f1a" stroke-width=".6"/><path d="M28 128 H172" stroke="#5a3f1a" stroke-width=".5"/></g>
                                 <circle cx="100" cy="128" r="6" fill="url(#ad-rim)" stroke="#5a3f1a" stroke-width=".8"/><circle cx="100" cy="128" r="2" fill="#5a3f1a"/>
                             </svg>
+                            END OF THE UNUSED ASTROLABE -->
+                            <!-- A tome whose cover holds a painted wheel of the year: the four seasons in their
+                                 real lengths (93, 89, 102, 108 days of a leap year), a tick between each of the
+                                 13 months, a glowing "now" (Pholawal 7, 1693) and a gold pointer on Arawal 1.
+                                 The wheel turns one way, the eight stars of the week the other; both stop on
+                                 hover. The two moons sit in the lapis heart. -->
+                            <svg class="wheel-door" viewBox="0 0 200 224" aria-hidden="true" focusable="false">
+                                <defs>
+                                <linearGradient id="wd-rim" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#ffe2a3"/>
+                                <stop offset="45%" stop-color="#c99a4a"/>
+                                <stop offset="100%" stop-color="#7a5524"/>
+                                </linearGradient>
+                                <linearGradient id="wd-leather" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#5c3a22"/>
+                                <stop offset="60%" stop-color="#3a2414"/>
+                                <stop offset="100%" stop-color="#22140a"/>
+                                </linearGradient>
+                                <radialGradient id="wd-vellum">
+                                <stop offset="0%" stop-color="#f3e8ce"/>
+                                <stop offset="100%" stop-color="#d4bf92"/>
+                                </radialGradient>
+                                <radialGradient id="wd-lapis" cx="45%" cy="40%">
+                                <stop offset="0%" stop-color="#34508f"/>
+                                <stop offset="100%" stop-color="#16244c"/>
+                                </radialGradient>
+                                <radialGradient id="wd-warm">
+                                <stop offset="0%" stop-color="#ffcf7a" stop-opacity=".2"/>
+                                <stop offset="100%" stop-color="#ffcf7a" stop-opacity="0"/>
+                                </radialGradient>
+                                </defs>
+                                <circle class="wheel-door__halo" cx="100" cy="114" r="98" fill="url(#wd-warm)"/>
+                                <ellipse cx="103" cy="210" rx="64" ry="6" fill="#000" opacity=".55"/>
+                                <rect x="154" y="22" width="10" height="182" rx="2" fill="#d6c296"/>
+                                <g stroke="#8a7048" stroke-opacity=".5" stroke-width=".35">
+                                <path d="M156 24 V202"/>
+                                <path d="M158 24 V202"/>
+                                <path d="M160 24 V202"/>
+                                <path d="M162 24 V202"/>
+                                </g>
+                                <rect x="30" y="16" width="16" height="192" rx="4" fill="#2a180c" stroke="url(#wd-rim)" stroke-width=".7"/>
+                                <rect x="40" y="16" width="118" height="192" rx="5" fill="url(#wd-leather)" stroke="url(#wd-rim)" stroke-width="1.2"/>
+                                <rect x="48" y="24" width="102" height="176" rx="3" fill="none" stroke="#e9c176" stroke-opacity=".55" stroke-width=".7"/>
+                                <rect x="51" y="27" width="96" height="170" rx="2" fill="none" stroke="#e9c176" stroke-opacity=".22" stroke-width=".5"/>
+                                <circle cx="54" cy="30" r="5" fill="url(#wd-rim)" stroke="#5a3f1a" stroke-width=".5"/>
+                                <circle cx="54" cy="30" r="1.8" fill="#5a3f1a"/>
+                                <circle cx="144" cy="30" r="5" fill="url(#wd-rim)" stroke="#5a3f1a" stroke-width=".5"/>
+                                <circle cx="144" cy="30" r="1.8" fill="#5a3f1a"/>
+                                <circle cx="54" cy="194" r="5" fill="url(#wd-rim)" stroke="#5a3f1a" stroke-width=".5"/>
+                                <circle cx="54" cy="194" r="1.8" fill="#5a3f1a"/>
+                                <circle cx="144" cy="194" r="5" fill="url(#wd-rim)" stroke="#5a3f1a" stroke-width=".5"/>
+                                <circle cx="144" cy="194" r="1.8" fill="#5a3f1a"/>
+                                <rect x="66" y="32" width="66" height="12" rx="2" fill="#22140a" stroke="url(#wd-rim)" stroke-width=".8"/>
+                                <text x="99" y="40.4" text-anchor="middle" font-family="Cinzel, serif" font-weight="700" font-size="5.4" letter-spacing=".7" fill="#e9c176">BOOK OF DAYS</text>
+                                <circle cx="100" cy="114" r="55" fill="#22140a" stroke="url(#wd-rim)" stroke-width="2.4"/>
+                                <circle cx="100" cy="114" r="52" fill="url(#wd-vellum)"/>
+                                <g class="wheel-door__wheel">
+                                <circle cx="100" cy="114" r="52" fill="none"/>
+                                <circle cx="100" cy="114" r="45" fill="none" stroke="#7fb069" stroke-width="9" pathLength="392" stroke-dasharray="91.4 300.6" stroke-dashoffset="-0.8" transform="rotate(-90 100 114)"/>
+                                <circle cx="100" cy="114" r="45" fill="none" stroke="#e3b341" stroke-width="9" pathLength="392" stroke-dasharray="87.4 304.6" stroke-dashoffset="-93.8" transform="rotate(-90 100 114)"/>
+                                <circle cx="100" cy="114" r="45" fill="none" stroke="#c8693e" stroke-width="9" pathLength="392" stroke-dasharray="100.4 291.6" stroke-dashoffset="-182.8" transform="rotate(-90 100 114)"/>
+                                <circle cx="100" cy="114" r="45" fill="none" stroke="#9ccbe0" stroke-width="9" pathLength="392" stroke-dasharray="106.4 285.6" stroke-dashoffset="-284.8" transform="rotate(-90 100 114)"/>
+                                <g stroke="#5a4630" stroke-width=".7">
+                                <path d="M100.00 76.00 L100.00 63.50"/>
+                                <circle cx="109.49" cy="76.59" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M118.11 80.60 L124.07 69.61"/>
+                                <circle cx="125.95" cy="85.43" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M131.51 92.76 L141.88 85.78"/>
+                                <circle cx="136.22" cy="100.67" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M137.76 109.75 L150.18 108.35"/>
+                                <circle cx="138.24" cy="119.24" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M135.22 128.26 L146.81 132.95"/>
+                                <circle cx="131.66" cy="136.08" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M125.55 142.13 L133.95 151.38"/>
+                                <circle cx="118.13" cy="148.08" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M109.05 150.91 L112.02 163.05"/>
+                                <circle cx="99.38" cy="152.60" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M89.77 150.60 L86.41 162.64"/>
+                                <circle cx="81.33" cy="147.78" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M74.45 142.13 L66.05 151.38"/>
+                                <circle cx="68.52" cy="136.34" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M65.01 128.82 L53.50 133.70"/>
+                                <circle cx="61.95" cy="120.47" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M62.08 111.57 L49.60 110.76"/>
+                                <circle cx="63.37" cy="101.84" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M68.15 93.27 L57.68 86.45"/>
+                                <circle cx="73.82" cy="85.63" r=".9" fill="#8a6a3a" stroke="none"/>
+                                <path d="M81.89 80.60 L75.93 69.61"/>
+                                <circle cx="90.21" cy="76.66" r=".9" fill="#8a6a3a" stroke="none"/>
+                                </g>
+                                <circle cx="100" cy="114" r="40.5" fill="none" stroke="#8a6a3a" stroke-width=".5"/>
+                                <circle cx="100" cy="114" r="49.5" fill="none" stroke="#8a6a3a" stroke-width=".5"/>
+                                <circle class="wheel-door__now" cx="126.33" cy="150.49" r="3.4" fill="#fff6d8" stroke="#9a6e22" stroke-width=".8"/>
+                                </g>
+                                <circle cx="100" cy="114" r="34" fill="url(#wd-lapis)" stroke="url(#wd-rim)" stroke-width="1.2"/>
+                                <path d="M100 58.5 l-3.4 -6 h6.8Z" fill="url(#wd-rim)"/>
+                                <g class="wheel-door__week">
+                                <circle cx="100" cy="114" r="34" fill="none"/>
+                                <path d="M100.0 84.8 L100.616 86.384 L102.2 87.0 L100.616 87.616 L100.0 89.2 L99.384 87.616 L97.8 87.0 L99.384 86.384Z" fill="#e9c176" fill-opacity="0.5"/>
+                                <path d="M119.09 92.71 L119.706 94.294 L121.29 94.91 L119.706 95.526 L119.09 97.11 L118.474 95.526 L116.89 94.91 L118.474 94.294Z" fill="#e9c176" fill-opacity="0.9"/>
+                                <path d="M127.0 111.8 L127.616 113.384 L129.2 114.0 L127.616 114.616 L127.0 116.2 L126.384 114.616 L124.8 114.0 L126.384 113.384Z" fill="#e9c176" fill-opacity="0.5"/>
+                                <path d="M119.09 130.89000000000001 L119.706 132.474 L121.29 133.09 L119.706 133.70600000000002 L119.09 135.29 L118.474 133.70600000000002 L116.89 133.09 L118.474 132.474Z" fill="#e9c176" fill-opacity="0.5"/>
+                                <path d="M100.0 138.8 L100.616 140.384 L102.2 141.0 L100.616 141.616 L100.0 143.2 L99.384 141.616 L97.8 141.0 L99.384 140.384Z" fill="#e9c176" fill-opacity="0.5"/>
+                                <path d="M80.91 130.89000000000001 L81.526 132.474 L83.11 133.09 L81.526 133.70600000000002 L80.91 135.29 L80.294 133.70600000000002 L78.71 133.09 L80.294 132.474Z" fill="#e9c176" fill-opacity="0.5"/>
+                                <path d="M73.0 111.8 L73.616 113.384 L75.2 114.0 L73.616 114.616 L73.0 116.2 L72.384 114.616 L70.8 114.0 L72.384 113.384Z" fill="#e9c176" fill-opacity="0.5"/>
+                                <path d="M80.91 92.71 L81.526 94.294 L83.11 94.91 L81.526 95.526 L80.91 97.11 L80.294 95.526 L78.71 94.91 L80.294 94.294Z" fill="#e9c176" fill-opacity="0.5"/>
+                                </g>
+                                <circle class="wheel-door__glow" cx="92" cy="110" r="12" fill="#a9c8ff" opacity=".18"/>
+                                <circle cx="92" cy="110" r="9" fill="#0e1838" stroke="#a9c8ff" stroke-opacity=".55" stroke-width=".5"/>
+                                <path d="M92 101 A9 9 0 0 1 92 119 A3.6 9 0 0 1 92 101Z" fill="#a9c8ff"/>
+                                <circle class="wheel-door__glow wheel-door__glow--late" cx="111" cy="121" r="8" fill="#f4a9d2" opacity=".2"/>
+                                <circle cx="111" cy="121" r="5.6" fill="#0e1838" stroke="#f4a9d2" stroke-opacity=".55" stroke-width=".5"/>
+                                <circle cx="111" cy="121" r="5.6" fill="#f4a9d2"/>
+                                <path d="M82 182 L86 178 L90 182 L86 186Z M95 182 L99 178 L103 182 L99 186Z M108 182 L112 178 L116 182 L112 186Z" fill="url(#wd-rim)" opacity=".8"/>
+                                <path d="M118 205 H126 V220 L122 216 L118 220Z" fill="#2f4f9e"/>
+                            </svg>
                         </div>
                         <div class="heaven-door__body">
-                            <h3 class="gateway-card__title">The Astrolabe</h3>
-                            <p class="heaven-door__text">Every age of Eraldom in order, from the Old Days to the present.</p>
+                            <h3 class="gateway-card__title">The Book of Days</h3>
+                            <p class="heaven-door__text">The ages of Eraldom and the turning of its year.</p>
                             <span class="gateway-card__cta">Walk the Ages <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
                         </div>
                     </a>
@@ -212,11 +329,11 @@
                     <a href="spellbook.html" style="animation-delay: -4.5s;" class="gateway-card holding">
                         <div class="gateway-card__face">
                             <span class="gateway-card__icon card-icon material-symbols-outlined" aria-hidden="true">auto_fix_high</span>
-                            <h3 class="gateway-card__title">Book of Shadows</h3>
+                            <h3 class="gateway-card__title">Tome of Shadows</h3>
                         </div>
                         <div class="gateway-card__reveal">
                             <p class="gateway-card__text">The spells each hero carries, campaign by campaign.</p>
-                            <span class="gateway-card__cta">Open the Book <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
+                            <span class="gateway-card__cta">Open the Tome <span class="gateway-card__cta-icon material-symbols-outlined" aria-hidden="true">arrow_forward</span></span>
                         </div>
                     </a>
                     <a href="vault.html" style="animation-delay: -1.5s;" class="gateway-card holding">

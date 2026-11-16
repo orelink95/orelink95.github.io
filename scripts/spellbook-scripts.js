@@ -1,4 +1,4 @@
-// scripts/spellbook-scripts.js — the Book of Shadows (spellbook.html)
+// scripts/spellbook-scripts.js — the Tome of Shadows (spellbook.html)
 //
 // Pick a campaign, then a hero: their spell cards appear, grouped by level.
 // What a hero knows is in campaign.spellbooks, so a hero who is in two

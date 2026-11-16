@@ -1,5 +1,5 @@
 /* =====================================================================
-   THE ASTROLABE — the Calendar tab (timeline.html), and the two tabs.
+   THE BOOK OF DAYS — the Calendar tab (timeline.html), and the two tabs.
    ---------------------------------------------------------------------
    A month of the world's calendar (data/calendar.json, store.calendar):
    one column per weekday, each day with its two moons in their phase, the

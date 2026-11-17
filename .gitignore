@@ -5,6 +5,3 @@
 # DM-only types (schema: dmOnly), e.g. the Folios of the Sigil Maker
 /data/folios.json
 
-/styles/README.md
-
-/tools

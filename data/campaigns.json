@@ -50,7 +50,13 @@
         "hero": "eli",
         "spells": [
           "spl-eldritch-blast",
-          "spl-chill-touch"
+          "spl-chill-touch",
+          "spl-detect-magic",
+          "spl-mage-armour",
+          "spl-identify",
+          "spl-comprehend-languages",
+          "spl-hex",
+          "spl-tashas-hideous-laughter"
         ]
       },
       {

@@ -162,6 +162,26 @@
         </section>`;
     }
 
+    /* A free spread: each position at its column and row (cells one card wide, one card
+       high), in % of the box, so it shrinks as one on phones -> {style, slot(i)} */
+    function freeBox(slots) {
+        const ps = slots.map(s => s.position || {});
+        const xs = ps.map(p => p.x), ys = ps.map(p => p.y);
+        const x0 = Math.min(...xs), y0 = Math.min(...ys);
+        const cols = Math.max(...xs) - x0 + 1, rows = Math.max(...ys) - y0 + 1;
+        const ratio = cols / (rows * ROW_H);
+        const pct = n => +n.toFixed(3);
+        return {
+            style: `--cols:${pct(cols)};--ratio:${pct(ratio)};aspect-ratio:${pct(ratio)}`,
+            slot: i => {
+                const p = ps[i];
+                return `left:${pct(((p.x - x0) / cols) * 100)}%;top:${pct(((p.y - y0) / rows) * 100)}%;width:${pct(100 / cols)}%;`
+                    + `${p.tilt ? `--tilt:${Math.max(-30, Math.min(30, p.tilt))}deg;` : ''}${p.colour ? `--pos:${esc(p.colour)};` : ''}`;
+            },
+        };
+    }
+    const ROW_H = 2.1; // a row's height, in cell widths: the card (1.71) and its label
+
     // Grid areas of the cross: 1 centre, 2 left, 3 right, 4 above, 5 below
     const CROSS = ['centre', 'left', 'right', 'top', 'bottom'];
 
@@ -181,15 +201,16 @@
                 </li>` : '';
         } else {
             total = v.slots.length;
-            spread = `<div class="fread__spread fread__spread--${v.layout}" data-n="${total}">${v.slots.map((s, i) => `
-                <div class="fread__slot"${v.layout === 'cross' ? ` style="grid-area:${CROSS[i]}"` : ''}>
-                    <span class="fread__pos">${esc(roman(i + 1))}${s.position.name ? ` · ${esc(s.position.name)}` : ''}</span>
+            const free = v.layout === 'free' ? freeBox(v.slots) : null;
+            spread = `<div class="fread__spread fread__spread--${v.layout}" data-n="${total}"${free ? ` style="${free.style}"` : ''}>${v.slots.map((s, i) => `
+                <div class="fread__slot${s.position.colour ? ' fread__slot--tinted' : ''}"${v.layout === 'cross' ? ` style="grid-area:${CROSS[i]}"` : free ? ` style="${free.slot(i)}"` : s.position.colour ? ` style="--pos:${esc(s.position.colour)}"` : ''}>
+                    <span class="fread__pos"><span>${esc(roman(i + 1))}${s.position.name ? `<span class="fread__pos-name"> · ${esc(s.position.name)}</span>` : ''}</span></span>
                     ${card(s.card, v.deck, { ...opts, faceDown: !isTurned(i), reversed: s.reversed, index: i })}
                 </div>`).join('')}
             </div>`;
             meanings = v.slots.map((s, i) => isTurned(i) ? `
                 <li class="fread__meaning${opts.fresh === i ? ' fread__meaning--fresh' : ''}" id="fread-meaning-${i}">
-                    <p class="fread__pos">${esc(roman(i + 1))}${s.position.name ? ` · ${esc(s.position.name)}` : ''}</p>
+                    <p class="fread__pos"${s.position.colour ? ` style="color:${esc(s.position.colour)}"` : ''}>${esc(roman(i + 1))}${s.position.name ? ` · ${esc(s.position.name)}` : ''}</p>
                     <h3 class="fread__card">${esc(s.card.name)}${s.reversed ? ' <span class="fread__rev">Reversed</span>' : ''}</h3>
                     ${s.position.desc ? `<p class="fread__sub">${esc(s.position.desc)}</p>` : ''}
                     ${s.keywords.length ? `<p class="fread__keys">${s.keywords.map(esc).join(' · ')}</p>` : ''}

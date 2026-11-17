@@ -454,6 +454,122 @@
     ]
   },
   {
+    "id": "rule-sp-forsaken-moon-moons",
+    "name": "Forsaken: the Moon under two moons",
+    "when": "card",
+    "spreads": [
+      "spread-two-moons"
+    ],
+    "cards": [
+      "elder-the-moon"
+    ],
+    "texts": [
+      "The Moon, under two moons. Nothing tonight is quite what it seems."
+    ]
+  },
+  {
+    "id": "rule-sp-forsaken-judgement-scales",
+    "name": "Forsaken: Judgement on the scales",
+    "when": "card",
+    "spreads": [
+      "spread-judgement-of-souls"
+    ],
+    "cards": [
+      "elder-judgement"
+    ],
+    "position": 2,
+    "texts": [
+      "Judgement lies on the scales themselves. The weighing has already begun."
+    ]
+  },
+  {
+    "id": "rule-sp-forsaken-wheel-loop",
+    "name": "Forsaken: the Wheel in the loop",
+    "when": "card",
+    "spreads": [
+      "spread-mobius-loop"
+    ],
+    "cards": [
+      "elder-wheel-of-fortune"
+    ],
+    "texts": [
+      "The Wheel turns inside the loop. You have been here before, and you will be again."
+    ]
+  },
+  {
+    "id": "rule-sp-forsaken-star-void",
+    "name": "Forsaken: the Star in the Void",
+    "when": "card",
+    "spreads": [
+      "spread-void-between"
+    ],
+    "cards": [
+      "elder-the-star"
+    ],
+    "position": 3,
+    "texts": [
+      "The Star in the Void between. Even the dark has a light to steer by."
+    ]
+  },
+  {
+    "id": "rule-sp-star-moon-moons",
+    "name": "Wandering Star: the Moon under two moons",
+    "when": "card",
+    "spreads": [
+      "spread-two-moons"
+    ],
+    "cards": [
+      "star-the-moon"
+    ],
+    "texts": [
+      "The Moon, under two moons. Nothing tonight is quite what it seems."
+    ]
+  },
+  {
+    "id": "rule-sp-star-judgement-scales",
+    "name": "Wandering Star: Judgement on the scales",
+    "when": "card",
+    "spreads": [
+      "spread-judgement-of-souls"
+    ],
+    "cards": [
+      "star-judgement"
+    ],
+    "position": 2,
+    "texts": [
+      "Judgement lies on the scales themselves. The weighing has already begun."
+    ]
+  },
+  {
+    "id": "rule-sp-star-wheel-loop",
+    "name": "Wandering Star: the Wheel in the loop",
+    "when": "card",
+    "spreads": [
+      "spread-mobius-loop"
+    ],
+    "cards": [
+      "star-wheel-of-fortune"
+    ],
+    "texts": [
+      "The Wheel turns inside the loop. You have been here before, and you will be again."
+    ]
+  },
+  {
+    "id": "rule-sp-star-star-void",
+    "name": "Wandering Star: the Star in the Void",
+    "when": "card",
+    "spreads": [
+      "spread-void-between"
+    ],
+    "cards": [
+      "star-the-star"
+    ],
+    "position": 3,
+    "texts": [
+      "The Star in the Void between. Even the dark has a light to steer by."
+    ]
+  },
+  {
     "id": "rule-cast-heart-empty",
     "name": "Nothing at the heart",
     "when": "heartEmpty",

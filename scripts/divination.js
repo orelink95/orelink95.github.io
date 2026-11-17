@@ -238,7 +238,9 @@
         const deck = store.get(practice.deck) || null;
         const out = {
             practice, method: practice.method, spread, deck,
-            layout: spread && spread.layout === 'cross' && (saved.cards || []).length === 5 ? 'cross' : 'row',
+            layout: !spread ? 'row'
+                : spread.layout === 'cross' && (saved.cards || []).length === 5 ? 'cross'
+                    : spread.layout === 'free' && (spread.positions || []).every(p => typeof p.x === 'number' && typeof p.y === 'number') ? 'free' : 'row',
             prophecy: !!prophecy,
             intro: (prophecy && prophecy.intro) || '',
             closing: (prophecy && prophecy.closing) || '',

@@ -142,6 +142,24 @@ button.fcard.is-down:hover .fcard__back { box-shadow: 0 14px 36px rgba(0, 0, 0, 
     justify-content: center;
 }
 .fread__spread--omen .fcard { width: min(220px, 60vw); }
+/* Free: each slot placed in % of a box whose width is its columns × a cell, capped so the
+   whole spread fits the screen's height (--ratio = width / height, set by fortune-card.js) */
+.fread__spread--free {
+    --cell: clamp(64px, 12vw, 120px);
+    display: block;
+    position: relative;
+    width: min(100%, calc(var(--cols) * var(--cell)), calc(82vh * var(--ratio)));
+}
+.fread__spread--free .fread__slot {
+    position: absolute;
+    box-sizing: border-box;
+    padding: 0 4%;
+}
+.fread__spread--free .fread__slot .fcard { transform: rotate(var(--tilt, 0deg)); }
+.fread__spread--free .fread__pos { font-size: clamp(7px, 1.5vw, 9px); letter-spacing: .14em; }
+/* A position with its own colour: its name, and a halo around its card */
+.fread__slot--tinted .fread__pos { color: var(--pos); }
+.fread__slot--tinted .fcard { box-shadow: 0 0 0 1px color-mix(in srgb, var(--pos) 55%, transparent), 0 0 22px color-mix(in srgb, var(--pos) 45%, transparent); border-radius: 6px; }
 .fread__slot { display: flex; flex-direction: column; align-items: center; gap: .45rem; min-width: 0; }
 .fread__pos {
     margin: 0;
@@ -402,6 +420,9 @@ button.fpiece { cursor: pointer; }
     .fortune-dialog__close { margin: -.25rem 0 0 0; }
     .fread__head { padding: 0 2.75rem; }
     .fread__spread--cross { --gap: .5rem; }
+    /* Free spreads: cells are narrow, so only the numeral above each card (names are in the list below) */
+    .fread__spread--free .fread__pos-name { display: none; }
+    .fread__spread--free .fread__slot .fread__pos { min-height: 1.6em; }
 }
 
 /* ---------- the Readings tab (poi.html) ---------- */

@@ -619,6 +619,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             spreadLayout: [
                 { id: 'row', label: 'Row' },
                 { id: 'cross', label: 'Cross (five cards)' },
+                { id: 'free', label: 'Free (each position placed on a grid)' },
             ],
         },
 
@@ -1584,7 +1585,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 file: 'data/spreads.json',
                 fields: {
                     desc: { kind: 'text', label: 'Description', width: 'full', help: 'Under the spread’s name in the player’s choice.' },
-                    layout: { kind: 'enum', enum: 'spreadLayout', label: 'Layout', help: 'Empty = a row.' },
+                    layout: { kind: 'enum', enum: 'spreadLayout', label: 'Layout', help: 'Empty = a row. Free: each position’s Column and Row place it.' },
                     positions: {
                         kind: 'objects', label: 'Positions', itemLabel: 'name', required: true,
                         help: 'One per card, in the order they are laid and turned.',
@@ -1592,6 +1593,11 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                             name: { kind: 'text', label: 'Name', required: true, help: 'Past, Present, Future…' },
                             desc: { kind: 'text', label: 'What it speaks of', long: true },
                             frames: { kind: 'list', label: 'How the seer reads a card here', lines: true, help: 'One sentence per line; one is chosen. {essence} = the card’s essence, {card} = its name. Empty = “For <position>, I see {essence}.”' },
+                            /* Free layout: where the card lies, on a grid of card-sized cells */
+                            x: { kind: 'number', label: 'Column', help: 'Free layout: 1 = the leftmost. Halves and decimals allowed (2.5).' },
+                            y: { kind: 'number', label: 'Row', help: 'Free layout: 1 = the top row (a row is one card high).' },
+                            tilt: { kind: 'number', label: 'Tilt (°)', help: 'Free layout: the card turned a little (−20 to 20).' },
+                            colour: { kind: 'text', label: 'Colour', color: true, help: 'Tints the position’s name and a halo around its card. Empty = none.' },
                         },
                     },
                     openings: { kind: 'list', label: 'The seer’s first words', lines: true, help: 'One per line; one is chosen. They open the interpretation, once every card is turned.' },

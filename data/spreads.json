@@ -112,5 +112,448 @@
       "This is an old spread, and it does not lie easily. Listen."
     ],
     "keyPosition": 1
+  },
+  {
+    "id": "spread-two-moons",
+    "name": "The Two Moons",
+    "desc": "Mel’Tara turns quickly, Ior’Tara slowly. One question between them, and what each moon brings and takes away.",
+    "layout": "free",
+    "positions": [
+      {
+        "name": "The Night Sky",
+        "desc": "the question, and where you stand",
+        "frames": [
+          "Under both moons stands {card}: {essence}.",
+          "Between the two moons, your question: {essence}.",
+          "The night sky holds {card}, and with it {essence}."
+        ],
+        "x": 2,
+        "y": 1.5
+      },
+      {
+        "name": "Mel’Tara Waxing",
+        "desc": "what grows soon",
+        "frames": [
+          "Mel’Tara is waxing, and soon it brings {essence}.",
+          "The quick moon brings {card} before the month is out: {essence}.",
+          "Within a turn of Mel’Tara, I see {essence}."
+        ],
+        "x": 1,
+        "y": 1,
+        "colour": "#8fb8ec"
+      },
+      {
+        "name": "Mel’Tara Waning",
+        "desc": "what fades soon",
+        "frames": [
+          "As Mel’Tara wanes, it takes away {essence}.",
+          "The quick moon takes away {card}: {essence}.",
+          "Soon gone, and not for long, is {essence}."
+        ],
+        "x": 1,
+        "y": 2,
+        "colour": "#8fb8ec"
+      },
+      {
+        "name": "Ior’Tara Waxing",
+        "desc": "what grows slowly, over seasons",
+        "frames": [
+          "Ior’Tara rises slowly, and over the seasons it brings {essence}.",
+          "The slow moon is bringing {card}: {essence}. It will take its time.",
+          "Far off, but coming, is {essence}."
+        ],
+        "x": 3,
+        "y": 1,
+        "colour": "#e9a6c8"
+      },
+      {
+        "name": "Ior’Tara Waning",
+        "desc": "what fades slowly",
+        "frames": [
+          "Ior’Tara wanes, and slowly takes from you {essence}.",
+          "The slow moon is taking {card} away: {essence}.",
+          "What is ending, slowly, is {essence}."
+        ],
+        "x": 3,
+        "y": 2,
+        "colour": "#e9a6c8"
+      }
+    ],
+    "openings": [
+      "Two moons tonight, and both have something to say.",
+      "Mel’Tara hurries, Ior’Tara lingers. Let us see what each brings.",
+      "Look up with me. The moons do not lie, they only take their time."
+    ],
+    "keyPosition": 1
+  },
+  {
+    "id": "spread-judgement-of-souls",
+    "name": "The Judgement of Souls",
+    "desc": "Every soul goes down to the Underworld before it is judged. Where would yours go, if it were weighed today?",
+    "layout": "free",
+    "positions": [
+      {
+        "name": "The Underworld",
+        "desc": "where you stand, not yet judged",
+        "frames": [
+          "Your soul waits in the Underworld with {card}: {essence}.",
+          "Unjudged, you stand with {essence}.",
+          "Down in the Underworld, I see {essence}."
+        ],
+        "x": 2,
+        "y": 3
+      },
+      {
+        "name": "The Scales",
+        "desc": "what weighs your deeds",
+        "frames": [
+          "On the scales lies {card}: {essence}.",
+          "What weighs your deeds is {essence}.",
+          "The judges look first at {essence}."
+        ],
+        "x": 2,
+        "y": 2
+      },
+      {
+        "name": "The Road to Aran",
+        "desc": "what would raise you",
+        "frames": [
+          "The road to Aran opens through {essence}.",
+          "{card} lights the road to Aran: {essence}.",
+          "What would raise you is {essence}."
+        ],
+        "x": 1,
+        "y": 1,
+        "tilt": -12,
+        "colour": "#e9c176"
+      },
+      {
+        "name": "The Road to Tartarus",
+        "desc": "what would damn you",
+        "frames": [
+          "The road to Tartarus runs through {essence}.",
+          "{card} waits on the road to Tartarus: {essence}.",
+          "What would damn you is {essence}."
+        ],
+        "x": 3,
+        "y": 1,
+        "tilt": 12,
+        "colour": "#d4605a"
+      }
+    ],
+    "openings": [
+      "Every soul is weighed in the end. Let us weigh yours a little early.",
+      "The dead do not lie to the judges. Neither will the cards.",
+      "Down we go, then. The Underworld is patient."
+    ],
+    "keyPosition": 2
+  },
+  {
+    "id": "spread-dreamlands-thread",
+    "name": "The Dreamlands Thread",
+    "desc": "The Dreamlands touch every plane. Follow the thread from the sleeper to the waking.",
+    "layout": "free",
+    "positions": [
+      {
+        "name": "The Sleeper",
+        "desc": "you, as you are",
+        "frames": [
+          "The sleeper is {card}: {essence}.",
+          "You lie down with {essence}.",
+          "Asleep, you carry {essence}."
+        ],
+        "x": 1,
+        "y": 1.6,
+        "tilt": -10
+      },
+      {
+        "name": "The Dream You Have",
+        "desc": "what you long for",
+        "frames": [
+          "You dream of {essence}.",
+          "{card} fills your dream: {essence}.",
+          "What you long for, when no one is watching, is {essence}."
+        ],
+        "x": 2,
+        "y": 1.2,
+        "tilt": -5
+      },
+      {
+        "name": "The Dream That Has You",
+        "desc": "what holds you without your knowing",
+        "frames": [
+          "But a dream has you too: {essence}.",
+          "{card} dreams you, not the other way round: {essence}.",
+          "What holds you without your knowing is {essence}."
+        ],
+        "x": 3,
+        "y": 1,
+        "colour": "#9b7ae0"
+      },
+      {
+        "name": "The Thread",
+        "desc": "what links the two",
+        "frames": [
+          "The thread between them is {essence}.",
+          "{card} binds the two dreams together: {essence}.",
+          "What links them, like a thread through the planes, is {essence}."
+        ],
+        "x": 4,
+        "y": 1.2,
+        "tilt": 5
+      },
+      {
+        "name": "The Waking",
+        "desc": "what you bring back",
+        "frames": [
+          "When you wake, you bring back {essence}.",
+          "{card} is waiting at the waking: {essence}.",
+          "Open your eyes to {essence}."
+        ],
+        "x": 5,
+        "y": 1.6,
+        "tilt": 10
+      }
+    ],
+    "openings": [
+      "Close your eyes. The Dreamlands are closer than you think.",
+      "Every plane dreams, and every dream leads somewhere. Let us follow this one.",
+      "Hush. We are going to walk where sleepers walk."
+    ],
+    "keyPosition": 5
+  },
+  {
+    "id": "spread-eight-days",
+    "name": "The Eight Days",
+    "desc": "One card for each day of the coming week, from Protasten to Egtosten.",
+    "layout": "free",
+    "positions": [
+      {
+        "name": "Protasten",
+        "desc": "the first day of the week: what it brings",
+        "frames": [
+          "On Protasten, {essence}.",
+          "Protasten brings {card}: {essence}.",
+          "Come Protasten, look for {essence}."
+        ],
+        "x": 2.6,
+        "y": 1.0
+      },
+      {
+        "name": "Deftesten",
+        "desc": "the second day: what it brings",
+        "frames": [
+          "On Deftesten, {essence}.",
+          "Deftesten brings {card}: {essence}.",
+          "Come Deftesten, look for {essence}."
+        ],
+        "x": 3.73,
+        "y": 1.44
+      },
+      {
+        "name": "Traensten",
+        "desc": "the third day: what it brings",
+        "frames": [
+          "On Traensten, {essence}.",
+          "Traensten brings {card}: {essence}.",
+          "Come Traensten, look for {essence}."
+        ],
+        "x": 4.2,
+        "y": 2.5
+      },
+      {
+        "name": "Tertasten",
+        "desc": "the fourth day: what it brings",
+        "frames": [
+          "On Tertasten, {essence}.",
+          "Tertasten brings {card}: {essence}.",
+          "Come Tertasten, look for {essence}."
+        ],
+        "x": 3.73,
+        "y": 3.56
+      },
+      {
+        "name": "Pemtasten",
+        "desc": "the fifth day: what it brings",
+        "frames": [
+          "On Pemtasten, {essence}.",
+          "Pemtasten brings {card}: {essence}.",
+          "Come Pemtasten, look for {essence}."
+        ],
+        "x": 2.6,
+        "y": 4.0
+      },
+      {
+        "name": "Eksten",
+        "desc": "the sixth day: what it brings",
+        "frames": [
+          "On Eksten, {essence}.",
+          "Eksten brings {card}: {essence}.",
+          "Come Eksten, look for {essence}."
+        ],
+        "x": 1.47,
+        "y": 3.56
+      },
+      {
+        "name": "Evodosten",
+        "desc": "the seventh day: what it brings",
+        "frames": [
+          "On Evodosten, {essence}.",
+          "Evodosten brings {card}: {essence}.",
+          "Come Evodosten, look for {essence}."
+        ],
+        "x": 1.0,
+        "y": 2.5
+      },
+      {
+        "name": "Egtosten",
+        "desc": "the last day of the week: what it brings",
+        "frames": [
+          "On Egtosten, {essence}.",
+          "Egtosten brings {card}: {essence}.",
+          "Come Egtosten, look for {essence}."
+        ],
+        "x": 1.47,
+        "y": 1.44
+      }
+    ],
+    "openings": [
+      "Eight days in a week, eight cards on the table. Let us see what the week holds.",
+      "A whole week, laid out in a circle. Mind the days that frown.",
+      "From Protasten to Egtosten, then. Day by day."
+    ],
+    "keyPosition": 8
+  },
+  {
+    "id": "spread-mobius-loop",
+    "name": "The Mobius Loop",
+    "desc": "Mobius touches every plane and turns back on itself. What you did, what it caused, and what brings you back to the start.",
+    "layout": "free",
+    "positions": [
+      {
+        "name": "What You Did",
+        "desc": "the act that started it",
+        "frames": [
+          "It began with {essence}.",
+          "First there was {card}: {essence}.",
+          "What you did was {essence}."
+        ],
+        "x": 1,
+        "y": 1.5
+      },
+      {
+        "name": "What It Caused",
+        "desc": "its first consequence",
+        "frames": [
+          "That led to {essence}.",
+          "Then came {card}: {essence}.",
+          "It caused {essence}."
+        ],
+        "x": 2,
+        "y": 1,
+        "tilt": -10
+      },
+      {
+        "name": "What That Caused",
+        "desc": "what followed in turn",
+        "frames": [
+          "Which in turn brought {essence}.",
+          "After that, {card}: {essence}.",
+          "And from that, {essence}."
+        ],
+        "x": 4,
+        "y": 2,
+        "tilt": 10
+      },
+      {
+        "name": "The Far Turn",
+        "desc": "the furthest it goes",
+        "frames": [
+          "At the far end of the loop lies {essence}.",
+          "{card} stands at the far turn: {essence}.",
+          "As far as it goes, it goes to {essence}."
+        ],
+        "x": 5,
+        "y": 1.5
+      },
+      {
+        "name": "The Way Back",
+        "desc": "what turns it around",
+        "frames": [
+          "Then the loop bends back through {essence}.",
+          "{card} turns everything around: {essence}.",
+          "The way back passes through {essence}."
+        ],
+        "x": 4,
+        "y": 1,
+        "tilt": -10
+      },
+      {
+        "name": "What Brings You Back",
+        "desc": "what returns you to the start",
+        "frames": [
+          "What brings you back where you began is {essence}.",
+          "{card} closes the loop: {essence}.",
+          "You return to the start through {essence}."
+        ],
+        "x": 2,
+        "y": 2,
+        "tilt": 10
+      }
+    ],
+    "openings": [
+      "What goes around comes around. Let us see how far around.",
+      "This one is a loop. Watch where it closes.",
+      "Everything here leads back to you, sooner or later."
+    ],
+    "keyPosition": 6
+  },
+  {
+    "id": "spread-void-between",
+    "name": "The Void Between",
+    "desc": "Where you are, where you want to be, and what lies in the dark between them.",
+    "layout": "free",
+    "positions": [
+      {
+        "name": "Where You Are",
+        "desc": "the plane you stand on",
+        "frames": [
+          "Where you stand, I see {essence}.",
+          "You are here, with {card}: {essence}.",
+          "Your shore is {essence}."
+        ],
+        "x": 1,
+        "y": 1
+      },
+      {
+        "name": "Where You Want to Be",
+        "desc": "the plane you reach for",
+        "frames": [
+          "Across the gulf lies {essence}.",
+          "Where you want to be, {card} waits: {essence}.",
+          "The far shore is {essence}."
+        ],
+        "x": 5,
+        "y": 1
+      },
+      {
+        "name": "What Lies Between",
+        "desc": "the void to cross",
+        "frames": [
+          "Between the two, in the Void, lies {essence}.",
+          "{card} drifts in the dark between: {essence}.",
+          "To cross, you must go through {essence}."
+        ],
+        "x": 3,
+        "y": 1.25,
+        "colour": "#9b7ae0"
+      }
+    ],
+    "openings": [
+      "Two shores and the dark between them. Let us look at all three.",
+      "Between every plane lies the Void. Between you and what you want, too.",
+      "Mind the gap. It is wider than it looks."
+    ],
+    "keyPosition": 3
   }
 ]

@@ -180,6 +180,170 @@ button.fcard.is-down:hover .fcard__back { box-shadow: 0 14px 36px rgba(0, 0, 0, 
 .fread__text { margin: 0; font-family: 'Newsreader', serif; font-size: 1.05rem; line-height: 1.55; color: var(--fortune-ink); }
 .fread__spread--omen + .fread__hint + .fread__meanings .fread__meaning { text-align: center; border-left: 0; border-top: 2px solid rgba(184, 156, 240, .55); border-radius: 0 0 .3rem .3rem; }
 .fread__spread--omen + .fread__hint + .fread__meanings .fread__text { font-style: italic; font-size: 1.15rem; }
+/* ---------- a cast: pieces thrown on a round cloth (scripts/fortune-card.js: cloth, piece) ---------- */
+.fcast {
+    --cloth: #2a1d40;
+    --ring: #e9c176;
+    position: relative;
+    width: min(560px, 100%);
+    aspect-ratio: 1;
+    margin: 0 auto;
+}
+.fcast.is-waiting { margin-bottom: 4.5rem; }
+.fcast--bones { --cloth: #4a3626; }
+.fcast__cloth {
+    position: absolute;
+    inset: 7%;
+    border-radius: 50%;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--cloth) 80%, white 12%), var(--cloth) 58%, color-mix(in srgb, var(--cloth) 60%, black));
+    box-shadow:
+        0 0 0 2px color-mix(in srgb, var(--ring) 55%, transparent),
+        0 0 0 7px color-mix(in srgb, var(--cloth) 55%, black),
+        0 0 0 8px color-mix(in srgb, var(--ring) 25%, transparent),
+        0 18px 50px rgba(0, 0, 0, .6),
+        inset 0 0 60px rgba(0, 0, 0, .55);
+}
+.fcast__texture { position: absolute; inset: 0; mix-blend-mode: soft-light; opacity: .7; }
+.fcast__texture img { width: 100%; height: 100%; object-fit: cover; }
+.fcast__ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 1px dashed color-mix(in srgb, var(--ring) 45%, transparent);
+}
+.fcast__ring--heart {
+    border: 1.5px solid color-mix(in srgb, var(--ring) 55%, transparent);
+    box-shadow: inset 0 0 24px rgba(184, 156, 240, .16);
+}
+.fcast__label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--cloth) 70%, black);
+    font-family: 'Manrope', sans-serif; font-size: clamp(7px, 1.6vw, 9px); font-weight: 700;
+    letter-spacing: .24em; text-transform: uppercase; white-space: nowrap;
+    color: color-mix(in srgb, var(--ring) 85%, transparent);
+}
+.fcast__pouch {
+    position: absolute;
+    left: 0; right: 0; top: calc(100% - 3.5rem);
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+}
+.fcast__throw {
+    min-height: 46px; padding: 0 1.6rem;
+    border-radius: 999px;
+    border: 1px solid rgba(233, 193, 118, .6);
+    background: linear-gradient(180deg, rgba(233, 193, 118, .18), rgba(233, 193, 118, .06));
+    color: #f3e2bd;
+    font-family: 'Manrope', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    cursor: pointer;
+}
+.fcast__throw:hover { background: linear-gradient(180deg, rgba(233, 193, 118, .28), rgba(233, 193, 118, .1)); }
+.fcast__throw:focus-visible { outline: 2px solid var(--fortune-gold); outline-offset: 3px; }
+
+/* A piece: a rune stone or a bone; --piece and --glyph are its set's colours */
+.fpiece {
+    display: block;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1.18;
+    padding: 0; border: 0; background: none; color: inherit; font: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+.fcast__piece { position: absolute; width: 9%; transform: rotate(var(--rot)); transition: opacity .4s ease; }
+.fcast__piece.is-off { opacity: .45; }
+.fcast__piece.is-flying { animation: fcast-throw 1.1s cubic-bezier(.2, .75, .25, 1) var(--delay) both; }
+@keyframes fcast-throw {
+    from { transform: translate(var(--dx), var(--dy)) rotate(0deg) scale(.4); opacity: 0; }
+    15% { opacity: 1; }
+    to { transform: rotate(var(--rot)); }
+}
+button.fpiece { cursor: pointer; }
+.fpiece:focus-visible { outline: 2px solid var(--fortune-gold); outline-offset: 4px; border-radius: 40%; }
+.fpiece__body {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 34% 28%, color-mix(in srgb, var(--piece) 60%, white), var(--piece) 58%, color-mix(in srgb, var(--piece) 50%, black));
+    box-shadow: 0 6px 14px rgba(0, 0, 0, .6), inset 0 -3px 6px rgba(0, 0, 0, .35), inset 0 2px 3px rgba(255, 255, 255, .12);
+}
+.fpiece.is-down .fpiece__body { filter: brightness(.6) saturate(.8); }
+.fpiece__body--s0 { border-radius: 46% 54% 42% 58% / 55% 45% 55% 45%; }
+.fpiece__body--s1 { border-radius: 52% 48% 56% 44% / 48% 56% 44% 52%; }
+.fpiece__body--s2 { border-radius: 44% 56% 50% 50% / 58% 46% 54% 42%; }
+.fpiece__body--s3 { border-radius: 50% 50% 46% 54% / 45% 55% 47% 53%; }
+.fpiece--bones .fpiece__body--s0 { border-radius: 38% 62% 30% 70% / 60% 40% 60% 40%; }
+.fpiece--bones .fpiece__body--s2 { border-radius: 60% 40% 70% 30% / 45% 55% 45% 55%; }
+.fpiece__face { width: 44%; height: 62%; display: flex; align-items: center; justify-content: center; }
+.fpiece--rev .fpiece__face { transform: rotate(180deg); }
+.fpiece__glyph { width: 100%; height: 100%; overflow: visible; fill: none; stroke: var(--glyph); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.fpiece__mask {
+    width: 100%; height: 100%; background: var(--glyph);
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
+}
+.fpiece__initial { font-family: 'Noto Serif', serif; font-weight: 700; font-size: clamp(.7rem, 2.4vw, 1.2rem); color: var(--glyph); }
+.fpiece--glow .fpiece__glyph, .fpiece--glow .fpiece__mask, .fpiece--glow .fpiece__initial { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--glyph) 70%, transparent)); }
+.fcast__piece.is-ready .fpiece__body { animation: fcast-ready 2.6s ease-in-out infinite; }
+@keyframes fcast-ready {
+    0%, 100% { box-shadow: 0 6px 14px rgba(0, 0, 0, .6), 0 0 0 rgba(233, 193, 118, 0); }
+    50% { box-shadow: 0 6px 14px rgba(0, 0, 0, .6), 0 0 16px rgba(233, 193, 118, .6); }
+}
+.fcast__piece.is-chosen .fpiece__body { box-shadow: 0 6px 14px rgba(0, 0, 0, .6), 0 0 0 2px var(--fortune-violet), 0 0 22px rgba(184, 156, 240, .7); animation: none; }
+/* In the list of meanings: a small piece before its name */
+.fread__card--piece { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+.fpiece--mini { width: 26px; flex: none; }
+.fread__castnote { max-width: 34rem; margin: .5rem auto 0; text-align: center; }
+@media (prefers-reduced-motion: reduce) {
+    .fcast__piece.is-flying, .fcast__piece.is-ready .fpiece__body { animation: none; }
+}
+
+/* The seer's interpretation, once every card is turned */
+.fread__interp {
+    position: relative;
+    max-width: 40rem;
+    margin: 1.75rem auto 0;
+    padding: 1.4rem clamp(1rem, 4vw, 2rem) 1.25rem;
+    border: 1px solid rgba(233, 193, 118, .28);
+    border-radius: .4rem;
+    background:
+        radial-gradient(ellipse at 50% 0%, rgba(184, 156, 240, .14), transparent 70%),
+        rgba(20, 18, 25, .6);
+    box-shadow: inset 0 0 0 4px rgba(20, 18, 25, .9), inset 0 0 0 5px rgba(233, 193, 118, .12);
+    text-align: center;
+}
+.fread__interp--bright { --interp-glow: rgba(233, 193, 118, .2); }
+.fread__interp--dark { --interp-glow: rgba(150, 60, 90, .22); }
+.fread__interp--bright, .fread__interp--dark {
+    background:
+        radial-gradient(ellipse at 50% 0%, var(--interp-glow), transparent 70%),
+        rgba(20, 18, 25, .6);
+}
+.fread__interp-head { display: flex; align-items: center; justify-content: center; gap: .45rem; margin-bottom: .9rem; }
+.fread__interp-head .material-symbols-outlined { font-size: 16px; color: var(--fortune-violet); }
+.fread__say {
+    margin: 0 0 .8rem;
+    font-family: 'Newsreader', serif; font-size: 1.06rem; line-height: 1.6;
+    color: var(--fortune-ink);
+}
+.fread__say:last-child { margin-bottom: 0; }
+.fread__say--opening, .fread__say--closing { font-style: italic; color: var(--fortune-dim); }
+.fread__say--counsel {
+    font-family: 'Noto Serif', serif; font-size: 1.02rem; font-weight: 700;
+    color: var(--fortune-gold-soft);
+}
+.fread__say--counsel::before, .fread__say--counsel::after { content: '✦'; margin: 0 .5em; font-size: .7em; color: var(--fortune-violet); vertical-align: .15em; }
+.fread__say--closing { padding-top: .8rem; border-top: 1px solid rgba(233, 193, 118, .15); }
+@media (max-width: 640px) {
+    .fread__interp { margin-top: 1.25rem; padding: 1.1rem .9rem 1rem; }
+    .fread__say { font-size: 1rem; line-height: 1.55; text-align: left; }
+    .fread__say--opening, .fread__say--counsel, .fread__say--closing { text-align: center; }
+}
 @media (prefers-reduced-motion: reduce) { .fread__meaning--fresh { animation: none; } }
 
 /* ---------- the dialog (poi.html) ---------- */
@@ -255,6 +419,8 @@ button.fcard.is-down:hover .fcard__back { box-shadow: 0 14px 36px rgba(0, 0, 0, 
 }
 .poi-reading-done__fan { display: flex; justify-content: center; }
 .poi-reading-done__fan .fcard { width: 46px; margin: 0 -6px; pointer-events: none; }
+.poi-reading-done__fan .poi-reading-done__piece { width: 30px; margin: 10px 3px 0; pointer-events: none; }
+.poi-reading-done__fan .poi-reading-done__piece:nth-child(even) { transform: rotate(12deg) translateY(4px); }
 .poi-reading-done__fan .fcard:nth-child(odd) { transform: rotate(-5deg); }
 .poi-reading-done__fan .fcard:nth-child(even) { transform: rotate(5deg) translateY(-3px); }
 .poi-reading-done__fan .fcard--omen { width: 64px; }

@@ -195,6 +195,7 @@
         menuCode: null,
         sealed: new Map(), // "type:id:key" -> the {text, password} its encrypted copy was made from
         cardSide: 'front', // item, spell and deity previews: 'front', 'sheet', 'back' or 'sealed'
+        sample: { deck: '', n: 0 }, // a spread's sample reading: the deck it draws from, and the draw
         sideToggled: false, // previews panel: hidden on wide screens / shown on narrow ones
         refocus: null,     // data-path of the tag / link input to focus again after a re-render
         print: { on: false, picked: { item: new Set(), spell: new Set() }, groups: [] }, // cards ticked for printing
@@ -429,12 +430,17 @@
             case 'deity': return r.epithet || (r.domains || []).join(', ');
             case 'rumour': return [r.truth ? enumLabel('rumourTruth', r.truth) : 'Truth not set', r.source].filter(Boolean).join(' · ');
             case 'notice': return [enumLabel('noticeKind', r.kind), enumLabel('noticeStatus', r.status || 'open').split(' (')[0]].filter(Boolean).join(' · ');
-            case 'practice': return [r.method === 'omen' ? 'Omens' : r.deck ? nameOf(r.deck) : 'Cards, no deck', typeof r.basePrice === 'number' ? `${r.basePrice} cp` : 'Donation'].join(' · ');
+            case 'practice': return [r.method === 'omen' ? 'Omens' : r.method === 'cast' ? (r.pieceSet ? `Cast · ${nameOf(r.pieceSet)}` : 'Cast, no set') : r.deck ? nameOf(r.deck) : 'Cards, no deck', typeof r.basePrice === 'number' ? `${r.basePrice} cp` : 'Donation'].join(' · ');
+            case 'pieceSet': { const n = S.data.castPiece.filter(c => c.pieceSet === r.id).length; return `${n} piece${n === 1 ? '' : 's'} · ${enumLabel('pieceLook', r.look || 'stones')}`; }
+            case 'castPiece': return [r.number, (r.keywords || []).join(', '), r.symmetric ? 'no merkstave' : ''].filter(x => x !== '' && x != null).join(' · ');
             case 'deck': { const n = S.data.fortuneCard.filter(c => c.deck === r.id).length; return `${n} card${n === 1 ? '' : 's'}${r.noReversals ? ' · upright only' : ''}`; }
             case 'fortuneCard': return [ATH.fortuneCard ? ATH.fortuneCard.roman(r.number) : r.number, r.image ? '' : 'no picture'].filter(Boolean).join(' · ');
             case 'spread': { const n = (r.positions || []).length; return `${n} card${n === 1 ? '' : 's'}${r.layout === 'cross' ? ' · cross' : ''}`; }
             case 'omen': return r.meaning || '';
             case 'prophecy': return [(r.campaigns || []).map(nameOf).join(', ') || 'No campaign', r.practice ? nameOf(r.practice) : ''].filter(Boolean).join(' · ');
+            case 'readingRule': return [enumLabel('readingPattern', r.when).replace(/ \(.*\)$/, ''),
+                (r.cards || []).length ? r.cards.map(nameOf).join(' + ') : r.deck ? nameOf(r.deck) : 'Every deck',
+                (r.spreads || []).length ? r.spreads.map(nameOf).join(', ') : ''].filter(Boolean).join(' · ');
         }
         return r.subtitle || '';
     }
@@ -470,6 +476,7 @@
             case 'tome': return byEnum('tomeKind', r.kind, 'No kind');
             case 'rumour': case 'notice': case 'prophecy': return r.where ? { key: r.where, label: nameOf(r.where) } : { key: '~', label: 'Nowhere', rank: 999 };
             case 'fortuneCard': return r.deck ? { key: r.deck, label: nameOf(r.deck) } : { key: '~', label: 'No deck', rank: 999 };
+            case 'castPiece': return r.pieceSet ? { key: r.pieceSet, label: nameOf(r.pieceSet) } : { key: '~', label: 'No set', rank: 999 };
             case 'omen': return r.practice ? { key: r.practice, label: nameOf(r.practice) } : { key: '~', label: 'No practice', rank: 999 };
             // Festivals, by month, in the order of the year
             case 'festival': {
@@ -1517,7 +1524,7 @@
         side.innerHTML = html ? `<div class="side-head"><span>Previews & links</span><button class="btn icon" data-action="toggle-side" title="Close"><span class="material-symbols-outlined">close</span></button></div>${html}` : '';
         $('.ed-wrap').classList.toggle('no-side', !html);
         const sb = $('#side-btn'); if (sb) sb.hidden = !html;
-        if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen', 'plane'].includes(S.view.key)) loadThumbs();
+        if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen', 'plane', 'practice', 'pieceSet', 'castPiece'].includes(S.view.key)) loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
         if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
         if (S.view.key === 'folio' && ATH.sigil) drawFolioPreview(rec);
@@ -2572,7 +2579,8 @@
             const btn = (key, label) => `<button data-action="card-side" data-side="${key}" class="${side === key ? 'on' : ''}">${label}</button>`;
             return [`<div class="box card-prev"><div class="box-head"><h4>Card preview</h4>
                 <span class="seg">${btn('front', 'Upright')}${btn('reversed', 'Reversed')}${btn('back', 'Back')}</span></div>
-                <div class="card-prev__stage">${F.card(r, deck, { tag: 'div', faceDown: side === 'back', reversed: side === 'reversed', picture: thumb })}</div></div>`];
+                <div class="card-prev__stage">${F.card(r, deck, { tag: 'div', faceDown: side === 'back', reversed: side === 'reversed', picture: thumb })}</div></div>`,
+                cardInReadings(r, side === 'reversed')];
         }
         if (type === 'deck') {
             const cards = S.store.all('fortuneCard').filter(c => c.deck === r.id);
@@ -2592,8 +2600,27 @@
                 slots: positions.map((pos, i) => ({ position: pos, card: { name: pos.name, number: i + 1 }, reversed: false, keywords: [], reading: '' })),
                 turned: new Set(),
             };
-            return [`<div class="box fortune-prev"><h4>As it is laid</h4><div class="fread">${F.reading(view, { tag: 'div' })}</div></div>`];
+            return [`<div class="box fortune-prev"><h4>As it is laid</h4><div class="fread">${F.reading(view, { tag: 'div' })}</div></div>`,
+                sampleReading(r)];
         }
+        if (type === 'castPiece') {
+            const set = S.store.get(r.pieceSet) || null;
+            const side = ['reversed', 'back'].includes(S.cardSide) ? S.cardSide : 'front';
+            const btn = (key, label) => `<button data-action="card-side" data-side="${key}" class="${side === key ? 'on' : ''}">${label}</button>`;
+            return [`<div class="box card-prev"><div class="box-head"><h4>Piece preview</h4>
+                <span class="seg">${btn('front', 'Face up')}${r.symmetric || (set && set.noReversals) ? '' : btn('reversed', 'Merkstave')}${btn('back', 'Face down')}</span></div>
+                <div class="card-prev__stage piece-prev">${F.piece(r, set, { faceDown: side === 'back', reversed: side === 'reversed' && !r.symmetric, picture: thumb, mask: maskOf })}</div>
+                ${hint('Colours and look come from its set.')}</div>`];
+        }
+        if (type === 'pieceSet') {
+            const pieces = D.piecesOf(S.store, r.id);
+            const used = S.store.all('practice').filter(p => p.pieceSet === r.id);
+            return [`<div class="box"><h4>Pieces <span>${pieces.length}</span></h4>
+                ${pieces.length ? `<div class="fan-prev piece-fan">${pieces.map((c, i) => `<span data-jump="${esc(c.id)}" title="${esc(c.name)}">${F.piece(c, r, { shape: i, picture: thumb, mask: maskOf })}</span>`).join('')}</div>` : '<p class="muted">No piece yet.</p>'}
+                ${used.length ? '' : '<p class="warn">No practice casts this set yet.</p>'}
+                <button class="btn add-here" data-action="add-here" data-type="castPiece" data-field="pieceSet" data-where="${esc(r.id)}">+ Piece in this set</button></div>`];
+        }
+        if (type === 'practice' && r.method === 'cast') return [sampleCast(r)];
         if (type === 'prophecy') {
             const view = D.view(S.store, D.fromProphecy(S.store, r));
             return [`<div class="box fortune-prev"><h4>The reading, every card turned</h4>
@@ -2601,6 +2628,69 @@
                 ${hint('A player of these campaigns gets it at their next reading here, whatever they asked for. Then readings go back to random.')}</div>`];
         }
         return [];
+    }
+    // A card's sentence in each position of each spread (the first frame of each), as the seer says it
+    function cardInReadings(card, reversed) {
+        const D = ATH.divination;
+        const spreads = S.store.all('spread').filter(sp => (sp.positions || []).length);
+        if (!spreads.length) return '';
+        const slot = { card, reversed, keywords: [], reading: (reversed ? card.reversed || card.upright : card.upright) || '' };
+        const rows = spreads.map(sp => {
+            const said = sp.positions.map((pos, i) => {
+                const one = { ...sp, positions: [{ ...pos, frames: (pos.frames || []).slice(0, 1) }], openings: [], keyPosition: 1 };
+                const i2 = D.interpret(S.store, { method: 'cards', prophecy: false, spread: one, deck: S.store.get(card.deck), slots: [{ ...slot, position: pos }] }, 'x');
+                return `<li><b>${esc(pos.name || `Position ${i + 1}`)}</b> ${esc(i2 ? i2.cards[0] : '')}</li>`;
+            }).join('');
+            return `<p class="muted"><b>${esc(sp.name)}</b></p><ul class="read-lines">${said}</ul>`;
+        }).join('');
+        const counsel = reversed ? card.reversedCounsel : card.counsel;
+        return `<div class="box"><h4>In a reading${reversed ? ' · reversed' : ''}</h4>${rows}
+            ${counsel ? `<p class="muted"><b>Its counsel</b> ${esc(counsel)}</p>` : '<p class="warn">No counsel yet: in the key position, the seer gives none.</p>'}
+            ${hint('Each position’s first sentence. Switch the preview to Reversed to read it reversed.')}</div>`;
+    }
+    const maskOf = src => `data-mask="${esc(src)}"`;
+    // A cast practice thrown here (seeded, so it holds still while the form is edited; Cast again = another)
+    function sampleCast(pr) {
+        const D = ATH.divination, F = ATH.fortuneCard;
+        if (!pr.pieceSet || !D.piecesOf(S.store, pr.pieceSet).length) return `<div class="box"><h4>A sample cast</h4><p class="muted">Choose a piece set with pieces to see a cast.</p></div>`;
+        const seed = `${pr.id}|${S.sample.n}`;
+        const saved = { practice: pr.id, date: seed, cast: D.throwPieces(S.store, pr, D.seeded(seed)), thrown: true, turned: [] };
+        // the form's record, not the saved one: the preview follows the edits
+        const store = { get: id => (id === pr.id ? pr : S.store.get(id)), all: t => S.store.all(t), typeOf: x => S.store.typeOf(x) };
+        const view = D.view(store, saved);
+        return `<div class="box fortune-prev sample-prev"><h4>A sample cast</h4>
+            ${view ? `<div class="fread">${F.reading(view, { allTurned: true, picture: thumb, mask: maskOf })}</div>` : '<p class="muted">Nothing to cast.</p>'}
+            <button class="btn" data-action="sample-again"><span class="material-symbols-outlined">casino</span> Cast again</button>
+            ${hint('Thrown here only. Players throw it themselves, then touch each face to read it; the seer speaks once every face is read.')}</div>`;
+    }
+    // A spread drawn at random from a deck, with the seer's interpretation (Draw again = another)
+    function sampleReading(sp) {
+        const D = ATH.divination, F = ATH.fortuneCard;
+        const n = sp.positions.length;
+        const decks = S.store.all('deck').filter(d => D.cardsOf(S.store, d.id).length >= n);
+        if (!decks.length) return '';
+        const deck = decks.find(d => d.id === S.sample.deck) || decks[0];
+        const seed = `${sp.id}|${deck.id}|${S.sample.n}`;
+        // shuffle with a seed, so the preview holds still while the form is edited
+        let h = 0; for (const ch of seed) h = (Math.imul(h, 31) + ch.charCodeAt(0)) | 0;
+        const rnd = () => { h = (Math.imul(h ^ (h >>> 15), 2246822507) + 0x9e3779b9) | 0; return ((h >>> 0) % 100000) / 100000; };
+        const pool = D.cardsOf(S.store, deck.id).slice();
+        for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+        const slots = pool.slice(0, n).map((card, i) => {
+            const reversed = !deck.noReversals && rnd() < 0.5;
+            return { position: sp.positions[i], card, reversed, keywords: (reversed ? card.reversedKeywords : card.keywords) || [], reading: (reversed ? card.reversed || card.upright : card.upright) || '' };
+        });
+        const view = {
+            practice: { name: deck.name }, method: 'cards', spread: sp, deck, prophecy: false, intro: '', closing: '',
+            layout: sp.layout === 'cross' && n === 5 ? 'cross' : 'row', slots, turned: new Set(),
+        };
+        view.interpretation = D.interpret(S.store, view, seed);
+        const btn = d => `<button data-action="sample-deck" data-deck="${esc(d.id)}" class="${d.id === deck.id ? 'on' : ''}">${esc(d.name)}</button>`;
+        return `<div class="box fortune-prev sample-prev"><div class="box-head"><h4>A sample reading</h4>
+            ${decks.length > 1 ? `<span class="seg">${decks.map(btn).join('')}</span>` : ''}</div>
+            <div class="fread">${F.reading(view, { tag: 'div', allTurned: true, picture: thumb })}</div>
+            <button class="btn" data-action="sample-again"><span class="material-symbols-outlined">casino</span> Draw again</button>
+            ${hint('Drawn here only. Players get it once every card is turned (never for a prophecy). Rules: Tables › Reading rules.')}</div>`;
     }
     async function thumbUrl(src) {
         if (!src) return '';
@@ -3262,6 +3352,11 @@
             if (whereSel && whereSel.value) rec.where = whereSel.value;
             if (type === 'notice') { rec.kind = 'job'; rec.status = 'open'; }
             if ((type === 'rumour' || type === 'notice' || type === 'prophecy') && curCampaign()) rec.campaigns = [curCampaign()];
+            if (type === 'castPiece' && preset.pieceSet) {
+                rec.pieceSet = preset.pieceSet;
+                const nums = S.data.castPiece.filter(c => c.pieceSet === preset.pieceSet && typeof c.number === 'number').map(c => c.number);
+                rec.number = nums.length ? Math.max(...nums) + 1 : 1;
+            }
             if (type === 'fortuneCard' && preset.deck) {
                 rec.deck = preset.deck;
                 const nums = S.data.fortuneCard.filter(c => c.deck === preset.deck && typeof c.number === 'number').map(c => c.number);
@@ -3762,6 +3857,8 @@
             case 'more': moreMenu(t); break;
             case 'toggle-side': S.sideToggled = !S.sideToggled; $('.ed-wrap').classList.toggle('side-toggled', S.sideToggled); $('#side-btn').classList.toggle('on', S.sideToggled); break;
             case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
+            case 'sample-deck': S.sample.deck = t.dataset.deck; renderSide(); break;
+            case 'sample-again': S.sample.n++; renderSide(); break;
             case 'print-mode': S.print.on = !S.print.on; renderList(); break;
             case 'print-all': togglePick(S.view.key, S.print.groups.flat(), true); break;
             case 'print-none': togglePick(S.view.key, [...S.print.picked[S.view.key]], false); break;

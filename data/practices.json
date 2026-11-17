@@ -28,5 +28,101 @@
     "basePrice": 1000,
     "unit": "per question",
     "icon": "star"
+  },
+  {
+    "id": "rune-casting",
+    "name": "Rune Casting",
+    "method": "cast",
+    "desc": "The seer shakes the pouch, breathes on it, and throws the stones across the cloth.",
+    "basePrice": 50,
+    "unit": "per cast",
+    "icon": "hexagon",
+    "pieceSet": "elder-futhark",
+    "castCount": 9,
+    "rings": [
+      {
+        "name": "The heart",
+        "desc": "what is",
+        "frames": [
+          "At the heart of the cloth lies {card}: {essence}.",
+          "In the centre, closest to you, I see {essence}.",
+          "{card} fell at the very heart: {essence}.",
+          "What is, right now, is {essence}."
+        ]
+      },
+      {
+        "name": "Near",
+        "desc": "what draws close",
+        "frames": [
+          "Near you falls {card}: {essence}.",
+          "Close at hand lies {essence}.",
+          "Not far from the heart, {card} speaks of {essence}.",
+          "What draws close is {essence}."
+        ]
+      },
+      {
+        "name": "Far",
+        "desc": "what lies ahead",
+        "frames": [
+          "Far out on the cloth lies {card}: {essence}, not yet upon you.",
+          "At the edge of things, I see {essence}.",
+          "{card} rolled far, toward what lies ahead: {essence}.",
+          "Further off, waiting, is {essence}."
+        ]
+      }
+    ],
+    "openings": [
+      "The stones have spoken. Let me tell you what they said.",
+      "Look where they fell; that is the answer, not the stones themselves.",
+      "The cloth does not lie. Listen."
+    ]
+  },
+  {
+    "id": "bone-casting",
+    "name": "Bone Casting",
+    "method": "cast",
+    "desc": "The seer rattles the bones in a cupped hand and throws them across the hide.",
+    "basePrice": 30,
+    "unit": "per cast",
+    "icon": "skull",
+    "pieceSet": "casting-bones",
+    "clothColour": "#4a3626",
+    "rings": [
+      {
+        "name": "The heart",
+        "desc": "what is",
+        "frames": [
+          "At the heart of the hide lies {card}: {essence}.",
+          "In the middle of it all, I see {essence}.",
+          "{card} landed at the very heart: {essence}.",
+          "What is, right now, is {essence}."
+        ]
+      },
+      {
+        "name": "Near",
+        "desc": "what draws close",
+        "frames": [
+          "Near you lands {card}: {essence}.",
+          "Close at hand lies {essence}.",
+          "Not far from the heart, {card} speaks of {essence}.",
+          "What draws close is {essence}."
+        ]
+      },
+      {
+        "name": "Far",
+        "desc": "what lies ahead",
+        "frames": [
+          "Far out on the hide lies {card}: {essence}, still a way off.",
+          "At the edge of the hide, I see {essence}.",
+          "{card} bounced far, toward what lies ahead: {essence}.",
+          "Further off, waiting, is {essence}."
+        ]
+      }
+    ],
+    "openings": [
+      "The bones have fallen. Let us see what they say.",
+      "Bones do not lie; they have nothing left to hide.",
+      "Hush. Let me read where they lie."
+    ]
   }
 ]

@@ -6,9 +6,20 @@
     "layout": "row",
     "positions": [
       {
-        "name": "The Answer"
+        "name": "The Answer",
+        "frames": [
+          "{card} answers you: {essence}.",
+          "The cards give you one answer, and it is {card}: {essence}.",
+          "I turn a single card, and it speaks of {essence}."
+        ]
       }
-    ]
+    ],
+    "openings": [
+      "One card, then. Let us see what it holds.",
+      "A single question deserves a single answer. Here it is.",
+      "Hush. One card is enough, if it is the right one."
+    ],
+    "keyPosition": 1
   },
   {
     "id": "spread-three",
@@ -17,15 +28,36 @@
     "layout": "row",
     "positions": [
       {
-        "name": "The Past"
+        "name": "The Past",
+        "frames": [
+          "Behind you lies {card}: {essence}.",
+          "In what you have left behind, I see {essence}.",
+          "Your past is marked by {card}. It speaks of {essence}."
+        ]
       },
       {
-        "name": "The Present"
+        "name": "The Present",
+        "frames": [
+          "Here and now, {card} holds you: {essence}.",
+          "What surrounds you today is {essence}.",
+          "In your present I see {card}, and with it {essence}."
+        ]
       },
       {
-        "name": "The Future"
+        "name": "The Future",
+        "frames": [
+          "Ahead, the road bends toward {essence}.",
+          "{card} waits in what is to come: {essence}.",
+          "What lies before you, if nothing changes, is {essence}."
+        ]
       }
-    ]
+    ],
+    "openings": [
+      "Three cards: where you come from, where you stand, where you go.",
+      "Let us follow the thread from its beginning.",
+      "The cards lie in a row, like a road. Let me walk it for you."
+    ],
+    "keyPosition": 3
   },
   {
     "id": "spread-cross",
@@ -34,20 +66,51 @@
     "layout": "cross",
     "positions": [
       {
-        "name": "The Heart of the Matter"
+        "name": "The Heart of the Matter",
+        "frames": [
+          "At the heart of the matter lies {card}: {essence}.",
+          "{card} sits at the centre of it all: {essence}.",
+          "At the very heart of your question, I see {essence}."
+        ]
       },
       {
-        "name": "What Lies Behind"
+        "name": "What Lies Behind",
+        "frames": [
+          "It grew out of {essence}.",
+          "Behind it, {card} still casts its shadow: {essence}.",
+          "What brought you here was {essence}."
+        ]
       },
       {
-        "name": "What Lies Ahead"
+        "name": "What Lies Ahead",
+        "frames": [
+          "It is moving toward {essence}.",
+          "Ahead, {card} waits: {essence}.",
+          "What comes next is {essence}."
+        ]
       },
       {
-        "name": "What Crowns It"
+        "name": "What Crowns It",
+        "frames": [
+          "At best, it crowns itself in {essence}.",
+          "Above it all hangs {card}, what you hope for or fear the most: {essence}.",
+          "What you reach for is {essence}."
+        ]
       },
       {
-        "name": "What Lies Beneath"
+        "name": "What Lies Beneath",
+        "frames": [
+          "Beneath it, unseen, lies {essence}.",
+          "{card} lies under everything, at its root: {essence}.",
+          "What you do not say aloud is {essence}."
+        ]
       }
-    ]
+    ],
+    "openings": [
+      "Five cards, and you at their centre. Let us begin with the heart.",
+      "The cross is laid. Every arm of it speaks of you.",
+      "This is an old spread, and it does not lie easily. Listen."
+    ],
+    "keyPosition": 1
   }
 ]

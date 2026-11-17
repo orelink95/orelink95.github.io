@@ -550,6 +550,12 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             divinationMethod: [
                 { id: 'cards', label: 'Cards (drawn from a deck, laid in a spread)' },
                 { id: 'omen', label: 'Omen (one sign drawn from its own pool)' },
+                { id: 'cast', label: 'Cast (pieces of a set thrown on a cloth with rings)' },
+            ],
+            /* The look of a piece set (cast practices) */
+            pieceLook: [
+                { id: 'stones', label: 'Rune stones' },
+                { id: 'bones', label: 'Bones and charms' },
             ],
             /* The potion maker (scripts/alchemy-engine.js). A property (tag) says how a reagent
                behaves: two reagents react through their properties (see the Reaction type).
@@ -582,6 +588,34 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             ],
             /* How a spread lays its cards: a row (wraps on phones), or a cross of five
                (1 centre, 2 left, 3 right, 4 above, 5 below; any other count = a row) */
+            /* Interpretation of a spread (data/reading-rules.json): the tone of a card,
+               and what a reading rule looks for */
+            readingTone: [
+                { id: 'bright', label: 'Bright' },
+                { id: 'neutral', label: 'Neutral' },
+                { id: 'dark', label: 'Dark' },
+            ],
+            readingPattern: [
+                { id: 'card', label: 'A card (at a position)' },
+                { id: 'together', label: 'Cards drawn together' },
+                { id: 'allReversed', label: 'Every card reversed (2+)' },
+                { id: 'mostReversed', label: 'Most cards reversed (3+)' },
+                { id: 'allUpright', label: 'Every card upright (3+)' },
+                { id: 'rising', label: 'Numbers rising (3+)' },
+                { id: 'falling', label: 'Numbers falling (3+)' },
+                { id: 'heartEmpty', label: 'Cast: nothing face up in the first ring' },
+                { id: 'mostDown', label: 'Cast: more faces down than up' },
+                { id: 'twoReversed', label: 'Cast: two or more reversed (merkstave)' },
+                { id: 'offCloth', label: 'Cast: pieces off the cloth' },
+                { id: 'allDown', label: 'Cast: not one face up' },
+                { id: 'bright', label: 'Closing: a bright reading' },
+                { id: 'mixed', label: 'Closing: a mixed reading' },
+                { id: 'dark', label: 'Closing: a dark reading' },
+            ],
+            cardOrientation: [
+                { id: 'upright', label: 'Upright' },
+                { id: 'reversed', label: 'Reversed' },
+            ],
             spreadLayout: [
                 { id: 'row', label: 'Row' },
                 { id: 'cross', label: 'Cross (five cards)' },
@@ -794,6 +828,10 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                             title: { kind: 'text', label: 'Heading of the tab', help: 'Empty = “The Seer’s Table”.' },
                             tier: { kind: 'enum', enum: 'tavernTier', label: 'Wealth', help: 'Sets the prices. Empty = the tavern’s, else Modest.' },
                             hours: { kind: 'text', label: 'Hours' },
+                            /* The cloth of this seer's casts (cast practices); empty = the practice's own */
+                            clothColour: { kind: 'text', label: 'Cloth colour (casts)', color: true, help: 'The cloth this seer throws on. Empty = the practice’s cloth.' },
+                            clothImage: { kind: 'image', label: 'Cloth texture (casts)', help: 'Optional, square. Empty = the practice’s.' },
+                            ringColour: { kind: 'text', label: 'Rings colour (casts)', color: true, help: 'Empty = the practice’s, else gold.' },
                         },
                     },
                     /* A university, a great library…: its own maps, its key locations and its people.
@@ -1450,6 +1488,22 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     icon: { kind: 'text', label: 'Icon', icon: true, help: 'Material Symbols name, on the omen tile. Empty = visibility.' },
                     deck: { kind: 'ref', to: ['deck'], label: 'Deck', help: 'The cards it draws from.', showIf: { key: 'method', is: ['cards'] } },
                     spreads: { kind: 'refs', to: ['spread'], label: 'Spreads offered', help: 'The player picks one. None = every spread.', showIf: { key: 'method', is: ['cards'] } },
+                    /* Cast practices: pieces of a set thrown on a round cloth whose rings say what they speak of */
+                    pieceSet: { kind: 'ref', to: ['pieceSet'], label: 'Piece set', help: 'The stones (or bones) it throws.', showIf: { key: 'method', is: ['cast'] } },
+                    castCount: { kind: 'number', label: 'Pieces cast', help: 'Taken at random from the set. Empty = the whole set.', showIf: { key: 'method', is: ['cast'] } },
+                    clothColour: { kind: 'text', label: 'Cloth colour', color: true, help: 'The default cloth: each seer (POI) can set its own. Empty = deep violet.', showIf: { key: 'method', is: ['cast'] } },
+                    clothImage: { kind: 'image', label: 'Cloth texture', help: 'Optional, square; laid under the rings (the colour tints it).', showIf: { key: 'method', is: ['cast'] } },
+                    ringColour: { kind: 'text', label: 'Rings colour', color: true, help: 'The embroidered rings and their names. Empty = gold.', showIf: { key: 'method', is: ['cast'] } },
+                    rings: {
+                        kind: 'objects', label: 'The cloth’s rings', itemLabel: 'name', showIf: { key: 'method', is: ['cast'] },
+                        help: 'From the centre outwards, equal widths. Empty = The heart / Near / Far.',
+                        fields: {
+                            name: { kind: 'text', label: 'Name', required: true, help: 'Shown on the cloth.' },
+                            desc: { kind: 'text', label: 'What it speaks of', help: 'what is, what draws close…' },
+                            frames: { kind: 'list', label: 'How the seer reads a piece here', lines: true, help: 'One per line; one is chosen. {essence}, {card} = the piece’s name.' },
+                        },
+                    },
+                    openings: { kind: 'list', label: 'The seer’s first words', lines: true, help: 'One per line; one is chosen.', showIf: { key: 'method', is: ['cast'] } },
                 },
             },
             deck: {
@@ -1465,7 +1519,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 label: 'Card', plural: 'Cards', icon: 'playing_cards', group: 'Divination', workspace: 'tables',
                 file: 'data/fortune-cards.json',
                 order: { by: 'number', within: 'deck' },
-                sections: ['Card', 'Meanings'],
+                sections: ['Card', 'Meanings', 'In a reading'],
                 fields: {
                     deck: { kind: 'ref', to: ['deck'], label: 'Deck', required: true },
                     number: { kind: 'number', label: 'Number', help: 'Its place in the deck (0 = The Fool). Shown as a Roman numeral when there is no picture.' },
@@ -1474,6 +1528,13 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     upright: { kind: 'text', label: 'Upright meaning', long: true, required: true, section: 'Meanings' },
                     reversedKeywords: { kind: 'list', label: 'Keywords (reversed)', section: 'Meanings' },
                     reversed: { kind: 'text', label: 'Reversed meaning', long: true, section: 'Meanings', help: 'Empty = the upright meaning, marked reversed.' },
+                    /* The seer's interpretation of the whole spread (scripts/divination.js) */
+                    essence: { kind: 'text', label: 'Essence (upright)', long: true, section: 'In a reading', help: 'A phrase the seer slots into each position’s sentences: “a first step taken in the dark”. Starts lower-case, no full stop. Empty = its keywords.' },
+                    reversedEssence: { kind: 'text', label: 'Essence (reversed)', long: true, section: 'In a reading', help: 'Empty = its reversed keywords.' },
+                    counsel: { kind: 'text', label: 'Counsel (upright)', long: true, section: 'In a reading', help: 'The seer’s advice, a full sentence, when it lies in the spread’s key position.' },
+                    reversedCounsel: { kind: 'text', label: 'Counsel (reversed)', long: true, section: 'In a reading' },
+                    tone: { kind: 'enum', enum: 'readingTone', label: 'Tone (upright)', section: 'In a reading', help: 'Sets the closing words of the reading. Empty = neutral.' },
+                    reversedTone: { kind: 'enum', enum: 'readingTone', label: 'Tone (reversed)', section: 'In a reading', help: 'Empty = one step darker than upright.' },
                 },
             },
             spread: {
@@ -1488,8 +1549,67 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                         fields: {
                             name: { kind: 'text', label: 'Name', required: true, help: 'Past, Present, Future…' },
                             desc: { kind: 'text', label: 'What it speaks of', long: true },
+                            frames: { kind: 'list', label: 'How the seer reads a card here', lines: true, help: 'One sentence per line; one is chosen. {essence} = the card’s essence, {card} = its name. Empty = “For <position>, I see {essence}.”' },
                         },
                     },
+                    openings: { kind: 'list', label: 'The seer’s first words', lines: true, help: 'One per line; one is chosen. They open the interpretation, once every card is turned.' },
+                    keyPosition: { kind: 'number', label: 'Key position', help: 'The card whose counsel the seer gives (1 = the first laid). Empty = the last.' },
+                },
+            },
+            /* A set of pieces for cast practices: rune stones, bones… Its pieces are castPiece records. */
+            pieceSet: {
+                label: 'Piece set', plural: 'Piece sets', icon: 'stacks', group: 'Divination', workspace: 'tables',
+                file: 'data/piece-sets.json',
+                columns: ['look', 'pieceColour', 'glyphColour'],
+                fields: {
+                    desc: { kind: 'text', label: 'Description', width: 'full' },
+                    look: { kind: 'enum', enum: 'pieceLook', label: 'Look', help: 'The shape and shading of the pieces. Empty = rune stones.' },
+                    pieceColour: { kind: 'text', label: 'Piece colour', color: true, help: 'Empty = slate grey (stones) or bone white (bones).' },
+                    glyphColour: { kind: 'text', label: 'Glyph colour', color: true, help: 'Empty = gold (stones) or dark brown (bones).' },
+                    glyphGlow: { kind: 'boolean', label: 'Glowing glyphs' },
+                    noReversals: { kind: 'boolean', label: 'Never reversed', help: 'No merkstave in this set, whatever the pieces say.' },
+                },
+            },
+            castPiece: {
+                label: 'Piece', plural: 'Pieces', icon: 'hexagon', group: 'Divination', workspace: 'tables',
+                file: 'data/cast-pieces.json',
+                order: { by: 'number', within: 'pieceSet' },
+                sections: ['Piece', 'Meanings', 'In a reading'],
+                fields: {
+                    pieceSet: { kind: 'ref', to: ['pieceSet'], label: 'Set', required: true },
+                    number: { kind: 'number', label: 'Number', help: 'Its order in the set.' },
+                    glyph: { kind: 'text', label: 'Glyph (drawn)', width: 'full', help: 'SVG path in a 10 × 16 box, stroked (M3 0V16M3 5L8 1…). Used when there is no picture.' },
+                    image: { kind: 'image', label: 'Glyph (picture)', help: 'An SVG or PNG, black on transparent: tinted with the set’s glyph colour.' },
+                    symmetric: { kind: 'boolean', label: 'No merkstave', help: 'Looks the same upside down: never read reversed.' },
+                    keywords: { kind: 'list', label: 'Keywords' },
+                    meaning: { kind: 'text', label: 'Meaning', long: true, required: true, section: 'Meanings' },
+                    reversedKeywords: { kind: 'list', label: 'Keywords (merkstave)', section: 'Meanings' },
+                    reversed: { kind: 'text', label: 'Meaning (merkstave)', long: true, section: 'Meanings', help: 'Empty = the meaning, marked merkstave.' },
+                    essence: { kind: 'text', label: 'Essence', long: true, section: 'In a reading', help: 'As on cards: a phrase slotted into the rings’ sentences. Empty = its keywords.' },
+                    reversedEssence: { kind: 'text', label: 'Essence (merkstave)', long: true, section: 'In a reading' },
+                    counsel: { kind: 'text', label: 'Counsel', long: true, section: 'In a reading', help: 'Given when it lies nearest the centre.' },
+                    reversedCounsel: { kind: 'text', label: 'Counsel (merkstave)', long: true, section: 'In a reading' },
+                    tone: { kind: 'enum', enum: 'readingTone', label: 'Tone', section: 'In a reading', help: 'Empty = neutral.' },
+                    reversedTone: { kind: 'enum', enum: 'readingTone', label: 'Tone (merkstave)', section: 'In a reading', help: 'Empty = one step darker.' },
+                },
+            },
+            /* How the seer reads a spread as a whole, beyond each card: a rule's words are said
+               when its pattern is in the reading. At most two pattern rules are said (card and
+               together rules first, then the others, in file order), then one closing, chosen
+               by the reading's tone. Not used for prophecies. */
+            readingRule: {
+                label: 'Reading rule', plural: 'Reading rules', icon: 'psychology_alt', group: 'Divination', workspace: 'tables',
+                file: 'data/reading-rules.json',
+                columns: ['when', 'deck'],
+                fields: {
+                    when: { kind: 'enum', enum: 'readingPattern', label: 'When', required: true },
+                    deck: { kind: 'ref', to: ['deck', 'pieceSet'], label: 'Deck or set', help: 'Empty = every deck and set. Card rules belong to their cards’ deck.', showIf: { key: 'when', is: ['allReversed', 'mostReversed', 'allUpright', 'rising', 'falling', 'heartEmpty', 'mostDown', 'twoReversed', 'offCloth', 'allDown', 'bright', 'mixed', 'dark'] } },
+                    spreads: { kind: 'refs', to: ['spread'], label: 'Only in the spreads', help: 'Card readings. None = every spread.' },
+                    cards: { kind: 'refs', to: ['fortuneCard', 'castPiece'], label: 'Cards or pieces', help: 'A card rule: any of them. Together: all of them, anywhere in the reading (face up, for pieces).', showIf: { key: 'when', is: ['card', 'together'] } },
+                    position: { kind: 'number', label: 'At position', help: '1 = the first laid (cards) or the first ring (casts). Empty = anywhere.', showIf: { key: 'when', is: ['card'] } },
+                    orientation: { kind: 'enum', enum: 'cardOrientation', label: 'Drawn', help: 'Empty = either way.', showIf: { key: 'when', is: ['card'] } },
+                    texts: { kind: 'list', label: 'What the seer says', lines: true, required: true, help: 'One per line; one is chosen. {card} = the card or piece found (card rules); {n} = how many (pieces off the cloth).' },
+                    method: { kind: 'enum', enum: 'divinationMethod', label: 'Only for', help: 'Closings: cards or casts. Empty = both.', showIf: { key: 'when', is: ['bright', 'mixed', 'dark'] } },
                 },
             },
             /* The pool of an omen practice: one is drawn per reading */

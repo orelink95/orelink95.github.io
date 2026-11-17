@@ -1,0 +1,532 @@
+[
+  {
+    "id": "rule-forsaken-fool-alone",
+    "name": "Forsaken: the Fool, alone",
+    "when": "card",
+    "spreads": [
+      "spread-single"
+    ],
+    "cards": [
+      "elder-the-fool"
+    ],
+    "position": 1,
+    "texts": [
+      "The Fool, alone. The cards will not answer for you: jump, or don't."
+    ]
+  },
+  {
+    "id": "rule-forsaken-death-ahead",
+    "name": "Forsaken: Death ahead",
+    "when": "card",
+    "spreads": [
+      "spread-three"
+    ],
+    "cards": [
+      "elder-death"
+    ],
+    "position": 3,
+    "orientation": "upright",
+    "texts": [
+      "Do not pale. Death in what is to come rarely means a grave; it means a door closing behind you."
+    ]
+  },
+  {
+    "id": "rule-forsaken-hanged-now",
+    "name": "Forsaken: the Hanged Man now",
+    "when": "card",
+    "spreads": [
+      "spread-three"
+    ],
+    "cards": [
+      "elder-the-hanged-man"
+    ],
+    "position": 2,
+    "texts": [
+      "The Hanged Man in your present: this is a time to wait, not to act."
+    ]
+  },
+  {
+    "id": "rule-forsaken-world-crowns",
+    "name": "Forsaken: the World crowns",
+    "when": "card",
+    "spreads": [
+      "spread-cross"
+    ],
+    "cards": [
+      "elder-the-world"
+    ],
+    "position": 4,
+    "orientation": "upright",
+    "texts": [
+      "The World crowns the cross. What you reach for is within reach."
+    ]
+  },
+  {
+    "id": "rule-forsaken-tower-reversed",
+    "name": "Forsaken: the Tower reversed",
+    "when": "card",
+    "cards": [
+      "elder-the-tower"
+    ],
+    "orientation": "reversed",
+    "texts": [
+      "The Tower stands reversed: the blow is coming, but you may still step aside."
+    ]
+  },
+  {
+    "id": "rule-forsaken-death-tower",
+    "name": "Forsaken: Death and the Tower",
+    "when": "together",
+    "cards": [
+      "elder-death",
+      "elder-the-tower"
+    ],
+    "texts": [
+      "Death and the Tower in the same reading. What falls now will not be rebuilt the same."
+    ]
+  },
+  {
+    "id": "rule-forsaken-sun-moon",
+    "name": "Forsaken: the Sun and the Moon",
+    "when": "together",
+    "cards": [
+      "elder-the-sun",
+      "elder-the-moon"
+    ],
+    "texts": [
+      "The Sun and the Moon share this reading. What is hidden will come to light, if you let it."
+    ]
+  },
+  {
+    "id": "rule-forsaken-fool-world",
+    "name": "Forsaken: the Fool and the World",
+    "when": "together",
+    "cards": [
+      "elder-the-fool",
+      "elder-the-world"
+    ],
+    "texts": [
+      "The first card and the last, the Fool and the World. One journey ends where another begins."
+    ]
+  },
+  {
+    "id": "rule-forsaken-lovers-devil",
+    "name": "Forsaken: the Lovers and the Devil",
+    "when": "together",
+    "cards": [
+      "elder-the-lovers",
+      "elder-the-devil"
+    ],
+    "texts": [
+      "The Lovers and the Devil… be careful what, or whom, you bind yourself to."
+    ]
+  },
+  {
+    "id": "rule-forsaken-tower-star",
+    "name": "Forsaken: the Tower and the Star",
+    "when": "together",
+    "cards": [
+      "elder-the-tower",
+      "elder-the-star"
+    ],
+    "texts": [
+      "The Tower and the Star together. Ruin, then hope; it has always gone that way."
+    ]
+  },
+  {
+    "id": "rule-forsaken-magician-priestess",
+    "name": "Forsaken: the Magician and the High Priestess",
+    "when": "together",
+    "cards": [
+      "elder-the-magician",
+      "elder-the-high-priestess"
+    ],
+    "texts": [
+      "The Magician and the High Priestess: what you know and what you can do are finally speaking to each other."
+    ]
+  },
+  {
+    "id": "rule-forsaken-wheel",
+    "name": "Forsaken: the Wheel upright",
+    "when": "card",
+    "cards": [
+      "elder-wheel-of-fortune"
+    ],
+    "orientation": "upright",
+    "texts": [
+      "The Wheel turns in this reading. Luck is with you now; it will not stay forever."
+    ]
+  },
+  {
+    "id": "rule-star-fool-alone",
+    "name": "Wandering Star: the Fool, alone",
+    "when": "card",
+    "spreads": [
+      "spread-single"
+    ],
+    "cards": [
+      "star-the-fool"
+    ],
+    "position": 1,
+    "texts": [
+      "The Fool, alone. The cards will not answer for you: jump, or don't."
+    ]
+  },
+  {
+    "id": "rule-star-death-ahead",
+    "name": "Wandering Star: Death ahead",
+    "when": "card",
+    "spreads": [
+      "spread-three"
+    ],
+    "cards": [
+      "star-death"
+    ],
+    "position": 3,
+    "orientation": "upright",
+    "texts": [
+      "Do not pale. Death in what is to come rarely means a grave; it means a door closing behind you."
+    ]
+  },
+  {
+    "id": "rule-star-hanged-now",
+    "name": "Wandering Star: the Hanged Man now",
+    "when": "card",
+    "spreads": [
+      "spread-three"
+    ],
+    "cards": [
+      "star-the-hanged-man"
+    ],
+    "position": 2,
+    "texts": [
+      "The Hanged Man in your present: this is a time to wait, not to act."
+    ]
+  },
+  {
+    "id": "rule-star-world-crowns",
+    "name": "Wandering Star: the World crowns",
+    "when": "card",
+    "spreads": [
+      "spread-cross"
+    ],
+    "cards": [
+      "star-the-world"
+    ],
+    "position": 4,
+    "orientation": "upright",
+    "texts": [
+      "The World crowns the cross. What you reach for is within reach."
+    ]
+  },
+  {
+    "id": "rule-star-tower-reversed",
+    "name": "Wandering Star: the Tower reversed",
+    "when": "card",
+    "cards": [
+      "star-the-tower"
+    ],
+    "orientation": "reversed",
+    "texts": [
+      "The Tower stands reversed: the blow is coming, but you may still step aside."
+    ]
+  },
+  {
+    "id": "rule-star-death-tower",
+    "name": "Wandering Star: Death and the Tower",
+    "when": "together",
+    "cards": [
+      "star-death",
+      "star-the-tower"
+    ],
+    "texts": [
+      "Death and the Tower in the same reading. What falls now will not be rebuilt the same."
+    ]
+  },
+  {
+    "id": "rule-star-sun-moon",
+    "name": "Wandering Star: the Sun and the Moon",
+    "when": "together",
+    "cards": [
+      "star-the-sun",
+      "star-the-moon"
+    ],
+    "texts": [
+      "The Sun and the Moon share this reading. What is hidden will come to light, if you let it."
+    ]
+  },
+  {
+    "id": "rule-star-fool-world",
+    "name": "Wandering Star: the Fool and the World",
+    "when": "together",
+    "cards": [
+      "star-the-fool",
+      "star-the-world"
+    ],
+    "texts": [
+      "The first card and the last, the Fool and the World. One journey ends where another begins."
+    ]
+  },
+  {
+    "id": "rule-star-lovers-devil",
+    "name": "Wandering Star: the Lovers and the Devil",
+    "when": "together",
+    "cards": [
+      "star-the-lovers",
+      "star-the-devil"
+    ],
+    "texts": [
+      "The Lovers and the Devil… be careful what, or whom, you bind yourself to."
+    ]
+  },
+  {
+    "id": "rule-star-tower-star",
+    "name": "Wandering Star: the Tower and the Star",
+    "when": "together",
+    "cards": [
+      "star-the-tower",
+      "star-the-star"
+    ],
+    "texts": [
+      "The Tower and the Star together. Ruin, then hope; it has always gone that way."
+    ]
+  },
+  {
+    "id": "rule-star-magician-priestess",
+    "name": "Wandering Star: the Magician and the High Priestess",
+    "when": "together",
+    "cards": [
+      "star-the-magician",
+      "star-the-high-priestess"
+    ],
+    "texts": [
+      "The Magician and the High Priestess: what you know and what you can do are finally speaking to each other."
+    ]
+  },
+  {
+    "id": "rule-star-wheel",
+    "name": "Wandering Star: the Wheel upright",
+    "when": "card",
+    "cards": [
+      "star-wheel-of-fortune"
+    ],
+    "orientation": "upright",
+    "texts": [
+      "The Wheel turns in this reading. Luck is with you now; it will not stay forever."
+    ]
+  },
+  {
+    "id": "rule-all-reversed",
+    "name": "Every card reversed",
+    "when": "allReversed",
+    "texts": [
+      "Every card lies upside down. Nothing here will come to you the easy way.",
+      "All of them reversed… the cards are fighting you, or you are fighting yourself."
+    ]
+  },
+  {
+    "id": "rule-most-reversed",
+    "name": "Most cards reversed",
+    "when": "mostReversed",
+    "texts": [
+      "Most of the cards are turned against you. Something blocks the way, and it may be your own hand.",
+      "So many reversals. Whatever you seek, you will have to wrestle it free."
+    ]
+  },
+  {
+    "id": "rule-all-upright",
+    "name": "Every card upright",
+    "when": "allUpright",
+    "texts": [
+      "Every card stands upright. The way is open, for once.",
+      "No card is turned. The cards speak plainly to you today; few are so lucky."
+    ]
+  },
+  {
+    "id": "rule-rising",
+    "name": "Numbers rising",
+    "when": "rising",
+    "texts": [
+      "The numbers climb from one card to the next. You are rising, whether you feel it or not.",
+      "See how the cards ascend? What began small is growing."
+    ]
+  },
+  {
+    "id": "rule-falling",
+    "name": "Numbers falling",
+    "when": "falling",
+    "texts": [
+      "The numbers fall from card to card. Something is winding down; let it.",
+      "The cards descend, one after another. Something in you is coming to rest, or to an end."
+    ]
+  },
+  {
+    "id": "rule-close-bright",
+    "name": "Closing: bright",
+    "when": "bright",
+    "texts": [
+      "The cards are kind today. Do not waste their kindness.",
+      "It is a good reading. I do not say that often.",
+      "Light outweighs the shadow here. Go gently, and go well."
+    ],
+    "method": "cards"
+  },
+  {
+    "id": "rule-close-mixed",
+    "name": "Closing: mixed",
+    "when": "mixed",
+    "texts": [
+      "Light and shadow, both. The cards do not choose for you; that is your part.",
+      "Nothing here is written in stone. What you do next will tip the scales.",
+      "Neither blessing nor curse. A crossroads, and you are standing on it."
+    ],
+    "method": "cards"
+  },
+  {
+    "id": "rule-close-dark",
+    "name": "Closing: dark",
+    "when": "dark",
+    "texts": [
+      "I will not lie to you: the cards are grim. Forewarned is forearmed.",
+      "There is a shadow over this reading. Walk carefully in the days to come.",
+      "The cards are heavy today. Heed them, and they may yet be wrong."
+    ],
+    "method": "cards"
+  },
+  {
+    "id": "rule-cast-hagalaz-heart",
+    "name": "Hagalaz at the heart",
+    "when": "card",
+    "cards": [
+      "rune-hagalaz"
+    ],
+    "position": 1,
+    "texts": [
+      "Hagalaz lies at the very heart. The storm is not coming; it is here."
+    ]
+  },
+  {
+    "id": "rule-cast-hail-ice",
+    "name": "Hagalaz and Isaz",
+    "when": "together",
+    "cards": [
+      "rune-hagalaz",
+      "rune-isaz"
+    ],
+    "texts": [
+      "Hail and ice together: a hard winter, in more ways than one."
+    ]
+  },
+  {
+    "id": "rule-cast-sun-day",
+    "name": "Sowilo and Dagaz",
+    "when": "together",
+    "cards": [
+      "rune-sowilo",
+      "rune-dagaz"
+    ],
+    "texts": [
+      "Sowilo and Dagaz both show their faces. After the long night, the sun; few casts are this bright."
+    ]
+  },
+  {
+    "id": "rule-cast-fehu-othala",
+    "name": "Fehu and Othala",
+    "when": "together",
+    "cards": [
+      "rune-fehu",
+      "rune-othala"
+    ],
+    "texts": [
+      "Fehu and Othala: what you own and where you come from are tied together. Mind both."
+    ]
+  },
+  {
+    "id": "rule-cast-skull-key",
+    "name": "The Raven Skull and the Old Key",
+    "when": "together",
+    "cards": [
+      "bone-raven-skull",
+      "bone-old-key"
+    ],
+    "texts": [
+      "The skull and the key. A door the dead have kept shut is about to open."
+    ]
+  },
+  {
+    "id": "rule-cast-heart-empty",
+    "name": "Nothing at the heart",
+    "when": "heartEmpty",
+    "texts": [
+      "Nothing fell at the heart. The question itself is not yet clear to you.",
+      "The centre is bare. You have not yet asked what you truly want to know."
+    ]
+  },
+  {
+    "id": "rule-cast-most-down",
+    "name": "More faces down",
+    "when": "mostDown",
+    "texts": [
+      "More faces turned away than shown. Much is still hidden from you.",
+      "Most of them lie face down. They keep their own counsel today."
+    ]
+  },
+  {
+    "id": "rule-cast-two-merk",
+    "name": "Merkstave",
+    "when": "twoReversed",
+    "deck": "elder-futhark",
+    "texts": [
+      "Stones lie against their grain. Something works against you.",
+      "More than one stone fell merkstave. Not everything here wishes you well."
+    ]
+  },
+  {
+    "id": "rule-cast-off-cloth",
+    "name": "Off the cloth",
+    "when": "offCloth",
+    "texts": [
+      "Some rolled out of the circle; what they would have said is not for you.",
+      "Not everything stayed where it fell. Let what rolled away stay away."
+    ]
+  },
+  {
+    "id": "rule-cast-all-down",
+    "name": "Not one face",
+    "when": "allDown",
+    "texts": [
+      "Not one shows its face. The stones are silent today, and silence is an answer too.",
+      "They all lie face down. Ask again tomorrow; today the answer is no answer."
+    ]
+  },
+  {
+    "id": "rule-cast-close-bright",
+    "name": "Closing (casts): bright",
+    "when": "bright",
+    "method": "cast",
+    "texts": [
+      "The stones fell kindly. Do not waste their kindness.",
+      "A good cast. I do not say that often."
+    ]
+  },
+  {
+    "id": "rule-cast-close-mixed",
+    "name": "Closing (casts): mixed",
+    "when": "mixed",
+    "method": "cast",
+    "texts": [
+      "Light and shadow, both. What fell does not choose for you.",
+      "Nothing here is carved for ever. What you do next decides."
+    ]
+  },
+  {
+    "id": "rule-cast-close-dark",
+    "name": "Closing (casts): dark",
+    "when": "dark",
+    "method": "cast",
+    "texts": [
+      "I will not lie to you: the cast is grim. Forewarned is forearmed.",
+      "They fell heavily today. Walk carefully."
+    ]
+  }
+]

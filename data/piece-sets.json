@@ -1,0 +1,15 @@
+[
+  {
+    "id": "elder-futhark",
+    "name": "Elder Futhark",
+    "desc": "The twenty-four runes of the old row, cut in slate.",
+    "look": "stones"
+  },
+  {
+    "id": "casting-bones",
+    "name": "Casting Bones",
+    "desc": "Bones, teeth and charms kept in a leather bag. Placeholder pieces: rename and rewrite them freely.",
+    "look": "bones",
+    "noReversals": true
+  }
+]

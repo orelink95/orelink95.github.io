@@ -1,0 +1,575 @@
+[
+  {
+    "id": "rune-fehu",
+    "name": "Fehu",
+    "pieceSet": "elder-futhark",
+    "number": 1,
+    "glyph": "M3 0V16M3 5L8 1M3 9L8 5",
+    "keywords": [
+      "wealth",
+      "reward"
+    ],
+    "meaning": "Wealth won and wealth kept.",
+    "reversed": "Wealth slipping through your fingers.",
+    "essence": "wealth won and wealth kept",
+    "reversedEssence": "wealth slipping through your fingers",
+    "counsel": "Guard what you have earned.",
+    "reversedCounsel": "Spend nothing you cannot afford to lose.",
+    "tone": "bright",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-uruz",
+    "name": "Uruz",
+    "pieceSet": "elder-futhark",
+    "number": 2,
+    "glyph": "M2 16V0L8 4V16",
+    "keywords": [
+      "strength",
+      "vigour"
+    ],
+    "meaning": "Raw strength, the aurochs’ charge.",
+    "reversed": "Strength misspent, a body worn down.",
+    "essence": "raw strength, the aurochs’ charge",
+    "reversedEssence": "strength misspent, a body worn down",
+    "counsel": "Trust your own strength.",
+    "reversedCounsel": "Rest before you break.",
+    "tone": "bright",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-thurisaz",
+    "name": "Thurisaz",
+    "pieceSet": "elder-futhark",
+    "number": 3,
+    "glyph": "M3 0V16M3 4L7 8L3 12",
+    "keywords": [
+      "thorn",
+      "force"
+    ],
+    "meaning": "A thorn, a force that harms and defends alike.",
+    "reversed": "A thorn turned inward, spite and recklessness.",
+    "essence": "a thorn, a force that harms and defends alike",
+    "reversedEssence": "a thorn turned inward, spite and recklessness",
+    "counsel": "Strike only when you must.",
+    "reversedCounsel": "Do not wound yourself to wound another.",
+    "tone": "neutral",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-ansuz",
+    "name": "Ansuz",
+    "pieceSet": "elder-futhark",
+    "number": 4,
+    "glyph": "M3 0V16M3 0L8 4M3 5L8 9",
+    "keywords": [
+      "word",
+      "counsel"
+    ],
+    "meaning": "A word from above, counsel worth heeding.",
+    "reversed": "A word twisted, a lie in a wise mouth.",
+    "essence": "a word from above, counsel worth heeding",
+    "reversedEssence": "a word twisted, a lie in a wise mouth",
+    "counsel": "Listen to the one who speaks plainly.",
+    "reversedCounsel": "Doubt the sweetest voice in the room.",
+    "tone": "bright",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-raidho",
+    "name": "Raidho",
+    "pieceSet": "elder-futhark",
+    "number": 5,
+    "glyph": "M3 16V0L7 4L3 8L8 16",
+    "keywords": [
+      "journey",
+      "the right road"
+    ],
+    "meaning": "A journey on the right road.",
+    "reversed": "A road that leads nowhere, delays and detours.",
+    "essence": "a journey on the right road",
+    "reversedEssence": "a road that leads nowhere, delays and detours",
+    "counsel": "Set out; the way is clear.",
+    "reversedCounsel": "Wait before you take the road.",
+    "tone": "bright",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-kenaz",
+    "name": "Kenaz",
+    "pieceSet": "elder-futhark",
+    "number": 6,
+    "glyph": "M7 4L3 8L7 12",
+    "keywords": [
+      "torch",
+      "knowledge"
+    ],
+    "meaning": "A torch in the dark, knowledge kindled.",
+    "reversed": "A fire gone out, or a fire out of hand.",
+    "essence": "a torch in the dark, knowledge kindled",
+    "reversedEssence": "a fire gone out, or a fire out of hand",
+    "counsel": "Bring light where others fear to look.",
+    "reversedCounsel": "Mind the flame you carry.",
+    "tone": "bright",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-gebo",
+    "name": "Gebo",
+    "pieceSet": "elder-futhark",
+    "number": 7,
+    "glyph": "M1 2L9 14M9 2L1 14",
+    "symmetric": true,
+    "keywords": [
+      "gift",
+      "bond"
+    ],
+    "meaning": "A gift given, a bond that binds both ways.",
+    "essence": "a gift given, a bond that binds both ways",
+    "counsel": "Give, and expect to be given to.",
+    "tone": "bright"
+  },
+  {
+    "id": "rune-wunjo",
+    "name": "Wunjo",
+    "pieceSet": "elder-futhark",
+    "number": 8,
+    "glyph": "M3 16V0L7 4L3 8",
+    "keywords": [
+      "joy",
+      "fellowship"
+    ],
+    "meaning": "Joy and fellowship, a feast among friends.",
+    "reversed": "A feast gone sour, friends turned strangers.",
+    "essence": "joy and fellowship, a feast among friends",
+    "reversedEssence": "a feast gone sour, friends turned strangers",
+    "counsel": "Gather your people close.",
+    "reversedCounsel": "Look again at those who share your table.",
+    "tone": "bright",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-hagalaz",
+    "name": "Hagalaz",
+    "pieceSet": "elder-futhark",
+    "number": 9,
+    "glyph": "M2 0V16M8 0V16M2 6L8 10",
+    "symmetric": true,
+    "keywords": [
+      "hail",
+      "ruin"
+    ],
+    "meaning": "Hail from a clear sky, ruin no one could stop.",
+    "essence": "hail from a clear sky, ruin no one could stop",
+    "counsel": "Shelter what matters; the storm will pass.",
+    "tone": "dark"
+  },
+  {
+    "id": "rune-naudiz",
+    "name": "Naudiz",
+    "pieceSet": "elder-futhark",
+    "number": 10,
+    "glyph": "M5 0V16M2 6L8 10",
+    "symmetric": true,
+    "keywords": [
+      "need",
+      "hardship"
+    ],
+    "meaning": "Need, a hardship that forges the will.",
+    "essence": "need, a hardship that forges the will",
+    "counsel": "Want teaches what plenty cannot.",
+    "tone": "neutral"
+  },
+  {
+    "id": "rune-isaz",
+    "name": "Isaz",
+    "pieceSet": "elder-futhark",
+    "number": 11,
+    "glyph": "M5 0V16",
+    "symmetric": true,
+    "keywords": [
+      "ice",
+      "stillness"
+    ],
+    "meaning": "Ice, a stillness where nothing moves.",
+    "essence": "ice, a stillness where nothing moves",
+    "counsel": "Do nothing yet. The thaw will come.",
+    "tone": "neutral"
+  },
+  {
+    "id": "rune-jera",
+    "name": "Jera",
+    "pieceSet": "elder-futhark",
+    "number": 12,
+    "glyph": "M4 2L1 6L4 10M6 6L9 10L6 14",
+    "symmetric": true,
+    "keywords": [
+      "harvest",
+      "the year"
+    ],
+    "meaning": "The harvest, a year’s work bearing fruit.",
+    "essence": "the harvest, a year’s work bearing fruit",
+    "counsel": "Reap what you have sown, and be patient for the rest.",
+    "tone": "bright"
+  },
+  {
+    "id": "rune-eihwaz",
+    "name": "Eihwaz",
+    "pieceSet": "elder-futhark",
+    "number": 13,
+    "glyph": "M5 0V16M5 0L8 3M5 16L2 13",
+    "symmetric": true,
+    "keywords": [
+      "yew",
+      "endurance"
+    ],
+    "meaning": "The yew, endurance between life and death.",
+    "essence": "the yew, endurance between life and death",
+    "counsel": "Hold fast; the yew outlives the storm.",
+    "tone": "neutral"
+  },
+  {
+    "id": "rune-perthro",
+    "name": "Perthro",
+    "pieceSet": "elder-futhark",
+    "number": 14,
+    "glyph": "M2 0V16M2 0L6 4L9 1M2 16L6 12L9 15",
+    "keywords": [
+      "lot-cup",
+      "fate"
+    ],
+    "meaning": "The lot-cup, a fate not yet revealed.",
+    "reversed": "A secret spilled, a fate gone wrong.",
+    "essence": "the lot-cup, a fate not yet revealed",
+    "reversedEssence": "a secret spilled, a fate gone wrong",
+    "counsel": "Leave something to chance.",
+    "reversedCounsel": "Do not gamble what you cannot lose.",
+    "tone": "neutral",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-algiz",
+    "name": "Algiz",
+    "pieceSet": "elder-futhark",
+    "number": 15,
+    "glyph": "M5 0V16M5 8L1 3M5 8L9 3",
+    "keywords": [
+      "ward",
+      "protection"
+    ],
+    "meaning": "A ward raised against harm.",
+    "reversed": "A ward broken, defences down.",
+    "essence": "a ward raised against harm",
+    "reversedEssence": "a ward broken, defences down",
+    "counsel": "You are shielded; walk on.",
+    "reversedCounsel": "Guard yourself, for no one else will.",
+    "tone": "bright",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-sowilo",
+    "name": "Sowilo",
+    "pieceSet": "elder-futhark",
+    "number": 16,
+    "glyph": "M7 0L2 6L8 10L3 16",
+    "symmetric": true,
+    "keywords": [
+      "sun",
+      "victory"
+    ],
+    "meaning": "The sun, victory and clarity.",
+    "essence": "the sun, victory and clarity",
+    "counsel": "Act in the light, and you will win.",
+    "tone": "bright"
+  },
+  {
+    "id": "rune-tiwaz",
+    "name": "Tiwaz",
+    "pieceSet": "elder-futhark",
+    "number": 17,
+    "glyph": "M5 0V16M1 4L5 0L9 4",
+    "keywords": [
+      "honour",
+      "sacrifice"
+    ],
+    "meaning": "A just fight, honour paid in sacrifice.",
+    "reversed": "A cause betrayed, courage failing.",
+    "essence": "a just fight, honour paid in sacrifice",
+    "reversedEssence": "a cause betrayed, courage failing",
+    "counsel": "Stand for what is right, whatever it costs.",
+    "reversedCounsel": "Ask whose war you are fighting.",
+    "tone": "bright",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-berkano",
+    "name": "Berkano",
+    "pieceSet": "elder-futhark",
+    "number": 18,
+    "glyph": "M2 0V16M2 0L8 4L2 8L8 12L2 16",
+    "keywords": [
+      "birch",
+      "new growth"
+    ],
+    "meaning": "The birch, birth and new growth.",
+    "reversed": "Growth stunted, a family strained.",
+    "essence": "the birch, birth and new growth",
+    "reversedEssence": "growth stunted, a family strained",
+    "counsel": "Nurture what is just beginning.",
+    "reversedCounsel": "Tend the roots before the branches.",
+    "tone": "bright",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-ehwaz",
+    "name": "Ehwaz",
+    "pieceSet": "elder-futhark",
+    "number": 19,
+    "glyph": "M2 16V0L5 4L8 0V16",
+    "keywords": [
+      "horse",
+      "trust"
+    ],
+    "meaning": "The horse, trust between rider and mount.",
+    "reversed": "A mount that bolts, trust withdrawn.",
+    "essence": "the horse, trust between rider and mount",
+    "reversedEssence": "a mount that bolts, trust withdrawn",
+    "counsel": "Rely on your companions.",
+    "reversedCounsel": "Check the girth before you ride.",
+    "tone": "bright",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-mannaz",
+    "name": "Mannaz",
+    "pieceSet": "elder-futhark",
+    "number": 20,
+    "glyph": "M2 16V0L8 6M8 16V0L2 6",
+    "keywords": [
+      "kin",
+      "the self"
+    ],
+    "meaning": "Kin and kind, the self among others.",
+    "reversed": "A self cut off, the crowd turned hostile.",
+    "essence": "kin and kind, the self among others",
+    "reversedEssence": "a self cut off, the crowd turned hostile",
+    "counsel": "Seek help; you are not alone in this.",
+    "reversedCounsel": "Know yourself before you judge others.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
+  },
+  {
+    "id": "rune-laguz",
+    "name": "Laguz",
+    "pieceSet": "elder-futhark",
+    "number": 21,
+    "glyph": "M3 0V16M3 0L8 4",
+    "keywords": [
+      "water",
+      "intuition"
+    ],
+    "meaning": "Water, the deep current of intuition.",
+    "reversed": "Dark water, fear and drifting.",
+    "essence": "water, the deep current of intuition",
+    "reversedEssence": "dark water, fear and drifting",
+    "counsel": "Go with the current.",
+    "reversedCounsel": "Do not swim where you cannot see the bottom.",
+    "tone": "neutral",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "rune-ingwaz",
+    "name": "Ingwaz",
+    "pieceSet": "elder-futhark",
+    "number": 22,
+    "glyph": "M5 3L9 8L5 13L1 8Z",
+    "symmetric": true,
+    "keywords": [
+      "seed",
+      "potential"
+    ],
+    "meaning": "A seed, potential gathered and waiting.",
+    "essence": "a seed, potential gathered and waiting",
+    "counsel": "Finish one thing before you start the next.",
+    "tone": "bright"
+  },
+  {
+    "id": "rune-dagaz",
+    "name": "Dagaz",
+    "pieceSet": "elder-futhark",
+    "number": 23,
+    "glyph": "M1 0V16L9 0V16L1 0",
+    "symmetric": true,
+    "keywords": [
+      "daybreak",
+      "change"
+    ],
+    "meaning": "Daybreak, a sudden turn toward the light.",
+    "essence": "daybreak, a sudden turn toward the light",
+    "counsel": "Wake; the day has come.",
+    "tone": "bright"
+  },
+  {
+    "id": "rune-othala",
+    "name": "Othala",
+    "pieceSet": "elder-futhark",
+    "number": 24,
+    "glyph": "M2 16L8 7L5 2L2 7L8 16",
+    "keywords": [
+      "heritage",
+      "home"
+    ],
+    "meaning": "An inheritance, the home of those before you.",
+    "reversed": "A lost inheritance, a home closed to you.",
+    "essence": "an inheritance, the home of those before you",
+    "reversedEssence": "a lost inheritance, a home closed to you",
+    "counsel": "Look to where you come from.",
+    "reversedCounsel": "What you were given is not who you are.",
+    "tone": "bright",
+    "reversedTone": "dark"
+  },
+  {
+    "id": "bone-raven-skull",
+    "name": "The Raven Skull",
+    "pieceSet": "casting-bones",
+    "number": 1,
+    "glyph": "M2 7C2 2 8 2 8 7C8 10 6 11 6 13H4C4 11 2 10 2 7ZM3.8 7H4M6 7H6.2",
+    "symmetric": true,
+    "keywords": [
+      "the dead",
+      "a message"
+    ],
+    "meaning": "A message from the dead, or of a death.",
+    "essence": "a message from the dead, or of a death",
+    "counsel": "Listen for what the dead would tell you.",
+    "tone": "dark"
+  },
+  {
+    "id": "bone-wolf-tooth",
+    "name": "The Wolf Tooth",
+    "pieceSet": "casting-bones",
+    "number": 2,
+    "glyph": "M3 2H7L5 14Z",
+    "symmetric": true,
+    "keywords": [
+      "the hunt",
+      "a fight"
+    ],
+    "meaning": "A hunter’s courage, and a fight coming.",
+    "essence": "a hunter’s courage, and a fight coming",
+    "counsel": "Bite first, if you must bite.",
+    "tone": "neutral"
+  },
+  {
+    "id": "bone-knucklebone",
+    "name": "The Knucklebone",
+    "pieceSet": "casting-bones",
+    "number": 3,
+    "glyph": "M2 3L5 6L8 3M2 13L5 10L8 13M5 6V10",
+    "symmetric": true,
+    "keywords": [
+      "chance",
+      "stakes"
+    ],
+    "meaning": "A game of chance whose stakes you do not know.",
+    "essence": "a game of chance whose stakes you do not know",
+    "counsel": "Play, but count the cost.",
+    "tone": "neutral"
+  },
+  {
+    "id": "bone-iron-coin",
+    "name": "The Iron Coin",
+    "pieceSet": "casting-bones",
+    "number": 4,
+    "glyph": "M5 4A4 4 0 1 0 5.01 4ZM4 7H6V9H4Z",
+    "symmetric": true,
+    "keywords": [
+      "a debt",
+      "a price"
+    ],
+    "meaning": "A debt, a payment owed or soon due.",
+    "essence": "a debt, a payment owed or soon due",
+    "counsel": "Pay what you owe.",
+    "tone": "neutral"
+  },
+  {
+    "id": "bone-spiral-shell",
+    "name": "The Spiral Shell",
+    "pieceSet": "casting-bones",
+    "number": 5,
+    "glyph": "M5 8C5 7 6 7 6 8C6 10 3 10 3 8C3 5 8 5 8 8C8 12 1 12 1 8",
+    "symmetric": true,
+    "keywords": [
+      "return",
+      "cycles"
+    ],
+    "meaning": "A slow return, the same path walked again.",
+    "essence": "a slow return, the same path walked again",
+    "counsel": "Break the circle.",
+    "tone": "neutral"
+  },
+  {
+    "id": "bone-antler-tip",
+    "name": "The Antler Tip",
+    "pieceSet": "casting-bones",
+    "number": 6,
+    "glyph": "M3 15C3 9 4 5 7 1M3.6 10L1 7M4.5 6.5L8 5",
+    "symmetric": true,
+    "keywords": [
+      "growth",
+      "renewal"
+    ],
+    "meaning": "Strength that grows back each season.",
+    "essence": "strength that grows back each season",
+    "counsel": "Grow back stronger.",
+    "tone": "bright"
+  },
+  {
+    "id": "bone-hag-stone",
+    "name": "The Hag Stone",
+    "pieceSet": "casting-bones",
+    "number": 7,
+    "glyph": "M5 3C9 3 9 13 5 13C1 13 1 3 5 3ZM5 7A1 1 0 1 0 5.01 7",
+    "symmetric": true,
+    "keywords": [
+      "sight",
+      "a ward"
+    ],
+    "meaning": "Sight beyond sight, a ward against curses.",
+    "essence": "sight beyond sight, a ward against curses",
+    "counsel": "Look through things, not at them.",
+    "tone": "bright"
+  },
+  {
+    "id": "bone-black-feather",
+    "name": "The Black Feather",
+    "pieceSet": "casting-bones",
+    "number": 8,
+    "glyph": "M3 15L8 1M8 1C3 4 3 9 4 12M8 1C9 6 7 10 5 12",
+    "symmetric": true,
+    "keywords": [
+      "flight",
+      "leaving"
+    ],
+    "meaning": "A flight away from danger.",
+    "essence": "a flight away from danger",
+    "counsel": "Leave while you still can.",
+    "tone": "neutral"
+  },
+  {
+    "id": "bone-old-key",
+    "name": "The Old Key",
+    "pieceSet": "casting-bones",
+    "number": 9,
+    "glyph": "M5 1A2 2 0 1 0 5.01 1M5 5V15M5 11H8M5 14H7",
+    "symmetric": true,
+    "keywords": [
+      "a door",
+      "a secret"
+    ],
+    "meaning": "A door, and a secret about to open.",
+    "essence": "a door, and a secret about to open",
+    "counsel": "Open the door.",
+    "tone": "bright"
+  }
+]

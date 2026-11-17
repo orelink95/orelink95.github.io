@@ -346,14 +346,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const box = $('poi-reading');
         const today = D.current(store, poi, campaign);
         if (today) {
+            const cast = today.method === 'cast';
+            const faces = cast ? D.readOf(today) : [];
             const fan = today.method === 'omen'
                 ? F.omen(today.omen, { tag: 'div', faceDown: !today.turned.has(0) })
-                : today.slots.map((s, i) => F.card(s.card, today.deck, { tag: 'div', faceDown: !today.turned.has(i), reversed: s.reversed })).join('');
-            const total = today.method === 'omen' ? 1 : today.slots.length;
+                : cast
+                    ? (today.thrown && faces.length ? faces.slice(0, 5) : today.slots.slice(0, 3)).map(s => F.piece(s.piece, today.set, { faceDown: !today.thrown || !s.up, reversed: s.reversed, shape: s.shape, cls: 'poi-reading-done__piece' })).join('')
+                    : today.slots.map((s, i) => F.card(s.card, today.deck, { tag: 'div', faceDown: !today.turned.has(i), reversed: s.reversed })).join('');
+            const total = today.method === 'omen' ? 1 : cast ? (today.thrown ? faces.length : Infinity) : today.slots.length;
             box.innerHTML = `
                 <div class="poi-reading-done">
                     <div class="poi-reading-done__fan" aria-hidden="true">${fan}</div>
-                    <p class="poi-reading-done__title">${esc(today.method === 'omen' || !today.spread ? today.practice.name : today.spread.name)}</p>
+                    <p class="poi-reading-done__title">${esc(today.method !== 'cards' || !today.spread ? today.practice.name : today.spread.name)}</p>
                     <button type="button" id="poi-reading-open" class="poi-button">
                         <span class="material-symbols-outlined" aria-hidden="true">visibility</span>
                         ${today.turned.size >= total ? 'See your reading' : 'Back to your reading'}
@@ -410,10 +414,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // The dialog: turning a card flips it, then its meaning is added under the spread
     let settle = null;
-    function drawDialog(fresh) {
+    function drawDialog(fresh, more = {}) {
         const view = D.current(store, poi, campaign);
         if (!view) { if (dialog.open) dialog.close(); return; }
-        dialogBody.innerHTML = F.reading(view, { fresh });
+        dialogBody.innerHTML = F.reading(view, { fresh, ...more });
         const added = fresh != null && document.getElementById(`fread-meaning-${fresh}`);
         if (added) added.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
     }
@@ -430,11 +434,24 @@ document.addEventListener('DOMContentLoaded', async () => {
             const outside = e.target === dialog && (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom);
             if (e.target.closest('[data-close]') || outside) { dialog.close(); return; }
             if (e.target.closest('#fortune-zoom')) { zoom.hidden = true; return; }
+            // A cast: the player throws the pieces (once), then reads the faces one by one
+            if (e.target.closest('[data-throw]')) {
+                D.throwCast(poi, campaign);
+                drawDialog(null, { throwing: !matchMedia('(prefers-reduced-motion: reduce)').matches });
+                return;
+            }
             const btn = e.target.closest('[data-turn]');
             if (!btn) return;
             const i = Number(btn.dataset.turn);
             const view = D.current(store, poi, campaign);
             if (!view) return;
+            if (view.method === 'cast') {
+                const fresh = !view.turned.has(i);
+                if (fresh) D.turn(poi, campaign, i);
+                drawDialog(fresh ? i : null, { chosen: i });
+                if (!fresh) { const m = document.getElementById(`fread-meaning-${i}`); if (m) m.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+                return;
+            }
             if (!view.turned.has(i)) {
                 D.turn(poi, campaign, i);
                 btn.classList.remove('is-down');          // the flip plays on the card in place

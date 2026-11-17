@@ -660,6 +660,9 @@
                     const deckSize = (byType.fortuneCard || []).filter(c => c.deck === pr.deck).length;
                     const spreads = (pr.spreads || []).length ? pr.spreads.map(resolve).filter(Boolean) : (byType.spread || []);
                     if (!spreads.some(sp => spreadSize(sp) && spreadSize(sp) <= deckSize)) warnings.push(`[practice] ${pr.id}: no spread fits its deck (${deckSize} card${deckSize === 1 ? '' : 's'}), so it gives no reading`);
+                } else if (pr.method === 'cast') {
+                    if (!pr.pieceSet) warnings.push(`[practice] ${pr.id}.pieceSet: a cast practice needs a piece set`);
+                    else if (!(byType.castPiece || []).some(c => c.pieceSet === pr.pieceSet)) warnings.push(`[practice] ${pr.id}: its set has no piece yet, so it gives no reading`);
                 } else if (pr.method === 'omen' && !(byType.omen || []).some(o => o.practice === pr.id)) {
                     warnings.push(`[practice] ${pr.id}: no omen in its pool, so it gives no reading`);
                 }
@@ -671,6 +674,24 @@
             for (const p of byType.poi || []) {
                 if (p.divination && !(p.divination.practices || []).length) warnings.push(`[poi] ${p.id}.divination: no practice offered, so the page has no Readings tab`);
             }
+            for (const cp of byType.castPiece || []) {
+                if (!cp.glyph && !cp.image) warnings.push(`[castPiece] ${cp.id}: no glyph drawn and no picture, so it shows its initial`);
+            }
+            // Reading rules: what they look for must be able to come up
+            for (const rr of byType.readingRule || []) {
+                const where = `[readingRule] ${rr.id}`;
+                const cards = (rr.cards || []).map(resolve).filter(Boolean);
+                if (!(rr.texts || []).some(t => String(t || '').trim())) warnings.push(`${where}.texts: nothing to say`);
+                if (rr.when === 'card' || rr.when === 'together') {
+                    if (!cards.length) { warnings.push(`${where}.cards: no card chosen, so it never speaks`); continue; }
+                    if (rr.when === 'together' && cards.length < 2) warnings.push(`${where}.cards: "together" needs two cards or more`);
+                    if (rr.when === 'together' && new Set(cards.map(c => c.deck || c.pieceSet)).size > 1) warnings.push(`${where}.cards: cards or pieces of different decks or sets are never drawn together`);
+                }
+                if (rr.when === 'card' && typeof rr.position === 'number') {
+                    const spreads = (rr.spreads || []).length ? rr.spreads.map(resolve).filter(Boolean) : (byType.spread || []);
+                    if (!spreads.some(sp => spreadSize(sp) >= rr.position)) warnings.push(`${where}.position: no spread has a position ${rr.position}`);
+                }
+            }
             for (const pp of byType.prophecy || []) {
                 const where = `[prophecy] ${pp.id}`;
                 const seer = resolve(pp.where);
@@ -678,6 +699,7 @@
                 if (!(pp.campaigns || []).length) warnings.push(`${where}.campaigns: no campaign, so no one gets it`);
                 if (seer && !((seer.divination || {}).practices || []).includes(pp.practice)) warnings.push(`${where}.practice: "${pp.practice}" is not offered at ${seer.id}, so no one gets it`);
                 if (!pr) continue;
+                if (pr.method === 'cast') { warnings.push(`${where}.practice: a cast is never fixed by a prophecy, so no one gets it`); continue; }
                 if (pr.method === 'omen') {
                     if (!pp.omen) warnings.push(`${where}.omen: an omen practice, but no omen is written`);
                     continue;

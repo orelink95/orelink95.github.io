@@ -15,7 +15,13 @@
       "hesitation",
       "a foolish risk"
     ],
-    "reversed": "Recklessness, hesitation, a foolish risk."
+    "reversed": "Recklessness, hesitation, a foolish risk.",
+    "essence": "a first step taken in the dark, with nothing left to lose",
+    "reversedEssence": "a blind step toward a drop no one warned you of",
+    "counsel": "Step forward, even unready; the forsaken roads reward the bold.",
+    "reversedCounsel": "Look down before you leap. Not every fall has a bottom.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-magician",
@@ -33,7 +39,13 @@
       "untapped talent",
       "manipulation"
     ],
-    "reversed": "Trickery, untapped talent, manipulation."
+    "reversed": "Trickery, untapped talent, manipulation.",
+    "essence": "a will strong enough to bend what the gods abandoned",
+    "reversedEssence": "power turned to trickery, a sleight of hand meant for you",
+    "counsel": "Use what lies in your hands; no one else will act for you.",
+    "reversedCounsel": "Watch the hands of those who smile at you.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-high-priestess",
@@ -51,7 +63,13 @@
       "ignored instincts",
       "confusion"
     ],
-    "reversed": "Secrets kept, ignored instincts, confusion."
+    "reversed": "Secrets kept, ignored instincts, confusion.",
+    "essence": "a secret kept behind a veil no god guards anymore",
+    "reversedEssence": "a truth you refuse to hear, though it keeps whispering",
+    "counsel": "Be silent and listen; what you seek is already whispering.",
+    "reversedCounsel": "Stop ignoring the voice inside you. It has been right before.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-empress",
@@ -69,7 +87,13 @@
       "smothering",
       "creative block"
     ],
-    "reversed": "Dependence, smothering, creative block."
+    "reversed": "Dependence, smothering, creative block.",
+    "essence": "a harvest that grows even on forsaken ground",
+    "reversedEssence": "a garden left to wither, care withheld",
+    "counsel": "Tend what is yours, and it will feed you.",
+    "reversedCounsel": "Something you love has been neglected. Go back to it.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-emperor",
@@ -87,7 +111,13 @@
       "rigidity",
       "loss of control"
     ],
-    "reversed": "Tyranny, rigidity, loss of control."
+    "reversed": "Tyranny, rigidity, loss of control.",
+    "essence": "an iron rule, order kept by a firm hand",
+    "reversedEssence": "a tyrant's grip, or a throne left empty",
+    "counsel": "Hold to your discipline; it is a wall against the chaos.",
+    "reversedCounsel": "Beware of those who mistake control for strength, yourself among them.",
+    "tone": "neutral",
+    "reversedTone": "dark"
   },
   {
     "id": "elder-the-hierophant",
@@ -105,7 +135,13 @@
       "dogma",
       "breaking with custom"
     ],
-    "reversed": "Rebellion, dogma, breaking with custom."
+    "reversed": "Rebellion, dogma, breaking with custom.",
+    "essence": "an old creed, kept long after its gods fell silent",
+    "reversedEssence": "a broken vow, a rite that no longer holds",
+    "counsel": "Seek out those who came before; their ways still have something to teach.",
+    "reversedCounsel": "Do not follow a rule only because it is old.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-lovers",
@@ -123,7 +159,13 @@
       "a hard choice",
       "misalignment"
     ],
-    "reversed": "Discord, a hard choice, misalignment."
+    "reversed": "Discord, a hard choice, misalignment.",
+    "essence": "a bond sworn in the dark, and a choice of the heart",
+    "reversedEssence": "a bond fraying, a choice made against yourself",
+    "counsel": "Choose with your heart, then stand by your choice.",
+    "reversedCounsel": "Look at what you are bound to, and ask whether you still want it.",
+    "tone": "bright",
+    "reversedTone": "dark"
   },
   {
     "id": "elder-the-chariot",
@@ -140,7 +182,13 @@
       "defeat",
       "being pulled apart"
     ],
-    "reversed": "Lack of direction, defeat, being pulled apart."
+    "reversed": "Lack of direction, defeat, being pulled apart.",
+    "essence": "a will driving forward through ash and ruin",
+    "reversedEssence": "a charge without direction, the reins slipping",
+    "counsel": "Take the reins and do not look back.",
+    "reversedCounsel": "Slow down. Strength without direction only ends in a ditch.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-strength",
@@ -158,7 +206,13 @@
       "weakness",
       "raw temper"
     ],
-    "reversed": "Self-doubt, weakness, raw temper."
+    "reversed": "Self-doubt, weakness, raw temper.",
+    "essence": "a quiet courage that tames the beast",
+    "reversedEssence": "a courage gone hollow, and the beast let loose",
+    "counsel": "Be gentle with what frightens you, and it will bow to you.",
+    "reversedCounsel": "Your doubt is a beast too. Do not feed it.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-hermit",
@@ -176,7 +230,13 @@
       "withdrawal",
       "a path lost"
     ],
-    "reversed": "Isolation, withdrawal, a path lost."
+    "reversed": "Isolation, withdrawal, a path lost.",
+    "essence": "a lantern carried alone through the long dark",
+    "reversedEssence": "a solitude that has turned into exile",
+    "counsel": "Withdraw for a while; answers come to those who walk alone.",
+    "reversedCounsel": "You have been alone too long. Let someone in.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-wheel-of-fortune",
@@ -194,7 +254,13 @@
       "resistance to change",
       "broken cycles"
     ],
-    "reversed": "Bad luck, resistance to change, broken cycles."
+    "reversed": "Bad luck, resistance to change, broken cycles.",
+    "essence": "the turning of fate, which neither gods nor mortals can stop",
+    "reversedEssence": "a turn of bad luck, the wheel grinding downward",
+    "counsel": "Ride the turn of fate; it cannot be stopped, only met.",
+    "reversedCounsel": "What goes down comes up again. Endure.",
+    "tone": "neutral",
+    "reversedTone": "dark"
   },
   {
     "id": "elder-justice",
@@ -212,7 +278,13 @@
       "dishonesty",
       "a debt unpaid"
     ],
-    "reversed": "Injustice, dishonesty, a debt unpaid."
+    "reversed": "Injustice, dishonesty, a debt unpaid.",
+    "essence": "a debt that will be paid, in full",
+    "reversedEssence": "a judgement twisted, a debt left unpaid",
+    "counsel": "Be honest in your dealings; the scales are watching.",
+    "reversedCounsel": "If you have wronged someone, make it right before it is made right for you.",
+    "tone": "neutral",
+    "reversedTone": "dark"
   },
   {
     "id": "elder-the-hanged-man",
@@ -230,7 +302,13 @@
       "needless sacrifice",
       "indecision"
     ],
-    "reversed": "Stalling, needless sacrifice, indecision."
+    "reversed": "Stalling, needless sacrifice, indecision.",
+    "essence": "a sacrifice that lets you see the world upside down",
+    "reversedEssence": "a waiting that has rotted into stagnation",
+    "counsel": "Let go of what you cannot hold, and look again.",
+    "reversedCounsel": "Stop waiting for a sign. This is the sign.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-death",
@@ -248,7 +326,13 @@
       "stagnation",
       "a change resisted"
     ],
-    "reversed": "Clinging to the past, stagnation, a change resisted."
+    "reversed": "Clinging to the past, stagnation, a change resisted.",
+    "essence": "an ending, cold and certain, that clears the ground",
+    "reversedEssence": "an ending you refuse, rotting where it stands",
+    "counsel": "Let what is dead stay buried; mourn it, then move on.",
+    "reversedCounsel": "Clinging to what is over will not bring it back.",
+    "tone": "dark",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-temperance",
@@ -266,7 +350,13 @@
       "imbalance",
       "haste"
     ],
-    "reversed": "Excess, imbalance, haste."
+    "reversed": "Excess, imbalance, haste.",
+    "essence": "a careful balance, water poured from cup to cup",
+    "reversedEssence": "excess, and a balance lost",
+    "counsel": "Take the middle path; patience will mend what haste would break.",
+    "reversedCounsel": "Measure your appetites before they measure you.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-devil",
@@ -284,7 +374,13 @@
       "breaking chains",
       "facing a vice"
     ],
-    "reversed": "Release, breaking chains, facing a vice."
+    "reversed": "Release, breaking chains, facing a vice.",
+    "essence": "a chain you forged yourself, and the hunger that holds it",
+    "reversedEssence": "a chain loosening, a hunger finally named",
+    "counsel": "Name what binds you; only then can you break it.",
+    "reversedCounsel": "You are nearly free. Do not reach back for the chain.",
+    "tone": "dark",
+    "reversedTone": "bright"
   },
   {
     "id": "elder-the-tower",
@@ -302,7 +398,13 @@
       "fear of change",
       "delayed ruin"
     ],
-    "reversed": "Disaster averted, fear of change, delayed ruin."
+    "reversed": "Disaster averted, fear of change, delayed ruin.",
+    "essence": "a ruin that strikes without warning and lays the truth bare",
+    "reversedEssence": "a disaster narrowly avoided, or merely delayed",
+    "counsel": "Brace yourself, and let what is false fall.",
+    "reversedCounsel": "The cracks are showing. Mend them now, or step away.",
+    "tone": "dark",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-star",
@@ -320,7 +422,13 @@
       "lost faith",
       "disconnection"
     ],
-    "reversed": "Despair, lost faith, disconnection."
+    "reversed": "Despair, lost faith, disconnection.",
+    "essence": "a faint light still burning where the gods abandoned the sky",
+    "reversedEssence": "a hope dimmed, faith worn thin",
+    "counsel": "Keep your hope; even in a forsaken sky, a star remains.",
+    "reversedCounsel": "Your light is not gone, only hidden. Look for it.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-moon",
@@ -338,7 +446,13 @@
       "confusion lifting",
       "deception revealed"
     ],
-    "reversed": "Truth surfacing, confusion lifting, deception revealed."
+    "reversed": "Truth surfacing, confusion lifting, deception revealed.",
+    "essence": "an illusion born of fear, shapes moving in the dark",
+    "reversedEssence": "a fog lifting, a fear seen for what it is",
+    "counsel": "Trust nothing you see by moonlight; wait for the dawn.",
+    "reversedCounsel": "What frightened you was smaller than its shadow.",
+    "tone": "dark",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-sun",
@@ -356,7 +470,13 @@
       "delay",
       "a dimmed light"
     ],
-    "reversed": "Clouded joy, delay, a dimmed light."
+    "reversed": "Clouded joy, delay, a dimmed light.",
+    "essence": "a rare light breaking through, warm and clear",
+    "reversedEssence": "a light clouded over, a joy delayed",
+    "counsel": "Step into the light while it lasts; you have earned it.",
+    "reversedCounsel": "The sun is behind the clouds, not gone. Be patient.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-judgement",
@@ -374,7 +494,13 @@
       "a call ignored",
       "harsh judgement"
     ],
-    "reversed": "Self-doubt, a call ignored, harsh judgement."
+    "reversed": "Self-doubt, a call ignored, harsh judgement.",
+    "essence": "a reckoning, and a call you cannot ignore",
+    "reversedEssence": "a call unheeded, a reckoning put off",
+    "counsel": "Answer the call; the dead do not wait forever.",
+    "reversedCounsel": "You know what you must face. Stop looking away.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "elder-the-world",
@@ -392,7 +518,13 @@
       "a missing piece",
       "delay"
     ],
-    "reversed": "Unfinished business, a missing piece, delay."
+    "reversed": "Unfinished business, a missing piece, delay.",
+    "essence": "a circle closed, a long road walked to its end",
+    "reversedEssence": "a road left unfinished, one step short of the end",
+    "counsel": "Finish what you have begun; the end is near.",
+    "reversedCounsel": "One last step remains. Do not stop now.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-fool",
@@ -411,7 +543,13 @@
       "hesitation",
       "a foolish risk"
     ],
-    "reversed": "Recklessness, hesitation, a foolish risk."
+    "reversed": "Recklessness, hesitation, a foolish risk.",
+    "essence": "a new road taken under an unknown sky",
+    "reversedEssence": "a road taken without a map, toward a cliff edge",
+    "counsel": "Set out; the stars will find you on the way.",
+    "reversedCounsel": "Before you set out, ask where the road leads.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-magician",
@@ -430,7 +568,13 @@
       "untapped talent",
       "manipulation"
     ],
-    "reversed": "Trickery, untapped talent, manipulation."
+    "reversed": "Trickery, untapped talent, manipulation.",
+    "essence": "the skill to draw down the light of the stars",
+    "reversedEssence": "a gift wasted, or a trick dressed up as starlight",
+    "counsel": "You hold every tool you need. Begin.",
+    "reversedCounsel": "Not every shining thing is a star. Look closer.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-high-priestess",
@@ -449,7 +593,13 @@
       "ignored instincts",
       "confusion"
     ],
-    "reversed": "Secrets kept, ignored instincts, confusion."
+    "reversed": "Secrets kept, ignored instincts, confusion.",
+    "essence": "a secret written in the stars, read only by the patient",
+    "reversedEssence": "a sign you have seen and refused to read",
+    "counsel": "Read the signs quietly; they are already there.",
+    "reversedCounsel": "You have seen the sign. Stop pretending you haven't.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-empress",
@@ -468,7 +618,13 @@
       "smothering",
       "creative block"
     ],
-    "reversed": "Dependence, smothering, creative block."
+    "reversed": "Dependence, smothering, creative block.",
+    "essence": "a season of plenty, fields ripening under a kind sky",
+    "reversedEssence": "a dry season, a field left untended",
+    "counsel": "Plant now; the season favours you.",
+    "reversedCounsel": "Care for yourself as you care for others.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-emperor",
@@ -487,7 +643,13 @@
       "rigidity",
       "loss of control"
     ],
-    "reversed": "Tyranny, rigidity, loss of control."
+    "reversed": "Tyranny, rigidity, loss of control.",
+    "essence": "a steady hand at the helm, a course held true",
+    "reversedEssence": "a course held too rigidly, or no course at all",
+    "counsel": "Set your course and hold it.",
+    "reversedCounsel": "A captain who never changes course runs aground.",
+    "tone": "neutral",
+    "reversedTone": "dark"
   },
   {
     "id": "star-the-hierophant",
@@ -506,7 +668,13 @@
       "dogma",
       "breaking with custom"
     ],
-    "reversed": "Rebellion, dogma, breaking with custom."
+    "reversed": "Rebellion, dogma, breaking with custom.",
+    "essence": "the wisdom of those who charted the stars before you",
+    "reversedEssence": "an old map that no longer matches the land",
+    "counsel": "Ask those who walked this road before you.",
+    "reversedCounsel": "The old maps are wrong here. Draw your own.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-lovers",
@@ -525,7 +693,13 @@
       "a hard choice",
       "misalignment"
     ],
-    "reversed": "Discord, a hard choice, misalignment."
+    "reversed": "Discord, a hard choice, misalignment.",
+    "essence": "two paths meeting, and a choice of the heart",
+    "reversedEssence": "two paths drifting apart",
+    "counsel": "Walk beside the one who walks beside you.",
+    "reversedCounsel": "If your paths have parted, let them.",
+    "tone": "bright",
+    "reversedTone": "dark"
   },
   {
     "id": "star-the-chariot",
@@ -543,7 +717,13 @@
       "defeat",
       "being pulled apart"
     ],
-    "reversed": "Lack of direction, defeat, being pulled apart."
+    "reversed": "Lack of direction, defeat, being pulled apart.",
+    "essence": "a swift journey, carried forward by sheer will",
+    "reversedEssence": "a journey stalled, wheels stuck in the mud",
+    "counsel": "Ride on; the road is yours.",
+    "reversedCounsel": "Rest the horses before you drive them into the ground.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-strength",
@@ -562,7 +742,13 @@
       "weakness",
       "raw temper"
     ],
-    "reversed": "Self-doubt, weakness, raw temper."
+    "reversed": "Self-doubt, weakness, raw temper.",
+    "essence": "the calm courage of one who has walked far",
+    "reversedEssence": "a weariness that saps the will",
+    "counsel": "Endure gently; the road is long, but you are strong.",
+    "reversedCounsel": "Even the strongest traveller must rest.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-hermit",
@@ -581,7 +767,13 @@
       "withdrawal",
       "a path lost"
     ],
-    "reversed": "Isolation, withdrawal, a path lost."
+    "reversed": "Isolation, withdrawal, a path lost.",
+    "essence": "a lone traveller following a single star",
+    "reversedEssence": "a traveller lost, too proud to ask the way",
+    "counsel": "Follow your own star, even alone.",
+    "reversedCounsel": "Ask for directions; there is no shame in it.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-wheel-of-fortune",
@@ -600,7 +792,13 @@
       "resistance to change",
       "broken cycles"
     ],
-    "reversed": "Bad luck, resistance to change, broken cycles."
+    "reversed": "Bad luck, resistance to change, broken cycles.",
+    "essence": "the turning of the heavens, fortune changing with the seasons",
+    "reversedEssence": "a bad turn of the heavens, luck running against you",
+    "counsel": "The sky turns in your favour; act while it does.",
+    "reversedCounsel": "Bad seasons end. Wait for the next one.",
+    "tone": "neutral",
+    "reversedTone": "dark"
   },
   {
     "id": "star-justice",
@@ -619,7 +817,13 @@
       "dishonesty",
       "a debt unpaid"
     ],
-    "reversed": "Injustice, dishonesty, a debt unpaid."
+    "reversed": "Injustice, dishonesty, a debt unpaid.",
+    "essence": "a fair road, where every step is weighed",
+    "reversedEssence": "an unfair toll, a scale tipped against you",
+    "counsel": "Walk straight, and you will arrive.",
+    "reversedCounsel": "Someone is cheating you, or you are cheating yourself.",
+    "tone": "neutral",
+    "reversedTone": "dark"
   },
   {
     "id": "star-the-hanged-man",
@@ -638,7 +842,13 @@
       "needless sacrifice",
       "indecision"
     ],
-    "reversed": "Stalling, needless sacrifice, indecision."
+    "reversed": "Stalling, needless sacrifice, indecision.",
+    "essence": "a pause on the road, the world seen from another angle",
+    "reversedEssence": "a pause that has lasted too long",
+    "counsel": "Stop and look up; the stars look different from here.",
+    "reversedCounsel": "You have rested long enough. Move.",
+    "tone": "neutral",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-death",
@@ -657,7 +867,13 @@
       "stagnation",
       "a change resisted"
     ],
-    "reversed": "Clinging to the past, stagnation, a change resisted."
+    "reversed": "Clinging to the past, stagnation, a change resisted.",
+    "essence": "the end of one road, and the crossroads beyond",
+    "reversedEssence": "a road you will not leave, though it ends here",
+    "counsel": "Let this road end; another begins at your feet.",
+    "reversedCounsel": "You cannot walk a road that is gone.",
+    "tone": "dark",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-temperance",
@@ -676,7 +892,13 @@
       "imbalance",
       "haste"
     ],
-    "reversed": "Excess, imbalance, haste."
+    "reversed": "Excess, imbalance, haste.",
+    "essence": "a steady pace, neither hurried nor halted",
+    "reversedEssence": "a pace lost, haste and delay by turns",
+    "counsel": "Keep a steady pace; you will arrive in time.",
+    "reversedCounsel": "Find your rhythm again before you go on.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-devil",
@@ -695,7 +917,13 @@
       "breaking chains",
       "facing a vice"
     ],
-    "reversed": "Release, breaking chains, facing a vice."
+    "reversed": "Release, breaking chains, facing a vice.",
+    "essence": "a comfortable inn you cannot bring yourself to leave",
+    "reversedEssence": "a door opening, the road calling you out of a gilded cage",
+    "counsel": "Remember why you set out, before comfort keeps you.",
+    "reversedCounsel": "The door is open. Walk through it.",
+    "tone": "dark",
+    "reversedTone": "bright"
   },
   {
     "id": "star-the-tower",
@@ -714,7 +942,13 @@
       "fear of change",
       "delayed ruin"
     ],
-    "reversed": "Disaster averted, fear of change, delayed ruin."
+    "reversed": "Disaster averted, fear of change, delayed ruin.",
+    "essence": "a bolt from a clear sky, the road torn up ahead",
+    "reversedEssence": "a storm passing just beside you",
+    "counsel": "When the road breaks, find another; it will be shorter than you think.",
+    "reversedCounsel": "The storm passed close. Do not tempt it twice.",
+    "tone": "dark",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-star",
@@ -733,7 +967,13 @@
       "lost faith",
       "disconnection"
     ],
-    "reversed": "Despair, lost faith, disconnection."
+    "reversed": "Despair, lost faith, disconnection.",
+    "essence": "the guiding star itself, clear and bright above the road",
+    "reversedEssence": "a guiding star hidden by cloud",
+    "counsel": "Follow your star; it has not led you astray.",
+    "reversedCounsel": "The clouds will part. Keep walking.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-moon",
@@ -752,7 +992,13 @@
       "confusion lifting",
       "deception revealed"
     ],
-    "reversed": "Truth surfacing, confusion lifting, deception revealed."
+    "reversed": "Truth surfacing, confusion lifting, deception revealed.",
+    "essence": "a road lit only by moonlight, where nothing is as it seems",
+    "reversedEssence": "the moon setting, and the way growing clearer",
+    "counsel": "Walk carefully at night, and trust your feet over your eyes.",
+    "reversedCounsel": "The path is clearing. You will soon see where you stand.",
+    "tone": "dark",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-sun",
@@ -771,7 +1017,13 @@
       "delay",
       "a dimmed light"
     ],
-    "reversed": "Clouded joy, delay, a dimmed light."
+    "reversed": "Clouded joy, delay, a dimmed light.",
+    "essence": "a bright morning, and a road open in every direction",
+    "reversedEssence": "a grey morning, the warmth a little delayed",
+    "counsel": "Go out into the day; it is yours.",
+    "reversedCounsel": "The day is still good, even if it started grey.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-judgement",
@@ -790,7 +1042,13 @@
       "a call ignored",
       "harsh judgement"
     ],
-    "reversed": "Self-doubt, a call ignored, harsh judgement."
+    "reversed": "Self-doubt, a call ignored, harsh judgement.",
+    "essence": "a call from beyond the horizon, too loud to ignore",
+    "reversedEssence": "a call you pretend not to hear",
+    "counsel": "Answer the call; it will not come again.",
+    "reversedCounsel": "You heard it. Go.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   },
   {
     "id": "star-the-world",
@@ -809,6 +1067,12 @@
       "a missing piece",
       "delay"
     ],
-    "reversed": "Unfinished business, a missing piece, delay."
+    "reversed": "Unfinished business, a missing piece, delay.",
+    "essence": "the journey's end, the whole sky turned full circle",
+    "reversedEssence": "the last mile, still unwalked",
+    "counsel": "You have arrived; look back at how far you have come.",
+    "reversedCounsel": "Walk the last mile. It is always the longest.",
+    "tone": "bright",
+    "reversedTone": "neutral"
   }
 ]

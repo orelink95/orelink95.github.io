@@ -48,6 +48,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const state = { world: true, present: true, open: new Set() };
     const asked = new URLSearchParams(location.search).get('event');
     if (asked) state.open.add(asked);
+    // ?session=… (the folios of the scriptorium): its campaign's sessions are shown, and it glows
+    const askedSession = store.get(new URLSearchParams(location.search).get('session'));
+    const sessionAsked = askedSession && store.typeOf(askedSession) === 'session' ? askedSession : null;
+    if (sessionAsked) { shown.add(sessionAsked.campaign); state.present = true; }
 
     const now = cal.now(store);
     const nowYear = now ? Number(now.year) : null;
@@ -332,5 +336,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (asked) {
         const target = document.getElementById('ev-' + asked);
         if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    }
+    if (sessionAsked) {
+        const target = document.getElementById('se-' + sessionAsked.id);
+        if (target) {
+            target.classList.add('is-target');
+            setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+        }
     }
 });

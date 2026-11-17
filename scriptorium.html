@@ -25,11 +25,14 @@
     <script src="scripts/core/calendar.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/personae.js"></script>
+    <script src="scripts/upcoming-sessions.js"></script>
+    <script src="scripts/scriptorium-journey.js"></script>
     <script src="scripts/scriptorium-scripts.js"></script>
 </head>
 
 <!-- data-view: which tab is shown (scripts/scriptorium-scripts.js).
      sessions = the timeline (+ the ledger beside it on wide screens),
+     journey = the places visited, on the maps (scripts/scriptorium-journey.js),
      story = the full story, ledger = leads and finds (phones only). -->
 <body class="page archival-bg" data-view="sessions">
     <div id="header-placeholder"></div>
@@ -37,6 +40,8 @@
     <nav class="scr-tabs" role="tablist" aria-label="The Scriptorium">
         <button id="tab-sessions" class="scr-tab" role="tab" data-view="sessions" aria-controls="scr-sessions" aria-selected="true">
             <span class="scr-tab__icon material-symbols-outlined" aria-hidden="true">history_edu</span>Sessions</button>
+        <button id="tab-journey" class="scr-tab" role="tab" data-view="journey" aria-controls="scr-journey" aria-selected="false" tabindex="-1">
+            <span class="scr-tab__icon material-symbols-outlined" aria-hidden="true">route</span>Journey</button>
         <button id="tab-story" class="scr-tab" role="tab" data-view="story" aria-controls="scr-story" aria-selected="false" tabindex="-1">
             <span class="scr-tab__icon material-symbols-outlined" aria-hidden="true">auto_stories</span><span class="scr-tab__long">The Full</span> Story</button>
         <button id="tab-ledger" class="scr-tab scr-tab--phone" role="tab" data-view="ledger" aria-controls="scr-ledger" aria-selected="false" tabindex="-1">
@@ -48,8 +53,14 @@
             <p class="personae-hero__eyebrow">The Scriptorium</p>
             <h1 id="scr-title" class="personae-hero__title">The Chronicle</h1>
             <p id="scr-meta" class="scr-hero__meta"></p>
+            <!-- A memorable quote of the campaign, at random -->
+            <figure id="scr-quote" class="scr-quote" hidden></figure>
             <div class="personae-hero__rule"></div>
-            <select id="scr-campaign" class="personae-picker hidden" aria-label="Campaign"></select>
+            <div class="scr-hero__actions">
+                <select id="scr-campaign" class="personae-picker hidden" aria-label="Campaign"></select>
+                <button type="button" id="scr-recap-btn" class="scr-recap-btn" hidden>
+                    <span class="material-symbols-outlined" aria-hidden="true">campaign</span>Previously on…</button>
+            </div>
         </header>
 
         <div class="scr-layout">
@@ -80,6 +91,9 @@
                 </section>
             </aside>
 
+            <!-- The journey -->
+            <section id="scr-journey" class="scr-journey" role="tabpanel" aria-labelledby="tab-journey"></section>
+
             <!-- The full story -->
             <section id="scr-story" class="scr-story" role="tabpanel" aria-labelledby="tab-story"></section>
         </div>
@@ -91,9 +105,20 @@
             <button type="button" class="folio__nav" data-step="1" aria-label="Older session"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span><span class="folio__nav-text">Older</span></button>
             <button type="button" class="folio__nav" data-step="-1" aria-label="Newer session"><span class="folio__nav-text">Newer</span><span class="material-symbols-outlined" aria-hidden="true">chevron_right</span></button>
             <span id="folio-label" class="folio__label"></span>
+            <a id="folio-days" class="folio__link" href="timeline.html" aria-label="See this session in the Book of Days">
+                <span class="material-symbols-outlined" aria-hidden="true">hourglass_top</span><span class="folio__nav-text">In the Book of Days</span></a>
             <button type="button" class="folio__close" data-close aria-label="Close the folio" autofocus><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
         </div>
         <div id="folio-body" class="folio__body"></div>
+    </dialog>
+
+    <!-- "Previously on…": the latest session, to read at the table -->
+    <dialog id="scr-recap" class="recap" aria-labelledby="recap-title">
+        <div class="recap__bar">
+            <button type="button" class="recap__btn" data-print><span class="material-symbols-outlined" aria-hidden="true">print</span>Print</button>
+            <button type="button" class="recap__btn" data-close autofocus><span class="material-symbols-outlined" aria-hidden="true">close</span>Close</button>
+        </div>
+        <div id="recap-body" class="recap__body"></div>
     </dialog>
 
     <div id="footer-placeholder"></div>

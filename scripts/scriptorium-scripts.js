@@ -1,11 +1,16 @@
 /* =====================================================================
    THE SCRIPTORIUM (scriptorium.html) — a campaign's chronicle.
-   Three tabs (body[data-view]):
+   Four tabs (body[data-view]):
    - sessions : the timeline of the sessions, newest first, grouped by arc,
-                with the ledger (leads, finds) beside it on wide screens
+                with the next session planned on top (data/schedule.json, the
+                homepage's cards) and the ledger (leads, finds) beside it on
+                wide screens
+   - journey  : the places visited, on the maps (scripts/scriptorium-journey.js)
    - story    : the full story, one chapter per arc (campaign.chapters)
    - ledger   : leads and finds on their own (phones only)
-   A session opens in its folio (<dialog id="scr-folio">).
+   A session opens in its folio (<dialog id="scr-folio">). Under the title: a
+   memorable quote of the campaign (session.quotes), at random, and the
+   "Previously on…" button (<dialog id="scr-recap">: the latest session's recap).
    The campaign is the one the Dramatis Personae pages share
    (scripts/personae.js): ?campaign=…, else the last one picked, else
    settings.currentCampaign. ?session=… opens that session's folio.
@@ -22,6 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         search: $('scr-search'), arcs: $('scr-arcs'), count: $('scr-count'), timeline: $('scr-timeline'),
         quests: $('scr-quests'), finds: $('scr-finds'), findsFoot: $('scr-finds-foot'),
         story: $('scr-story'), folio: $('scr-folio'), folioBody: $('folio-body'), folioLabel: $('folio-label'),
+        days: $('folio-days'), quote: $('scr-quote'), recapBtn: $('scr-recap-btn'),
+        recap: $('scr-recap'), recapBody: $('recap-body'), journey: $('scr-journey'),
     };
 
     const campaigns = store.all('campaign').slice().sort((a, b) => a.name.localeCompare(b.name));
@@ -53,6 +60,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const npcsOf = s => (s.npcs || []).map(e => ({ entry: e, npc: store.get(e.npc) }))
         .filter(x => x.npc && store.typeOf(x.npc) === 'npc');
     const faceSrc = npc => npc.avatar || npc.portrait || '';
+
+    // Who said a quote: a hero or an NPC (session.quotes[].by), else any name
+    const speakerOf = q => { const r = q && q.by ? store.get(q.by) : null; return r && ['hero', 'npc'].includes(store.typeOf(r)) ? r : null; };
+    const speakerName = q => { const r = speakerOf(q); return r ? r.name : (q && q.name) || ''; };
+    const quotesOf = s => (s.quotes || []).filter(q => q && q.text);
+    const handoutsOf = s => (s.handouts || []).map(id => store.get(id)).filter(h => h && store.typeOf(h) === 'handout' && !h.draft);
 
     // A link to a record, with its preview card (data-kw: scripts/core/preview.js)
     function recLink(rec, cls, inner) {
@@ -130,6 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             ...(s.keywords || []), ...placesOf(s).map(p => p.name),
             ...npcsOf(s).map(x => [x.npc.name, ...(x.npc.aliases || [])].join(' ')),
             ...names(s.loot), ...(s.accomplished || []), ...(s.leadsPursued || []), ...(s.futureLeads || []),
+            s.recap, ...(s.quotes || []).map(q => [q.text, speakerName(q)].join(' ')), ...names(s.handouts),
         ].filter(Boolean).join(' \n ').toLowerCase();
     }
 
@@ -150,6 +164,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderTimeline();
         renderLedger();
         renderStory();
+        if (journey) journey.load(sessions);
     }
 
     /* ---------------- header ---------------- */
@@ -168,6 +183,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const n = sessions.length;
         els.meta.textContent = [`The chronicle of ${current.partyName || current.name}`, `${n} ${n === 1 ? 'session' : 'sessions'}`, span]
             .filter(Boolean).join(' · ');
+
+        // A memorable quote of the campaign, a different one at each visit
+        const quotes = sessions.flatMap(s => quotesOf(s).map(q => ({ q, s })));
+        els.quote.hidden = !quotes.length;
+        if (quotes.length) {
+            const { q, s } = quotes[Math.floor(Math.random() * quotes.length)];
+            const who = speakerOf(q);
+            els.quote.innerHTML = `<blockquote class="scr-quote__text">“${esc(q.text)}”</blockquote>
+                <figcaption class="scr-quote__by">— ${who ? recLink(who, 'scr-quote__name') : esc(q.name || 'Unknown')}
+                    · <button type="button" class="scr-quote__session" data-open="${esc(s.id)}">Session ${esc(roman(s.number) || s.name)}</button></figcaption>`;
+        }
+        els.recapBtn.hidden = !sessions.length;
     }
 
     /* ---------------- sessions ---------------- */
@@ -236,7 +263,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         const plain = !q && arcFilter === 'all';
-        let html = '', arc = null;
+        let html = plain ? nextSessionHtml() : '', arc = null;
         list.forEach((s, i) => {
             if (i === 0 || s.arc !== arc) {
                 arc = s.arc;
@@ -247,6 +274,31 @@ document.addEventListener('DOMContentLoaded', async () => {
             html += entryHtml(s, plain && s === sessions[0]);
         });
         els.timeline.innerHTML = `<div class="scr-spine" aria-hidden="true"></div>${html}`;
+    }
+
+    /* The next session planned for this campaign (data/schedule.json, the
+       homepage's cards; same rules: scripts/upcoming-sessions.js) */
+    function nextSessionHtml() {
+        const up = Athenaeum.upcoming;
+        const schedule = (store.singletons && store.singletons.schedule) || {};
+        if (!up || !Array.isArray(schedule.sessions)) return '';
+        const mine = up.resolve(schedule.sessions, { campaigns })
+            .filter(x => x.entry.campaign === current.id && !x.past && x.variant !== 'cancelled');
+        if (!mine.length) return '';
+        const [next, then] = mine;
+        const label = next.variant === 'next' ? 'Next session' : next.label;
+        const when = [next.dateText, next.timeText].filter(Boolean).join(' · ');
+        const extra = [next.where, next.countdown].filter(Boolean).join(' · ');
+        return `<div class="scr-entry scr-next${next.variant === 'postponed' ? ' is-postponed' : ''}">
+                <span class="scr-seal scr-seal--next" aria-hidden="true"><span class="material-symbols-outlined">hourglass_top</span></span>
+                <div class="scr-next__card">
+                    <div><p class="scr-next__label">${esc(label)}${next.number != null ? ` · ${esc(roman(next.number))}` : ''}</p>
+                        <p class="scr-next__when">${esc(when)}</p>
+                        ${next.notice ? `<p class="scr-next__extra">${esc(next.notice)}</p>` : ''}</div>
+                    ${extra ? `<p class="scr-next__extra">${esc(extra)}</p>` : ''}
+                    ${then ? `<p class="scr-next__then">Then: ${esc(then.dateText)}${then.variant === 'tbd' ? ' · tentative' : ''}</p>` : ''}
+                </div>
+            </div>`;
     }
 
     /* ---------------- the ledger ---------------- */
@@ -342,6 +394,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const main = [
             s.summary ? `<p class="folio__summary">${linked(s.summary)}</p>` : '',
+            quotesOf(s).length ? section('folio-sec--quotes', 'format_quote', 'Memorable Quotes',
+                `<div class="folio-quotes">${quotesOf(s).map(q => {
+                    const who = speakerOf(q);
+                    const src = who ? faceSrc(who) : '';
+                    const face = src ? `<img class="folio-quote__face" src="${esc(src)}" alt="" loading="lazy">`
+                        : `<span class="folio-quote__face folio-quote__face--plain material-symbols-outlined" aria-hidden="true">format_quote</span>`;
+                    const role = who ? (store.typeOf(who) === 'hero' ? 'Hero' : '') : '';
+                    return `<figure class="folio-quote">${face}<div>
+                        <blockquote class="folio-quote__text">“${esc(q.text)}”</blockquote>
+                        <figcaption class="folio-quote__by">— ${who ? recLink(who, `folio-quote__name${store.typeOf(who) === 'hero' ? ' is-hero' : ''}`) : esc(q.name || 'Unknown')}${role ? ` <span class="folio-quote__role">· ${role}</span>` : ''}</figcaption>
+                    </div></figure>`;
+                }).join('')}</div>`) : '',
             (s.accomplished || []).length ? section('folio-sec--done', 'verified', 'Things Accomplished',
                 `<ul class="folio-done">${s.accomplished.map(t => `<li><span class="folio-done__mark" aria-hidden="true">✦</span><span>${linked(t)}</span></li>`).join('')}</ul>`) : '',
             section('folio-sec--transcript', 'history_edu', 'Archival Transcript', s.body
@@ -352,7 +416,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const rail = [
             places.length || s.region ? section('folio-sec--places', 'location_on', 'Places',
                 `${s.region ? `<p class="folio__region">${esc(s.region)}</p>` : ''}
-                 ${places.length ? `<ul class="folio-places">${places.map(p => `<li>${placeHtml(p)}</li>`).join('')}</ul>` : ''}`) : '',
+                 ${places.length ? `<ul class="folio-places">${places.map(p => `<li>${placeHtml(p)}</li>`).join('')}</ul>` : ''}
+                 ${(s.places || []).some(id => store.get(id)) ? `<button type="button" class="folio__journey" data-journey="${esc(s.id)}"><span class="material-symbols-outlined" aria-hidden="true">route</span>Follow on the Journey</button>` : ''}`) : '',
             npcs.length ? section('folio-sec--people', 'group', 'Encounters',
                 `<ul class="folio-people">${npcs.map(({ npc, entry }) => {
                     const m = MOOD[entry.sentiment] || MOOD.neutral;
@@ -366,6 +431,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const pic = item && item.image ? `<img class="folio-loot__pic" src="${esc(item.image)}" alt="" loading="lazy">`
                         : `<span class="folio-loot__pic folio-loot__pic--plain material-symbols-outlined" aria-hidden="true">auto_awesome</span>`;
                     return `<li>${pic}${item ? recLink(item, 'kw-object') : `<span class="kw-object">${esc(id)}</span>`}</li>`;
+                }).join('')}</ul>`) : '',
+            handoutsOf(s).length ? section('folio-sec--handouts', 'contract', 'Handouts Received',
+                `<ul class="folio-handouts">${handoutsOf(s).map(h => {
+                    const pic = h.thumbnail ? `<img class="folio-handouts__pic" src="${esc(h.thumbnail)}" alt="" loading="lazy">`
+                        : `<span class="folio-handouts__pic folio-handouts__pic--plain material-symbols-outlined" aria-hidden="true">${esc(h.icon || 'contract')}</span>`;
+                    const name = h.file ? `<a href="${esc(h.file)}" target="_blank" rel="noopener noreferrer" class="kw-object" data-kw="${esc(h.id)}">${esc(h.name)}</a>`
+                        : `<span class="kw-object" data-kw="${esc(h.id)}">${esc(h.name)}</span>`;
+                    return `<li>${pic}<span>${name}${h.category ? `<small>${esc(h.category)}</small>` : ''}</span></li>`;
                 }).join('')}</ul>`) : '',
             (s.leadsPursued || []).length ? section('folio-sec--pursued', '', 'Leads Pursued', listOf(s.leadsPursued, 'folio-list')) : '',
             (s.futureLeads || []).length ? section('folio-sec--future', 'explore', 'Future Leads', listOf(s.futureLeads, 'folio-list')) : '',
@@ -399,6 +472,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         els.folio.querySelector('[data-step="1"]').disabled = i === sessions.length - 1;
         els.folio.querySelector('[data-step="-1"]').disabled = i === 0;
         els.folioBody.innerHTML = folioHtml(s);
+        els.days.href = `timeline.html?session=${encodeURIComponent(s.id)}`;
         els.folioBody.scrollTop = 0;
         if (Athenaeum.preview) Athenaeum.preview.close();
         if (!els.folio.open) {
@@ -424,6 +498,47 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (sessions[i]) openFolio(sessions[i].id);
     }));
     els.folio.querySelector('[data-close]').addEventListener('click', closeFolio);
+
+    /* ---------------- "Previously on…" ---------------- */
+
+    function recapHtml() {
+        const s = sessions[0];
+        if (!s) return '';
+        const loot = (s.loot || []).map(id => store.get(id)).filter(Boolean);
+        const date = worldDate(s.date);
+        return `
+            <header class="recap__head">
+                <p class="recap__eyebrow">Previously on…</p>
+                <h2 id="recap-title" class="recap__title">${esc(current.name)}</h2>
+                <p class="recap__sub">${esc([s.number ? `Session ${roman(s.number)}` : '', s.name, date].filter(Boolean).join(' · '))}</p>
+            </header>
+            <div class="recap__text story-text">${s.recap ? linked(s.recap, { markdown: true }) : `<p>${linked(s.summary || '')}</p>`}</div>
+            ${(s.futureLeads || []).length || loot.length ? `<div class="recap__cols">
+                ${(s.futureLeads || []).length ? `<section class="recap__leads"><h3 class="recap__h"><span class="material-symbols-outlined" aria-hidden="true">explore</span>Where things stand</h3>
+                    <ul>${s.futureLeads.map(t => `<li>${linked(t)}</li>`).join('')}</ul></section>` : ''}
+                ${loot.length ? `<section class="recap__finds"><h3 class="recap__h recap__h--vault"><span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>New in the Vault</h3>
+                    <div class="recap__grid">${loot.map(item => recLink(item, `recap__find${item.image ? '' : ' recap__find--plain'}`,
+                        `${item.image ? `<img src="${esc(item.image)}" alt="" loading="lazy">` : '<span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>'}<span class="recap__find-name">${esc(item.name)}</span>`)).join('')}</div></section>` : ''}
+            </div>` : ''}`;
+    }
+    function openRecap() {
+        els.recapBody.innerHTML = recapHtml();
+        els.recapBody.scrollTop = 0;
+        if (!els.recap.open) { els.recap.showModal(); document.body.classList.add('scr-locked'); }
+    }
+    els.recapBtn.addEventListener('click', openRecap);
+    els.recap.addEventListener('close', () => { document.body.classList.remove('scr-locked'); if (Athenaeum.preview) Athenaeum.preview.close(); });
+    els.recap.addEventListener('click', e => { if (e.target === els.recap) els.recap.close(); });
+    els.recap.querySelector('[data-close]').addEventListener('click', () => els.recap.close());
+    els.recap.querySelector('[data-print]').addEventListener('click', () => {
+        document.body.classList.add('scr-printing');
+        window.print();
+        document.body.classList.remove('scr-printing');
+    });
+
+    /* ---------------- the journey ---------------- */
+
+    const journey = Athenaeum.journey ? Athenaeum.journey({ store, el: els.journey, roman, esc, recLink }) : null;
 
     /* ---------------- tabs ---------------- */
 
@@ -483,6 +598,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.addEventListener('click', e => {
         const open = e.target.closest('[data-open]');
         if (open) { openFolio(open.dataset.open); return; }
+        const follow = e.target.closest('[data-journey]');
+        if (follow && journey) {
+            closeFolio();
+            setView('journey');
+            journey.followSession(follow.dataset.journey);
+            window.scrollTo({ top: 0 });
+            return;
+        }
         const term = e.target.closest('[data-search]');
         if (term) { search(term.dataset.search); return; }
         // The rest of a card opens its folio too (not its links)
@@ -514,7 +637,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         campaigns, value: first.id, allowAll: false,
         onChange: id => { closeFolio(); loadCampaign(campaigns.find(c => c.id === id)); },
     });
-    if (params.get('view') === 'story') setView('story');
+    if (['story', 'journey'].includes(params.get('view'))) setView(params.get('view'));
     loadCampaign(first);
 
     // ?session=…: its card glows, then its folio opens

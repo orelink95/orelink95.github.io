@@ -1308,6 +1308,18 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     futureLeads: { kind: 'list', label: 'Future leads', lines: true, section: 'Loot & leads' },
                     keywords: { kind: 'list', label: 'Search keywords' },
                     body: { kind: 'markdown', label: 'Transcript', section: 'Transcript' },
+                    /* The scriptorium's “Previously on…” card shows the latest session's recap
+                       (else its summary), its future leads and its finds. */
+                    recap: { kind: 'markdown', label: 'Previously on…', section: 'Overview', help: 'A short recap to read aloud at the start of the next session. Empty = the summary.' },
+                    /* Lines said at the table: in the folio, and one at random under the scriptorium's title */
+                    quotes: {
+                        kind: 'objects', label: 'Memorable quotes', itemLabel: ['by', 'name'], section: 'Transcript', fields: {
+                            text: { kind: 'text', label: 'Quote', long: true, required: true },
+                            by: { kind: 'ref', to: ['hero', 'npc'], label: 'Said by', help: 'A hero or an NPC (their portrait is shown).' },
+                            name: { kind: 'text', label: 'Or any name', help: 'When no hero or NPC said it (a creature, a player…).', showIf: { key: 'by', empty: true } },
+                        }
+                    },
+                    handouts: { kind: 'refs', to: ['handout'], label: 'Handouts received', section: 'Loot & leads' },
                 },
             },
             /* The Book of Days (timeline.html), the timeline: the world's history. Sessions take their place on it too, by

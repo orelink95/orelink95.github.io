@@ -289,6 +289,11 @@
 .tl-session:hover { border-color: color-mix(in srgb, var(--camp) 60%, transparent); transform: translateY(-1px); }
 .tl-row.is-left .tl-session { flex-direction: row-reverse; text-align: right; }
 .tl-session.is-dim { opacity: 0.32; }
+/* The session opened from its folio in the scriptorium (timeline.html?session=…) */
+.tl-session.is-target {
+    border-color: var(--camp);
+    box-shadow: 0 0 0 1px var(--camp), 0 0 28px color-mix(in srgb, var(--camp) 55%, transparent);
+}
 .tl-session__camp {
     flex-shrink: 0;
     padding: 3px 9px;

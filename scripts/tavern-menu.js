@@ -140,34 +140,48 @@
         return Number.isFinite(n) && n >= 0 ? Math.round(n) : DEFAULT_PURSE;
     }
 
-    /* The stakes a tavern offers -> [{id, label, base, blind}]
-       blind (cp per seat) = the stakes' base blind (enum gameStakes) x the tavern's tier multiplier.
-       tavern.minStake hides the stakes below it. */
-    function stakes(store, tavern) {
+    /* The gaming table of a POI (poi.gaming, a tavern's or a gambling den's) -> the block, or null
+       when it lists no game. */
+    function tableOf(poi) {
+        const g = poi && poi.gaming;
+        return g && (g.games || []).length ? g : null;
+    }
+    // The tier that scales a table's blinds: its own, else the tavern's, else Modest
+    function tableTier(store, poi) {
+        const g = (poi && poi.gaming) || {};
+        return tierOf(store, g.tier ? g : (poi && poi.tavern && poi.tavern.tier ? poi.tavern : {}));
+    }
+
+    /* The stakes a gaming table offers -> [{id, label, base, blind}]
+       blind (cp per seat) = the stakes' base blind (enum gameStakes) x the table's tier multiplier.
+       gaming.minStake hides the stakes below it. */
+    function stakes(store, poi) {
+        const table = (poi && poi.gaming) || {};
         const listed = store.enumOptions('gameStakes').filter(s => s && typeof s.blind === 'number');
-        const mult = (tavern && tierOf(store, tavern).mult) || 1;
+        const mult = tableTier(store, poi).mult || 1;
         const all = (listed.length ? listed : FALLBACK_STAKES)
             .map(s => ({ id: s.id, label: s.label, base: s.blind, blind: Math.max(1, Math.round(s.blind * mult)) }));
-        const min = tavern && tavern.minStake && all.find(s => s.id === tavern.minStake);
+        const min = table.minStake && all.find(s => s.id === table.minStake);
         return min ? all.filter(s => s.blind >= min.blind) : all;
     }
 
     /* The house rules of a gaming table -> { houseCut, highTableWins, loanInterest }
-         houseCut       % of every pot the house keeps (tavern.houseCut, 0 to 50; empty = 0)
-         highTableWins  staked wins in this tavern before its highest stakes open (tavern.highTableWins; empty = 0)
+         houseCut       % of every pot the house keeps (gaming.houseCut, 0 to 50; empty = 0)
+         highTableWins  staked wins here before the highest stakes open (gaming.highTableWins; empty = 0)
          loanInterest   % on the purse a broke player borrows (settings.loanInterest; empty = 10, 0 = a free fresh purse) */
-    function gaming(store, tavern) {
+    function gaming(store, poi) {
+        const table = (poi && poi.gaming) || {};
         const num = (raw, fallback, max) => {
             const n = raw === undefined || raw === null || raw === '' ? NaN : Number(raw);
             return Number.isFinite(n) && n >= 0 ? Math.min(max, n) : fallback;
         };
         return {
-            houseCut: num(tavern && tavern.houseCut, 0, 50),
-            highTableWins: Math.round(num(tavern && tavern.highTableWins, 0, 999)),
+            houseCut: num(table.houseCut, 0, 50),
+            highTableWins: Math.round(num(table.highTableWins, 0, 999)),
             loanInterest: num(store.settings && store.settings.loanInterest, DEFAULT_INTEREST, 500),
         };
     }
 
     // hash, mulberry32 and seededPick are shared with scripts/market.js (shops, temples, rumours)
-    ATH.tavern = { buildMenu, buildServices, folioLabel, formatPrice, formatCoin, startingPurse, stakes, gaming, normaliseCode, tierOf, hash, mulberry32, seededPick };
+    ATH.tavern = { buildMenu, buildServices, folioLabel, formatPrice, formatCoin, startingPurse, stakes, gaming, tableOf, tableTier, normaliseCode, tierOf, hash, mulberry32, seededPick };
 })(typeof window !== 'undefined' ? window : globalThis);

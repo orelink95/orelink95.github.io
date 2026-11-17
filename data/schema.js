@@ -339,16 +339,16 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 { id: 'wealthy', label: 'Wealthy', mult: 2.5 },
                 { id: 'aristocratic', label: 'Aristocratic', mult: 4 },
             ],
-            /* The games of a tavern's gaming table (poi.tavern.games). Each id is a game
-               in scripts/games/ (register one there to add a game). */
+            /* The games of a gaming table (poi.gaming.games: a tavern's or a gambling den's).
+               Each id is a game in scripts/games/ (register one there to add a game). */
             tavernGame: [
                 { id: 'liars-dice', label: 'Liar’s Dice' },
                 { id: 'knucklebones', label: 'Knucklebones' },
                 { id: 'crown-and-dagger', label: 'Crown and dagger' }
             ],
             /* The stakes a player can sit down at (gaming table). `blind` is what each seat puts in the
-               pot per hand, in cp, at a Modest tavern: the tavern's tier multiplier (tavernTier) scales it.
-               A tavern can drop the lowest ones (minStake) and lock the highest (highTableWins). */
+               pot per hand, in cp, at a Modest table: the table's tier (poi.gaming.tier, else the tavern's) scales it.
+               A table can drop the lowest ones (minStake) and lock the highest (highTableWins). */
             gameStakes: [
                 { id: 'low', label: 'Low stakes', blind: 5 },
                 { id: 'standard', label: 'Standard stakes', blind: 10 },
@@ -701,7 +701,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 /* parent 'poi': a key location inside an institution (a hall of the university),
                    pinned on one of the institution's own maps (map.on = that map's id). */
                 place: true, parent: ['district', 'settlement', 'country', 'poi'], autolink: true,
-                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Shop', 'Alchemist', 'Temple', 'Divination', 'Look'],
+                sections: ['Essentials', 'Lore', 'Map', 'Institution', 'Tavern', 'Gaming table', 'Fighting pit', 'Shop', 'Alchemist', 'Temple', 'Divination', 'Look'],
                 fields: {
                     ...PLACE_FIELDS,
                     subtitle: { ...PLACE_FIELDS.subtitle, help: 'Under the name: page header, map pop-up, POIs list.' },
@@ -746,10 +746,52 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                                 }
                             },
                             rumourDraws: { kind: 'number', label: 'Rumours per player', help: 'How many a player can hear per market code. Empty = 3; 0 = no Rumours tab.' },
-                            games: { kind: 'list', enum: 'tavernGame', label: 'Gaming table', help: 'Adds a Games tab: played against the regulars.' },
-                            minStake: { kind: 'enum', enum: 'gameStakes', label: 'Lowest stakes', showIf: { key: 'games', set: true }, help: 'The cheapest stakes this table takes; lower ones are not offered. Empty = all of them. Playing for fun is always possible.' },
-                            houseCut: { kind: 'number', label: 'House cut (%)', showIf: { key: 'games', set: true }, help: 'The share of every pot the house keeps when it is paid out (0 to 50). Empty = none.' },
-                            highTableWins: { kind: 'number', label: 'Wins to open the high table', showIf: { key: 'games', set: true }, help: 'Staked hands a player must win in this tavern before its highest stakes can be picked. Empty or 0 = open to all.' },
+                        },
+                    },
+                    /* A gaming table: a tavern's, or on its own (a gambling den). Adds the Games tab. */
+                    gaming: {
+                        kind: 'object', label: 'Gaming table', optional: true, section: 'Gaming table',
+                        help: 'Gives the page a Games tab: played in the browser against the regulars, for the purse or for fun. Without a tavern, the place is a gambling den.',
+                        fields: {
+                            games: { kind: 'list', enum: 'tavernGame', label: 'Games', required: true, help: 'The games on the table.' },
+                            tier: { kind: 'enum', enum: 'tavernTier', label: 'Stakes level', help: 'Scales the blinds. Empty = the tavern’s tier, else Modest.' },
+                            minStake: { kind: 'enum', enum: 'gameStakes', label: 'Lowest stakes', help: 'The cheapest stakes this table takes; lower ones are not offered. Empty = all of them. Playing for fun is always possible.' },
+                            houseCut: { kind: 'number', label: 'House cut (%)', width: 'half', range: [0, 50], help: 'The share of every pot the house keeps when it is paid out (0 to 50). Empty = none.' },
+                            highTableWins: { kind: 'number', label: 'Wins to open the high table', width: 'half', help: 'Staked hands a player must win here before the highest stakes can be picked. Empty or 0 = open to all.' },
+                        },
+                    },
+                    /* A fighting pit: bouts on fight nights, players bet from the gaming purse (scripts/pit.js) */
+                    pit: {
+                        kind: 'object', label: 'Fighting pit', optional: true, section: 'Fighting pit',
+                        help: 'Gives the page a Pit tab: a card of bouts each fight night, drawn with the market code and the date of the world. Players back a fighter with their gaming purse and watch the bout.',
+                        fields: {
+                            keepers: { kind: 'refs', to: ['npc'], label: 'Pitmaster', help: 'Shown on the Pit tab.' },
+                            nights: { kind: 'list', label: 'Fight nights', help: 'Days of the week (the calendar’s names). Empty = every night.' },
+                            bouts: { kind: 'number', label: 'Bouts a night', width: 'third', range: [1, 6], help: 'Empty = 3 (fewer when there are not enough fighters).' },
+                            houseCut: { kind: 'number', label: 'House cut (%)', width: 'third', range: [0, 50], help: 'Taken from what a winning bet earns. Empty = 10.' },
+                            maxWager: { kind: 'number', label: 'Biggest wager (gp)', width: 'third', help: 'Empty = no limit but the purse.' },
+                            fighters: {
+                                kind: 'objects', label: 'Fighters', itemLabel: ['name', 'npc', 'creature'], help: 'Each fighter is an NPC, a creature of the bestiary, or a fighter of the pit only (a name, and a picture and a tag if you like). Two fighters or more are needed for a bout.',
+                                fields: {
+                                    npc: { kind: 'ref', to: ['npc'], label: 'NPC' },
+                                    creature: { kind: 'ref', to: ['creature'], label: 'Creature' },
+                                    name: { kind: 'text', label: 'Name', help: 'A house fighter’s name; for an NPC or a creature, a ring name shown instead of theirs (optional).' },
+                                    image: { kind: 'image', label: 'Picture', help: 'The fighter’s portrait in the pit. Empty = the NPC’s or the creature’s, else a lettered token.' },
+                                    tag: { kind: 'text', label: 'Tag', help: 'The small label on the card (e.g. “Beast”, “Gladiator”). Empty = NPC, Bestiary or House fighter.' },
+                                    strength: { kind: 'number', label: 'Strength (1–10)', width: 'third', range: [1, 10], help: 'Sets the odds and the fight. Empty = from a creature’s threat, else 5.' },
+                                    wins: { kind: 'number', label: 'Wins', width: 'third' },
+                                    losses: { kind: 'number', label: 'Losses', width: 'third' },
+                                },
+                            },
+                        },
+                    },
+                    /* Top level: private fields are kept out of the public files record by record */
+                    pitFixes: {
+                        kind: 'objects', label: 'Fixed fights', private: true, section: 'Fighting pit', itemLabel: ['winner', 'date'],
+                        help: 'DM only (data/private.json). On that night, this fighter wins every bout they are in. The odds do not show it.',
+                        fields: {
+                            date: { kind: 'worlddate', label: 'Night' },
+                            winner: { kind: 'text', label: 'Winner', help: 'The fighter’s name as it shows on the card.' },
                         },
                     },
                     /* A POI can be a tavern AND a shop AND a temple: each block adds its tab to the page. */

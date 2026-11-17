@@ -944,7 +944,7 @@
        FORM FIELDS
        ================================================================= */
     const SECTION_ICONS = {
-        Essentials: 'badge', Details: 'tune', Lore: 'auto_stories', Map: 'map', 'On the page': 'web', Institution: 'account_balance', Tavern: 'sports_bar', Shop: 'storefront', Temple: 'brightness_7', Alchemist: 'science',
+        Essentials: 'badge', Details: 'tune', Lore: 'auto_stories', Map: 'map', 'On the page': 'web', Institution: 'account_balance', Tavern: 'sports_bar', 'Gaming table': 'casino', 'Fighting pit': 'sports_mma', Shop: 'storefront', Temple: 'brightness_7', Alchemist: 'science',
         Identity: 'person', 'Where & ties': 'pin_drop', Campaigns: 'flag', Biography: 'history_edu', 'DM only': 'lock', Dossier: 'folder_open', Relations: 'handshake',
         Intelligence: 'visibility', 'Field evidence': 'folder_supervised', Look: 'palette', Text: 'subject', 'Picture & file': 'image', Stats: 'monitoring', 'Field notes': 'edit_note',
         Card: 'style', Description: 'subject', Story: 'auto_stories', Quests: 'flag', Party: 'groups', Allegiances: 'handshake', Spellbooks: 'webhook', Overview: 'summarize',
@@ -1554,7 +1554,7 @@
         const words = lore.split(' ');
         const text = esc(words.slice(0, 26).join(' ')) + (words.length > 26 ? '…' : '');
         const eyebrow = type === 'poi'
-            ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || String(rec.typeLabel || '').trim() || (rec.danger ? 'Danger Zone' : rec.featured ? 'Featured Landmark' : '')
+            ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.pit && 'Fighting Pit', !rec.tavern && rec.gaming && 'Gambling Den', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || String(rec.typeLabel || '').trim() || (rec.danger ? 'Danger Zone' : rec.featured ? 'Featured Landmark' : '')
             : type === 'plane' ? (rec.kind === 'demiplane' ? 'Demiplane' : 'Plane of existence')
             : (rec.arcana || 'Specimen');
         const extra = type === 'plane'
@@ -2443,6 +2443,15 @@
         if (!poi) return [];
         const code = marketCode(), M = ATH.market, out = [];
         const tavern = poi.tavern && poi.tavern.tier, shop = poi.shop && poi.shop.kind, temple = poi.temple;
+        // The gaming table (a tavern's or a gambling den's): what each stake costs per seat, what players start with
+        const gamingBox = () => {
+            if (!ATH.tavern.tableOf(poi)) return;
+            const T = ATH.tavern, tier = T.tableTier(S.store, poi);
+            out.push(`<div class="box menu-prev"><h4>Gaming stakes · ${esc(tier.label)}</h4>
+                ${priceRows([{ label: 'Blind per seat', items: T.stakes(S.store, poi).map(s => ({ name: s.label, priceLabel: T.formatCoin(s.blind) })) }])}
+                ${hint(`Base blind × the ${poi.gaming.tier ? 'table’s stakes level' : poi.tavern && poi.tavern.tier ? 'tavern’s tier' : 'Modest level'} (×${tier.mult}). Every seat puts one in the pot each hand; a raise adds one more. Players start with ${esc(T.formatCoin(T.startingPurse(S.store)))} (Settings → Gaming purse).`)}
+                ${(house => hint(`House cut: ${house.houseCut ? `${house.houseCut}% of every pot` : 'none'}. Highest stakes: ${house.highTableWins ? `open after ${house.highTableWins} staked win${house.highTableWins === 1 ? '' : 's'} here` : 'open to all'}. A broke player ${house.loanInterest ? `borrows a purse at ${house.loanInterest}% (Settings → House loan interest)` : 'gets a free fresh purse'}.`))(T.gaming(S.store, poi))}</div>`);
+        };
         // Institution (or any POI that others sit in): its places and where each is pinned
         const I = ATH.institution, inside = S.store.children(poi, 'poi');
         if (I && (I.block(poi) || inside.length)) {
@@ -2457,22 +2466,17 @@
                 ${I.block(poi) && !maps.length ? '<p class="warn">No map with an image, width and height: no Map tab.</p>' : ''}
                 ${addHere('poi', rec.id, 'Place inside this one')}</div>`);
         }
-        if (tavern || shop) out.push(`<div class="box menu-prev"><h4>Market code</h4>${codeInput()}${hint(`Menus, wares and the rumour order below use this code. The live code (${esc(S.store.settings.tavernCode || 'none')}) is in Settings.`)}</div>`);
+        if (tavern || shop || poi.pit) out.push(`<div class="box menu-prev"><h4>Market code</h4>${codeInput()}${hint(`Menus, wares and the rumour order below use this code. The live code (${esc(S.store.settings.tavernCode || 'none')}) is in Settings.`)}</div>`);
         if (tavern) {
             out.push(`<div class="box menu-prev"><h4>Menu preview</h4>
                 <p class="hint" style="margin:0 0 4px">${esc(ATH.tavern.folioLabel(code, rec.id))}</p>
                 ${priceRows(ATH.tavern.buildMenu(S.store, poi, code))}</div>`);
-            // The gaming table: what each stake costs per seat in this tavern, and what players start with
-            if ((poi.tavern.games || []).length) {
-                const T = ATH.tavern, tier = T.tierOf(S.store, poi.tavern);
-                out.push(`<div class="box menu-prev"><h4>Gaming stakes · ${esc(tier.label)}</h4>
-                    ${priceRows([{ label: 'Blind per seat', items: T.stakes(S.store, poi.tavern).map(s => ({ name: s.label, priceLabel: T.formatCoin(s.blind) })) }])}
-                    ${hint(`Base blind × the tier (×${tier.mult}). Every seat puts one in the pot each hand; a raise adds one more. Players start with ${esc(T.formatCoin(T.startingPurse(S.store)))} (Settings → Gaming purse).`)}
-                    ${(house => hint(`House cut: ${house.houseCut ? `${house.houseCut}% of every pot` : 'none'}. Highest stakes: ${house.highTableWins ? `open after ${house.highTableWins} staked win${house.highTableWins === 1 ? '' : 's'} here` : 'open to all'}. A broke player ${house.loanInterest ? `borrows a purse at ${house.loanInterest}% (Settings → House loan interest)` : 'gets a free fresh purse'}.`))(T.gaming(S.store, poi.tavern))}</div>`);
-            }
+            gamingBox();
             out.push(`<div class="box mkt-prev"><h4>Rumours heard here</h4>${rumourList(poi, code)}<div class="stack">${addHere('rumour', rec.id, 'Rumour for this tavern only')}
                 ${poi.parent ? addHere('rumour', (S.store.ancestors(poi).find(p => S.store.typeOf(p) === 'settlement') || {}).id || poi.parent, 'Rumour for the whole settlement') : ''}</div></div>`);
         }
+        if (!tavern) gamingBox();
+        if (poi.pit && ATH.pit) out.push(pitPreview(poi));
         if (shop) {
             const wares = M.buildWares(S.store, poi, code);
             out.push(`<div class="box menu-prev"><h4>Wares · ${esc(M.shopKind(S.store, poi.shop).label)} · ${esc(M.tierFor(S.store, poi, poi.shop).label)}</h4>
@@ -2555,6 +2559,33 @@
     /* ---------- divination (scripts/divination.js, scripts/fortune-card.js) ---------- */
     const thumb = src => `data-thumb="${esc(src)}"`;
     // A seer (POI): its price list, and the prophecies waiting there, campaign by campaign
+    // Fighting pit: tonight's card as the DM sees it (winners and fixed fights), any night on request
+    function pitPreview(poi) {
+        const P = ATH.pit, cal = S.store.calendar, code = marketCode();
+        const asked = S.pitDate && cal ? cal.parse(S.pitDate) : null;
+        const date = asked && asked.month && asked.day && !cal.check(asked) ? asked : null;
+        const c = P.card(S.store, poi, code, date || undefined), n = c.night;
+        const fighters = c.fighters, nights = P.nightsOf(S.store, poi);
+        const warn = [];
+        if (fighters.length < 2) warn.push('Add two fighters or more: no bout until then.');
+        if (!n.date) warn.push('The world has no date yet (Calendar → Today in the world, or a dated session): fight nights are ignored and the card follows the market code alone.');
+        if (S.pitDate && !date) warn.push(`“${esc(S.pitDate)}” is not a date of the calendar: showing tonight.`);
+        const bouts = c.bouts.map(b => {
+            const w = b[b.winner], l = b[b.winner === 'a' ? 'b' : 'a'];
+            const last = b.rounds[b.rounds.length - 1];
+            return `<li class="in"><span><b>${esc(w.name)}</b> beats ${esc(l.name)}</span><span class="truth">${b.fixed ? 'fixed' : last.n ? `round ${last.n}` : 'on points'}</span>
+                <small>${esc(b.label)} · ${esc(b.a.name)} ${esc(b.a.odds)} · ${esc(b.b.name)} ${esc(b.b.odds)}</small></li>`;
+        }).join('');
+        const roster = fighters.map(f => `<li class="in"${f.rec ? ` data-jump="${esc(f.rec.id)}"` : ''}><span>${esc(f.name)}</span><span class="truth">${esc(f.kindLabel)}</span><small>Strength ${f.strength} · ${esc(f.record)}</small></li>`).join('');
+        return `<div class="box mkt-prev"><h4>${date ? 'Fight night' : 'Tonight’s card'} · DM view</h4>
+            <p class="hint" style="margin:0 0 6px">${n.label ? esc(cal.format(n.date)) : 'No date'}${nights.length ? ` · fights on ${esc(nights.join(', '))}` : ' · fights every night'}</p>
+            ${n.open ? (bouts ? `<ol class="mkt-list">${bouts}</ol>` : '<p class="muted">No bout.</p>') : `<p class="muted">No fights that night.${n.next ? ` Next: ${esc(n.nextLabel)}.` : ''}</p>`}
+            <input id="pit-date" placeholder="Preview another night, e.g. 14 Pholawal 1693" value="${esc(S.pitDate ?? '')}" aria-label="Preview another night">
+            ${warn.map(t => `<p class="warn">${t}</p>`).join('')}
+            ${hint(`Drawn with the market code and the night: players never see a winner before the bout. Odds come from the strengths; the house takes ${esc(String(poi.pit.houseCut ?? 10))}% of what a winning bet earns. Fix a fight under “Fixed fights” (DM only).`)}</div>
+            <div class="box mkt-prev"><h4>Fighters <span>${fighters.length}</span></h4>${roster ? `<ul class="mkt-list">${roster}</ul>` : '<p class="muted">None yet.</p>'}
+            ${hint('Strength 1–10 sets the odds and the fight; empty = from a creature’s threat, else 5.')}</div>`;
+    }
     function seerPreview(poi) {
         const D = ATH.divination, M = ATH.market;
         const prices = D.priceList(S.store, poi);
@@ -3276,7 +3307,7 @@
     function select(view, id) {
         const sameTool = S.page !== 'home' && S.view.kind === view.kind && S.view.key === view.key;
         S.page = null;
-        S.view = view; S.sel = id ?? null; S.menuCode = null;
+        S.view = view; S.sel = id ?? null; S.menuCode = null; S.pitDate = null;
         S.lastSel[`${view.kind}:${view.key}`] = S.sel;
         S.wsLast[curWs()] = { view, sel: S.sel };
         if (view.kind === 'type' && S.sel) {
@@ -3607,6 +3638,7 @@
         if (el.id === 'search') { S.search = el.value; renderList(); return; }
         if (el.id === 'grid-q') { S.gridQ[S.view.key] = el.value; clearTimeout(S.gq); S.gq = setTimeout(renderGridBody, 120); return; }
         if (el.id === 'icon-q') { S.iconQ = el.value; renderIconGallery(); return; }
+        if (el.id === 'pit-date') { S.pitDate = el.value; clearTimeout(S.pt); S.pt = setTimeout(() => { renderSide(); const i = $('#pit-date'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 500); return; }
         if (el.id === 'menu-code') { S.menuCode = el.value; clearTimeout(S.mt); S.mt = setTimeout(() => { renderSide(); const i = $('#menu-code'); if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } }, 300); return; }
         if (el.matches('[data-chip-in]')) { showSuggest(el); return; }
         if (el.dataset.colorFor) { const t = document.getElementById(el.dataset.colorFor); t.value = el.value; t.dispatchEvent(new Event('input', { bubbles: true })); return; }

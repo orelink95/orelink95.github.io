@@ -652,6 +652,28 @@
                     errors.push(`[poi] ${p.id}.map.on: "${on}" is not a map of ${host.id}`);
                 }
             }
+            // Fighting pits: fighters, fight nights, fixed fights (scripts/pit.js)
+            for (const p of byType.poi || []) {
+                if (!p.pit) { if ((p.pitFixes || []).length) warnings.push(`[poi] ${p.id}.pitFixes: no fighting pit here, so they are ignored`); continue; }
+                const where = `[poi] ${p.id}.pit`;
+                const names = [];
+                (p.pit.fighters || []).forEach((f, i) => {
+                    if (!f) return;
+                    if (f.npc && f.creature) warnings.push(`${where}.fighters[${i}]: both an NPC and a creature: the NPC fights`);
+                    const rec = resolve(f.npc) || resolve(f.creature);
+                    const name = String(f.name || '').trim() || (rec && rec.name) || '';
+                    if (!name) warnings.push(`${where}.fighters[${i}]: no NPC, no creature and no name, so it never fights`);
+                    else names.push(name.toLowerCase());
+                });
+                if (names.length < 2) warnings.push(`${where}.fighters: two fighters or more are needed, so the Pit tab shows no bout`);
+                const days = ((calendar && calendar.weekdays) || []).map(w => w.toLowerCase());
+                if (calendar && days.length) (p.pit.nights || []).forEach(n => {
+                    if (String(n || '').trim() && !days.includes(String(n).trim().toLowerCase())) warnings.push(`${where}.nights: “${n}” is not a day of the week (${calendar.weekdays.join(', ')})`);
+                });
+                (p.pitFixes || []).forEach((f, i) => {
+                    if (f && f.winner && !names.includes(String(f.winner).trim().toLowerCase())) warnings.push(`[poi] ${p.id}.pitFixes[${i}].winner: “${f.winner}” is not one of this pit’s fighters`);
+                });
+            }
             // Divination: practices, seers and the prophecies read at them
             const spreadSize = sp => ((sp && sp.positions) || []).length;
             for (const pr of byType.practice || []) {

@@ -7,8 +7,9 @@
                       by function). scripts/institution.js. The card is then wider.
                       poi.html?id=…&map=<map id> opens a map, &spot=<poi id> a pin.
      POIs inside   -> Locations (any POI that other POIs sit in)
-     tavern block  -> Fare (bill of fare), a Services panel beside it, Rumours, and
-                      Games when tavern.games lists some (scripts/games/)
+     tavern block  -> Fare (bill of fare), a Services panel beside it, Rumours
+     gaming block  -> Games (scripts/games/): a tavern's table, or a gambling den
+     pit block     -> Pit: tonight's bouts, bets from the gaming purse (scripts/pit.js)
      shop block    -> Wares          (scripts/market.js), with brewed potions when
                                       shop.potions is set (scripts/alchemy-engine.js)
      alchemist     -> Workbench      players mix the stocked reagents and get the craft
@@ -49,6 +50,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tavern = poi.tavern && poi.tavern.tier ? poi.tavern : null;
     const shop = poi.shop && poi.shop.kind ? poi.shop : null;
     const temple = poi.temple || null;
+    const pit = poi.pit && Athenaeum.pit ? poi.pit : null;
+    const den = !!T.tableOf(poi) && !poi.tavern;               // a gaming table without a tavern
     // An alchemist's bench with something to mix (needs the potion engine)
     const bench = poi.alchemist ? Athenaeum.market.bench(store, poi) : null;
     const D = Athenaeum.divination, F = Athenaeum.fortuneCard;
@@ -70,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     root.classList.toggle('is-danger', !!poi.danger);
 
     /* ---------- Hero ---------- */
-    const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', shop && M.shopKind(store, shop).label, bench && 'Alchemist', temple && 'Temple', seer && 'Seer'].filter(Boolean);
+    const roles = [inst && instKind.label, tavern && 'Tavern & Lodging', pit && 'Fighting Pit', den && 'Gambling Den', shop && M.shopKind(store, shop).label, bench && 'Alchemist', temple && 'Temple', seer && 'Seer'].filter(Boolean);
     $('poi-image').src = poi.image || 'images/pois/placeholder.png';
     $('poi-image').alt = poi.name;
     // Roles (institution, tavern, shop, temple) name the place; otherwise the label set by hand,
@@ -109,10 +112,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         .map(([role, h]) => `<span class="poi-hours-line"><b>${role}</b> ${esc(h)}</span>`).join(''));
     // Sealed Elder gods (not revealed in the reader's campaign) are not named here
     const deities = temple ? M.deitiesOf(store, poi).filter(d => store.revealed(d)) : [];
+    // A pit's fight nights (the weekdays of the calendar it fights on)
+    if (pit) {
+        const nights = Athenaeum.pit.nightsOf(store, poi);
+        fact('nights', esc(nights.length ? Athenaeum.games ? Athenaeum.games.andList(nights) : nights.join(', ') : 'Every night'));
+    }
     if (deities.length) fact('deities', deities.map(d => `<a class="poi-link" href="${store.url(d)}">${esc(d.name)}</a>`).join(', '));
 
     /* ---------- Lore & people ---------- */
-    $('poi-body-title').textContent = inst ? `The ${instKind.label}` : tavern ? 'The Establishment' : temple ? 'The Sanctuary' : shop ? 'The Shop' : bench ? 'The Laboratory' : seer ? 'The Seer' : 'Archive Entry';
+    $('poi-body-title').textContent = inst ? `The ${instKind.label}` : tavern ? 'The Establishment' : pit ? 'The Pit' : den ? 'The Den' : temple ? 'The Sanctuary' : shop ? 'The Shop' : bench ? 'The Laboratory' : seer ? 'The Seer' : 'Archive Entry';
     $('poi-body').innerHTML = poi.body
         ? store.autolink(store.md(poi.body, { dropCap: true }), { exclude: poi.id })
         : '<p class="poi-muted">No lore recorded for this landmark yet.</p>';
@@ -178,7 +186,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (temple) tabs.push({ id: 'shrine', label: 'Shrine', icon: 'brightness_7' });
     if (seer && D.practices(store, poi).length) tabs.push({ id: 'readings', label: 'Readings', icon: 'visibility' });
     if (tavern && M.drawLimit(poi) > 0 && heardAll.length) tabs.push({ id: 'rumours', label: 'Rumours', icon: 'record_voice_over' });
-    const games = tavern && Athenaeum.games ? Athenaeum.games.gameNames(store, poi) : [];
+    if (pit) tabs.push({ id: 'pit', label: 'The Pit', icon: 'sports_mma' });
+    const games = T.tableOf(poi) && Athenaeum.games ? Athenaeum.games.gameNames(store, poi) : [];
     if (games.length) tabs.push({ id: 'games', label: 'Games', icon: 'casino' });
     if (postedAll.length) tabs.push({ id: 'board', label: 'Board', icon: 'push_pin' });
 
@@ -728,6 +737,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderBoard();
     renderReading();
     if (games.length) Athenaeum.games.mountTable($('poi-games'), store, poi);
+    if (pit) {
+        showKeepers('poi-pit-keepers', pit, 'Pitmaster');
+        Athenaeum.pit.mount($('poi-pit'), store, poi, code);
+    }
 
     /* Tab strip (hidden when there is a single tab) */
     const strip = $('poi-tabs');

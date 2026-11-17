@@ -25,6 +25,7 @@
     <link href="styles/poi-style.css" rel="stylesheet" />
     <link href="styles/notice-board.css" rel="stylesheet" />
     <link href="styles/games.css" rel="stylesheet" />
+    <link href="styles/pit.css" rel="stylesheet" />
     <link href="styles/fortune-card.css" rel="stylesheet" />
     <!-- the page's own look (record.look): last, so it wins -->
     <link href="styles/looks.css" rel="stylesheet" />
@@ -32,6 +33,7 @@
     <script src="scripts/general-scripts.js"></script>
     <script src="data/schema.js"></script>
     <script src="scripts/core/markdown.js"></script>
+    <script src="scripts/core/calendar.js"></script>
     <script src="scripts/core/store.js"></script>
     <script src="scripts/core/look.js"></script>
     <script src="scripts/atlas-common.js"></script>
@@ -47,6 +49,7 @@
     <script src="scripts/games/liars-dice.js"></script>
     <script src="scripts/games/knucklebones.js"></script>
     <script src="scripts/games/crown-and-dagger.js"></script>
+    <script src="scripts/pit.js"></script>
     <script src="scripts/poi-scripts.js"></script>
 </head>
 
@@ -85,6 +88,10 @@
                         <div id="poi-hours-fact" hidden>
                             <dt>Hours</dt>
                             <dd id="poi-hours"></dd>
+                        </div>
+                        <div id="poi-nights-fact" hidden>
+                            <dt>Fight nights</dt>
+                            <dd id="poi-nights"></dd>
                         </div>
                         <div id="poi-deities-fact" hidden>
                             <dt>Devoted to</dt>
@@ -214,6 +221,15 @@
                         <h3 class="poi-menu-heading">Word Around the Hearth</h3>
                         <div class="poi-rule"></div>
                         <div id="poi-rumours" class="poi-rumours"></div>
+                    </div>
+
+                    <!-- A fighting pit (poi.pit): tonight's card of bouts, bets from the gaming purse (scripts/pit.js) -->
+                    <div id="tab-pit" class="poi-tabpanel" role="tabpanel" hidden>
+                        <p class="poi-eyebrow poi-center">Blood on the Sand</p>
+                        <h3 class="poi-menu-heading">The Pit</h3>
+                        <div class="poi-rule"></div>
+                        <div id="poi-pit-keepers" class="poi-keepers" hidden></div>
+                        <div id="poi-pit" class="pit"></div>
                     </div>
 
                     <div id="tab-games" class="poi-tabpanel" role="tabpanel" hidden>

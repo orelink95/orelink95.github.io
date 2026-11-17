@@ -359,7 +359,9 @@
         "bath",
         "stabling",
         "laundry"
-      ],
+      ]
+    },
+    "gaming": {
       "games": [
         "liars-dice",
         "crown-and-dagger"
@@ -412,7 +414,9 @@
           "price": 17,
           "unit": "per night"
         }
-      ],
+      ]
+    },
+    "gaming": {
       "games": [
         "crown-and-dagger"
       ]
@@ -448,7 +452,9 @@
       "services": [
         "bath",
         "room-common"
-      ],
+      ]
+    },
+    "gaming": {
       "games": [
         "knucklebones",
         "crown-and-dagger"
@@ -524,7 +530,9 @@
         "tavern-storage",
         "room-common"
       ],
-      "rumourDraws": 2,
+      "rumourDraws": 2
+    },
+    "gaming": {
       "games": [
         "knucklebones",
         "crown-and-dagger"

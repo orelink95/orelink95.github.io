@@ -1,8 +1,8 @@
 /* =====================================================================
    GAMING TABLE  —  Athenaeum.games, Athenaeum.dice
    ---------------------------------------------------------------------
-   The Games tab of a tavern (poi.html): the games listed in
-   poi.tavern.games (enum tavernGame in data/schema.js), played in the
+   The Games tab of a tavern or a gambling den (poi.html): the games listed in
+   poi.gaming.games (enum tavernGame in data/schema.js), played in the
    browser against bots. No server: the win tally, the purse and the ledger
    are kept per browser (localStorage).
 
@@ -26,7 +26,7 @@
    else takes the stool, so a game re-reads it at the start of every hand.
 
    STAKES. Before a game starts the player names their stakes (enum gameStakes) or
-   plays for fun. The blind is the stakes' base blind x the tavern's tier; every seat
+   plays for fun. The blind is the stakes' base blind x the table's tier (gaming.tier, else the tavern's); every seat
    puts one blind in the pot per hand. The purse (settings.startingPurse) lives in the
    player's browser, the regulars get a purse of their own for the sitting.
    How a game bets is declared when it registers:
@@ -40,12 +40,12 @@
        bank.raise([i…])        one more blind from the player, matched by the regulars listed
                                (the game decides who calls and who folds); returns the blind paid, 0 = refused
        ctx.onEnd(result, info) settles the pot, once per hand (a second call is ignored)
-   The tavern can keep a cut of every pot (tavern.houseCut), hide the lowest stakes
-   (tavern.minStake) and lock its highest table behind wins (tavern.highTableWins).
+   The house can keep a cut of every pot (gaming.houseCut), hide the lowest stakes
+   (gaming.minStake) and lock its highest table behind wins (gaming.highTableWins).
    A broke player borrows from the house (settings.loanInterest); half of every win
    repays the loan. Odd coins of a split pot stay on the table for the next hand.
 
-   Opponents are the NPCs whose home is the tavern, then generic regulars.
+   Opponents are the NPCs whose home is the place, then generic regulars.
    Styles: styles/games.css.
    ===================================================================== */
 (function (root) {
@@ -368,9 +368,9 @@
     function mountTable(el, store, poi) {
         const T = ATH.tavern;
         const coin = T.formatCoin;
-        const ids = ((poi.tavern && poi.tavern.games) || []).filter(id => GAMES.has(id));
+        const ids = ((poi.gaming && poi.gaming.games) || []).filter(id => GAMES.has(id));
         const labels = Object.fromEntries(store.enumOptions('tavernGame').map(o => [o.id, o.label]));
-        const rules = T.gaming(store, poi.tavern);   // { houseCut, highTableWins, loanInterest }
+        const rules = T.gaming(store, poi);   // { houseCut, highTableWins, loanInterest }
         let current = null;
         let active = null; // the sitting in progress: { bank, begin, leave }
 
@@ -452,7 +452,7 @@
             let hint = '';      // why the stakes last tapped can't be picked
 
             const bank = makeBank(bet ? {
-                start: T.startingPurse(store), options: T.stakes(store, poi.tavern), opponents, replace,
+                start: T.startingPurse(store), options: T.stakes(store, poi), opponents, replace,
                 cut: rules.houseCut, interest: rules.loanInterest, highWins: rules.highTableWins, maxRaises: bet.raises,
                 tavern: poi.id, game: id, gameName: name, coin, notify: kind => drawBar(kind),
             } : { betting: false });
@@ -561,7 +561,7 @@
 
             // The stakes screen, shown in place of the game until the player sits down
             function drawGate() {
-                const tier = poi.tavern && poi.tavern.tier ? T.tierOf(store, poi.tavern) : null;
+                const tier = (poi.gaming && poi.gaming.tier) || (poi.tavern && poi.tavern.tier) ? T.tableTier(store, poi) : null;
                 const house = [
                     tier && tier.mult !== 1 ? `This is a ${esc(tier.label.toLowerCase())} house, so the blinds are ×${tier.mult}.` : '',
                     bank.cut ? `The house keeps ${bank.cut}% of every pot.` : '',
@@ -682,12 +682,15 @@
     // Formats `.join()` as "X or Y" or "X, Y or Z".
     const gameNames = (store, poi) => {
         const labels = Object.fromEntries(store.enumOptions('tavernGame').map(o => [o.id, o.label]));
-        const list = ((poi.tavern && poi.tavern.games) || []).filter(id => GAMES.has(id)).map(id => labels[id] || id);
+        const list = ((poi.gaming && poi.gaming.games) || []).filter(id => GAMES.has(id)).map(id => labels[id] || id);
         list.join = () => list.length <= 1
             ? (list[0] || '')
             : `${list.slice(0, -1).join(', ')} or ${list[list.length - 1]}`;
         return list;
     };
 
-    ATH.games = { ...games, mountTable, gameNames, avatarHtml, noBank: NO_BANK, andList, _test: { makeBank, readLedger } };
+    // The purse, for the other ways of losing it (the fighting pit, scripts/pit.js)
+    const purse = { read: readPurse, write: writePurse };
+
+    ATH.games = { ...games, mountTable, gameNames, avatarHtml, noBank: NO_BANK, andList, purse, _test: { makeBank, readLedger } };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -88,7 +88,8 @@
         const out = [];
         if (poi.institution) out.push(label('institutionKind', poi.institution.kind));
         if (poi.tavern) out.push('Tavern');
-        if (poi.tavern && (poi.tavern.games || []).length) out.push('Gaming table');
+        if (poi.gaming && (poi.gaming.games || []).length) out.push(poi.tavern ? 'Gaming table' : 'Gambling den');
+        if (poi.pit) out.push('Fighting pit');
         if (poi.shop) out.push(label('shopKind', poi.shop.kind) || 'Shop');
         if (poi.temple) out.push('Temple');
         if (poi.alchemist) out.push('Alchemist’s bench');

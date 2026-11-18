@@ -1,1 +1,25 @@
-[]
+[
+  {
+    "id": "fest-brightening",
+    "name": "The Brightening",
+    "kind": "holy",
+    "summary": "A celebration of Melior's saving of Pholtos, ending the Sunbreak.",
+    "on": {
+      "month": "Meliawal",
+      "day": 11
+    },
+    "deity": "melior"
+  },
+  {
+    "id": "fest-riest-harvest",
+    "name": "The Riest Harvest",
+    "kind": "festival",
+    "summary": "A celebration of the Eperinian fruit-tree, said to have the first meal of Amicia Eperina.",
+    "on": {
+      "month": "Arawal",
+      "day": 21
+    },
+    "days": 3,
+    "body": "Riest trees are native the the east of the boundless and abound in Eperina. The town of Hathers is now the main producer of riest fruits which are harvested at the end of the month of Arawal. The fruit is said to have been the first food eaten by Amicia Eperina and the settlers when they first set foot in what would become the kingdom. "
+  }
+]

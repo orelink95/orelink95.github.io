@@ -39,10 +39,6 @@
       {
         "faction": "thieves-guild",
         "status": "Hostile"
-      },
-      {
-        "faction": "blackwater-syndicate",
-        "status": "Neutral"
       }
     ],
     "spellbooks": [
@@ -56,7 +52,13 @@
           "spl-identify",
           "spl-comprehend-languages",
           "spl-hex",
-          "spl-tashas-hideous-laughter"
+          "spl-tashas-hideous-laughter",
+          "spl-shillelagh",
+          "spl-mending",
+          "spl-message",
+          "spl-prestidigitation",
+          "spl-blade-ward",
+          "spl-mind-sliver"
         ]
       },
       {

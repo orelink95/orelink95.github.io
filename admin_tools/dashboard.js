@@ -439,8 +439,8 @@
             case 'omen': return r.meaning || '';
             case 'prophecy': return [(r.campaigns || []).map(nameOf).join(', ') || 'No campaign', r.practice ? nameOf(r.practice) : ''].filter(Boolean).join(' · ');
             case 'readingRule': return [enumLabel('readingPattern', r.when).replace(/ \(.*\)$/, ''),
-                (r.cards || []).length ? r.cards.map(nameOf).join(' + ') : r.deck ? nameOf(r.deck) : 'Every deck',
-                (r.spreads || []).length ? r.spreads.map(nameOf).join(', ') : ''].filter(Boolean).join(' · ');
+            (r.cards || []).length ? r.cards.map(nameOf).join(' + ') : r.deck ? nameOf(r.deck) : 'Every deck',
+            (r.spreads || []).length ? r.spreads.map(nameOf).join(', ') : ''].filter(Boolean).join(' · ');
         }
         return r.subtitle || '';
     }
@@ -1336,8 +1336,13 @@
     }
     const secId = t => 'sec-' + slug(t);
 
-    // Sections that hold one optional block (a POI's Tavern, Shop… or its Look): shown only once added
-    const optionalBlock = sec => (sec.fields.length === 1 && sec.fields[0][1].kind === 'object' && sec.fields[0][1].optional ? sec.fields[0] : null);
+    // Sections that hold one optional block (a POI's Tavern, Shop… or its Look): shown only once added.
+    // The block may have top-level companions in its section (the pit's private pitFixes): they come and go with it.
+    const optionalBlock = sec => {
+        const blocks = sec.fields.filter(([, f]) => f.kind === 'object' && f.optional);
+        return blocks.length === 1 && sec.fields[0] === blocks[0] ? blocks[0] : null;
+    };
+    const companionsOf = sec => sec.fields.slice(1);
     function renderEditor() {
         rememberUI(); // every change of tool or record ends up here
         closeMenu();
@@ -1365,12 +1370,13 @@
         const cards = secs.map(sec => {
             const k = `sec:${S.view.key}:${sec.title}`, collapsed = S.collapsed.has(k);
             // A card holding a single object (Tavern, Shop, Temple, Statistics): its fields straight on the card
-            const only = sec.fields.length === 1 && sec.fields[0][1].kind === 'object' ? sec.fields[0] : null;
+            const only = optionalBlock(sec) || (sec.fields.length === 1 && sec.fields[0][1].kind === 'object' ? sec.fields[0] : null);
             let body, extra = '';
             if (only) {
                 const [key, f] = only, v = rec[key];
                 if (f.optional) extra = `<button class="btn sm danger" data-action="remove-block" data-key="${esc(key)}">Remove ${esc((f.label || key).toLowerCase())}</button>`;
-                body = `${helpHtml(f)}<div class="grid">${fieldsGrid(f.fields, v || {}, [key])}</div>`;
+                const comp = companionsOf(sec);
+                body = `${helpHtml(f)}<div class="grid">${fieldsGrid(f.fields, v || {}, [key])}${comp.length ? fieldsGrid(Object.fromEntries(comp), rec, []) : ''}</div>`;
             } else {
                 const inner = (sec.first ? base : '') + fieldsGrid(Object.fromEntries(sec.fields), rec, []);
                 if (!inner.trim()) return '';
@@ -1442,10 +1448,13 @@
         ]);
     }
     function removeBlock(key) {
-        const f = curDef().fields[key], rec = curRecord();
-        modal(`<h3>Remove ${esc((f.label || key).toLowerCase())}?</h3><p>Everything set in it on “${esc(rec.name || '')}” goes too. Nothing is written until you save (Reload drops the change).</p>
+        const def = curDef(), f = def.fields[key], rec = curRecord();
+        const sec = sectionsOf(def).find(s => { const o = optionalBlock(s); return o && o[0] === key; });
+        const comp = sec ? companionsOf(sec).filter(([k]) => rec[k] != null) : [];
+        const also = comp.length ? ` So does ${comp.map(([k, cf]) => `<b>${esc(cf.label || k)}</b>`).join(', ')}.` : '';
+        modal(`<h3>Remove ${esc((f.label || key).toLowerCase())}?</h3><p>Everything set in it on “${esc(rec.name || '')}” goes too.${also} Nothing is written until you save (Reload drops the change).</p>
             <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn danger" id="rb-ok">Remove</button></div>`);
-        $('#rb-ok').addEventListener('click', () => { delete rec[key]; closeModal(); edited(true); });
+        $('#rb-ok').addEventListener('click', () => { delete rec[key]; comp.forEach(([k]) => delete rec[k]); closeModal(); edited(true); });
     }
     function updateHeader() {
         const t = $('#ed-title'), rec = curRecord();
@@ -1556,15 +1565,15 @@
         const eyebrow = type === 'poi'
             ? [rec.institution && 'Institution', rec.tavern && 'Tavern & Lodging', rec.pit && 'Fighting Pit', !rec.tavern && rec.gaming && 'Gambling Den', rec.shop && 'Shop', rec.temple && 'Temple'].filter(Boolean).join(' · ') || String(rec.typeLabel || '').trim() || (rec.danger ? 'Danger Zone' : rec.featured ? 'Featured Landmark' : '')
             : type === 'plane' ? (rec.kind === 'demiplane' ? 'Demiplane' : 'Plane of existence')
-            : (rec.arcana || 'Specimen');
+                : (rec.arcana || 'Specimen');
         const extra = type === 'plane'
             ? `<div class="look-prev__box"><p class="look-prev__eyebrow">${esc(((rec.traits || [])[0] || {}).label || 'Trait')}</p><p class="look-prev__text">${esc(((rec.traits || [])[0] || {}).value || 'A short fact about the plane')}</p></div>`
             : type === 'poi'
-            ? `<div class="look-prev__box look-prev__box--card"><p class="look-prev__eyebrow">Today at the Bar</p><h5 class="look-prev__heading">Bill of Fare</h5>
+                ? `<div class="look-prev__box look-prev__box--card"><p class="look-prev__eyebrow">Today at the Bar</p><h5 class="look-prev__heading">Bill of Fare</h5>
                 <div class="look-prev__rule"></div><div class="look-prev__item"><span>Spiced ale</span><i></i><b>4 cp</b></div></div>`
-            : `<div class="look-prev__box"><p class="look-prev__eyebrow">Threat Assessment</p>
+                : `<div class="look-prev__box"><p class="look-prev__eyebrow">Threat Assessment</p>
                 ${(rec.stats && rec.stats.length ? rec.stats.slice(0, 2) : [{ label: 'Strength', value: 70 }, { label: 'Cunning', value: 45 }])
-                .map(st => `<div class="look-prev__stat"><span>${esc(st.label)}</span><span>${esc(st.value ?? 0)}</span></div><div class="look-prev__bar"><span style="width:${Math.max(0, Math.min(100, +st.value || 0))}%"></span></div>`).join('')}</div>`;
+                    .map(st => `<div class="look-prev__stat"><span>${esc(st.label)}</span><span>${esc(st.value ?? 0)}</span></div><div class="look-prev__bar"><span style="width:${Math.max(0, Math.min(100, +st.value || 0))}%"></span></div>`).join('')}</div>`;
         return `<div class="box"><div class="box-head"><h4>Look preview</h4></div>
             <div class="look-prev" data-type="${type}" id="look-prev">
                 <p class="look-prev__crumbs">${esc(rec.name || 'Name')}</p>
@@ -1834,7 +1843,7 @@
             <div class="foot">
                 <span class="pb-foot-left">
                     ${rec ? `<label title="Name, type, rarity, cost, weight and both descriptions"><input type="checkbox" id="pb-text"${willFill ? ' checked' : ''}> Write the card’s text from this potion</label>`
-                        : `<label for="pb-found">Found in</label><select id="pb-found"><option value="">Nowhere yet</option>${foundOptions('', newestSessionOption())}</select>`}
+                : `<label for="pb-found">Found in</label><select id="pb-found"><option value="">Nowhere yet</option>${foundOptions('', newestSessionOption())}</select>`}
                 </span>
                 <button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="pb-ok">${rec ? 'Use this potion' : 'Create the card'}</button>
             </div>`, 'xwide potion');
@@ -2173,9 +2182,9 @@
     const PAPER = { a4: { w: 210, h: 297, label: 'A4' }, letter: { w: 215.9, h: 279.4, label: 'Letter' } };
     const PRINT_FACES = {
         item: [['sheet', 'Opened', 'The physical card: name, type, rarity, cost, weight and text'],
-               ['front', 'Picture', 'The Vault card: picture, name and summary']],
+        ['front', 'Picture', 'The Vault card: picture, name and summary']],
         spell: [['front', 'Card', 'The card: components, time, range, duration and the full description'],
-                ['sheet', 'Opened', 'The name and the full description']],
+        ['sheet', 'Opened', 'The name and the full description']],
     };
     const PRINT_KEY = 'athenaeum.dashboard.print';
     function printOptions() {
@@ -2234,10 +2243,10 @@
         const page = (chunk, face, back) => `<section class="pr-page" style="width:${mm(L.P.w)};height:${mm(L.P.h - 0.4)}">
             ${!back && o.marks ? cutMarks(L) : ''}
             ${chunk.map((r, i) => {
-                let c = i % L.cols, row = Math.floor(i / L.cols);
-                if (back) { if (o.flip === 'short') row = L.rows - 1 - row; else c = L.cols - 1 - c; }
-                return `<div class="pr-slot${back ? ' pr-slot--back' : ''}" data-name="${esc(r.name)}" style="left:${mm(L.x0 + c * (CARD_MM.w + L.g))};top:${mm(L.y0 + row * (CARD_MM.h + L.g))}">${printFace(type, r, back ? 'back' : face, `print-${pages.length}-${i}`)}</div>`;
-            }).join('')}</section>`;
+            let c = i % L.cols, row = Math.floor(i / L.cols);
+            if (back) { if (o.flip === 'short') row = L.rows - 1 - row; else c = L.cols - 1 - c; }
+            return `<div class="pr-slot${back ? ' pr-slot--back' : ''}" data-name="${esc(r.name)}" style="left:${mm(L.x0 + c * (CARD_MM.w + L.g))};top:${mm(L.y0 + row * (CARD_MM.h + L.g))}">${printFace(type, r, back ? 'back' : face, `print-${pages.length}-${i}`)}</div>`;
+        }).join('')}</section>`;
         const pages = [];
         for (const face of faces) for (const ch of chunks) { pages.push(page(ch, face, false)); if (t.backs) pages.push(page(ch, face, true)); }
         if (!faces.length && t.backs) chunks.forEach(ch => pages.push(page(ch, null, true)));
@@ -2255,7 +2264,7 @@
                 img.loading = 'eager';      // a lazy picture out of sight would never load
                 img.src = url || 'data:image/gif;base64,R0lGODlhAQABAAAAACw=';
                 img.classList.toggle('none', !url);
-                if (url) await inTime(img.decode().catch(() => {}));
+                if (url) await inTime(img.decode().catch(() => { }));
             }),
             ...$$('[data-symbol]', root).map(async el => {
                 const url = await thumbUrl(el.dataset.symbol);
@@ -2611,13 +2620,13 @@
             return [`<div class="box card-prev"><div class="box-head"><h4>Card preview</h4>
                 <span class="seg">${btn('front', 'Upright')}${btn('reversed', 'Reversed')}${btn('back', 'Back')}</span></div>
                 <div class="card-prev__stage">${F.card(r, deck, { tag: 'div', faceDown: side === 'back', reversed: side === 'reversed', picture: thumb })}</div></div>`,
-                cardInReadings(r, side === 'reversed')];
+            cardInReadings(r, side === 'reversed')];
         }
         if (type === 'deck') {
             const cards = S.store.all('fortuneCard').filter(c => c.deck === r.id);
             const used = S.store.all('practice').filter(p => p.deck === r.id);
             return [`<div class="box card-prev"><h4>Back</h4><div class="card-prev__stage">${F.card({ name: '' }, r, { tag: 'div', faceDown: true, picture: thumb })}</div></div>`,
-                `<div class="box"><h4>Cards <span>${cards.length}</span></h4>
+            `<div class="box"><h4>Cards <span>${cards.length}</span></h4>
                 ${cards.length ? `<div class="fan-prev">${cards.map(c => `<span data-jump="${esc(c.id)}" title="${esc(c.name)}">${F.card(c, r, { tag: 'div', picture: thumb })}</span>`).join('')}</div>` : '<p class="muted">No card yet.</p>'}
                 ${used.length ? '' : '<p class="warn">No practice draws from this deck yet.</p>'}
                 <button class="btn add-here" data-action="add-here" data-type="fortuneCard" data-field="deck" data-where="${esc(r.id)}">+ Card in this deck</button></div>`];
@@ -2632,7 +2641,7 @@
                 turned: new Set(),
             };
             return [`<div class="box fortune-prev"><h4>As it is laid</h4><div class="fread">${F.reading(view, { tag: 'div' })}</div></div>`,
-                sampleReading(r)];
+            sampleReading(r)];
         }
         if (type === 'castPiece') {
             const set = S.store.get(r.pieceSet) || null;
@@ -2706,7 +2715,7 @@
         let h = 0; for (const ch of seed) h = (Math.imul(h, 31) + ch.charCodeAt(0)) | 0;
         const rnd = () => { h = (Math.imul(h ^ (h >>> 15), 2246822507) + 0x9e3779b9) | 0; return ((h >>> 0) % 100000) / 100000; };
         const pool = D.cardsOf(S.store, deck.id).slice();
-        for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+        for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1));[pool[i], pool[j]] = [pool[j], pool[i]]; }
         const slots = pool.slice(0, n).map((card, i) => {
             const reversed = !deck.noReversals && rnd() < 0.5;
             return { position: sp.positions[i], card, reversed, keywords: (reversed ? card.reversedKeywords : card.keywords) || [], reading: (reversed ? card.reversed || card.upright : card.upright) || '' };
@@ -3949,7 +3958,7 @@
             case 'potion-brew': potionBrewer(rec); break;
             case 'potion-new': potionBrewer(null,
                 t.dataset.recipe ? { recipe: JSON.parse(t.dataset.recipe), seed: t.dataset.seed }
-                : t.dataset.part ? { part: t.dataset.part === 'principle' ? 'active' : t.dataset.part, id: rec.id } : null); break;
+                    : t.dataset.part ? { part: t.dataset.part === 'principle' ? 'active' : t.dataset.part, id: rec.id } : null); break;
             case 'mark-find': potionBrewer(null, { mark: ($('#mark-in') || {}).value || '' }); break;
             case 'potion-import': potionImport(rec); break;
             case 'potion-refill': potionRefill(rec); break;

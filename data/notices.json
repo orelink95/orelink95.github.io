@@ -5,7 +5,7 @@
     "where": "brightend",
     "kind": "announcement",
     "body": "By order of the watch: the gates close at the second bell after dusk. Those found outside the walls after that hour sleep outside them, or in the cells.",
-    "issuerText": "The Watch",
+    "issuerText": "The Wardens",
     "posted": "Pinned this season"
   },
   {
@@ -21,10 +21,14 @@
     "id": "notice-lost-ledger",
     "name": "Lost: brass-bound ledger",
     "where": "brightend",
+    "campaigns": [
+      "echoes-from-the-void"
+    ],
     "kind": "personal",
     "body": "Lost on a coach bench: a brass-bound ledger, no great value to anyone but its owner. No questions asked.",
     "reward": "10 gp, no questions",
-    "issuerText": "A very anxious clerk"
+    "issuerText": "A very anxious clerk",
+    "posted": "Pemta, 6 Pho"
   },
   {
     "id": "notice-fields-beast-bounty",
@@ -50,7 +54,11 @@
     "id": "notice-caravan-guards",
     "name": "Hands wanted: caravan guards",
     "where": "brightend",
+    "campaigns": [
+      "echoes-from-the-void"
+    ],
     "kind": "job",
+    "status": "open",
     "body": "Guards wanted for a caravan leaving in a few days. Experience preferred, discretion required. Ask what's in the wagons, and you're not hired.",
     "reward": "30 gp each, half up front",
     "issuerText": "A caravan master"
@@ -113,7 +121,10 @@
     "where": "gilded-goldfinch",
     "kind": "personal",
     "body": "My brother left for the hills before the thaw and has not written. If you've seen him, or his mule, tell me. If you've seen only the mule, tell me that too.",
-    "issuerText": "A tanner's apprentice"
+    "reward": "A family heirloom",
+    "issuerText": "Erik, Tanner Apprentice",
+    "posted": "Prota, 2 Pho.",
+    "image": "images/missing-poster.jpg"
   },
   {
     "id": "notice-discreet-courier",

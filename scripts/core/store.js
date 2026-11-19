@@ -466,19 +466,19 @@
             let inAnchor = 0, inCode = 0;
             const spans = [];   // for each open <span>: is it a nolink one?
             const link = text => text.replace(linkIndex.re, match => {
-                    const t = linkIndex.terms.get(termKey(match));
-                    if (!t || exclude.has(t.id)) return match;
-                    if (!revealed(t.rec, cid)) return match;
-                    if (t.part && !partRevealed(t.part, cid)) return match;
-                    if (!t.href && !options.terms) return match;
-                    const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
-                    const attrs = typeof options.attrs === 'function' ? options.attrs(t.rec, match) : options.attrs;
-                    // data-kw: the record's id, for the preview cards (scripts/core/preview.js)
-                    const extra = ` data-kw="${t.id}"` + (attrs ? ' ' + attrs : '');
-                    return t.href
-                        ? `<a href="${t.href}" class="${cls}"${extra}>${match}</a>`
-                        : `<span class="${cls}"${extra}>${match}</span>`;
-                });
+                const t = linkIndex.terms.get(termKey(match));
+                if (!t || exclude.has(t.id)) return match;
+                if (!revealed(t.rec, cid)) return match;
+                if (t.part && !partRevealed(t.part, cid)) return match;
+                if (!t.href && !options.terms) return match;
+                const cls = options.className ? `${t.cls} ${options.className}` : t.cls;
+                const attrs = typeof options.attrs === 'function' ? options.attrs(t.rec, match) : options.attrs;
+                // data-kw: the record's id, for the preview cards (scripts/core/preview.js)
+                const extra = ` data-kw="${t.id}"` + (attrs ? ' ' + attrs : '');
+                return t.href
+                    ? `<a href="${t.href}" class="${cls}"${extra}>${match}</a>`
+                    : `<span class="${cls}"${extra}>${match}</span>`;
+            });
             return html.split(/(<[^>]+>)/g).map(part => {
                 if (part.startsWith('<')) {
                     if (/^<a[\s>]/i.test(part)) inAnchor++;
@@ -574,6 +574,8 @@
         function checkRef(f, id, where, { error }) {
             if (typeof id !== 'string') { error(`${where}: expected an id`); return; }
             const target = byId.get(id);
+            // A place of a plane (refs with planePlaces: true): "<plane>~<place>"
+            if (!target && f.planePlaces && (planePart(id) || {}).part === 'place') return;
             if (!target) { error(`${where}: "${id}" does not exist`); return; }
             const t = typeOfRec.get(target);
             if (!f.to.includes(t)) error(`${where}: "${id}" is a ${t}, expected ${f.to.join(' or ')}`);
@@ -889,6 +891,14 @@
                     seen(slugOf(m.id || m.name), m.name);
                     if (m.sealed && !(m.revealedIn || []).length) warnings.push(`${where}.groups[${i}].members[${j}]: “${m.name}” is sealed and met in no campaign yet`);
                 }));
+            }
+            // A plane's place visited in a session, but still sealed for its campaign
+            for (const se of byType.session || []) {
+                (se.places || []).forEach((id, i) => {
+                    const v = planePart(id);
+                    if (v && v.part === 'place' && se.campaign && !partRevealed(v, se.campaign))
+                        warnings.push(`[session] ${se.id}.places[${i}]: “${v.name}” is sealed for this campaign, so the session does not show it (add the campaign to its “Learned in”, or to its plane’s)`);
+                });
             }
             // The timeline: every event needs a place on it
             for (const ev of byType.event || []) {

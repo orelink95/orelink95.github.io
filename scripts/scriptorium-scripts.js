@@ -72,17 +72,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         const href = store.url(rec);
         const label = inner === undefined ? esc(rec.name) : inner;
         return href ? `<a href="${esc(href)}" class="${cls}" data-kw="${esc(rec.id)}">${label}</a>`
-                    : `<span class="${cls}" data-kw="${esc(rec.id)}">${label}</span>`;
+            : `<span class="${cls}" data-kw="${esc(rec.id)}">${label}</span>`;
     }
     // A place with no page: a click searches the chronicle for it
     const searchLink = (term, cls) => `<button type="button" class="scr-searchlink ${cls || ''}" data-search="${esc(term)}" title="Search the chronicle">${esc(term)}</button>`;
 
-    // The places of a session: records first, then the ones with no page
+    // A place of a plane (plane.places[], id "<plane>~<place>"), unless still sealed for the campaign
+    const planePlace = (id, campaign) => {
+        const v = !store.get(id) && store.planePart ? store.planePart(id) : null;
+        return v && v.part === 'place' && store.partRevealed(v, campaign) ? v : null;
+    };
+    // The places of a session: records (and places of a plane) first, then the ones with no page
     const placesOf = s => [
-        ...(s.places || []).map(id => store.get(id)).filter(Boolean).map(rec => ({ name: rec.name, rec })),
+        ...(s.places || []).map(id => {
+            const rec = store.get(id);
+            if (rec) return { name: rec.name, rec };
+            const part = planePlace(id, s.campaign);
+            return part ? { name: part.name, rec: null, part } : null;
+        }).filter(Boolean),
         ...(s.otherPlaces || []).map(name => ({ name, rec: null })),
     ];
-    const placeHtml = (p, cls) => (p.rec ? recLink(p.rec, `kw-place ${cls || ''}`) : searchLink(p.name, cls));
+    const partLink = (v, cls) => `<a href="${esc(store.partUrl(v) || '#')}" class="${cls}" data-kw="${esc(v.id)}">${esc(v.name)}</a>`;
+    const placeHtml = (p, cls) => (p.rec ? recLink(p.rec, `kw-place ${cls || ''}`) : p.part ? partLink(p.part, `kw-place ${cls || ''}`) : searchLink(p.name, cls));
 
     /* ---------------- linked names ---------------- */
 
@@ -323,7 +334,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 : `<span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>`;
             const cls = `scr-find${item && item.image ? '' : ' scr-find--plain'}`;
             return item ? recLink(item, cls, `${inner}<span class="sr-only">${esc(name)}</span>`).replace('data-kw', `title="${esc(name)}" data-kw`)
-                        : `<span class="${cls}" title="${esc(name)}">${inner}<span class="sr-only">${esc(name)}</span></span>`;
+                : `<span class="${cls}" title="${esc(name)}">${inner}<span class="sr-only">${esc(name)}</span></span>`;
         }).join('');
         els.findsFoot.innerHTML = ids.length
             ? `<span>${ids.length} ${ids.length === 1 ? 'find' : 'finds'} across ${found} ${found === 1 ? 'session' : 'sessions'}</span><a href="vault.html" class="scr-finds__vault">Open the Vault →</a>`
@@ -357,13 +368,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <h2 class="scr-chapter__title">${esc(arcLabel(c.arc) || c.arc)}</h2>
                 ${last ? `<p class="scr-chapter__sub">As set down after Session ${roman(last)}</p>` : ''}
                 ${passages.map((p, j) => {
-                    const refs = (p.sessions || []).filter(id => store.get(id));
-                    const label = sessionsLabel(refs.map(num));
-                    const note = refs.length && label
-                        ? `<button type="button" class="scr-note" data-open="${esc(refs[0])}"><span class="material-symbols-outlined" aria-hidden="true">bookmark</span>${esc(label)}</button>`
-                        : '<span class="scr-note scr-note--none"></span>';
-                    return `<div class="scr-passage"><div class="scr-passage__text story-text">${linked(p.text, { markdown: true, dropCap: j === 0 })}</div>${note}</div>`;
-                }).join('')}
+                const refs = (p.sessions || []).filter(id => store.get(id));
+                const label = sessionsLabel(refs.map(num));
+                const note = refs.length && label
+                    ? `<button type="button" class="scr-note" data-open="${esc(refs[0])}"><span class="material-symbols-outlined" aria-hidden="true">bookmark</span>${esc(label)}</button>`
+                    : '<span class="scr-note scr-note--none"></span>';
+                return `<div class="scr-passage"><div class="scr-passage__text story-text">${linked(p.text, { markdown: true, dropCap: j === 0 })}</div>${note}</div>`;
+            }).join('')}
                 <div class="scr-chapter__end" aria-hidden="true"><span></span><span class="material-symbols-outlined">auto_awesome</span><span></span></div>
             </article>`;
         }).join('');
@@ -518,7 +529,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <ul>${s.futureLeads.map(t => `<li>${linked(t)}</li>`).join('')}</ul></section>` : ''}
                 ${loot.length ? `<section class="recap__finds"><h3 class="recap__h recap__h--vault"><span class="material-symbols-outlined" aria-hidden="true">inventory_2</span>New in the Vault</h3>
                     <div class="recap__grid">${loot.map(item => recLink(item, `recap__find${item.image ? '' : ' recap__find--plain'}`,
-                        `${item.image ? `<img src="${esc(item.image)}" alt="" loading="lazy">` : '<span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>'}<span class="recap__find-name">${esc(item.name)}</span>`)).join('')}</div></section>` : ''}
+            `${item.image ? `<img src="${esc(item.image)}" alt="" loading="lazy">` : '<span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>'}<span class="recap__find-name">${esc(item.name)}</span>`)).join('')}</div></section>` : ''}
             </div>` : ''}`;
     }
     function openRecap() {
@@ -538,7 +549,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     /* ---------------- the journey ---------------- */
 
-    const journey = Athenaeum.journey ? Athenaeum.journey({ store, el: els.journey, roman, esc, recLink }) : null;
+    const journey = Athenaeum.journey ? Athenaeum.journey({ store, el: els.journey, roman, esc, recLink, partLink, planePlace }) : null;
 
     /* ---------------- tabs ---------------- */
 

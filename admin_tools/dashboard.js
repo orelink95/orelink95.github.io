@@ -393,7 +393,9 @@
     }
     const pathAttr = path => esc(JSON.stringify(path));
     const fid = path => 'f_' + path.join('_').replace(/[^a-zA-Z0-9_]/g, '-');
-    const nameOf = id => { const r = S.store && S.store.get(id); return r ? r.name : id; };
+    const nameOf = id => { const r = S.store && S.store.get(id); if (r) return r.name; const v = planePlace(id); return v ? v.name : id; };
+    // A place of a plane (plane.places[]), picked in a refs field with planePlaces: "<plane>~<place>"
+    const planePlace = id => { const v = S.store && S.store.planePart ? S.store.planePart(id) : null; return v && v.part === 'place' ? v : null; };
     /* Hidden from players (record.hidden, data/schema.js header): the record, and what
        follows it (places inside, NPCs living there, sessions of a hidden campaign…),
        never reaches the site. hiddenWhy: 'own', 'campaigns', or the id it follows. */
@@ -1139,7 +1141,7 @@
             }
             case 'refs': {
                 const arr = Array.isArray(value) ? value : [];
-                return wrap(f, `${labelHtml(f, key, id)}${chipsHtml(arr, path, id, f.to)}${help}`);
+                return wrap(f, `${labelHtml(f, key, id)}${chipsHtml(arr, path, id, f.to, !!f.planePlaces)}${help}`);
             }
             case 'map': return wrap(f, mapHtml(f, key, value, path), 'fld-box');
             case 'mapImage': {
@@ -1219,16 +1221,18 @@
             ${add}</div>`;
     }
     // Links (refs) and tags (list): chips, an input with suggestions, drag to reorder
-    function chipsHtml(arr, path, id, to) {
+    function chipsHtml(arr, path, id, to, parts) {
         const chips = arr.map((v, i) => {
-            const exists = to ? allIds().has(v) : true;
-            const sub = to ? (exists ? (to.length > 1 ? typeLabel(S.store.typeOf(v)) : '') : 'missing') : '';
+            const part = parts && !allIds().has(v) ? planePlace(v) : null;
+            const exists = to ? allIds().has(v) || !!part : true;
+            const sub = to ? (part ? `Place · ${part.plane.name}` : exists ? (to.length > 1 ? typeLabel(S.store.typeOf(v)) : '') : 'missing') : '';
+            const target = part ? part.plane.id : v;   // a plane's place opens its plane
             return `<span class="tok ${exists ? '' : 'tok--bad'}" draggable="true" data-i="${i}">
-                ${to && exists ? `<a href="#" data-jump="${esc(v)}" title="Open">${esc(nameOf(v))}</a>` : `<span>${esc(to && !exists ? '⚠ ' + v : v)}</span>`}
+                ${to && exists ? `<a href="#" data-jump="${esc(target)}" title="Open">${esc(nameOf(v))}</a>` : `<span>${esc(to && !exists ? '⚠ ' + v : v)}</span>`}
                 ${sub ? `<small>${esc(sub)}</small>` : ''}
                 <button data-action="remove" data-path="${pathAttr([...path, i])}" title="Remove" aria-label="Remove"><span class="material-symbols-outlined">close</span></button></span>`;
         }).join('');
-        return `<div class="chips" data-chips data-path="${pathAttr(path)}" ${to ? `data-to="${esc(JSON.stringify(to))}"` : ''}>
+        return `<div class="chips" data-chips data-path="${pathAttr(path)}" ${to ? `data-to="${esc(JSON.stringify(to))}"` : ''} ${parts ? 'data-parts' : ''}>
             ${chips}<input id="${id}" class="chip-in" data-chip-in autocomplete="off" placeholder="${to ? (arr.length ? 'Add…' : 'Type to search…') : (arr.length ? 'Add…' : 'Type, then Enter')}">
             <div class="suggest" hidden></div></div>`;
     }
@@ -1286,7 +1290,11 @@
         q = raw.toLowerCase();
         if (box.dataset.to) {
             const to = JSON.parse(box.dataset.to);
-            return to.flatMap(t => (S.data[t] || []).map(r => ({ id: r.id, label: r.name, sub: r.parent ? nameOf(r.parent) : (to.length > 1 ? TYPES[t].label : subtitle(t, r)), hay: [r.name, r.id, ...(r.aliases || [])].join(' ').toLowerCase() })))
+            const opts = to.flatMap(t => (S.data[t] || []).map(r => ({ id: r.id, label: r.name, sub: r.parent ? nameOf(r.parent) : (to.length > 1 ? TYPES[t].label : subtitle(t, r)), hay: [r.name, r.id, ...(r.aliases || [])].join(' ').toLowerCase() })));
+            // The places of each plane, right after the planes
+            if (box.dataset.parts !== undefined && S.store.planeParts) (S.data.plane || []).forEach(pl => S.store.planeParts(pl.id, 'place').forEach(v =>
+                opts.push({ id: v.id, label: v.name, sub: `Place · ${pl.name}`, hay: [v.name, v.id, pl.name, ...v.aliases].join(' ').toLowerCase() })));
+            return opts
                 .filter(o => !current.includes(o.id) && (!q || o.hay.includes(q)))
                 .sort((a, b) => (q ? (b.label.toLowerCase().startsWith(q) - a.label.toLowerCase().startsWith(q)) : 0))
                 .slice(0, 60);
@@ -1333,6 +1341,14 @@
             value = pick ? pick.id : (!box.dataset.to ? input.value.trim() : '');
         }
         if (!value) return;
+        // A plane's place with no id of its own: fix the one made from its name,
+        // so that renaming the place does not break the link
+        const part = box.dataset.parts !== undefined ? planePlace(value) : null;
+        if (part && !part.item.id) {
+            const pl = (S.data.plane || []).find(r => r.id === part.plane.id);
+            const item = pl && (pl.places || []).find(x => x && !x.id && x.name === part.item.name);
+            if (item) item.id = part.key;
+        }
         const rec = curRecord(), arr = getAt(rec, path);
         if (Array.isArray(arr)) { if (!arr.includes(value)) arr.push(value); } else setAt(rec, path, [value]);
         S.refocus = box.dataset.path;
@@ -3532,7 +3548,8 @@
                 for (const [k, f] of Object.entries(fields)) {
                     const v = obj[k];
                     if (f.kind === 'ref' && v === from) { obj[k] = to; count++; }
-                    else if (f.kind === 'refs' && Array.isArray(v)) obj[k] = v.map(x => (x === from ? (count++, to) : x));
+                    else if (f.kind === 'refs' && Array.isArray(v)) obj[k] = v.map(x => (x === from ? (count++, to)
+                        : f.planePlaces && typeof x === 'string' && x.startsWith(from + '~') ? (count++, to + x.slice(from.length)) : x));
                     else if (f.kind === 'object') walk(f.fields, v);
                     else if (f.kind === 'objects' && Array.isArray(v)) v.forEach(o => walk(f.fields, o));
                 }

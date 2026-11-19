@@ -15,7 +15,7 @@
    - Pins count y from the bottom of the picture, as the atlas does
      (Leaflet's flat maps: scripts/atlas-common.js).
    - Places with no pin anywhere (session.otherPlaces, places off every map)
-     are listed under "Off the map".
+     are listed under "Off the map", as are the planes and the places of a plane.
    Used by scripts/scriptorium-scripts.js: Athenaeum.journey(…).
    Styles: styles/pages/scriptorium.css (.jr-…)
    ===================================================================== */
@@ -23,8 +23,9 @@
     const ATH = root.Athenaeum = root.Athenaeum || {};
 
     /* el: the tab's <section>; roman: number -> "IV";
-       esc: HTML escaping; recLink: a link with its preview card */
-    ATH.journey = function ({ store, el, roman, esc, recLink }) {
+       esc: HTML escaping; recLink: a link with its preview card;
+       planePlace(id, campaign): a place of a plane (off every map), partLink: its link */
+    ATH.journey = function ({ store, el, roman, esc, recLink, partLink, planePlace }) {
         const WORLD = Object.assign({ id: 'world', name: 'Eraldom' }, store.world || {});
         const types = (store.schema && store.schema.types) || {};
 
@@ -63,7 +64,7 @@
         let sessions = [];          // oldest first
         let stops = [];             // { n, rec, pin, host, sessions: [s] }
         let routes = new Map();     // session id -> its stops, in order
-        let offMap = [];            // { name, rec, sessions }
+        let offMap = [];            // { name, rec, part, sessions }
         let current = null;         // the map shown
         let follow = null;          // the session followed, or null
         let selected = null;        // a marker key
@@ -89,6 +90,13 @@
                     if (!stop) { stop = { n: byId.size + 1, rec: p, pin: a.pin, host: a.host, sessions: [] }; byId.set(p.id, stop); }
                     if (!stop.sessions.includes(s)) stop.sessions.push(s);
                     if (!route.includes(stop)) route.push(stop);
+                }
+                // The places of a plane are on none of the world's maps
+                for (const id of s.places || []) {
+                    const v = !store.get(id) && planePlace ? planePlace(id, s.campaign) : null;
+                    if (!v) continue;
+                    const o = off.get(v.id) || off.set(v.id, { name: v.name, rec: null, part: v, sessions: [] }).get(v.id);
+                    if (!o.sessions.includes(s)) o.sessions.push(s);
                 }
                 for (const name of s.otherPlaces || []) {
                     const key = 'name:' + name.toLowerCase();
@@ -129,12 +137,12 @@
             const chain = chainOf(current).reverse();
             return `<nav class="jr-trail" aria-label="Maps"><span class="material-symbols-outlined" aria-hidden="true">travel_explore</span>
                 ${chain.map((r, i) => {
-                    const here = r === current;
-                    const sep = i ? '<span class="jr-trail__sep" aria-hidden="true">›</span>' : '';
-                    if (here) return `${sep}<span class="jr-trail__here" aria-current="location">${esc(nameOf(r))}</span>`;
-                    return hasMap(r) ? `${sep}<button type="button" class="jr-trail__up" data-map="${esc(r.id)}">${esc(nameOf(r))}</button>`
-                                     : `${sep}<span class="jr-trail__plain">${esc(nameOf(r))}</span>`;
-                }).join('')}</nav>`;
+                const here = r === current;
+                const sep = i ? '<span class="jr-trail__sep" aria-hidden="true">›</span>' : '';
+                if (here) return `${sep}<span class="jr-trail__here" aria-current="location">${esc(nameOf(r))}</span>`;
+                return hasMap(r) ? `${sep}<button type="button" class="jr-trail__up" data-map="${esc(r.id)}">${esc(nameOf(r))}</button>`
+                    : `${sep}<span class="jr-trail__plain">${esc(nameOf(r))}</span>`;
+            }).join('')}</nav>`;
         }
 
         function mapHtml() {
@@ -218,7 +226,7 @@
                             <span class="jr-num">${stop.n}</span><span class="jr-stop__name">${esc(stop.rec.name)}</span></button>
                             <span class="jr-stop__sessions">${chips(stop.sessions)}</span></li>`).join('')}</ol></section>` : ''}
                     ${offList.length ? `<section class="jr-panel jr-panel--off"><h3 class="jr-panel__title jr-panel__title--muted">Off the map</h3>
-                        <ul class="jr-off">${offList.map(o => `<li><span>${o.rec ? recLink(o.rec, 'kw-place') : esc(o.name)}</span>
+                        <ul class="jr-off">${offList.map(o => `<li><span>${o.rec ? recLink(o.rec, 'kw-place') : o.part && partLink ? partLink(o.part, 'kw-place') : esc(o.name)}</span>
                             <span class="jr-stop__sessions">${chips(follow ? [follow] : o.sessions)}</span></li>`).join('')}</ul></section>` : ''}
                 </aside>`;
         }

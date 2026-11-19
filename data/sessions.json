@@ -189,9 +189,9 @@
     "region": "The Vale House",
     "arc": "Remnants of the Past",
     "summary": "The party explored the impossible mansion, battling animated furniture and uncovering the disturbing, time-displaced experiments of its ancient masters.",
-    "otherPlaces": [
-      "The Vale House",
-      "Maera Voss's Study"
+    "places": [
+      "vale-house-demiplane",
+      "maeras-study"
     ],
     "npcs": [
       {
@@ -251,10 +251,8 @@
       "cloud_district",
       "oddmoss-librarium",
       "gilded-goldfinch",
-      "maeras-study"
-    ],
-    "otherPlaces": [
-      "The Vale House"
+      "maeras-study",
+      "vale-house-demiplane"
     ],
     "npcs": [
       {
@@ -271,7 +269,7 @@
       },
       {
         "npc": "ovan",
-        "sentiment": "neutral"
+        "sentiment": "like"
       },
       {
         "npc": "jeff-skull",

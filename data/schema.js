@@ -25,6 +25,8 @@ worlddate ({year, month, day, approx}: a date of the world's calendar, data/cale
            every year: {month, day}, no year)
 enum (options | enum: '<name of a shared enum below>')
 ref / refs (to: [types]) · map ({x, y, icon, layer, on}) · mapImage
+            refs with planePlaces: true also take the places of a plane (plane.places[]),
+            as "<plane id>~<place id>" (see store.planePart)
 object (fields) · objects (array; fields) · json (free-form, raw)
 
 ※ DASHBOARD ONLY (the site and the validator ignore these) ※
@@ -1322,7 +1324,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     region: { kind: 'text', label: 'Region' },
                     arc: { kind: 'text', label: 'Arc', help: 'Sessions with the same arc form a chapter: write it exactly as in the campaign’s Chapters.' },
                     summary: { kind: 'text', label: 'Summary', long: true },
-                    places: { kind: 'refs', to: ['poi', 'district', 'settlement', 'country', 'continent'], label: 'Places visited', section: 'People & places' },
+                    places: { kind: 'refs', to: ['poi', 'district', 'settlement', 'country', 'continent', 'plane'], planePlaces: true, label: 'Places visited', section: 'People & places', help: 'Planes, demiplanes and the places of a plane too (shown as “Place · <plane>”; choosing one gives it a fixed id). On the Journey they are listed under “Off the map”.' },
                     otherPlaces: { kind: 'list', label: 'Places with no page', section: 'People & places' },
                     npcs: {
                         kind: 'objects', label: 'NPCs met', itemLabel: 'npc', section: 'People & places', fields: {

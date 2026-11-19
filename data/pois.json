@@ -294,6 +294,7 @@
     "parent": "brightend_artisan",
     "subtitle": "Jewelry Emporium",
     "body": "Harth's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th generation shop is famous through out the city, and even further...",
+    "image": "images/pois/harth-gems.jpg",
     "map": {
       "x": 277,
       "y": 777,
@@ -313,8 +314,11 @@
     },
     "look": {
       "accent": "#d3a117",
-      "panel": "#4e0e3d",
-      "card": "#280f29",
+      "panel": "#541844",
+      "card": "#361637",
+      "texture": "image",
+      "textureImage": "images/textures/pinkstone.jpg",
+      "textureStrength": 16,
       "titleFont": "Cinzel Decorative",
       "frame": "ornate"
     }
@@ -519,7 +523,8 @@
     "parent": "ash_district",
     "map": {
       "x": 867,
-      "y": 406
+      "y": 406,
+      "icon": "beer"
     },
     "tavern": {
       "tier": "modest",
@@ -528,6 +533,9 @@
         "meals": 1,
         "bites": 2
       },
+      "includeTags": [
+        "common"
+      ],
       "excludeTags": [
         "fine",
         "coastal",
@@ -542,9 +550,12 @@
     },
     "gaming": {
       "games": [
-        "knucklebones",
-        "crown-and-dagger"
-      ]
+        "liars-dice",
+        "knucklebones"
+      ],
+      "tier": "poor",
+      "houseCut": 1,
+      "highTableWins": 5
     }
   },
   {
@@ -613,6 +624,26 @@
       "x": 412,
       "y": 763,
       "icon": "danger"
+    }
+  },
+  {
+    "id": "maeras-study",
+    "name": "Maera's Study",
+    "aliases": [
+      "Maera Voss’s study"
+    ],
+    "parent": "cloud_district",
+    "subtitle": "Where trouble began",
+    "codex": "A small magical study",
+    "summary": "Maera Voss's study, where the Commentary was found and the journey really began.",
+    "body": "The study is under a permanent relocation spell. The office is located on a remote mountainside, away from danger and completely warded. The study's door, however, keeps moving around the Cloud District. A precaution that always served Maera Voss well, until recently...",
+    "danger": true,
+    "image": "images/pois/voss_study.png",
+    "typeLabel": "Scholar's Study",
+    "map": {
+      "x": 136,
+      "y": 452,
+      "icon": "bookshelf"
     }
   }
 ]

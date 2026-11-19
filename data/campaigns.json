@@ -20,7 +20,8 @@
       "gust",
       "eli",
       "davnis",
-      "m3mu"
+      "m3mu",
+      "pc-wyck"
     ],
     "funds": {
       "gold": 60,
@@ -59,6 +60,21 @@
           "spl-prestidigitation",
           "spl-blade-ward",
           "spl-mind-sliver"
+        ]
+      },
+      {
+        "hero": "pc-wyck",
+        "spells": [
+          "spl-chill-touch",
+          "spl-roaming-pain",
+          "spl-magic-missile",
+          "spl-ill-fated-word",
+          "spl-hives",
+          "spl-faerie-fire",
+          "spl-elementalism",
+          "spl-encrypt-decrypt",
+          "spl-befuddle",
+          "spl-toll-the-dead"
         ]
       },
       {

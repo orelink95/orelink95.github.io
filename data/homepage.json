@@ -1,0 +1,26 @@
+{
+  "updates": [
+    {
+      "record": "roost",
+      "title": "The Roost",
+      "caption": "Added 1 cycle ago"
+    },
+    {
+      "record": "shade-hand",
+      "caption": "Added 2 cycles ago"
+    },
+    {
+      "record": "finding-the-roost",
+      "title": "The Shadow Takes All",
+      "image": "images/echoes_from_void.jpg",
+      "caption": "Added 2 cycles ago"
+    },
+    {
+      "record": "sigil-session-9",
+      "image": "images/Nearing the End.png",
+      "caption": "Latest Story"
+    }
+  ],
+  "quote": "History is not a line, but a spiral drawn by a shaking hand, constantly failing to fully repeat itself",
+  "quoteBy": "Master Sage Elara"
+}

@@ -3,13 +3,40 @@
     "id": "cloud_district",
     "name": "The Cloud District",
     "parent": "brightend",
-    "shortName": "Cloud District",
-    "codex": "District: Alpha",
-    "body": "Suspended above the smog, this is where the elite reside. Palaces of white marble and hanging gardens dominate the skyline.",
+    "shortName": "Cloud",
+    "codex": "District: Cloud",
+    "body": "Suspended at the highest reaches of Brightend, well above the choking smog of the lower tiers, the Cloud District is a dazzling expanse of sunlit opulence and soaring architecture. Here, in the crisp, unpolluted air, the city’s wealthiest elite reside within sprawling estates and palaces of gleaming white marble. Lush hanging gardens spill over terraced balconies in cascades of green and gold, dominating a skyline crafted to display untouchable prosperity.\n\nAt the pinnacle of this rarefied enclave rises the Alabaster Palace, the radiant seat of power from which the city is governed. Beside the palace grounds stands the imposing citadel of the Alabaster Wardens, serving as the central headquarters for {Brightend’s} military and city watch. From these pristine heights, disciplined patrols descend into the streets below—a constant reminder that the Cloud is both a sanctuary of privilege and the undisputed bastion of authority over the entire city. ",
     "mapImage": {
-      "src": "images/cloud_district_map.png",
+      "src": "images/maps/cloud_district_map.png",
       "width": 1167,
       "height": 1080
+    }
+  },
+  {
+    "id": "brightend_artisan",
+    "name": "The Artisan Row",
+    "parent": "brightend",
+    "shortName": "Artisan",
+    "codex": "District: Artisan Row",
+    "body": "Guildhouses and master crafters.",
+    "mapImage": {
+      "src": "images/maps/brightend_artisan.png",
+      "width": 862,
+      "height": 1080
+    }
+  },
+  {
+    "id": "ring-district",
+    "name": "The Ring District",
+    "parent": "brightend",
+    "shortName": "Ring",
+    "codex": "District: Ring",
+    "summary": "Historical district",
+    "body": "Bordering the opulent sprawl of the Cloud District, the Ring stands as the ancestral seat of Brightend’s oldest and most entrenched aristocracy. Where the Cloud glitters with mercantile coin and ostentatious wealth, the Ring exudes the quiet, suffocating weight of inherited power. Behind high wrought-iron gates and weathered stone walls of ancestral homes, vast swathes of the district are divided among the three noble families of {Brightend}, whose sprawling estates have endured for generations.\n\nUnique across the city, the Ring is the only district where private militias openly patrol the streets, with each of the three families maintaining its own liveried security force. Though these armed retainers take care never to directly interfere with the Alabaster Wardens, their constant, steel-clad presence remains a persistent thorn in the side of both the {Wardens} and Lord White. To the powers in place, every household sentry standing watch along the Ring’s cobbled avenues serves as a pointed reminder that their authority—and their legitimacy—can still be questioned.",
+    "mapImage": {
+      "src": "images/maps/ring district.png",
+      "width": 1000,
+      "height": 1000
     }
   },
   {
@@ -17,10 +44,10 @@
     "name": "The Ash District",
     "parent": "brightend",
     "shortName": "Ash",
-    "codex": "District: Omega",
+    "codex": "District: Ash",
     "body": "Beneath the shadow of the industrial forges lies the Ash District. Crime is rampant, and the air is thick with soot.",
     "mapImage": {
-      "src": "images/ash_district_map.png",
+      "src": "images/maps/ash_district_map.png",
       "width": 1149,
       "height": 1080
     }
@@ -30,10 +57,10 @@
     "name": "The Docks",
     "parent": "brightend",
     "shortName": "Docks",
-    "codex": "District: Delta",
+    "codex": "District: Docks",
     "body": "Fish and ships",
     "mapImage": {
-      "src": "images/brightend_docks_map.png",
+      "src": "images/maps/brightend_docks_map.png",
       "width": 926,
       "height": 1080
     }
@@ -43,38 +70,12 @@
     "name": "The Gate",
     "parent": "brightend",
     "shortName": "Gate",
-    "codex": "District: Gamma",
+    "codex": "District: Gate",
     "body": "The (once) heavily militarized entrance to the capital.",
     "mapImage": {
-      "src": "images/placeholder.png",
+      "src": "images/maps/The Gate.png",
       "width": 1000,
       "height": 1000
-    }
-  },
-  {
-    "id": "bazaar",
-    "name": "The Grand Bazaar",
-    "parent": "brightend",
-    "shortName": "Bazaar",
-    "codex": "District: Epsilon",
-    "body": "Home to the great markets.",
-    "mapImage": {
-      "src": "images/placeholder_text.png",
-      "width": 1000,
-      "height": 1000
-    }
-  },
-  {
-    "id": "brightend_artisan",
-    "name": "The Artisan Row",
-    "parent": "brightend",
-    "shortName": "Artisan Row",
-    "codex": "District: Zeta",
-    "body": "Guildhouses and master crafters.",
-    "mapImage": {
-      "src": "images/brightend_artisan.png",
-      "width": 862,
-      "height": 1080
     }
   },
   {
@@ -84,7 +85,7 @@
     "codex": "Village",
     "body": "Cute lil town.\n\nAt first a simple hunter's outpost, Deercrest grew in size quite rapidly. The first settlement there predates the Eperinian Kingdom, but only a few buildings are left from that era. Now it is a busy small town on the edge of the kingdom, famous for its venison and the extraordinary wood it offers.",
     "mapImage": {
-      "src": "images/deercrest-map.png",
+      "src": "images/maps/deercrest-map.png",
       "width": 1411,
       "height": 1080
     }

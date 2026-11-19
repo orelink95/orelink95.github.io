@@ -9,7 +9,11 @@
   <link rel="icon" type="image/png" href="/images/EA-favicon.png" />
   <script src="scripts/general-scripts.js"></script>
   <script src="scripts/upcoming-sessions.js" defer></script>
+  <script src="data/schema.js" defer></script>
+  <script src="scripts/core/markdown.js" defer></script>
   <script src="scripts/core/calendar.js" defer></script>
+  <script src="scripts/core/store.js" defer></script>
+  <script src="scripts/latest-updates.js" defer></script>
   <script src="scripts/today-widget.js" defer></script>
   <link
     href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&amp;family=Newsreader:ital,wght@0,400;0,600;1,400&amp;family=Manrope:wght@500;600&amp;display=swap"
@@ -166,7 +170,7 @@
     </section>
 
     <!-- Latest Updates section -->
-    <section class="updates">
+    <section class="updates" hidden>
       <!-- Glow Pulse Background -->
       <div class="updates__glow">
       </div>
@@ -177,80 +181,17 @@
               Revelations</span>
             <h2 class="updates__title">Latest Updates</h2>
           </div>
-          <a class="updates__all-link" href="scriptorium.html">View All Scrolls</a>
+          <a class="updates__all-link" id="latest-updates-all" href="scriptorium.html">View All Scrolls</a>
         </div>
-        <div class="updates__grid">
-
-          <!-- Update Item 1 -->
-          <div class="update-card">
-            <div class="update-card__frame">
-              <img class="update-card__image-tilt-right"
-                data-alt="misty jagged mountains reflecting in a still dark lake at dawn with teal and deep green tones"
-                src="images/pois/brightend_docks.png" />
-              <div class="update-card__ring">
-              </div>
-              <div class="update-card__fade">
-              </div>
-            </div>
-            <a href="settlement.html?id=brightend&district=the_docks" class="update-card__title">
-              The Brightend Docks</a>
-            <p class="update-card__date">Added 1 cycle ago</p>
-          </div>
-
-          <!-- Update Item 2 -->
-          <div class="update-card">
-            <div class="update-card__frame">
-              <img class="update-card__image-tilt-left"
-                data-alt="mystical dark forest with a single white stag glowing with ethereal light in the shadows"
-                src="images/sephet-halfborn.webp" />
-              <div class="update-card__ring">
-              </div>
-              <div class="update-card__fade">
-              </div>
-            </div>
-            <a href="npc.html?id=sephet" class="update-card__title">
-              Sephet Halfborn</a>
-            <p class="update-card__date">Added 2 cycles ago</p>
-          </div>
-
-          <!-- Update Item 3 -->
-          <div class="update-card">
-            <div class="update-card__frame">
-              <img class="update-card__image-tilt-right"
-                data-alt="ornate rusted key lying on a pile of ancient gold coins and gems in a dark cavern"
-                src="images/tome_twice_missing.png" />
-              <div class="update-card__ring">
-              </div>
-              <div class="update-card__fade">
-              </div>
-            </div>
-            <a href="scriptorium.html?session=session-1" class="update-card__title">
-              A Tome Twice Missing</a>
-            <p class="update-card__date">Added 6 cycles ago</p>
-          </div>
-
-          <!-- Update Item 4 -->
-          <div class="update-card">
-            <div class="update-card__frame">
-              <img class="update-card__image-tilt-left"
-                data-alt="a crystal ball reflecting a swirling nebula of stars and purple magical energy on a wooden pedestal"
-                src="images/echoes_from_void.jpg" />
-              <div class="update-card__ring">
-              </div>
-              <div class="update-card__fade">
-              </div>
-            </div>
-            <a href="scriptorium.html" class="update-card__title">
-              Echoes from the Void</a>
-            <p class="update-card__date">Added an eon ago</p>
-          </div>
-        </div>
+        <!-- The cards: data/homepage.json (dashboard: Site › Homepage), drawn by scripts/latest-updates.js -->
+        <div class="updates__grid" id="latest-updates-grid"></div>
       </div>
     </section>
 
 
     <!-- Aesthetic Lore Snippet -->
-    <section class="epigraph">
+    <!-- The quote: data/homepage.json (quote, quoteBy) -->
+    <section class="epigraph" hidden>
       <div class="epigraph__inner">
         <!-- Magical Glow behind quote -->
         <div class="epigraph__halo">

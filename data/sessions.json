@@ -423,5 +423,33 @@
         "sentiment": "like"
       }
     ]
+  },
+  {
+    "id": "finding-the-roost",
+    "name": "Finding the Roost",
+    "campaign": "echoes-from-the-void",
+    "number": 7,
+    "date": {
+      "year": 1693,
+      "month": "Pholawal",
+      "day": 7
+    },
+    "region": "Brightend, Eperina",
+    "arc": "Remnants of the Past",
+    "places": [
+      "roost",
+      "warden-fort"
+    ],
+    "npcs": [
+      {
+        "npc": "shade-hand",
+        "sentiment": "dislike"
+      }
+    ],
+    "accomplished": [
+      "- Found the Roost",
+      "- Discovered the mysterious figure behind the Talons"
+    ],
+    "body": "Scared and confused by the magic at play, the party realizes that not even Sephet knows its origin. He reveals that he came back from his trip with his apprentice, (Wyck)[], who, as a trained wizard, will accompany the party until the truth is found about the Talons and the person at their head. \n\n"
   }
 ]

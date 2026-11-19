@@ -260,7 +260,10 @@
         if (!grid) return;
         try {
             const [schedule, campaigns] = await Promise.all([getJSON('data/schedule.json'), getJSON('data/campaigns.json').catch(() => [])]);
-            render(grid, schedule || {}, campaigns || []);
+            // A campaign hidden from players: neither it nor its sessions are announced
+            const hidden = new Set((campaigns || []).filter(c => c && c.hidden === true).map(c => c.id));
+            const sessions = ((schedule || {}).sessions || []).filter(e => !(e && hidden.has(e.campaign)));
+            render(grid, { ...(schedule || {}), sessions }, (campaigns || []).filter(c => !hidden.has(c.id)));
         } catch (e) {
             console.error('[Athenaeum] upcoming sessions:', e.message);
             grid.dataset.count = '0';

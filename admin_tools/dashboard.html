@@ -278,6 +278,12 @@
             background: #ff9f9422; color: var(--red); font-size: 11px; font-weight: 700; text-align: center; line-height: 18px;
         }
         .li:focus-visible { outline: 2px solid var(--gold); outline-offset: -1px; }
+        /* hidden from players: dimmed, with a crossed eye (bright where it was ticked) */
+        .hid { font-size: 15px; flex: none; color: var(--ink-faint); opacity: .7; }
+        .hid.own { color: var(--amber); opacity: 1; }
+        .li.is-hidden .t, .li.is-hidden .s, .li.is-hidden .ti, tr.is-hidden .c-name input { opacity: .55; }
+        .li.is-hidden .t { font-style: italic; }
+        .grid-t .flags .hid { vertical-align: -3px; margin-right: 4px; }
 
         /* ---- the Atlas tree: every place, nested ---- */
         .li.tn {
@@ -392,6 +398,14 @@
         .ed-head h2 { font: 600 28px/1.15 'Newsreader', serif; margin: 2px 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ed-head code { color: var(--ink-faint); }
         .ed-actions { display: flex; gap: 8px; flex: none; }
+        .hide-btn.on { color: var(--amber); border-color: #f2b84b66; background: #f2b84b14; }
+        .hidden-note { display: flex; align-items: flex-start; gap: 8px; margin: -4px 0 10px; padding: 8px 12px; border-radius: 8px;
+            background: #f2b84b10; border: 1px solid #f2b84b40; color: var(--ink-dim); font-size: 13px; line-height: 1.45; }
+        .hidden-note > .material-symbols-outlined { color: var(--amber); font-size: 18px; flex: none; margin-top: 1px; }
+        .hidden-note b { color: var(--amber); }
+        .lnk { border: 0; background: none; padding: 0; font: inherit; color: var(--gold); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+        .hl-row { display: flex; align-items: center; gap: 6px; }
+        .hl-row .hl { flex: 1; }
         .sec-index { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; margin: 0 -6px; }
         .sec-index a {
             flex: none;
@@ -651,6 +665,16 @@
         .add-here { margin-top: 10px; height: auto !important; min-height: 32px; padding: 6px 12px; white-space: normal; text-align: left; justify-content: flex-start; font-size: 12.5px; }
         .found-add { margin-top: 10px; }
         .found-add select { flex: 1; height: 34px; }
+        .hp-list { list-style: none; margin: 0 0 10px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+        .hp-card { display: flex; align-items: center; gap: 10px; padding: 6px; border: 1px solid var(--line); border-radius: 8px; background: #ffffff05; }
+        .hp-card.off { opacity: .5; }
+        .hp-img { width: 40px; height: 50px; flex: none; border-radius: 4px; overflow: hidden; background: #ffffff0a; }
+        .hp-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .hp-tx { flex: 1; min-width: 0; display: flex; flex-direction: column; font-size: 13px; }
+        .hp-tx b, .hp-tx small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .hp-tx small { font-size: 11.5px; }
+        .hp-why { color: var(--amber); }
+        .hp-n { font-size: 11px; color: var(--ink-faint); flex: none; padding-right: 4px; }
         .up-list { margin: 0; padding-left: 18px; }
         .up-list li { margin-bottom: 10px; font-size: 13px; }
         .up-list li.past { opacity: .45; text-decoration: line-through; }
@@ -1208,6 +1232,7 @@
     <script src="../scripts/spell-card.js"></script>
     <script src="../scripts/deity-card.js"></script>
     <script src="../scripts/upcoming-sessions.js"></script>
+    <script src="../scripts/latest-updates.js"></script>
     <script src="../scripts/sigil-engine.js"></script>
 </head>
 

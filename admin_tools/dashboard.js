@@ -23,7 +23,7 @@
     const TYPES = schema.types;
     const SINGLES = schema.singletons || {};
     const PRIVATE_FILE = 'data/private.json';
-    const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
+    const BASE_KEYS = ['id', 'name', 'aliases', 'parent', 'hidden'];
     const TEST = new URLSearchParams(location.search).has('test');
 
     const $ = (sel, root = document) => root.querySelector(sel);
@@ -394,6 +394,22 @@
     const pathAttr = path => esc(JSON.stringify(path));
     const fid = path => 'f_' + path.join('_').replace(/[^a-zA-Z0-9_]/g, '-');
     const nameOf = id => { const r = S.store && S.store.get(id); return r ? r.name : id; };
+    /* Hidden from players (record.hidden, data/schema.js header): the record, and what
+       follows it (places inside, NPCs living there, sessions of a hidden campaign…),
+       never reaches the site. hiddenWhy: 'own', 'campaigns', or the id it follows. */
+    const isHiddenId = id => !!(S.store && S.store.hidden && S.store.hidden.has(id));
+    const hiddenWhy = id => (isHiddenId(id) ? ATH.hiddenBecause(schema, S.data, id, S.store.hidden) : null);
+    const hiddenTag = id => {
+        if (!isHiddenId(id)) return '';
+        const why = hiddenWhy(id);
+        const tip = why === 'own' ? 'Hidden from players' : why === 'campaigns' ? 'Hidden from players: only in hidden campaigns' : `Hidden from players, with ${nameOf(why)}`;
+        return `<span class="hid material-symbols-outlined ${why === 'own' ? 'own' : ''}" title="${esc(tip)}">visibility_off</span>`;
+    };
+    function setHidden(rec, on) {
+        if (on) rec.hidden = true; else delete rec.hidden;
+        edited(true);
+        toast(on ? `“${rec.name || rec.id}” is hidden from players` : `“${rec.name || rec.id}” will be on the site once saved`);
+    }
     const enumOpts = f => (f.enum ? S.store.enumOptions(f.enum) : (f.options || []).map(o => ({ id: o, label: o })));
     const enumLabel = (name, id) => (S.store.enumOptions(name).find(o => o.id === id) || {}).label || id || '';
     const typeLabel = t => (TYPES[t] ? TYPES[t].label : t);
@@ -604,7 +620,7 @@
         { id: 'chronicle', label: 'Chronicle', icon: 'history_edu', color: '#f28b82', blurb: 'Campaigns, sessions, the Book of Days (timeline and festivals), rumours and notice boards, filtered by the campaign in the top bar.' },
         { id: 'codex', label: 'Codex', icon: 'menu_book', color: '#b79cf5', blurb: 'Glossary, tomes, handouts, bestiary, spellbook, items and the planes of existence.' },
         { id: 'tables', label: 'Tables', icon: 'table_view', color: '#f0a35e', blurb: 'The pools the site draws from, each one a grid: markets, faith, divination, alchemy, folios.' },
-        { id: 'site', label: 'Site', icon: 'settings', color: '#b4bac2', bottom: true, blurb: 'World map, settings, upcoming sessions and the map icons.' },
+        { id: 'site', label: 'Site', icon: 'settings', color: '#b4bac2', bottom: true, blurb: 'World map, settings, the homepage, upcoming sessions and the map icons.' },
     ];
     const WS_BY = Object.fromEntries(WS.map(w => [w.id, w]));
     const wsOfDef = d => (d && d.workspace && WS_BY[d.workspace] && d.workspace !== 'home' ? d.workspace : 'tables');
@@ -785,9 +801,9 @@
         const pick = r => printing ? `<span class="pick${picked.has(r.id) ? ' on' : ''}" data-print-pick="${esc(r.id)}" role="checkbox" aria-checked="${picked.has(r.id)}" title="Print this card"><span class="material-symbols-outlined">${picked.has(r.id) ? 'check_box' : 'check_box_outline_blank'}</span></span>` : '';
         const item = r => {
             const bad = recordErrors(type, r.id).length;
-            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${printing ? 'picking' : ''}" data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
+            return `<button class="li ${r.id === S.sel ? 'active' : ''} ${printing ? 'picking' : ''} ${isHiddenId(r.id) ? 'is-hidden' : ''}" data-select="${esc(r.id)}" ${def.order ? '' : 'draggable="true" title="Drag to change the order on the site"'}>
                 ${pick(r)}<span class="t">${esc(r.name || '(no name)')}</span>
-                ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
+                ${hiddenTag(r.id)}${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
                 <span class="s">${esc(subtitle(type, r))}</span>
             </button>`;
@@ -876,13 +892,13 @@
             const ch = (kids.get(r.id) || []).filter(c => !q || keep.get(c.id));
             const open = q ? true : S.open.has(r.id);
             const bad = recordErrors(type, r.id).length;
-            html += `<div class="li tn ${r.id === S.sel ? 'active' : ''} ${ch.length && !open ? 'closed' : ''} ${q && hit(r) ? 'match' : ''}" style="--depth:${depth}" data-depth="${Math.min(depth, 2)}"
+            html += `<div class="li tn ${r.id === S.sel ? 'active' : ''} ${ch.length && !open ? 'closed' : ''} ${q && hit(r) ? 'match' : ''} ${isHiddenId(r.id) ? 'is-hidden' : ''}" style="--depth:${depth}" data-depth="${Math.min(depth, 2)}"
                     data-select="${esc(r.id)}" tabindex="0" role="treeitem" ${ch.length ? `aria-expanded="${open}"` : ''} ${q ? '' : 'draggable="true"'} title="${esc(def.label)}${r.subtitle ? ' · ' + esc(r.subtitle) : ''}">
                 <button class="car ${ch.length ? '' : 'none'}" data-action="tree-toggle" data-id="${esc(r.id)}" tabindex="-1" aria-label="${open ? 'Close' : 'Open'}"><span class="material-symbols-outlined">expand_more</span></button>
                 <span class="ti material-symbols-outlined" style="--tc:#6aa9fa">${esc(def.icon)}</span>
                 <span class="t">${esc(r.name || '(no name)')}</span>
                 ${type === 'poi' ? `<span class="roles">${roleIcons(type, r)}</span>` : ''}
-                ${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
+                ${hiddenTag(r.id)}${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}
                 ${bad ? `<span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}
                 ${ch.length && !open ? `<span class="n">${ch.length}</span>` : ''}
             </div>`;
@@ -1397,6 +1413,17 @@
             `<a href="#${secId(s.title)}" data-sec="${secId(s.title)}" class="${optionalBlock(s) ? 'role' : ''}">${esc(s.title)}</a>`).join('')}${addBtn}</nav>` : '';
         const url = !isSingle() && S.store.url(rec.id);
         const board = isBoard();
+        // Hidden from players: the switch, and a line saying why when it follows another record
+        const why = isSingle() ? null : hiddenWhy(rec.id);
+        const hideBtn = isSingle() ? '' : rec.hidden
+            ? `<button class="btn hide-btn on ${board ? 'icon' : ''}" data-action="toggle-hidden" title="Hidden from players: click to reveal it on the site"><span class="material-symbols-outlined">visibility_off</span>${board ? '' : 'Hidden'}</button>`
+            : `<button class="btn hide-btn ${board ? 'icon' : ''}" data-action="toggle-hidden" title="Hide from players: kept off the site until you reveal it"><span class="material-symbols-outlined">visibility</span>${board ? '' : 'Visible'}</button>`;
+        const hiddenNote = !why ? '' : why === 'own'
+            ? `<p class="hidden-note"><span class="material-symbols-outlined">visibility_off</span><span><b>Hidden from players.</b> No page, card, pin or link on the site${TYPES[S.view.key].place ? ', and nothing inside it either' : ''}. Save, then click <b>Hidden</b> again when they meet it.</span></p>`
+            : why === 'campaigns'
+                ? `<p class="hidden-note"><span class="material-symbols-outlined">visibility_off</span><span><b>Hidden from players:</b> every campaign it is in is hidden.</span></p>`
+                : `<p class="hidden-note"><span class="material-symbols-outlined">visibility_off</span><span><b>Hidden from players</b> with <button class="lnk" data-jump="${esc(why)}">${esc(nameOf(why))}</button>, which is hidden.</span></p>`;
+        const siteUrl = url && why ? url + (url.includes('?') ? '&' : '?') + 'drafts=1' : url;
         ed.innerHTML = `
             <div class="ed-head">
                 <div class="ed-top">
@@ -1406,12 +1433,14 @@
                         <code>${isSingle() ? esc(def.file) : `${esc(rec.id)} · ${esc(def.file)}`}</code>
                     </div>
                     <div class="ed-actions">
-                        ${url ? `<a class="btn ${board ? 'icon' : ''}" href="../${esc(url)}" target="_blank" rel="noopener" title="View on site"><span class="material-symbols-outlined">open_in_new</span>${board ? '' : 'View on site'}</a>` : ''}
+                        ${hideBtn}
+                        ${url ? `<a class="btn ${board ? 'icon' : ''}" href="../${esc(siteUrl)}" target="_blank" rel="noopener" title="${why ? 'View on site (DM preview: hidden content shown on your copy only)' : 'View on site'}"><span class="material-symbols-outlined">open_in_new</span>${board ? '' : 'View on site'}</a>` : ''}
                         <button class="btn icon ${S.sideToggled ? 'on' : ''}" data-action="toggle-side" title="Previews and links" aria-label="Previews and links" id="side-btn"><span class="material-symbols-outlined">right_panel_open</span></button>
                         ${isSingle() ? '' : `<button class="btn icon" data-action="more" title="Rename id, move, delete…" aria-label="More actions"><span class="material-symbols-outlined">more_horiz</span></button>`}
                         ${board ? `<button class="btn icon" data-action="close-sel" title="Close (Esc)" aria-label="Close the form"><span class="material-symbols-outlined">close</span></button>` : ''}
                     </div>
                 </div>
+                ${hiddenNote}
                 ${index}
             </div>
             <div class="ed-wrap ${S.sideToggled ? 'side-toggled' : ''}">
@@ -1506,6 +1535,7 @@
         if (errs.length || warns.length) parts.push(`<div class="box box--issues"><h4>To fix</h4><ul class="issues">${errs.map(e => `<li>${clean(e)}</li>`).join('')}${warns.map(e => `<li class="w">${clean(e)}</li>`).join('')}</ul></div>`);
         if (isSingle() && S.view.key === 'schedule' && ATH.upcoming) parts.push(schedulePreview(rec));
         if (isSingle() && S.view.key === 'alchemy') parts.push(alchemyPanel());
+        if (isSingle() && S.view.key === 'homepage' && ATH.latest) parts.push(homepagePreview(rec));
         if (!isSingle()) {
             const crumbs = S.store.ancestors(rec.id);
             if (crumbs.length) parts.push(`<div class="box"><h4>Sits in</h4>${chips(crumbs)}</div>`);
@@ -1535,6 +1565,7 @@
         const sb = $('#side-btn'); if (sb) sb.hidden = !html;
         if (['item', 'deity', 'creature', 'fortuneCard', 'deck', 'prophecy', 'spread', 'omen', 'plane', 'practice', 'pieceSet', 'castPiece'].includes(S.view.key)) loadThumbs();
         if (S.view.key === 'spell') loadSymbols();
+        if (isSingle() && S.view.key === 'homepage') loadThumbs();
         if (S.view.key === 'poi' || S.view.key === 'creature') applyLookPreview(rec);
         if (S.view.key === 'folio' && ATH.sigil) drawFolioPreview(rec);
     }
@@ -1995,6 +2026,34 @@
                 ${past ? `<button class="btn" data-action="schedule-prune">Remove past (${past})</button>` : ''}
             </div>
             <p class="hint">The first confirmed card still to come is “Up Next”, with a countdown; a session not confirmed, or with no date, is “TBD”. Confirmed sessions get an “Add to calendar” button.</p></div>`;
+    }
+    /* ---------- the homepage's Latest Updates (Site › Homepage) ---------- */
+    const FEATURABLE = () => ((SINGLES.homepage && SINGLES.homepage.fields.updates.fields.record.to) || []);
+    const localToday = () => (ATH.upcoming && ATH.upcoming.todayISO ? ATH.upcoming.todayISO() : new Date().toISOString().slice(0, 10));
+    const homeUpdates = () => { const h = S.singles.homepage = S.singles.homepage || {}; return (h.updates = Array.isArray(h.updates) ? h.updates : []); };
+    function homepagePreview(rec) {
+        const today = localToday();
+        const cards = (rec.updates || []).map((c, i) => {
+            const r = c && c.record ? S.store.get(c.record) : null;
+            const one = c ? ATH.latest.resolve(S.store, { updates: [c] }, today)[0] : null;
+            const why = !c ? '' : c.record && !r ? 'links to nothing: left out' : r && isHiddenId(r.id) ? 'hidden from players: left out' : !one ? 'no title: left out' : !one.href ? 'no link' : '';
+            return `<li class="hp-card ${why && why.endsWith('left out') ? 'off' : ''}">
+                <span class="hp-img"><img data-thumb="${esc(one ? one.image : '')}" alt=""></span>
+                <span class="hp-tx"><b>${esc((one && one.title) || c.title || (r && r.name) || '(no title)')}</b>
+                    <small>${esc((one && one.caption) || '')}</small>
+                    ${why ? `<small class="hp-why">${esc(why)}</small>` : `<small class="muted">${esc(one.href)}</small>`}</span>
+                <span class="hp-n">${i + 1}</span></li>`;
+        }).join('');
+        return `<div class="box"><h4>On the homepage</h4>
+            ${cards ? `<ol class="hp-list">${cards}</ol>` : '<p class="muted">No card: the Latest Updates section is not shown.</p>'}
+            <p class="hint">Four cards fill a row on a computer. To put a record here from its own form: <b>⋯ › Show in Latest updates</b> (it goes first, dated today).</p></div>`;
+    }
+    function featureRecord(id, on) {
+        const list = homeUpdates();
+        if (on) list.unshift({ record: id, added: localToday() });
+        else S.singles.homepage.updates = list.filter(c => !(c && c.record === id));
+        edited(true);
+        toast(on ? `“${nameOf(id)}” is the first card of Latest updates` : `“${nameOf(id)}” is out of Latest updates`);
     }
     function scheduleAdd() {
         const rec = S.singles.schedule = S.singles.schedule || {};
@@ -2792,6 +2851,20 @@
         const { errors, warnings } = S.issues;
         const issues = [...errors.slice(0, 5).map(e => issueHl(e, 'err')), ...warnings.slice(0, Math.max(0, 5 - errors.length)).map(e => issueHl(e, 'warn'))].join('');
         const more = errors.length + warnings.length - Math.min(5, errors.length) - Math.max(0, Math.min(warnings.length, 5 - errors.length));
+        // Hidden from players: what was ticked, with how much follows it
+        const hiddenOwn = [];
+        for (const [t, d] of Object.entries(TYPES)) for (const r of S.data[t]) if (r.hidden === true) hiddenOwn.push({ t, d, r });
+        // everything hidden along with it, at any depth (a district's POIs, their NPCs…)
+        const why = new Map([...S.store.hidden].map(x => [x, hiddenWhy(x)]));
+        const followers = id => [...why.keys()].filter(x => {
+            for (let w = why.get(x), n = 0; w && w !== 'own' && w !== 'campaigns' && n < 50; w = why.get(w), n++) if (w === id) return true;
+            return false;
+        }).length;
+        const hiddenHtml = hiddenOwn.slice(0, 10).map(({ d, r }) => {
+            const n = followers(r.id);
+            return `<div class="hl-row"><button class="hl" style="--c:${colourOf(d)}" data-jump="${esc(r.id)}"><span class="material-symbols-outlined">${esc(d.icon)}</span><span class="t">${esc(r.name || r.id)}</span><small>${esc(d.label)}${n ? ` · +${n} with it` : ''}</small></button>
+                <button class="btn sm" data-action="reveal" data-id="${esc(r.id)}" title="Show it on the site (once saved)"><span class="material-symbols-outlined">visibility</span>Reveal</button></div>`;
+        }).join('') + (hiddenOwn.length > 10 ? `<p class="none">and ${hiddenOwn.length - 10} more</p>` : '');
         // Recently opened
         const recent = S.recent.map(x => ({ x, r: TYPES[x.type] && S.data[x.type].find(r => r.id === x.id) })).filter(o => o.r).slice(0, 7)
             .map(({ x, r }) => `<button class="hl" style="--c:${colourOf(TYPES[x.type])}" data-jump="${esc(r.id)}"><span class="material-symbols-outlined">${esc(TYPES[x.type].icon)}</span><span class="t">${esc(r.name || r.id)}</span><small>${esc(TYPES[x.type].label)}</small></button>`).join('');
@@ -2812,6 +2885,8 @@
                     ${dirty.length ? dirty.slice(0, 8).join('') + (dirty.length > 8 ? `<p class="none">and ${dirty.length - 8} more</p>` : '') + '<button class="btn primary" data-action="save" style="align-self:flex-start"><span class="material-symbols-outlined">save</span>Save all</button>' : '<p class="none">Everything is saved.</p>'}</section>
                 <section class="hc"><h3><span class="material-symbols-outlined">rule</span>To check<small>${errors.length || warnings.length ? `${errors.length} problem${errors.length === 1 ? '' : 's'} · ${warnings.length} warning${warnings.length === 1 ? '' : 's'}` : ''}</small></h3>
                     ${issues || '<p class="none">No problem found in the data.</p>'}${more > 0 ? `<button class="btn sm" data-action="show-issues" style="align-self:flex-start">See all ${errors.length + warnings.length}</button>` : ''}</section>
+                <section class="hc"><h3><span class="material-symbols-outlined">visibility_off</span>Hidden from players<small>${S.store.hidden.size ? `${S.store.hidden.size} record${S.store.hidden.size === 1 ? '' : 's'} off the site` : ''}</small></h3>
+                    ${hiddenHtml || '<p class="none">Nothing hidden. To prepare something out of sight, tick <b>Hidden from players</b> when you create it, or click <b>Visible</b> at the top of its form.</p>'}</section>
                 <section class="hc"><h3><span class="material-symbols-outlined">history</span>Opened lately</h3>${recent || '<p class="none">Nothing yet.</p>'}</section>
                 <section class="hc s12"><h3><span class="material-symbols-outlined">space_dashboard</span>Workspaces</h3><div class="wst">${tiles}</div></section>
             </div>`;
@@ -2855,11 +2930,11 @@
     }
     const flagsHtml = (type, r) => {
         const bad = recordErrors(type, r.id).length;
-        return `${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}${bad ? ` <span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}`;
+        return `${hiddenTag(r.id)}${isDirtyRec(type, r) ? '<span class="dot" title="Unsaved changes"></span>' : ''}${bad ? ` <span class="bad" title="${bad} problem${bad === 1 ? '' : 's'}">${bad}</span>` : ''}`;
     };
     function gridRow(type, r, cols) {
         const on = r.id === S.sel;
-        return `<tr class="rw ${on ? 'on' : ''}" data-rec="${esc(r.id)}">
+        return `<tr class="rw ${on ? 'on' : ''} ${isHiddenId(r.id) ? 'is-hidden' : ''}" data-rec="${esc(r.id)}">
             <td><button class="open" data-select="${esc(r.id)}" title="${on ? 'Open beside' : 'Open the full form'}" aria-label="Open ${esc(r.name || r.id)}"><span class="material-symbols-outlined">${on ? 'chevron_right' : 'open_in_full'}</span></button></td>
             <td class="c-name"><input data-path="${pathAttr(['name'])}" data-kind="text" value="${esc(r.name)}" aria-label="Name"></td>
             ${cols.map(c => `<td class="${c.cls}">${gridCell(c, r)}</td>`).join('')}
@@ -3374,6 +3449,7 @@
                 ${def.place && def.parent.length ? `<div class="fld w-12"><label for="nr-parent">Sits in</label>${refSelect(def.parent, guessParent, 'id="nr-parent"')}</div>` : ''}
                 ${def.fields.where ? `<div class="fld w-12"><label for="nr-where">${esc(def.fields.where.label)}</label>${refSelect(def.fields.where.to, preset.where || '', 'id="nr-where"')}</div>` : ''}
                 ${type === 'item' ? `<div class="fld w-12"><label for="nr-found">Found in</label><select id="nr-found"><option value="">Nowhere yet</option>${foundOptions('', newestSessionOption())}</select><p class="help">Who can see the card in the Vault.</p></div>` : ''}
+                <label class="chk w-12" for="nr-hidden"><input id="nr-hidden" type="checkbox" ${preset.hidden ? 'checked' : ''}><span><b>Hidden from players</b><small>Prepare it out of sight: it stays off the site until you reveal it.</small></span></label>
                 <p id="nr-err" class="err w-12"></p>
             </div>
             <div class="foot"><button class="btn" data-action="close-modal">Cancel</button><button class="btn primary" id="nr-ok">Create</button></div>`);
@@ -3388,6 +3464,7 @@
             if (err) { $('#nr-err', dlg).textContent = err; return; }
             const rec = { id, name: name.value.trim(), ...emptyFor(def) };
             if (parent) rec.parent = parent;
+            if ($('#nr-hidden', dlg).checked) rec.hidden = true;
             const whereSel = $('#nr-where', dlg);
             if (whereSel && whereSel.value) rec.where = whereSel.value;
             if (type === 'notice') { rec.kind = 'job'; rec.status = 'open'; }
@@ -3508,6 +3585,12 @@
             items.push(null,
                 { action: 'move-record', dir: -1, icon: 'arrow_upward', label: 'Move up (order on the site)' },
                 { action: 'move-record', dir: 1, icon: 'arrow_downward', label: 'Move down (order on the site)' });
+        }
+        if (SINGLES.homepage && FEATURABLE().includes(S.view.key)) {
+            const there = ((S.singles.homepage || {}).updates || []).some(c => c && c.record === S.sel);
+            items.push(null, there
+                ? { action: 'feature', data: { on: '' }, icon: 'remove_from_queue', label: 'Remove from Latest updates (homepage)' }
+                : { action: 'feature', data: { on: '1' }, icon: 'newspaper', label: 'Show in Latest updates (homepage)' });
         }
         items.push(null, { action: 'delete', icon: 'delete', label: `Delete this ${lc(def.label)}…`, danger: true });
         openMenu(btn, items);
@@ -3896,6 +3979,9 @@
             case 'icon-delete': deleteIcon(); break;
             case 'icon-adopt': adoptIcon(t.dataset.id); break;
             case 'more': moreMenu(t); break;
+            case 'feature': if (rec && !isSingle()) featureRecord(rec.id, t.dataset.on === '1'); break;
+            case 'toggle-hidden': if (rec && !isSingle()) setHidden(rec, !rec.hidden); break;
+            case 'reveal': { const id = t.dataset.id, ty = typeOfId(id), r = ty && S.data[ty].find(x => x.id === id); if (r) setHidden(r, false); break; }
             case 'toggle-side': S.sideToggled = !S.sideToggled; $('.ed-wrap').classList.toggle('side-toggled', S.sideToggled); $('#side-btn').classList.toggle('on', S.sideToggled); break;
             case 'card-side': S.cardSide = t.dataset.side; renderSide(); break;
             case 'sample-deck': S.sample.deck = t.dataset.deck; renderSide(); break;

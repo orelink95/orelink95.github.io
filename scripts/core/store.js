@@ -35,6 +35,9 @@
                                                  calendar.js, data/calendar.json):
                                                  format, compare, weekday of world dates
        store.validate()                       -> {errors, warnings}
+       store.hidden                           -> Set of the ids hidden from players
+                                                 (the dashboard; on the site it is empty
+                                                 unless the DM preview is on)
        store.world / store.settings           -> data/world.json, data/settings.json
    Node tools build a store from files with Athenaeum.createStore().
    ===================================================================== */
@@ -42,7 +45,7 @@
     const ATH = root.Athenaeum = root.Athenaeum || {};
 
     const ID_RE = /^[a-z0-9][a-z0-9_-]*$/;
-    const BASE_KEYS = ['id', 'name', 'aliases', 'parent'];
+    const BASE_KEYS = ['id', 'name', 'aliases', 'parent', 'hidden'];
     const LINK_CLASS = { npc: 'kw-person', faction: 'kw-faction', creature: 'kw-monster', item: 'kw-object', spell: 'kw-spell', deity: 'kw-deity', plane: 'kw-plane' };
 
     // Comparator for a type's `order` option (see data/schema.js)
@@ -59,6 +62,116 @@
         };
     }
     ATH.comparator = comparator;
+
+    /* ---------- hidden from players ----------
+       `hidden: true` on any record keeps it off the site until the DM unticks it:
+       no page, no card, no pin, no link (its name stays plain text). Hidden too:
+       - what sits in a hidden place (`parent`, at any depth), the NPCs whose `home`
+         is hidden, the handouts of a hidden campaign, and any record whose required
+         link points to a hidden record (a session of a hidden campaign, a card of a
+         hidden deck…);
+       - a record listed only in hidden campaigns (`campaigns`).
+       The site drops them before building its store (withoutHidden); the dashboard
+       and the tools keep everything and mark them (store.hidden). */
+    const HIDDEN_ANCHORS = { npc: ['home'], handout: ['campaign'] };
+    function hiddenIds(schema, datasets) {
+        const types = schema.types;
+        const hidden = new Set();
+        const recs = [];
+        for (const [type, list] of Object.entries(datasets || {})) {
+            if (!types[type] || !Array.isArray(list)) continue;
+            for (const r of list) if (r && typeof r.id === 'string') { recs.push([type, r]); if (r.hidden === true) hidden.add(r.id); }
+        }
+        const anchorsOf = (type, r) => {
+            const def = types[type], out = [];
+            if (def.place && r.parent) out.push(r.parent);
+            for (const [k, f] of Object.entries(def.fields)) {
+                if (f.kind === 'ref' && typeof r[k] === 'string' && (f.required || (HIDDEN_ANCHORS[type] || []).includes(k))) out.push(r[k]);
+            }
+            return out;
+        };
+        const campaignsOf = (type, r) => {
+            const f = types[type].fields.campaigns, v = r.campaigns;
+            if (!f || !Array.isArray(v)) return [];
+            if (f.kind === 'refs') return v.filter(x => typeof x === 'string');
+            if (f.kind === 'objects') return v.map(e => e && e.campaign).filter(Boolean);
+            return [];
+        };
+        for (let changed = true; changed;) {
+            changed = false;
+            for (const [type, r] of recs) {
+                if (hidden.has(r.id)) continue;
+                const camps = campaignsOf(type, r);
+                if (anchorsOf(type, r).some(id => hidden.has(id)) || (camps.length && camps.every(id => hidden.has(id)))) {
+                    hidden.add(r.id); changed = true;
+                }
+            }
+        }
+        return hidden;
+    }
+    // Why a record is hidden: 'own' (ticked), or the id of the record it follows
+    function hiddenBecause(schema, datasets, id, hidden) {
+        hidden = hidden || hiddenIds(schema, datasets);
+        if (!hidden.has(id)) return null;
+        for (const [type, list] of Object.entries(datasets || {})) {
+            const r = Array.isArray(list) && list.find(x => x && x.id === id);
+            if (!r || !schema.types[type]) continue;
+            if (r.hidden === true) return 'own';
+            const def = schema.types[type];
+            if (def.place && hidden.has(r.parent)) return r.parent;
+            for (const [k, f] of Object.entries(def.fields)) {
+                if (f.kind === 'ref' && hidden.has(r[k]) && (f.required || (HIDDEN_ANCHORS[type] || []).includes(k))) return r[k];
+            }
+            return 'campaigns';
+        }
+        return null;
+    }
+    // The data with hidden records taken out, and every link to them removed:
+    // a link field is emptied, a list loses the id, and an entry of a list of
+    // objects (a fighter, a group member, a quote…) that names one is dropped.
+    function withoutHidden(schema, datasets, privateData, singletonData) {
+        const hidden = hiddenIds(schema, datasets);
+        if (!hidden.size) return { datasets, privateData, singletonData, hidden };
+        const gone = v => typeof v === 'string' && hidden.has(v);
+        const scrub = (fields, obj) => {
+            if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+            const out = { ...obj };
+            for (const [k, f] of Object.entries(fields || {})) {
+                const v = out[k];
+                if (v === undefined || v === null) continue;
+                if (f.kind === 'ref') { if (gone(v)) delete out[k]; }
+                else if (f.kind === 'refs' && Array.isArray(v)) out[k] = v.filter(x => !gone(x));
+                else if (f.kind === 'object') out[k] = scrub(f.fields, v);
+                else if (f.kind === 'objects' && Array.isArray(v)) {
+                    const refKeys = Object.entries(f.fields || {}).filter(([, sf]) => sf.kind === 'ref').map(([sk]) => sk);
+                    out[k] = v.filter(o => !(o && refKeys.some(sk => gone(o[sk])))).map(o => scrub(f.fields, o));
+                }
+            }
+            return out;
+        };
+        const ds = {};
+        for (const [type, list] of Object.entries(datasets || {})) {
+            const def = schema.types[type];
+            ds[type] = Array.isArray(list) && def ? list.filter(r => !(r && hidden.has(r.id))).map(r => scrub(def.fields, r)) : list;
+        }
+        let priv = privateData;
+        if (privateData) {
+            priv = {};
+            for (const [type, entries] of Object.entries(privateData)) {
+                priv[type] = {};
+                for (const [id, fields] of Object.entries(entries || {})) if (!hidden.has(id)) priv[type][id] = fields;
+            }
+        }
+        const singles = {};
+        for (const [name, v] of Object.entries(singletonData || {})) {
+            const def = (schema.singletons || {})[name];
+            singles[name] = def && v ? scrub(def.fields, v) : v;
+        }
+        return { datasets: ds, privateData: priv, singletonData: singles, hidden };
+    }
+    ATH.hiddenIds = hiddenIds;
+    ATH.hiddenBecause = hiddenBecause;
+    ATH.withoutHidden = withoutHidden;
 
     function createStore(schema, datasets, privateData, singletonData) {
         const types = schema.types;
@@ -94,6 +207,9 @@
 
         // The world's calendar (scripts/core/calendar.js, loaded before this file)
         const calendar = ATH.makeCalendar ? ATH.makeCalendar(singletons.calendar) : null;
+
+        // Hidden from players (the site has already dropped them, see withoutHidden)
+        const hidden = hiddenIds(schema, datasets);
 
         const resolve = x => (typeof x === 'string' ? byId.get(x) : x) || null;
         const typeOf = x => { const r = resolve(x); return r ? typeOfRec.get(r) : null; };
@@ -789,6 +905,63 @@
                 const taverns = (typeOfRec.get(w) === 'poi' ? [w] : descendants(w, 'poi')).filter(p => p.tavern && p.tavern.tier);
                 if (!taverns.length) warnings.push(`[rumour] ${r.id}.where: no tavern at or under "${r.where}", so no one hears it`);
             }
+
+            // Hidden from players: what a visible record would leak, or lose, on the site
+            if (hidden.size) {
+                const label = id => { const h = byId.get(id); return h ? `“${h.name || id}”` : `"${id}"`; };
+                // the names of hidden records (3+ letters), to spot them in visible texts
+                const names = [];
+                for (const id of hidden) {
+                    const h = byId.get(id);
+                    if (!h) continue;
+                    for (const n of [h.name, ...(h.aliases || [])]) {
+                        const t = String(n || '').trim();
+                        if (t.length >= 3) names.push({ id, re: new RegExp(`(?<![\\p{L}\\p{N}])${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{N}])`, 'iu') });
+                    }
+                }
+                const eachText = (fields, value, path, fn) => {
+                    if (!value || typeof value !== 'object') return;
+                    for (const [key, f] of Object.entries(fields || {})) {
+                        const v = value[key];
+                        if (v === undefined || v === null || v === '' || f.private) continue;
+                        const p = path ? `${path}.${key}` : key;
+                        if ((f.kind === 'markdown' || f.kind === 'text') && typeof v === 'string') fn(v, p);
+                        else if (f.kind === 'object') eachText(f.fields, v, p, fn);
+                        else if (f.kind === 'objects' && Array.isArray(v)) v.forEach((o, i) => eachText(f.fields, o, `${p}[${i}]`, fn));
+                    }
+                };
+                for (const [type, def] of Object.entries(types)) {
+                    if (def.dmOnly) continue;
+                    for (const rec of byType[type] || []) {
+                        if (hidden.has(rec.id)) continue;
+                        const seenRef = new Set();
+                        eachRef(def.fields, rec, '', (id, f, p) => {
+                            if (!hidden.has(id) || seenRef.has(id)) return;
+                            seenRef.add(id);
+                            warnings.push(`[${type}] ${rec.id}.${p}: ${label(id)} is hidden from players, so the site leaves it out here`);
+                        });
+                        const seenName = new Set();
+                        if (names.length) eachText(def.fields, rec, '', (text, p) => {
+                            for (const n of names) {
+                                if (seenName.has(n.id) || !n.re.test(text)) continue;
+                                seenName.add(n.id);
+                                warnings.push(`[${type}] ${rec.id}.${p}: names ${label(n.id)}, which is hidden from players (the name shows, as plain text)`);
+                            }
+                        });
+                    }
+                }
+            }
+            if (hidden.size) {
+                for (const [name, def] of Object.entries(schema.singletons || {})) {
+                    eachRef(def.fields, singletons[name], '', (id, f, p) => {
+                        const h = byId.get(id);
+                        if (hidden.has(id)) warnings.push(`[${name}] ${p}: “${(h && h.name) || id}” is hidden from players, so the site leaves it out here`);
+                    });
+                }
+            }
+            for (const [type, list] of Object.entries(byType)) {
+                for (const rec of list) if (rec.hidden !== undefined && typeof rec.hidden !== 'boolean') warnings.push(`[${type}] ${rec.id}.hidden: must be true or false`);
+            }
             return { errors, warnings };
         }
 
@@ -799,7 +972,7 @@
             url, enumOptions, enumValues,
             md: (t, o) => (ATH.md ? ATH.md(t, o) : t),
             plain: t => (ATH.mdPlain ? ATH.mdPlain(t) : t),
-            autolink, validate,
+            autolink, validate, hidden,
             campaignEntries, inCampaign, standing,
             viewCampaign, revealed, calendar,
             planePart, planeParts, partRevealed, partUrl,
@@ -811,6 +984,32 @@
     /* ---------- browser loader ---------- */
     // Pages load over HTTP automatically. The dashboard sets Athenaeum.manualLoad
     // and reads the files through the linked folder instead.
+    const DRAFTS_KEY = 'athenaeum.drafts';
+    function draftPreview() {
+        try {
+            const q = new URLSearchParams(root.location.search).get('drafts');
+            if (q === '0') root.sessionStorage.removeItem(DRAFTS_KEY);
+            else if (q !== null) root.sessionStorage.setItem(DRAFTS_KEY, '1');
+            return root.sessionStorage.getItem(DRAFTS_KEY) === '1';
+        } catch (e) { return false; }
+    }
+    // A small tag in the corner while hidden records are shown (DM preview)
+    function draftBadge() {
+        const add = () => {
+            if (document.getElementById('ath-drafts')) return;
+            const a = document.createElement('a');
+            a.id = 'ath-drafts';
+            const u = new URL(root.location.href); u.searchParams.set('drafts', '0');
+            a.href = u.toString();
+            a.title = 'Hidden records are shown: only on your copy (data/private.json). Click to see the site as players do.';
+            a.textContent = 'DM preview · hidden content shown ✕';
+            a.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;padding:6px 12px;border-radius:999px;font:600 12px/1.4 system-ui,sans-serif;'
+                + 'background:#2a1838ee;color:#f2d68a;border:1px solid #f2d68a66;text-decoration:none;box-shadow:0 4px 14px #0008';
+            document.documentElement.appendChild(a);   // (outside <body>: a page style may move fixed boxes in it)
+        };
+        if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+    }
+
     if (typeof document !== 'undefined' && typeof fetch === 'function' && !ATH.manualLoad) {
         const script = document.currentScript;
         const base = script && script.src ? script.src.replace(/scripts\/core\/store\.js(\?.*)?$/, '') : './';
@@ -833,7 +1032,14 @@
             const privateData = await getJSON('data/private.json', true).catch(() => undefined);
             const singles = await Promise.all(Object.entries(ATH.schema.singletons || {}).map(async ([name, def]) =>
                 [name, await getJSON(def.file, true).catch(() => undefined)]));
-            ATH.store = createStore(ATH.schema, Object.fromEntries(entries), privateData, Object.fromEntries(singles));
+            /* Hidden records never reach the pages, unless the DM preview is on:
+               ?drafts=1 in the address (kept for the browser tab; ?drafts=0 ends it),
+               and only where data/private.json loads, i.e. on the DM's own copy. */
+            let datasets = Object.fromEntries(entries), priv = privateData, singletons = Object.fromEntries(singles);
+            if (!(privateData !== undefined && draftPreview())) {
+                ({ datasets, privateData: priv, singletonData: singletons } = withoutHidden(ATH.schema, datasets, privateData, singletons));
+            } else if (hiddenIds(ATH.schema, datasets).size) draftBadge();
+            ATH.store = createStore(ATH.schema, datasets, priv, singletons);
             return ATH.store;
         })();
     }

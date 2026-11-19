@@ -5,7 +5,7 @@
     "raceClass": "Mousefolk Rogue/Warlock",
     "level": 6,
     "background": "Sailor",
-    "avatar": "images/Nimo.png",
+    "avatar": "images/characters/Nimo.png",
     "quote": "I can pick that lock. Probably. Definitely.",
     "backstory": "A quick-fingered resident of Brightend who negotiated the 2,000gp contract with Lord White.",
     "personalGoal": "Find what happened to their long lost brother.",
@@ -36,7 +36,7 @@
     "raceClass": "Shifter Monk",
     "level": 6,
     "background": "Mercenary",
-    "avatar": "images/Gust.jpg",
+    "avatar": "images/characters/Gust.jpg",
     "quote": "Let's just poke the ornate suit of armor and see what happens.",
     "backstory": "A brave combatant who isn't afraid to trigger a trap or get into a fight.",
     "personalGoal": "Avenge his family.",
@@ -67,7 +67,7 @@
     "raceClass": "Elf Warlock",
     "level": 6,
     "background": "Umbra Sage of the Athenaeum",
-    "avatar": "images/Eli.jpeg",
+    "avatar": "images/characters/Eli.jpeg",
     "quote": "It's like Zombies were done to the cupboard.",
     "backstory": "A perceptive researcher with a keen eye for detecting the unseen and unraveling magical mysteries.",
     "personalGoal": "Know more, discover all. Understand the world, and the Void beyond it.",
@@ -136,7 +136,27 @@
     "raceClass": "Myconid Automaton Cleric Acolyte",
     "level": 6,
     "background": "Cleric",
-    "avatar": "images/M3MU.png",
+    "avatar": "images/characters/M3MU.png",
     "backstory": "A Myconid Automaton created by the Athenaeum and given to Eli for protection during field work."
+  },
+  {
+    "id": "pc-wyck",
+    "name": "Wyck",
+    "raceClass": "Half-Drow Entropy Wizard",
+    "level": 6,
+    "background": "Acolyte",
+    "avatar": "images/characters/wyck.png",
+    "backstory": "A promising wizard acolyte, learning under the great Sephet Halfborn.",
+    "stats": {
+      "ac": 11,
+      "hp": 47,
+      "speed": 30,
+      "str": 10,
+      "dex": 12,
+      "con": 15,
+      "int": 19,
+      "wis": 12,
+      "cha": 8
+    }
   }
 ]

@@ -13,6 +13,7 @@ admin dashboard all read this file; nothing else describes the data.
 - `map` = this record's pin on its PARENT's map image.
 - Long text is Markdown. Presentation (drop caps, colours) belongs to
     the page templates, not the data.
+- Any record may have `hidden: true`: kept off the site, with what depends on it, until the DM unticks it (scripts/core/store.js, withoutHidden).
 - Fields marked `private: true` are never written to the public files: they live in data/private.json (git-ignored) and only the local copy sees them.
 - The order of the fields here is the order of the keys in the JSON files: add new fields at the end of a type to keep the files' diffs small.
 
@@ -198,6 +199,33 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                             notice: { kind: 'text', label: 'Message on the card', help: 'Reason, new date…', width: 'full' },
                         },
                     },
+                },
+            },
+            /* The bottom of the homepage (index.html, scripts/latest-updates.js): the “Latest Updates”
+               cards and the closing quote. */
+            homepage: {
+                label: 'Homepage', icon: 'newspaper', group: 'Site', workspace: 'site',
+                file: 'data/homepage.json',
+                page: 'index.html',
+                sections: ['Latest updates', 'Closing quote'],
+                fields: {
+                    updates: {
+                        kind: 'objects', label: 'Latest updates', section: 'Latest updates',
+                        help: 'The cards at the bottom of the homepage, in this order (four fill a row on a computer; phones swipe through them). A card linked to something hidden from players is left out.',
+                        itemLabel: ['title', 'record', 'link'],
+                        fields: {
+                            record: { kind: 'ref', to: ['poi', 'settlement', 'district', 'country', 'continent', 'npc', 'faction', 'creature', 'item', 'spell', 'tome', 'handout', 'plane', 'deity', 'hero', 'campaign', 'session', 'event', 'festival'], label: 'Links to', width: 'half', help: 'Its page, name and picture. Empty = a card of your own (title, picture and link below).' },
+                            title: { kind: 'text', label: 'Title', width: 'half', help: 'Empty = the name of what it links to.' },
+                            image: { kind: 'image', label: 'Picture', help: 'Upright, about 4:5. Empty = its own picture (portrait, image, map…).' },
+                            link: { kind: 'text', label: 'Link', help: 'Instead of its page (another page of the site, a #tab…).' },
+                            added: { kind: 'date', label: 'Added on', width: 'half', help: 'Under the title: “Added 3 days ago”, counted from today.' },
+                            caption: { kind: 'text', label: 'Line under the title', width: 'half', help: 'Instead of the date: “Added 1 cycle ago”, “New in the Vault”…' },
+                        },
+                    },
+                    allLabel: { kind: 'text', label: 'Link beside the heading', section: 'Latest updates', width: 'half', help: 'Empty = “View All Scrolls”.' },
+                    allLink: { kind: 'text', label: 'It leads to', section: 'Latest updates', width: 'half', help: 'Empty = scriptorium.html.' },
+                    quote: { kind: 'text', label: 'Quote', long: true, section: 'Closing quote', help: 'The quote at the very bottom, without quotation marks. Empty = no quote.' },
+                    quoteBy: { kind: 'text', label: 'Said by', section: 'Closing quote', help: 'Under it, after a dash.' },
                 },
             },
             /* The potion maker (admin_tools/potion-maker.html; players get ?guild, without mechanics): what it needs besides its

@@ -289,11 +289,11 @@
     }
   },
   {
-    "id": "oxanas-gems",
-    "name": "Oxana's Gems",
+    "id": "harths-gems",
+    "name": "Harth's Gems",
     "parent": "brightend_artisan",
     "subtitle": "Jewelry Emporium",
-    "body": "Oxana's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th generation shop is famous through out the city, and even further...",
+    "body": "Harth's Gem stands tall and proud as the oldest jeweler in Brightend. This 4th generation shop is famous through out the city, and even further...",
     "map": {
       "x": 277,
       "y": 777,
@@ -304,11 +304,19 @@
       "tier": "comfortable",
       "hours": "9 am to 7 pm",
       "picks": 6,
+      "markup": 111,
       "excludeTags": [
         "military",
         "illicit",
         "rustic"
       ]
+    },
+    "look": {
+      "accent": "#d3a117",
+      "panel": "#4e0e3d",
+      "card": "#280f29",
+      "titleFont": "Cinzel Decorative",
+      "frame": "ornate"
     }
   },
   {
@@ -582,13 +590,29 @@
   },
   {
     "id": "bitch-bath-and-beyond",
-    "name": "Bitch, Bath and Beyond",
+    "name": "Bitch, Bathe and Be Young",
     "parent": "cloud_district",
+    "subtitle": "Luxurious Sauna for men of taste",
     "typeLabel": "Sauna",
     "map": {
       "x": 352,
       "y": 973,
       "icon": "bath"
+    }
+  },
+  {
+    "id": "roost",
+    "name": "The Roost",
+    "parent": "ash_district",
+    "subtitle": "Headquarters of the Talons",
+    "codex": "The Talon's Nest",
+    "body": "Once a modest house of worship, this weathered stone tower now serves as the hidden roost of the Talons, a ruthless guild of thieves and hired killers. Centuries of soot and neglect have worn away the sacred reliefs along its façade, while the ground floor has been completely mortared shut from within—leaving the street-level entrance an impassable shell of dead stone and blind, bricked-up windows.\n\nTo passers-by and the Alabaster Wardens alike, the derelict spire appears entirely abandoned. Yet, in the floors above, behind shuttered belfries, the guild plots its contracts in silence. Members come and go exclusively beneath the city through the reeking tunnels of the sewers, ascending a concealed ladder hidden inside the tower’s hollow core to reach the shadowed upper floors.",
+    "danger": true,
+    "image": "images/pois/roost.jpg",
+    "map": {
+      "x": 412,
+      "y": 763,
+      "icon": "danger"
     }
   }
 ]

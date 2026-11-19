@@ -23,7 +23,7 @@
   {
     "id": "rumour-dead-merchant-debt",
     "name": "A dead merchant's debt",
-    "where": "bazaar",
+    "where": "ring-district",
     "text": "The merchant who died last tenday owed money to someone who doesn't take coin as payment.",
     "source": "A clerk who helped with the inventory"
   },

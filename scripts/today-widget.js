@@ -4,8 +4,9 @@
    Today's date in the world (calendar.now, else the latest session's
    date), its season and how far into it, both moons, and the next
    festival. The whole card opens the Calendar tab of the Book of Days.
-   Reads only data/calendar.json, festivals.json, sessions.json and
-   settings.json (not the whole store); dates: scripts/core/calendar.js.
+   Reads only data/calendar.json, festivals.json, sessions.json,
+   settings.json and campaigns.json (not the whole store), leaving out what
+   is hidden from players; dates: scripts/core/calendar.js.
    A festival limited to campaigns shows only if the current campaign
    (settings) is one of them. Styles: styles/pages/index.css (.today-card),
    in the family of the session cards under it.
@@ -14,9 +15,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const card = document.getElementById('today-eraldom');
     if (!card || !window.Athenaeum || !Athenaeum.makeCalendar) return;
     const get = f => fetch(f, { cache: 'no-cache' }).then(r => (r.ok ? r.json() : null)).catch(() => null);
-    const [calendar, festivals, sessions, settings] = await Promise.all(
-        ['data/calendar.json', 'data/festivals.json', 'data/sessions.json', 'data/settings.json'].map(get));
+    const [calendar, allFestivals, allSessions, settings, campaigns] = await Promise.all(
+        ['data/calendar.json', 'data/festivals.json', 'data/sessions.json', 'data/settings.json', 'data/campaigns.json'].map(get));
     if (!calendar) return;
+    // Records hidden from players (`hidden`, or a session of a hidden campaign) don't count
+    const hiddenCamps = new Set((campaigns || []).filter(c => c && c.hidden === true).map(c => c.id));
+    const sessions = (allSessions || []).filter(s => s && s.hidden !== true && !hiddenCamps.has(s.campaign));
+    const festivals = (allFestivals || []).filter(f => f && f.hidden !== true &&
+        !((f.campaigns || []).length && f.campaigns.every(c => hiddenCamps.has(c))));
 
     const cal = Athenaeum.makeCalendar(calendar);
     const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

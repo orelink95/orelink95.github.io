@@ -436,6 +436,73 @@
 }
 .look--plane-void .pp-medal .pl-ic { opacity: 0.5; }
 
+/* The Descent (the Dreamlands): a moonlit lilac dream at the top of the page that
+   sours into nightmare on the way down. What it draws is in scripts/plane-themes.js;
+   each part of the page gets a --drain (0 at the top, 1 deep down) that takes its
+   colours from lilac to a sick grey-green. The medallion, the title and the headings
+   are doubled: ghosts drift apart, and slide back together on hover. */
+@property --pt-gx { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --pt-gy { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --pt-k { syntax: "<number>"; inherits: true; initial-value: 1; }
+.look--plane-dreamlands {
+    --look-accent: #c79cf0;
+    --look-accent-bright: #f3e6ff;
+    --look-ink: #e6dcf2;
+    --look-ink-faint: #a596bb;
+    --look-panel: rgba(26, 18, 44, 0.55);
+    --look-page: #030403;
+    --look-font-title: "Italiana";
+    --look-font-body: "Spectral";
+    --look-epithet: #cdb6e6;
+}
+.look--plane-dreamlands .pp-main > * {
+    --pp-accent: color-mix(in srgb, #c79cf0, #a5b08e calc(var(--drain, 0) * 100%));
+    --pp-accent-bright: color-mix(in srgb, #f3e6ff, #d7dccb calc(var(--drain, 0) * 100%));
+    --pp-ink: color-mix(in srgb, #e6dcf2, #cdd2c4 calc(var(--drain, 0) * 100%));
+    --pp-ink-dim: color-mix(in srgb, #a596bb, #7d8574 calc(var(--drain, 0) * 100%));
+    --pp-panel: color-mix(in srgb, rgba(26, 18, 44, 0.55), rgba(10, 12, 10, 0.7) calc(var(--drain, 0) * 100%));
+    --pp-line: color-mix(in srgb, var(--pp-accent) 26%, transparent);
+}
+.look--plane-dreamlands .pp-panel { backdrop-filter: blur(6px); }
+/* The doubled title and headings: two ghosts in rose and cyan */
+.look--plane-dreamlands .pp-title,
+.look--plane-dreamlands .pp-h2 {
+    text-shadow:
+        calc(var(--pt-gx) * var(--pt-k)) calc(var(--pt-gy) * var(--pt-k)) 0 rgba(240, 166, 201, calc(0.45 * var(--pt-k))),
+        calc(var(--pt-gx) * var(--pt-k) * -1) calc(var(--pt-gy) * var(--pt-k) * -1) 0 rgba(159, 216, 240, calc(0.4 * var(--pt-k)));
+    animation: pt-ghost 9s ease-in-out infinite alternate;
+    transition: --pt-k 0.9s ease;
+}
+.look--plane-dreamlands .pp-h2 { animation-duration: 11s; }
+.look--plane-dreamlands .pp-hero:hover .pp-title,
+.look--plane-dreamlands .pp-h2:hover { --pt-k: 0; }
+@keyframes pt-ghost {
+    from { --pt-gx: -5px; --pt-gy: -2px; }
+    to { --pt-gx: 6px; --pt-gy: 3px; }
+}
+/* The doubled medallion: two ghosts drift apart, slide back together on hover */
+.look--plane-dreamlands .pp-medal { --pt-k: 1; transition: --pt-k 0.9s ease; }
+.look--plane-dreamlands .pp-sigil:hover .pp-medal { --pt-k: 0; }
+.look--plane-dreamlands .pp-medal .pt-ghost {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: calc(0.5 * var(--pt-k) + 0.12);
+    translate: calc(var(--pt-gx) * var(--pt-k)) calc(var(--pt-gy) * var(--pt-k));
+    animation: pt-ghost-m 8s ease-in-out infinite alternate;
+}
+.look--plane-dreamlands .pp-medal .pt-ghost--a { filter: hue-rotate(-50deg) saturate(1.2); }
+.look--plane-dreamlands .pp-medal .pt-ghost--b { filter: hue-rotate(70deg); animation-duration: 10s; animation-direction: alternate-reverse; }
+@keyframes pt-ghost-m {
+    from { --pt-gx: -14px; --pt-gy: -6px; }
+    to { --pt-gx: 11px; --pt-gy: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .look--plane-dreamlands .pp-title, .look--plane-dreamlands .pp-h2, .look--plane-dreamlands .pp-medal .pt-ghost { animation: none; --pt-gx: 5px; --pt-gy: 2px; }
+}
+
 /* ---------------------------------------------------------------------
    4. TEXTURES  (lookTexture enum) — picked on the page, they replace the
    theme's. "Image" is set by look.js as an inline --look-texture.

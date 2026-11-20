@@ -504,6 +504,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             planeTheme: [
                 { id: 'ydalheim', label: 'Verdant Wilds (canopy, light, shards of wild magic)' },
                 { id: 'void', label: 'The Abyss (black, everything falling into the medallion)' },
+                { id: 'dreamlands', label: 'The Descent (a moonlit dream souring into nightmare; doubled)' },
             ],
             creatureTheme: [
                 { id: 'abyssal', label: 'Abyssal (deep sea, scales)' },
@@ -549,6 +550,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 { id: 'EB Garamond', label: 'EB Garamond (book serif)', google: 'EB+Garamond:ital,wght@0,400;0,700;1,400' },
                 { id: 'Spectral', label: 'Spectral (readable serif)', google: 'Spectral:ital,wght@0,400;0,700;1,400' },
                 { id: 'IM Fell English', label: 'IM Fell English (old print)', google: 'IM+Fell+English:ital@0;1' },
+                { id: 'Italiana', label: 'Italiana (thin, dreamlike; titles only)', google: 'Italiana' },
                 { id: 'Almendra', label: 'Almendra (calligraphic)', google: 'Almendra:ital,wght@0,400;0,700;1,400' },
                 { id: 'Marcellus', label: 'Marcellus (carved)', google: 'Marcellus' },
                 { id: 'Uncial Antiqua', label: 'Uncial Antiqua (uncial, titles only)', google: 'Uncial+Antiqua' },

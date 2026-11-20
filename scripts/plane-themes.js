@@ -26,7 +26,7 @@
     function rng(seed) {
         let x = seed >>> 0 || 1;
         const r = () => { x = (x * 16807) % 2147483647; return x / 2147483647; };
-        return { u: (a, b) => a + (b - a) * r(), c: list => list[Math.floor(r() * list.length) % list.length] };
+        return { u: (a, b) => a + (b - a) * r(), i: (a, b) => a + Math.floor(r() * (b - a + 1)), c: list => list[Math.floor(r() * list.length) % list.length] };
     }
     const leafPath = (L, W) => `M0 0 C${n1(L * 0.25)} ${n1(-W)} ${n1(L * 0.7)} ${n1(-W * 0.9)} ${n1(L)} 0 C${n1(L * 0.7)} ${n1(W * 0.9)} ${n1(L * 0.25)} ${n1(W)} 0 0Z`;
     const leaf = (x, y, ang, L, W, fill, vein) =>
@@ -164,6 +164,46 @@
         return { svg: `<svg viewBox="0 0 ${n1(w)} ${n1(H)}" width="${n1(w)}" height="${n1(H)}" aria-hidden="true"><path d="${body}" fill="${side}"/><path d="${face}" fill="${top}"/><path d="M${pts(tops)}" fill="none" stroke="${edge}" stroke-opacity=".55" stroke-width="1.2"/></svg>`, h: H };
     }
 
+    // The fall: 8 rings shrinking into the medallion (20 s each, one every 2.5 s) and
+    // streaks pulled towards it (9 s). One canvas, redrawn each frame while it is in
+    // the page and the tab is visible; one still frame for readers who ask for less
+    // motion.
+    function fall(canvas, { W, h, cx, cy, rx, ry, streaks, phone }) {
+        if (!canvas) return;
+        const dpr = Math.min(window.devicePixelRatio || 1, phone ? 1.5 : 2);
+        canvas.width = Math.round(W * dpr); canvas.height = Math.round(h * dpr);
+        const g = canvas.getContext('2d');
+        const still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function draw(t) {
+            g.setTransform(dpr, 0, 0, dpr, 0, 0);
+            g.clearRect(0, 0, W, h);
+            g.strokeStyle = '#9fb1c6'; g.lineWidth = 1.2;
+            for (let i = 0; i < 8; i++) {
+                const p = ((t / 20) + i / 8) % 1;
+                const k = 1.2 - p * 1.18;
+                g.globalAlpha = p < 0.15 ? (p / 0.15) * 0.25 : 0.25 * (1 - (p - 0.15) / 0.85);
+                g.beginPath(); g.ellipse(cx, cy, rx * k, ry * k, 0, 0, Math.PI * 2); g.stroke();
+            }
+            g.strokeStyle = '#c9d3e6';
+            for (const s of streaks) {
+                const p = ((t + s.d) / 9) % 1;
+                const k = 1 - 0.75 * p, r = s.r0 * k, L = s.L * k;
+                g.globalAlpha = s.op * (p < 0.2 ? p / 0.2 : 1 - (p - 0.2) / 0.8);
+                const ca = Math.cos(s.a), sa = Math.sin(s.a) * 0.75;
+                g.lineWidth = s.w;
+                g.beginPath(); g.moveTo(cx + ca * r, cy + sa * r); g.lineTo(cx + ca * (r - L), cy + sa * (r - L)); g.stroke();
+            }
+            g.globalAlpha = 1;
+        }
+        if (still) { draw(4); return; }
+        const t0 = performance.now() - 20000;
+        (function frame(now) {
+            if (!canvas.isConnected) return;               // the page was redrawn: this loop ends
+            if (!document.hidden) draw((now - t0) / 1000);
+            requestAnimationFrame(frame);
+        })(performance.now());
+    }
+
     themes.void = {
         decorate({ back, sigil, width: W, height: H, phone }) {
             const R = rng(9);
@@ -175,12 +215,16 @@
             const sx = phone ? W - 90 : W * 0.75, k = phone ? 0.5 : 1;
             const sp = [[0, -40], [200, -40], [160, 260], [130, 240], [108, 520], [80, 470], [50, 780], [36, 520], [18, 560], [6, 300], [-20, 330]];
             html += `<svg class="pt-spire" viewBox="0 0 ${n1(W)} ${n1(Math.min(H, 900))}" style="height:${n1(Math.min(H, 900))}px" aria-hidden="true"><path d="M${sp.map(([x, y]) => `${n1(sx + x * k)} ${n1(y > 0 ? y * k : y)}`).join(' L')}Z" fill="#0e1119"/></svg>`;
-            // Rings closing in on the medallion
-            for (let i = 0; i < 8; i++) html += `<span class="pt-ring" style="left:${n1(cx - rx)}px;top:${n1(cy - ry)}px;width:${2 * rx}px;height:${2 * ry}px;animation-delay:${-i * 2.5}s"></span>`;
-            // Streaks pulled towards it
+            // Rings and streaks falling into the medallion: drawn on one canvas (below),
+            // not as dozens of animated elements. Each of those became a layer of its
+            // own, the rings wider than the screen, and phones ran out of graphics
+            // memory: layers flickered and dropped out, the medallion's symbol first.
+            const y0 = Math.max(0, Math.floor(cy - ry * 1.2)), y1 = Math.min(H, Math.ceil(cy + ry * 1.2));
+            html += `<canvas class="pt-fallcanvas" style="top:${y0}px;width:${n1(W)}px;height:${y1 - y0}px"></canvas>`;
+            const streaks = [];
             for (let i = 0; i < (phone ? 40 : 70); i++) {
-                const a = R.u(0, 360), r0 = R.u(110, reach), L = R.u(14, 70);
-                html += `<span class="pt-streak" style="left:${n1(cx)}px;top:${n1(cy)}px;transform:rotate(${n1(a)}deg) scaleY(.75)"><i style="--r:${n1(r0)}px;width:${n1(L)}px;opacity:${n1(R.u(0.08, 0.3))};height:${n1(R.u(0.5, 1.4))}px;animation-delay:${n1(-R.u(0, 9))}s"></i></span>`;
+                streaks.push({ a: R.u(0, 360) * Math.PI / 180, r0: R.u(110, reach), L: R.u(14, 70),
+                               op: R.u(0.08, 0.3), w: R.u(0.5, 1.4), d: R.u(0, 9) });
             }
             // A few shards of rock adrift
             const shards = phone ? [[0.03, 0.55, 70], [0.78, 0.4, 60], [0.1, 0.85, 50]] : [[0.06, 0.62, 120], [0.84, 0.5, 90], [0.16, 0.34, 50], [0.73, 0.88, 70]];
@@ -189,8 +233,96 @@
                 html += `<div class="pt-drift" style="left:${n1(fx * W)}px;top:${n1(fy * H)}px;opacity:${i > 1 ? 0.5 : 0.7};${w < 60 ? 'filter:blur(1.2px);' : ''}animation-delay:${n1(-R.u(0, 20))}s;animation-duration:${n1(R.u(16, 28))}s">${r.svg}</div>`;
             });
             back.innerHTML = html;
+            fall(back.querySelector('.pt-fallcanvas'), { W, h: y1 - y0, cx, cy: cy - y0, rx, ry, streaks, phone });
             // A thin ring turning around the hole
             sigil.insertAdjacentHTML('afterbegin', '<span class="pt-sigil pt-hole" aria-hidden="true"></span>');
+            return {};
+        },
+    };
+
+    /* ---------- The Descent (the Dreamlands): a moonlit dream souring into nightmare ----------
+       The page is the layers of the Saoghal, top to bottom: lilac and rose, a huge pale
+       moon (with a ghost of itself), clouds, stars and crystallized memories at the top;
+       lower down the crystals thin out and go grey, the colours drain (each section gets a
+       --drain from 0 to 1 by its depth, styles/looks.css), eyes open in the margins; at the
+       bottom the twisted, thorned trees of the Weald. The medallion, the title and the
+       headings are doubled: ghosts drift apart and slide back together on hover.
+       Kept light for phones: few moving things, nothing blurred that moves. */
+    function crystal(x, y, s, col, R) {
+        const P = [[0, -1.7], [0.62, -0.7], [0.55, 0.75], [0, 1.5], [-0.6, 0.7], [-0.55, -0.65]];
+        const F = [[0, -1.7], [0.62, -0.7], [0.1, 0.1], [0, 1.5], [-0.15, 0.2]];
+        const pts = a => a.map(([u, v]) => `${n1(x + u * s)},${n1(y + v * s)}`).join(' ');
+        return `<g class="pt-cry" style="--c:${col};animation-delay:${n1(-R.u(0, 9))}s;animation-duration:${n1(R.u(7, 12))}s">`
+            + `<g transform="rotate(${n1(R.u(-25, 25))} ${n1(x)} ${n1(y)})"><polygon points="${pts(P)}" fill="${col}" fill-opacity=".28" stroke="${col}" stroke-opacity=".9" stroke-width=".9"/>`
+            + `<polygon points="${pts(F)}" fill="#fff" fill-opacity=".18"/></g></g>`;
+    }
+    function thornBranch(x, y, ang, len, w, depth, R, out) {
+        if (!depth || len < 6) return;
+        const a = ang * Math.PI / 180, bend = R.u(-28, 28);
+        const x1 = x + len * Math.sin(a), y1 = y - len * Math.cos(a);
+        out.push(`<path d="M${n1(x)} ${n1(y)} Q${n1((x + x1) / 2 + bend)} ${n1((y + y1) / 2 + R.u(-10, 10))} ${n1(x1)} ${n1(y1)}" stroke-width="${n1(w)}"/>`);
+        for (let k = R.i(0, 2); k > 0; k--) {
+            const t = R.u(0.2, 0.8), tx = x + (x1 - x) * t, ty = y + (y1 - y) * t, ta = a + (R.u(0, 1) < 0.5 ? -1 : 1) * R.u(0.8, 1.4);
+            out.push(`<path d="M${n1(tx)} ${n1(ty)} l${n1(7 * Math.sin(ta))} ${n1(-7 * Math.cos(ta))}" stroke-width="1.2"/>`);
+        }
+        for (let k = R.i(2, 3); k > 0; k--) thornBranch(x1, y1, ang + R.u(-48, 48), len * R.u(0.6, 0.78), w * 0.66, depth - 1, R, out);
+    }
+    themes.dreamlands = {
+        decorate({ back, sigil, width: W, height: H, phone }) {
+            const R = rng(31);
+            const stage = back.parentElement;
+            // Each part of the page drains of colour by its depth
+            const main = stage.querySelector('.pp-main');
+            if (main) [...main.children].forEach(el => {
+                const d = Math.min(1, Math.max(0, (el.offsetTop - H * 0.28) / (H * 0.5)));
+                el.style.setProperty('--drain', d.toFixed(2));
+            });
+            // The doubling: two ghosts of the medallion (hue-shifted), and the title and headings
+            const medal = sigil.querySelector('.pl-medal'), holder = sigil.querySelector('.pp-medal');
+            if (medal && holder) ['a', 'b'].forEach(k => {
+                const g = medal.cloneNode(true);
+                g.classList.add('pt-sigil', 'pt-ghost', `pt-ghost--${k}`);
+                g.setAttribute('aria-hidden', 'true');
+                holder.appendChild(g);
+            });
+            const sky = phone ? H * 0.3 : H * 0.42;          // where the dream ends
+            const [mx, my, mr] = phone ? [W - 58, 70, 54] : [W * 0.87, 50, 115];
+            let html = `<div class="pt-dreamsky"></div>`;
+            html += `<span class="pt-moon" style="left:${n1(mx - mr)}px;top:${n1(my - mr)}px;width:${2 * mr}px;height:${2 * mr}px"></span>`;
+            html += `<span class="pt-moon pt-moon--ghost" style="left:${n1(mx - mr + mr * 0.12)}px;top:${n1(my - mr - mr * 0.07)}px;width:${2 * mr}px;height:${2 * mr}px"></span>`;
+            // Clouds: soft, drifting only on large screens
+            for (let i = 0; i < (phone ? 3 : 7); i++) {
+                const cw = R.u(300, 600) * (phone ? 0.6 : 1);
+                html += `<span class="pt-cloud" style="left:${n1(R.u(-200, W - 200))}px;top:${n1(R.u(0, sky * 0.8))}px;width:${n1(cw)}px;height:${n1(R.u(70, 140))}px;`
+                    + `background:${['rgba(240,166,201,.16)', 'rgba(199,156,240,.16)', 'rgba(190,210,240,.12)'][i % 3]};animation-delay:${n1(-R.u(0, 50))}s"></span>`;
+            }
+            // Stars and crystallized memories (bright in the dream, grey further down), and eyes
+            let svg = '';
+            for (let i = 0; i < (phone ? 34 : 70); i++) svg += `<circle class="pt-twinkle" cx="${n1(R.u(0, W))}" cy="${n1(R.u(0, sky))}" r="${n1(R.u(0.4, 1.3))}" fill="#fff" style="animation-delay:${n1(-R.u(0, 6))}s"/>`;
+            const cols = ['#e3c6ff', '#f6b8d6', '#bfe6f7', '#fff0c9', '#c79cf0'], n = phone ? 12 : 22;
+            const sb = sigil.getBoundingClientRect(), bb = back.getBoundingClientRect();
+            const clear = { l: sb.left - bb.left - 30, r: sb.right - bb.left + 30, t: sb.top - bb.top - 30, b: sb.bottom - bb.top + 30 };
+            for (let i = 0; i < n; i++) {
+                const t = Math.pow(i / n, 1.6), y = 80 + t * H * 0.55, x = R.u(0, W);
+                if (x > clear.l && x < clear.r && y > clear.t && y < clear.b) continue;     // the medallion stays clear
+                svg += crystal(x, y, R.u(5, 13) * (1.2 - t) * (phone ? 0.8 : 1), t < 0.45 ? cols[i % cols.length] : '#8e8a9a', R);
+            }
+            for (let i = 0; i < (phone ? 9 : 22); i++) {
+                const y = H * (0.42 + 0.56 * Math.pow(R.u(0, 1), 0.6));
+                const x = phone ? (R.u(0, 1) < 0.5 ? R.u(3, 12) : R.u(W - 22, W - 8)) : (R.u(0, 1) < 0.5 ? R.u(6, 60) : R.u(W - 70, W - 14));
+                const s = R.u(0.8, 1.4), col = ['#e6d27a', '#d9584f', '#c9e07a'][R.i(0, 2)];
+                svg += `<g class="pt-eye" style="color:${col};animation-delay:${n1(-R.u(0, 12))}s;animation-duration:${n1(R.u(6, 13))}s">`
+                    + `<ellipse cx="${n1(x)}" cy="${n1(y)}" rx="${n1(2.3 * s)}" ry="${n1(1.3 * s)}" fill="${col}"/><ellipse cx="${n1(x + 6 * s)}" cy="${n1(y)}" rx="${n1(2.3 * s)}" ry="${n1(1.3 * s)}" fill="${col}"/></g>`;
+            }
+            html += `<svg class="pt-dreams" viewBox="0 0 ${n1(W)} ${n1(H)}" style="height:${n1(H)}px" aria-hidden="true">${svg}</svg>`;
+            // The Weald: twisted trees from the bottom, still, over a mist
+            html += `<div class="pt-mire"></div>`;
+            const trees = [];
+            (phone ? [[-10, 16, 260], [80, -8, 170], [W - 70, 10, 190], [W + 6, -18, 270]]
+                   : [[-20, 18, 330], [90, -6, 250], [240, 10, 180], [W - 260, -12, 200], [W - 110, 8, 270], [W + 10, -20, 340], [W * 0.5, 4, 140]])
+                .forEach(([x, a, L]) => thornBranch(x, H + 10, a, L, phone ? 11 : 18, phone ? 5 : 6, R, trees));
+            html += `<svg class="pt-weald" viewBox="0 0 ${n1(W)} ${n1(H)}" style="height:${n1(H)}px" aria-hidden="true"><g fill="none" stroke="#050605" stroke-linecap="round">${trees.join('')}</g></svg>`;
+            back.innerHTML = html;
             return {};
         },
     };

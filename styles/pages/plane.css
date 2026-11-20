@@ -358,6 +358,7 @@ a.pp-near:hover { transform: translateY(-2px); border-color: color-mix(in srgb, 
     .pp-cols { flex-direction: column; gap: 20px; }
     .pp-side { width: 100%; margin-top: 0; }
     .pp-cols--side-only .pp-side { width: 100%; flex-direction: column; }
+    .pp-cols--side-only .pp-box { flex: 0 0 auto; }   /* its 300px basis is a width, not a height */
 }
 @media (max-width: 767.98px) {
     .pp-main { padding: calc(5rem + var(--pp-top, 0px)) 18px 220px; }
@@ -443,7 +444,7 @@ a.pp-near:hover { transform: translateY(-2px); border-color: color-mix(in srgb, 
 @media (prefers-reduced-motion: reduce) {
     .pp-sigil:hover .pp-medal, .pp-medal:focus-visible,
     .pt-ray, .pt-mote, .pt-glow, .pt-sway, .pt-orbit, .pt-shard,
-    .pt-ring, .pt-streak i, .pt-drift, .pt-hole { animation: none; }
+    .pt-drift, .pt-hole { animation: none; }
 }
 
 /* ---------- The Abyss (the Void) ---------- */
@@ -454,33 +455,7 @@ a.pp-near:hover { transform: translateY(-2px); border-color: color-mix(in srgb, 
     background: radial-gradient(closest-side, #03040a 0%, #03040a 18%, rgba(70, 60, 120, 0.25) 40%, transparent 100%);
 }
 .pt-spire { position: absolute; left: 0; top: 0; width: 100%; opacity: 0.85; }
-.pt-ring {
-    position: absolute;
-    box-sizing: border-box;
-    border: 1.2px solid #9fb1c6;
-    border-radius: 50%;
-    opacity: 0;
-    animation: pt-fall 20s linear infinite;
-}
-@keyframes pt-fall {
-    from { transform: scale(1.2); opacity: 0; }
-    15% { opacity: 0.25; }
-    to { transform: scale(0.02); opacity: 0; }
-}
-.pt-streak { position: absolute; width: 0; height: 0; }
-.pt-streak i {
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: #c9d3e6;
-    transform-origin: 0 50%;
-    animation: pt-pull 9s linear infinite;
-}
-@keyframes pt-pull {
-    from { transform: translateX(var(--r)); opacity: 0; }
-    20% { opacity: 1; }
-    to { transform: translateX(calc(var(--r) * 0.25)) scaleX(0.25); opacity: 0; }
-}
+.pt-fallcanvas { position: absolute; left: 0; pointer-events: none; }
 .pt-drift { position: absolute; animation: pt-drift 22s ease-in-out infinite alternate; }
 @keyframes pt-drift { from { transform: translate(0, -10px) rotate(-0.6deg); } to { transform: translate(8px, 12px) rotate(0.8deg); } }
 .pt-hole {
@@ -499,3 +474,33 @@ a.pp-near:hover { transform: translateY(-2px); border-color: color-mix(in srgb, 
     --a: 0deg;
 }
 @media (max-width: 767.98px) { .pt-hole { --pp-medal: 150px; } }
+
+/* ---------- The Descent (the Dreamlands) ---------- */
+.pt-dreamsky {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 18% 4%, rgba(240, 166, 201, 0.25), transparent 40%),
+        linear-gradient(180deg, #3d2c66 0%, #4b3472 10%, #5a3a6c 20%, #3a2d55 32%, #221d33 46%, #161620 58%, #0e100d 72%, #070906 86%, #030403 100%);
+}
+.pt-moon {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 38%, #fdf7ff, #e2d2f6 55%, #b9a2dc);
+    box-shadow: 0 0 60px 20px rgba(226, 210, 246, 0.35), 0 0 200px 80px rgba(199, 156, 240, 0.25);
+}
+.pt-moon--ghost { background: #f0a6c9; box-shadow: none; opacity: 0.12; mix-blend-mode: screen; }
+.pt-cloud { position: absolute; border-radius: 50%; filter: blur(30px); animation: pt-cloud 50s ease-in-out infinite alternate; }
+@keyframes pt-cloud { from { transform: translateX(-50px); } to { transform: translateX(60px); } }
+.pt-dreams, .pt-weald { position: absolute; left: 0; top: 0; width: 100%; }
+.pt-twinkle { animation: pt-twinkle 4s ease-in-out infinite alternate; }
+@keyframes pt-twinkle { from { opacity: 0.2; } to { opacity: 1; } }
+.pt-cry { filter: drop-shadow(0 0 6px var(--c)); animation: pt-bob 9s ease-in-out infinite alternate; }
+@keyframes pt-bob { from { transform: translateY(-6px); } to { transform: translateY(8px); } }
+.pt-eye { transform-box: fill-box; transform-origin: center; animation: pt-blink 9s infinite; filter: drop-shadow(0 0 3px currentColor); }
+@keyframes pt-blink { 0%, 46%, 50%, 100% { transform: scaleY(1); } 48% { transform: scaleY(0.1); } 70%, 74% { opacity: 1; } 72% { opacity: 0; } }
+/* A grey-green mist low down, so the black trees of the Weald stand out against it */
+.pt-mire { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; background: linear-gradient(180deg, transparent, rgba(52, 62, 48, 0.42) 55%, rgba(30, 36, 28, 0.55)); }
+/* Phones: the clouds stay still (a moving blur is heavy for them), the stars don't twinkle, the eyes don't glow */
+@media (max-width: 767.98px) { .pt-cloud, .pt-twinkle { animation: none; } .pt-eye { filter: none; } }
+@media (prefers-reduced-motion: reduce) { .pt-cloud, .pt-twinkle, .pt-cry, .pt-eye { animation: none; } }

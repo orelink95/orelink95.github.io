@@ -183,6 +183,9 @@
     "colour": "#c79cf0",
     "icon": "bedtime",
     "glow": true,
+    "look": {
+      "theme": "dreamlands"
+    },
     "links": [
       "sleepers-oath",
       "flesh-hound",
@@ -210,7 +213,8 @@
     "colour": "#9a78f0",
     "icon": "blur_circular",
     "glow": true,
-    "iconScale": 109,
+    "iconImage": "images/planes-icons/void-symbol.svg",
+    "iconScale": 129,
     "iconX": 0,
     "iconY": 0,
     "look": {

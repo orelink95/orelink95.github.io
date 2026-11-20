@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 857" width="1000" height="857">
+  <g fill="#141414">
+    <!-- 1. Topmost V-brow (left spike + upper arch + right horns) -->
+    <path d="M 217 114
+             L 302 201
+             Q 307 207 317 203
+             Q 390 175 464 176
+             L 513 135
+             Q 491 186 470 237
+             L 467 205
+             Q 466 198 455 199
+             Q 384 198 317 232
+             Q 306 237 310 248
+             L 318 273
+             L 292 250
+             Z" />
+
+    <!-- 2. Middle V-brow (long upper-left blade + lower arch + right barbed harpoon) -->
+    <path d="M 108 174
+             Q 206 242 298 307
+             Q 306 313 316 306
+             Q 398 258 474 285
+             Q 481 288 486 280
+             L 546 193
+             L 526 195
+             L 602 124
+             Q 548 232 492 336
+             L 477 319
+             Q 398 286 318 344
+             Q 308 352 316 364
+             L 338 392
+             L 290 352
+             Q 198 268 108 174 Z" />
+
+    <!-- 3. Lower-left standalone diagonal blade -->
+    <path d="M 116 301
+             Q 218 344 308 401
+             Q 206 362 116 301 Z" />
+
+    <!-- 4. Central C-ring + colinear diagonal spears + 10-o'clock barb -->
+    <path d="M 368 518
+             Q 308 598 240 698
+             Q 315 628 378 577
+             A 96 96 0 0 0 508 446
+             Q 655 262 801 63
+             Q 628 232 468 408
+             A 96 96 0 0 0 342 439
+             L 322 434
+             Q 331 458 332 482
+             Q 356 473 380 471
+             L 369 467
+             A 60 60 0 1 1 368 518 Z" />
+
+    <!-- 5. Central solid dot -->
+    <circle cx="423" cy="491" r="26" />
+
+    <!-- 6. Right-side small hollow ring -->
+    <path fill-rule="evenodd" d="M 579 450
+             A 31 31 0 1 0 579 512
+             A 31 31 0 1 0 579 450 Z
+             M 579 467
+             A 14 14 0 1 1 579 495
+             A 14 14 0 1 1 579 467 Z" />
+
+    <!-- 7. Right crescent bracket with upper and lower spurs -->
+    <path d="M 742 273
+             Q 652 345 562 411
+             Q 598 388 624 366
+             Q 634 358 640 374
+             Q 682 495 616 624
+             Q 608 638 594 630
+             Q 566 618 539 600
+             Q 565 648 595 674
+             L 730 789
+             L 642 666
+             Q 633 653 640 638
+             Q 716 495 665 355
+             Q 660 340 674 328
+             Z" />
+
+    <!-- 8. Bottom-left small lightning hook and two slash marks -->
+    <path d="M 190 598 L 268 550 L 207 662 L 238 579 Z" />
+    <path d="M 276 596 L 233 641 L 241 644 L 280 600 Z" />
+    <path d="M 313 561 L 250 631 L 258 635 L 317 566 Z" />
+  </g>
+</svg>

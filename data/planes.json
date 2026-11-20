@@ -210,13 +210,16 @@
     "colour": "#9a78f0",
     "icon": "blur_circular",
     "glow": true,
+    "iconScale": 109,
+    "iconX": 0,
+    "iconY": 0,
+    "look": {
+      "theme": "void"
+    },
     "links": [
       "nihilium",
       "sigil-session-9"
-    ],
-    "look": {
-      "theme": "void"
-    }
+    ]
   },
   {
     "id": "vale-house-demiplane",

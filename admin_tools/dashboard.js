@@ -1056,7 +1056,8 @@
             case 'number':
                 if (f.choices) return `<select ${idA} data-path="${p}" data-kind="number-choice"><option value="">—</option>
                     ${f.choices.map(([v, l]) => `<option value="${v}" ${v === value ? 'selected' : ''}>${esc(l)}</option>`).join('')}</select>`;
-                if (f.range) return `<div class="row"><input type="range" min="${f.range[0]}" max="${f.range[1]}" data-range-for="${id}" value="${value ?? f.range[0]}">
+                // An empty field puts the handle where empty means: f.emptyAt, else 0 when the range spans it
+                if (f.range) return `<div class="row"><input type="range" min="${f.range[0]}" max="${f.range[1]}" data-range-for="${id}" value="${value ?? f.emptyAt ?? (f.range[0] < 0 && f.range[1] > 0 ? 0 : f.range[0])}">
                     <input ${idA} class="num-s" type="number" data-path="${p}" data-kind="number" value="${value ?? ''}"></div>`;
                 return `<input ${idA} type="number" data-path="${p}" data-kind="number" value="${value ?? ''}">`;
             case 'date':
@@ -2174,7 +2175,7 @@
     // A plane: its medallion as the orrery draws it (planes.html), large and small, and where
     // it sits. The symbol's size and place (iconScale, iconX, iconY) follow the sliders.
     function planePreview(rec) {
-        const p = S.store.get(rec.id) || rec;
+        const p = rec;      // the record being edited, so the preview follows the form
         const raw = String(p.colour || '').trim();
         const c = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/i.test(raw) ? raw : '#e9c176';
         const num = (v, d) => (v === undefined || v === null || v === '' || !isFinite(Number(v)) ? d : Number(v));
@@ -2189,7 +2190,7 @@
                     : `<img class="plane-prev__img" data-thumb="${esc(p.iconImage)}" alt="" style="width:${size}px;height:${size}px${st}">`)
                 : `<span class="material-symbols-outlined plane-prev__ic" style="font-size:${size}px;color:${c}${st}">${esc(p.icon || 'radio_button_unchecked')}</span>`;
             const ring = `0 0 0 3px #050409,0 0 0 4px color-mix(in srgb,${c} 35%,transparent)`;
-            return `<span class="plane-prev__medal" style="width:${px}px;height:${px}px;border-color:${c};background:radial-gradient(circle,color-mix(in srgb,${c} 20%,transparent) 0%,#0a0910 72%);box-shadow:${ring}${p.glow ? `,0 0 18px color-mix(in srgb,${c} 60%,transparent)` : ''}">${icon}</span>`;
+            return `<span class="plane-prev__medal" data-px="${px}" style="width:${px}px;height:${px}px;border-color:${c};background:radial-gradient(circle,color-mix(in srgb,${c} 20%,transparent) 0%,#0a0910 72%);box-shadow:${ring}${p.glow ? `,0 0 18px color-mix(in srgb,${c} 60%,transparent)` : ''}">${icon}</span>`;
         }
         const kind = (S.store.enumOptions('planeKind').find(o => o.id === p.kind) || {}).label || 'No kind set';
         return `<div class="box plane-prev"><h4>On the orrery</h4>
@@ -2197,6 +2198,21 @@
             <p class="hint">${esc(kind)}${p.kind === 'circle' ? ` · circle ${esc(p.circle || '?')}${p.angle !== undefined && p.angle !== '' ? `, at ${esc(p.angle)}°` : ''}` : ''}</p>
             <p class="hint">Size and place of the symbol: Look › Symbol size, left ↔ right, up ↕ down. The faint cross marks the centre.</p></div>`;
     }
+    // While a symbol slider moves: resize and move the symbol in the preview at once
+    // (the side panel itself is redrawn only once the edits pause)
+    function nudgePlanePreview(rec) {
+        const num = (v, d) => (v === undefined || v === null || v === '' || !isFinite(Number(v)) ? d : Number(v));
+        const k = Math.min(1.6, Math.max(0.4, num(rec.iconScale, 100) / 100));
+        const dx = Math.min(30, Math.max(-30, num(rec.iconX, 0))), dy = Math.min(30, Math.max(-30, num(rec.iconY, 0)));
+        $$('.plane-prev__medal[data-px]').forEach(m => {
+            const px = Number(m.dataset.px), size = Math.round(px * 0.56 * k), ic = m.firstElementChild;
+            if (!ic) return;
+            if (ic.classList.contains('plane-prev__ic')) ic.style.fontSize = `${size}px`;
+            else { ic.style.width = `${size}px`; ic.style.height = `${size}px`; }
+            ic.style.translate = dx || dy ? `${px * dx / 100}px ${px * dy / 100}px` : '';
+        });
+    }
+
     // A sealed plane: where it is learned, campaign by campaign
     function planeSeal(rec) {
         const p = S.store.get(rec.id) || rec;
@@ -3772,6 +3788,7 @@
         if (v === Symbol.for('invalid')) return;
         const path = JSON.parse(el.dataset.path);
         setAt(holder, path, v);
+        if (S.view.key === 'plane' && ['iconScale', 'iconX', 'iconY'].includes(path[path.length - 1])) nudgePlanePreview(holder);
         if (path[path.length - 1] === 'cardIcon') { const cp = $('[data-card-prev]'); if (cp) cp.textContent = el.value.trim() || 'location_on'; }
         if (el.dataset.kind === 'markdown') {
             const prev = document.querySelector(`[data-preview="${CSS.escape(JSON.stringify(path))}"]`);

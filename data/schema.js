@@ -1103,7 +1103,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     icon: { kind: 'text', icon: true, label: 'Icon', section: 'Look', width: 'third', help: 'A Material Symbols name, until it has its own picture.' },
                     glow: { kind: 'boolean', label: 'Glow', section: 'Look', width: 'third', help: 'A halo of its colour around the medallion and the icon.' },
                     iconImage: { kind: 'image', label: 'Icon (your own picture)', section: 'Look', help: 'Replaces the Material icon. An SVG (black on a transparent background) is filled with the plane’s colour; another picture is shown as it is.' },
-                    iconScale: { kind: 'number', label: 'Symbol size (%)', section: 'Look', range: [40, 160], width: 'third', help: 'The symbol inside its medallion, everywhere it is drawn. 100 = the usual size; empty = 100.' },
+                    iconScale: { kind: 'number', label: 'Symbol size (%)', section: 'Look', range: [40, 160], emptyAt: 100, width: 'third', help: 'The symbol inside its medallion, everywhere it is drawn. 100 = the usual size; empty = 100.' },
                     iconX: { kind: 'number', label: 'Symbol left ↔ right', section: 'Look', range: [-30, 30], width: 'third', help: 'Moves the symbol inside its medallion, in % of the medallion. Negative = left. Empty = centred.' },
                     iconY: { kind: 'number', label: 'Symbol up ↕ down', section: 'Look', range: [-30, 30], width: 'third', help: 'In % of the medallion. Negative = up. Empty = centred.' },
                     look: { ...lookField('planeTheme', false), help: 'The plane’s own page (plane.html). Pick its theme, then change any part of it below (an empty field keeps the theme’s).' },

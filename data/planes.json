@@ -177,7 +177,7 @@
     ],
     "kind": "beyond",
     "epithet": "The Saoghal, in The Sleeper’s Oath",
-    "summary": "It lies outside the planes and touches every one of them.",
+    "summary": "Whether the Dreamlands are actually a plane is discussed by scholars and dreamwalkers alike.",
     "angle": 0,
     "touchesAll": true,
     "colour": "#c79cf0",
@@ -186,6 +186,21 @@
     "look": {
       "theme": "dreamlands"
     },
+    "traits": [
+      {
+        "label": "Physics",
+        "value": "work in unsual ways"
+      },
+      {
+        "label": "Magic",
+        "value": "is unpredictable"
+      },
+      {
+        "label": "Time",
+        "value": "stops and flows on a whim"
+      }
+    ],
+    "body": "Linked to every plane of existence by being superimposed on reality - or, as its denizens put it the awoken world -  it seems to exist both above and beyond the establish cosmogony. The planar orrery, the traditional representation of the planes of existence usually represent it on its outskirts. ",
     "links": [
       "sleepers-oath",
       "flesh-hound",
@@ -209,17 +224,20 @@
     "id": "the-void",
     "name": "The Void",
     "kind": "between",
-    "summary": "The space between the planes.",
-    "colour": "#9a78f0",
+    "epithet": "The nothingness that lies beyond",
+    "summary": "The liminal place between the planes. The void is the infinite nothingness that lies beyond  time and existence. Seldom are those who actually know of it, and amongst them many were rendered mad by the sheer ineffability of infinity.",
+    "colour": "#9f6bff",
     "icon": "blur_circular",
     "glow": true,
     "iconImage": "images/planes-icons/void-symbol.svg",
-    "iconScale": 129,
+    "iconScale": 134,
     "iconX": 0,
     "iconY": 0,
     "look": {
-      "theme": "void"
+      "theme": "void",
+      "textureStrength": 37
     },
+    "body": "By essence the Void is something that escapes knowledge. Ancient civilizations seem to have been aware of its existence, for scholars found carvings and texts depicting it. Most scholars, even in Runebridge and the Caerotrom Athenaeum stay clear of it, for many believe it holds secrets that better be known. Some, however, see it as a mystery that requires solving. Sages of the Black Archive often share an interest in it, sometimes because of its linked to the Ophrasian and how it changed the world, others because of the unstoppable drive to know the unknowable.",
     "links": [
       "nihilium",
       "sigil-session-9"
@@ -239,5 +257,14 @@
       "echoes-session-2",
       "echoes-session-1"
     ]
+  },
+  {
+    "id": "fading-moors",
+    "name": "The Fading Moors",
+    "hidden": true,
+    "kind": "overlay",
+    "over": "shadow-plane",
+    "colour": "#6e4545",
+    "icon": "air"
   }
 ]

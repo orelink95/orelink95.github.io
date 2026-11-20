@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Roads that lead to a plane: from planes with `roads` (and the radius they start from)
         const startOf = q => (L.beneath && q === L.beneath ? L.beneathBand.outer
             : L.ringBands.some(b => b.p === q) ? L.ringBands.find(b => b.p === q).outer
-            : (q.kind === 'overlay' ? L.veil : L.core + 0.01));
+                : (q.kind === 'overlay' ? L.veil : L.core + 0.01));
         const roadsTo = target => all.filter(q => open(q) && (q.kind || 'circle') !== 'circle' && (q.roads || []).some(rd => rd && rd.to === target.id))
             .map(q => ({ from: q, r: startOf(q), colour: (q.roads.find(rd => rd.to === target.id).colour && /^#[0-9a-f]{3,8}$/i.test(q.roads.find(rd => rd.to === target.id).colour)) ? q.roads.find(rd => rd.to === target.id).colour : colourOf(target) }));
         const threadTo = (b, from) => `--c:${colourOf(b.p)};top:${-px(b.mid)}px;height:${px(b.mid) - from}px`;

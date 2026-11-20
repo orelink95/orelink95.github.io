@@ -383,6 +383,59 @@
 .look--plane-ydalheim .pp-title { text-shadow: 0 0 40px rgba(255, 220, 140, 0.35); }
 
 
+/* The Abyss (the Void): near-black, everything falls into the medallion.
+   What it draws (rings, streaks, the spire, the drifting rocks) is in
+   scripts/plane-themes.js; the medallion itself becomes the hole. */
+.look--plane-void {
+    --look-accent: #aeb3d6;
+    --look-accent-bright: #e4e6f3;
+    --look-ink: #c9ccd8;
+    --look-panel: rgba(5, 6, 10, 0.82);
+    --look-page: #05060a;
+    --look-font-title: "IM Fell English";
+    --look-font-body: "Cormorant Garamond";
+    --look-epithet: #8d90a8;
+    background: linear-gradient(180deg, #07080d, #05060a 60%, #020203);
+}
+.look--plane-void .pp-title {
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #eef0f8 30%, rgba(238, 240, 248, 0.08));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+.look--plane-void .pp-epithet { font-family: var(--pp-title-font); letter-spacing: 0.04em; }
+.look--plane-void .pp-h2 { letter-spacing: 0.14em; text-transform: uppercase; }
+.look--plane-void .pp-h2::before {
+    content: "";
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #000;
+    box-shadow: 0 0 0 1px #aeb3d6, 0 0 10px rgba(174, 179, 214, 0.6);
+}
+/* Panels: no frame, a single line on top, fading downwards */
+.look--plane-void .pp-panel {
+    border-width: 1px 0 0;
+    border-color: rgba(174, 179, 214, 0.25);
+    border-radius: 0;
+    background: linear-gradient(180deg, rgba(14, 15, 24, 0.85), rgba(5, 6, 10, 0.6));
+}
+/* Cormorant runs small: a little larger */
+.look--plane-void .pp-main { font-size: 1.08em; }
+.look--plane-void .pp-lore { font-size: 1.25rem; }
+/* The medallion is the hole */
+.look--plane-void .pp-sigil { --pp-glow: #7864c8; }
+.look--plane-void .pp-medal .pl-medal {
+    background: #000 !important;
+    border: 1px solid rgba(174, 179, 214, 0.45) !important;
+    box-shadow: 0 0 50px 20px rgba(0, 0, 0, 0.9), 0 0 120px rgba(120, 100, 200, 0.25) !important;
+}
+.look--plane-void .pp-medal .pl-ic { opacity: 0.5; }
+
 /* ---------------------------------------------------------------------
    4. TEXTURES  (lookTexture enum) — picked on the page, they replace the
    theme's. "Image" is set by look.js as an inline --look-texture.

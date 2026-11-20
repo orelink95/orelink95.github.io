@@ -2171,23 +2171,31 @@
         return `<div class="box seal-status"><h4>Seal</h4><ul>${lines}</ul>
             <p class="hint">Sealed: a nameless slot in the Pantheon, no page, no keyword link, hidden from its temples. Add the campaigns to “Revealed in” to reveal it.</p></div>`;
     }
-    // A plane: its medallion as the orrery draws it (planes.html), and where it sits
+    // A plane: its medallion as the orrery draws it (planes.html), large and small, and where
+    // it sits. The symbol's size and place (iconScale, iconX, iconY) follow the sliders.
     function planePreview(rec) {
         const p = S.store.get(rec.id) || rec;
         const raw = String(p.colour || '').trim();
         const c = /^(#[0-9a-f]{3,8}|rgba?\([\d\s.,%]+\)|hsla?\([\d\s.,%deg]+\))$/i.test(raw) ? raw : '#e9c176';
-        const glow = p.glow ? `;filter:drop-shadow(0 0 5px ${c})` : '';
-        const icon = p.iconImage
-            ? (/\.svg(\?|#|$)/i.test(p.iconImage)
-                ? `<span class="plane-prev__mask" data-mask="${esc(p.iconImage)}" style="background-color:${c}${glow}"></span>`
-                : `<img class="plane-prev__img" data-thumb="${esc(p.iconImage)}" alt="">`)
-            : `<span class="material-symbols-outlined plane-prev__ic" style="color:${c}${glow}">${esc(p.icon || 'radio_button_unchecked')}</span>`;
-        const ring = `0 0 0 3px #050409,0 0 0 4px color-mix(in srgb,${c} 35%,transparent)`;
-        const medal = `<span class="plane-prev__medal" style="border-color:${c};background:radial-gradient(circle,color-mix(in srgb,${c} 20%,transparent) 0%,#0a0910 72%);box-shadow:${ring}${p.glow ? `,0 0 18px color-mix(in srgb,${c} 60%,transparent)` : ''}">${icon}</span>`;
+        const num = (v, d) => (v === undefined || v === null || v === '' || !isFinite(Number(v)) ? d : Number(v));
+        const k = Math.min(1.6, Math.max(0.4, num(p.iconScale, 100) / 100));
+        const dx = Math.min(30, Math.max(-30, num(p.iconX, 0))), dy = Math.min(30, Math.max(-30, num(p.iconY, 0)));
+        function medal(px) {
+            const size = Math.round(px * 0.56 * k);
+            const st = `${p.glow ? `;filter:drop-shadow(0 0 ${Math.max(3, Math.round(px / 12))}px ${c})` : ''}${dx || dy ? `;translate:${px * dx / 100}px ${px * dy / 100}px` : ''}`;
+            const icon = p.iconImage
+                ? (/\.svg(\?|#|$)/i.test(p.iconImage)
+                    ? `<span class="plane-prev__mask" data-mask="${esc(p.iconImage)}" style="width:${size}px;height:${size}px;background-color:${c}${st}"></span>`
+                    : `<img class="plane-prev__img" data-thumb="${esc(p.iconImage)}" alt="" style="width:${size}px;height:${size}px${st}">`)
+                : `<span class="material-symbols-outlined plane-prev__ic" style="font-size:${size}px;color:${c}${st}">${esc(p.icon || 'radio_button_unchecked')}</span>`;
+            const ring = `0 0 0 3px #050409,0 0 0 4px color-mix(in srgb,${c} 35%,transparent)`;
+            return `<span class="plane-prev__medal" style="width:${px}px;height:${px}px;border-color:${c};background:radial-gradient(circle,color-mix(in srgb,${c} 20%,transparent) 0%,#0a0910 72%);box-shadow:${ring}${p.glow ? `,0 0 18px color-mix(in srgb,${c} 60%,transparent)` : ''}">${icon}</span>`;
+        }
         const kind = (S.store.enumOptions('planeKind').find(o => o.id === p.kind) || {}).label || 'No kind set';
         return `<div class="box plane-prev"><h4>On the orrery</h4>
-            <div class="plane-prev__stage">${medal}</div>
-            <p class="hint">${esc(kind)}${p.kind === 'circle' ? ` · circle ${esc(p.circle || '?')}${p.angle !== undefined && p.angle !== '' ? `, at ${esc(p.angle)}°` : ''}` : ''}</p></div>`;
+            <div class="plane-prev__stage"><span class="plane-prev__big">${medal(132)}<span class="plane-prev__guide" aria-hidden="true"></span></span>${medal(44)}</div>
+            <p class="hint">${esc(kind)}${p.kind === 'circle' ? ` · circle ${esc(p.circle || '?')}${p.angle !== undefined && p.angle !== '' ? `, at ${esc(p.angle)}°` : ''}` : ''}</p>
+            <p class="hint">Size and place of the symbol: Look › Symbol size, left ↔ right, up ↕ down. The faint cross marks the centre.</p></div>`;
     }
     // A sealed plane: where it is learned, campaign by campaign
     function planeSeal(rec) {

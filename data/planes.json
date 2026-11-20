@@ -213,7 +213,10 @@
     "links": [
       "nihilium",
       "sigil-session-9"
-    ]
+    ],
+    "look": {
+      "theme": "void"
+    }
   },
   {
     "id": "vale-house-demiplane",

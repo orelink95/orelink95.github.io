@@ -141,4 +141,57 @@
             return { topSpace: canH - (phone ? 70 : 170) };
         },
     };
+
+    /* ---------- The Abyss (the Void): everything falls into the medallion ----------
+       Near-black. Rings close in on the medallion and vanish into it, streaks of
+       light are pulled towards it, a colossal broken spire hangs upside down far
+       off, a few shards of rock drift. The medallion itself is the hole. Rings
+       and streaks are plain HTML elements (their movement does not depend on how
+       a browser centres SVG transforms). */
+    // A shard of rock torn off: a thin top and a jagged mass tapering to a point
+    function rock(w, R, top, side, edge) {
+        const h = w * R.u(0.05, 0.09), n = Math.max(8, Math.round(w / 14)), depth = w * R.u(0.45, 0.8);
+        const tip = R.u(0.3, 0.7), H = h + depth + 4, y0 = 2;
+        const tops = []; for (let k = 0; k <= n; k++) tops.push([w * k / n, y0 + R.u(-h * 0.22, h * 0.22)]);
+        const under = [];
+        for (let k = n * 2; k >= 0; k--) {
+            const t = k / (n * 2), d = Math.max(0, 1 - Math.abs(t - tip) * 2.2) ** 1.6;
+            under.push([w * t + R.u(-w * 0.012, w * 0.012), y0 + h + w * 0.04 * R.u(0, 1) + d * depth * R.u(0.8, 1.05)]);
+        }
+        const pts = a => a.map(([x, y]) => `${n1(x)} ${n1(y)}`).join(' L');
+        const body = `M${pts(tops)} L${pts(under)}Z`;
+        const face = `M${pts(tops)} L${pts(tops.slice().reverse().map(([x, y]) => [x, y + h * 0.9]))}Z`;
+        return { svg: `<svg viewBox="0 0 ${n1(w)} ${n1(H)}" width="${n1(w)}" height="${n1(H)}" aria-hidden="true"><path d="${body}" fill="${side}"/><path d="${face}" fill="${top}"/><path d="M${pts(tops)}" fill="none" stroke="${edge}" stroke-opacity=".55" stroke-width="1.2"/></svg>`, h: H };
+    }
+
+    themes.void = {
+        decorate({ back, sigil, width: W, height: H, phone }) {
+            const R = rng(9);
+            const box = back.getBoundingClientRect(), sb = sigil.getBoundingClientRect();
+            const cx = sb.left - box.left + sb.width / 2, cy = sb.top - box.top + sb.height / 2;
+            const [rx, ry, reach] = phone ? [560, 520, 560] : [1100, 760, 1100];
+            let html = `<div class="pt-abyss" style="left:${n1(cx)}px;top:${n1(cy)}px;width:${phone ? 840 : 1400}px;height:${phone ? 720 : 1000}px"></div>`;
+            // The colossal spire, far off at the right, hanging upside down
+            const sx = phone ? W - 90 : W * 0.75, k = phone ? 0.5 : 1;
+            const sp = [[0, -40], [200, -40], [160, 260], [130, 240], [108, 520], [80, 470], [50, 780], [36, 520], [18, 560], [6, 300], [-20, 330]];
+            html += `<svg class="pt-spire" viewBox="0 0 ${n1(W)} ${n1(Math.min(H, 900))}" style="height:${n1(Math.min(H, 900))}px" aria-hidden="true"><path d="M${sp.map(([x, y]) => `${n1(sx + x * k)} ${n1(y > 0 ? y * k : y)}`).join(' L')}Z" fill="#0e1119"/></svg>`;
+            // Rings closing in on the medallion
+            for (let i = 0; i < 8; i++) html += `<span class="pt-ring" style="left:${n1(cx - rx)}px;top:${n1(cy - ry)}px;width:${2 * rx}px;height:${2 * ry}px;animation-delay:${-i * 2.5}s"></span>`;
+            // Streaks pulled towards it
+            for (let i = 0; i < (phone ? 40 : 70); i++) {
+                const a = R.u(0, 360), r0 = R.u(110, reach), L = R.u(14, 70);
+                html += `<span class="pt-streak" style="left:${n1(cx)}px;top:${n1(cy)}px;transform:rotate(${n1(a)}deg) scaleY(.75)"><i style="--r:${n1(r0)}px;width:${n1(L)}px;opacity:${n1(R.u(0.08, 0.3))};height:${n1(R.u(0.5, 1.4))}px;animation-delay:${n1(-R.u(0, 9))}s"></i></span>`;
+            }
+            // A few shards of rock adrift
+            const shards = phone ? [[0.03, 0.55, 70], [0.78, 0.4, 60], [0.1, 0.85, 50]] : [[0.06, 0.62, 120], [0.84, 0.5, 90], [0.16, 0.34, 50], [0.73, 0.88, 70]];
+            shards.forEach(([fx, fy, w], i) => {
+                const r = rock(w, R, '#1b2028', '#090b0f', '#6c7a8e');
+                html += `<div class="pt-drift" style="left:${n1(fx * W)}px;top:${n1(fy * H)}px;opacity:${i > 1 ? 0.5 : 0.7};${w < 60 ? 'filter:blur(1.2px);' : ''}animation-delay:${n1(-R.u(0, 20))}s;animation-duration:${n1(R.u(16, 28))}s">${r.svg}</div>`;
+            });
+            back.innerHTML = html;
+            // A thin ring turning around the hole
+            sigil.insertAdjacentHTML('afterbegin', '<span class="pt-sigil pt-hole" aria-hidden="true"></span>');
+            return {};
+        },
+    };
 })(typeof window !== 'undefined' ? window : globalThis);

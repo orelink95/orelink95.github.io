@@ -357,6 +357,7 @@ a.pp-near:hover { transform: translateY(-2px); border-color: color-mix(in srgb, 
     .pp-hero { gap: 40px; padding-left: 0; }
     .pp-cols { flex-direction: column; gap: 20px; }
     .pp-side { width: 100%; margin-top: 0; }
+    .pp-cols--side-only .pp-side { width: 100%; flex-direction: column; }
 }
 @media (max-width: 767.98px) {
     .pp-main { padding: calc(5rem + var(--pp-top, 0px)) 18px 220px; }
@@ -441,5 +442,60 @@ a.pp-near:hover { transform: translateY(-2px); border-color: color-mix(in srgb, 
 
 @media (prefers-reduced-motion: reduce) {
     .pp-sigil:hover .pp-medal, .pp-medal:focus-visible,
-    .pt-ray, .pt-mote, .pt-glow, .pt-sway, .pt-orbit, .pt-shard { animation: none; }
+    .pt-ray, .pt-mote, .pt-glow, .pt-sway, .pt-orbit, .pt-shard,
+    .pt-ring, .pt-streak i, .pt-drift, .pt-hole { animation: none; }
 }
+
+/* ---------- The Abyss (the Void) ---------- */
+.pt-abyss {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #03040a 0%, #03040a 18%, rgba(70, 60, 120, 0.25) 40%, transparent 100%);
+}
+.pt-spire { position: absolute; left: 0; top: 0; width: 100%; opacity: 0.85; }
+.pt-ring {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1.2px solid #9fb1c6;
+    border-radius: 50%;
+    opacity: 0;
+    animation: pt-fall 20s linear infinite;
+}
+@keyframes pt-fall {
+    from { transform: scale(1.2); opacity: 0; }
+    15% { opacity: 0.25; }
+    to { transform: scale(0.02); opacity: 0; }
+}
+.pt-streak { position: absolute; width: 0; height: 0; }
+.pt-streak i {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: #c9d3e6;
+    transform-origin: 0 50%;
+    animation: pt-pull 9s linear infinite;
+}
+@keyframes pt-pull {
+    from { transform: translateX(var(--r)); opacity: 0; }
+    20% { opacity: 1; }
+    to { transform: translateX(calc(var(--r) * 0.25)) scaleX(0.25); opacity: 0; }
+}
+.pt-drift { position: absolute; animation: pt-drift 22s ease-in-out infinite alternate; }
+@keyframes pt-drift { from { transform: translate(0, -10px) rotate(-0.6deg); } to { transform: translate(8px, 12px) rotate(0.8deg); } }
+.pt-hole {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--pp-medal, 200px) + 52px);
+    height: calc(var(--pp-medal, 200px) + 52px);
+    margin: calc(var(--pp-medal, 200px) / -2 - 26px) 0 0 calc(var(--pp-medal, 200px) / -2 - 26px);
+    box-sizing: border-box;
+    border: 1px solid rgba(174, 179, 214, 0.18);
+    border-top-color: rgba(220, 224, 245, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: pt-orbit 30s linear infinite;
+    --a: 0deg;
+}
+@media (max-width: 767.98px) { .pt-hole { --pp-medal: 150px; } }

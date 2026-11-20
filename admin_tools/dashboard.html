@@ -2750,13 +2750,32 @@
             color: var(--gold);
         }
 
-        /* A plane's medallion (planes.html) */
+        /* A plane's medallion (planes.html), large and small; the symbol's size and
+           place follow the Look sliders (iconScale, iconX, iconY) */
         .plane-prev__stage {
             display: flex;
+            align-items: center;
             justify-content: center;
-            padding: 18px 0 14px;
+            gap: 26px;
+            padding: 22px 0 18px;
             background: radial-gradient(circle, #1a1230 0%, #050409 75%);
             border-radius: 8px;
+        }
+
+        .plane-prev__big {
+            position: relative;
+            display: flex;
+        }
+
+        /* A faint cross through the centre */
+        .plane-prev__guide {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-radius: 50%;
+            background:
+                linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(255, 255, 255, .16) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+                linear-gradient(0deg, transparent calc(50% - 0.5px), rgba(255, 255, 255, .16) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px));
         }
 
         .plane-prev__medal {
@@ -2764,27 +2783,22 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 88px;
-            height: 88px;
+            flex-shrink: 0;
             border: 1.5px solid;
             border-radius: 50%;
         }
 
         .plane-prev__ic {
-            font-size: 48px;
+            line-height: 1;
         }
 
         .plane-prev__mask {
             display: block;
-            width: 48px;
-            height: 48px;
             -webkit-mask: center / contain no-repeat;
             mask: center / contain no-repeat;
         }
 
         .plane-prev__img {
-            width: 48px;
-            height: 48px;
             object-fit: contain;
         }
 

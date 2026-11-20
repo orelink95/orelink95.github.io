@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const phone = () => window.innerWidth < 768;
     function decorate() {
         back.innerHTML = ''; front.innerHTML = '';
-        document.querySelectorAll('#pp-sigil .pt-shards').forEach(n => n.remove());
+        document.querySelectorAll('#pp-sigil .pt-shards, #pp-sigil .pt-sigil').forEach(n => n.remove());
         stage.style.removeProperty('--pp-top');
         if (!theme) return;
         const r = theme.decorate({ back, front, sigil: $('pp-sigil'), width: stage.clientWidth, height: stage.scrollHeight, phone: phone(), still: reduced }) || {};

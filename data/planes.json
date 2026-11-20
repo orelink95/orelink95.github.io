@@ -17,8 +17,10 @@
     ],
     "kind": "centre",
     "summary": "The other half of the centre.",
-    "colour": "#a395cf",
+    "colour": "#6d65d7",
     "icon": "dark_mode",
+    "iconImage": "images/planes-icons/shadowplane-symbol.svg",
+    "iconScale": 110,
     "links": [
       "sephet",
       "echoes-session-6"
@@ -67,7 +69,20 @@
     ],
     "colour": "#c2474f",
     "icon": "skull",
-    "glow": true
+    "glow": true,
+    "groups": [
+      {
+        "name": "Gods",
+        "members": [
+          {
+            "deity": "doldorn"
+          },
+          {
+            "deity": "yogol"
+          }
+        ]
+      }
+    ]
   },
   {
     "id": "plane-of-water",
@@ -140,6 +155,18 @@
     "colour": "#f2c35b",
     "icon": "sunny",
     "glow": true,
+    "iconImage": "images/planes-icons/aran-symbol.svg",
+    "iconScale": 122,
+    "groups": [
+      {
+        "name": "The gods",
+        "members": [
+          {
+            "deity": "arawan"
+          }
+        ]
+      }
+    ],
     "sealed": true
   },
   {
@@ -261,10 +288,18 @@
   {
     "id": "fading-moors",
     "name": "The Fading Moors",
-    "hidden": true,
     "kind": "overlay",
     "over": "shadow-plane",
     "colour": "#6e4545",
     "icon": "air"
+  },
+  {
+    "id": "typhon",
+    "name": "Typhon",
+    "kind": "satellite",
+    "orbits": "aran",
+    "colour": "#4136d3",
+    "iconImage": "images/planes-icons/typhon.svg",
+    "iconScale": 121
   }
 ]

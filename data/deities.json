@@ -185,5 +185,40 @@
     "colour": "#0892b5",
     "worshippers": "Dreamwalkers, nigh workers, scholars, people in mourning, thieves",
     "body": "“In the silence of the twilight, he waits—not to speak, but to listen. In every shadow, a secret. In every dream, a truth.”\n\nMelior is the hush between heartbeats, the stillness of a moonlit glade, the whisper of wings in the dark. Where light fades, his watch begins—not as a hunter, but as a guardian of secrets too delicate for the day. Shrouded in robes of starlight and mist, his face is rarely seen, though his many-eyed owls are ever watching. Melior governs dreams, unspoken truths, and the mysteries hidden in shadow. To follow him is to seek meaning in silence, and to understand that not all darkness is to be feared.\n\nHe is said to have shaped the first Owlins from feathers woven with moonlight and gifted the Kenkus with voices borrowed from dreams. Every nocturnal bird is his eye in the world."
+  },
+  {
+    "id": "doldorn",
+    "name": "Doldorn",
+    "tier": "great",
+    "epithet": "The Great Reaper",
+    "domains": [
+      "Death",
+      "Justice",
+      "Pestilence",
+      "Grave",
+      "Vermin"
+    ],
+    "portrait": "images/Doldorn.png",
+    "portraitFocus": "50% 17%",
+    "portraitZoom": 106,
+    "symbol": "images/Eraldom Gods Symbols/Doldorn symbol.png",
+    "symbolText": "A golden scale",
+    "colour": "#000000",
+    "worshippers": "Undertakers, Bloodhunters, Judges, those who hunt undead",
+    "body": "All mortals are destined to face Doldorn, the Great Reaper, when their lives come to an end. Sitting atop the highest mountain of the Underworld, Doldorn watches and oversees every mortal soul. For most people, Doldorn embodies the greatest mysteries of existence—the terror and wonder of life's last moment and the revelation of one's ultimate fate in the afterlife. Doldorn is no judge, though. That responsibility is left to her children.\n\nDoldorn appears as a gaunt figure cloaked in ragged robes and a collection of golden masks. What little can be seen of his body is unsettling, its gray flesh stretched thin over a barely human skeleton. She can change shape but rarely, if ever, takes on other forms.\n\nDoldorn endlessly works to maintain the balance between Nyx, the Underworld, and the lands of the living. The Great Reaper sees herself as a servant of the mortal world and knows nothing of the glamor, honor, or mystery mortals often ascribe such to her. Rather, she does what must be done, and should some cosmological condition fall out of sorts, Doldorn and her servants work with silent efficiency to restore balance."
+  },
+  {
+    "id": "yogol",
+    "name": "Yogol",
+    "tier": "minor",
+    "epithet": "The Rive Guide",
+    "domains": [
+      "Death",
+      "Grave",
+      "Change"
+    ],
+    "portrait": "images/characters/Yogol.png",
+    "icon": "skull",
+    "colour": "#272626"
   }
 ]

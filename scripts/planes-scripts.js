@@ -4,8 +4,8 @@
    Every plane of data/planes.json, drawn by its `kind`:
    - centre    the disc at the heart: the first two share it, cut in two
                along the diagonal (the first upper right, the second lower left)
-   - overlay   a dashed veil around the disc; its medallion sits on the side
-               of the plane it lies over (`over`)
+   - overlay   a moon resting on the rim of the half of the disc it lies
+               over (`over`); several on one half spread along its rim
    - ring      a band around the centre with its name written along it
    - beneath   a dark ring with embers between the veil and the rings (the
                Underworld). Any plane may have `roads` to planes on the
@@ -13,6 +13,9 @@
    - circle    a medallion orbiting on circle `circle` (1 = nearest), starting
                at `angle` (0 = top, clockwise). A circle turns as one; the
                farther, the slower.
+   - satellite a small moon turning around a plane on a circle (`orbits`),
+               on a path of its own, from `angle`. Not drawn while that plane
+               is sealed; the outer circle comes in to leave its moons room.
    - beyond    a band around the whole orrery, its medallion at `angle` on it.
                `touchesAll`: hovered or chosen, threads of its colour run to
                every plane.
@@ -20,7 +23,8 @@
    - demiplane a card under the orrery (`anchor`, `way`)
    Hovering a medallion holds the orrery still; “Hold still” stops it for good
    (and a reader who asks for less motion never sees it turn).
-   Choosing a plane opens it in the panel (?plane=<id> too). A sealed plane
+   Choosing a plane opens it in the panel (?plane=<id> too), with who dwells
+   there (its residents, gods of the Pantheon among them). A sealed plane
    (`sealed`, learned in `revealedIn`, store.revealed) is a locked nameless
    medallion on a circle or beyond them, a sealed card among the demiplanes,
    and is not drawn at all elsewhere.
@@ -39,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     Athenaeum.sky($('sky'));
 
     // Shared with a plane's page: scripts/planes-common.js
-    const { esc, GOLD, colourOf, mix, iconHtml, medal, circleName } = Athenaeum.planes;
+    const { esc, GOLD, colourOf, mix, iconHtml, medal, circleName, memberRevealed, memberView } = Athenaeum.planes;
 
     const campaigns = store.all('campaign');
     let campaign = campaigns.length ? Athenaeum.personae.choose(store, { campaigns, allowAll: true }) : 'all';
@@ -51,7 +55,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const open = p => store.revealed(p, campaign);
 
     /* ---------- the layout: what sits where (fractions of the orrery's width) ---------- */
-    function layout() {
+    // A satellite turns around a plane on a circle; none while that plane is sealed
+    const satsOf = p => (open(p) ? of('satellite').filter(m => m.orbits === p.id) : []);
+    // The size of a medallion on circle number ci (0 = nearest), its satellites' path and size
+    const orbSize = (P, ci) => Math.max(28, Math.min(60, Math.round(P * (ci === 0 ? 0.055 : 0.064))));
+    const satGeom = z => ({ o: z / 2 + Math.max(7, Math.round(z * 0.19)), q: Math.max(14, Math.round(z * 0.34)) });
+
+    function layout(P) {
         const centres = of('centre').filter(open).slice(0, 2);
         const overlays = of('overlay').filter(open);
         const rings = of('ring').filter(open);
@@ -70,7 +80,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (beneath) { L.beneathBand = { inner: L.veil + 0.008, outer: L.veil + 0.038 }; r = L.beneathBand.outer + 0.012; }
         L.ringBands = rings.map(p => { const band = { p, inner: r, outer: r + 0.031 }; r += 0.037; return band; });
         // circles, evenly between the last ring and the ticks
-        const from = Math.max(rings.length ? r + 0.075 : 0.22, 0.2), to = 0.381;
+        let to = 0.381;
+        // The outer circle comes in when its planes have satellites, to keep them off the rim
+        const last = circles[circles.length - 1];
+        if (P && circling.some(p => Math.max(1, Math.round(Number(p.circle) || 1)) === last && satsOf(p).length)) {
+            const { o, q } = satGeom(orbSize(P, circles.length - 1));
+            to = Math.min(to, 0.417 - (o + q / 2 + 4) / P);
+        }
+        const from = Math.max(rings.length ? r + 0.075 : 0.22, 0.2);
         L.circleR = {};
         circles.forEach((c, i) => { L.circleR[c] = circles.length === 1 ? (from + to) / 2 : from + (to - from) * (i / (circles.length - 1)); });
         // beyond the ticks: one band each
@@ -99,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function draw() {
         const P = Math.round(plate.clientWidth);
         if (!P) return;
-        L = layout();
+        L = layout(P);
         const C = P / 2, px = f => Math.round(f * P);
         const out = [];
         const small = P < 520;
@@ -170,16 +187,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             [45, 135, 225, 315].forEach(a => out.push(`<span class="pl-arm" aria-hidden="true" style="left:${C}px;top:${C}px;transform:rotate(${a + k * 9}deg)">
                 <span class="pl-thread" data-of="${esc(b.p.id)}" style="${threadTo(b, veil)}"></span></span>`));
         });
-        // The veil(s) laid over the centre
-        L.overlays.forEach((p, i) => {
-            const R = px(L.veil) - i * 4, B = Math.max(22, px(0.036));
-            const overIdx = Math.max(0, L.centres.findIndex(c => c.id === p.over));
-            const a = (overIdx === 1 ? 225 : 45) + i * 30;       // the side of the plane it lies over
-            const bx = R + R * Math.sin(a * Math.PI / 180) - B / 2, by = R - R * Math.cos(a * Math.PI / 180) - B / 2;
-            out.push(`<button type="button" class="pl-veil${state.sel === p.id ? ' is-sel' : ''}" data-plane="${esc(p.id)}" aria-pressed="${state.sel === p.id}" aria-label="${esc(p.name)}, laid over ${esc((store.get(p.over) || {}).name || 'the centre')}"
-                style="left:${C - R}px;top:${C - R}px;width:${2 * R}px;height:${2 * R}px;--c:${colourOf(p)}">
-                <span class="pl-veil__badge" style="left:${Math.round(bx)}px;top:${Math.round(by)}px">${medal(p, B, false)}<span class="pl-name">${esc(p.name)}</span></span></button>`);
-        });
         // The centre: one disc, or two halves along the diagonal
         if (L.centres.length) {
             const D = Math.max(54, px(L.core * 2)), two = L.centres.length === 2;
@@ -195,6 +202,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             const veilR = px(L.veil);
             L.centres.forEach((p, i) => out.push(`<span class="pl-tag pl-tag--core pl-tag--${i === 0 ? 'a' : 'b'}" aria-hidden="true"
                 style="top:${i === 0 ? C - veilR - 14 : C + veilR + 14}px">${esc(p.name)}</span>`));
+            // Laid over the centre: a moon resting on the rim of the half it lies over
+            // (the first half faces upper right, the second lower left); several spread along it
+            const rim = D / 2 + 4, M = Math.max(20, Math.round(D * 0.34));
+            L.overlays.forEach(p => {
+                const overIdx = Math.max(0, L.centres.findIndex(c => c.id === p.over));
+                const same = L.overlays.filter(q => Math.max(0, L.centres.findIndex(c => c.id === q.over)) === overIdx);
+                const k = same.indexOf(p);
+                const a = (overIdx === 1 ? 225 : 45) + (k - (same.length - 1) / 2) * 46;
+                const sx = Math.sin(a * Math.PI / 180), sy = -Math.cos(a * Math.PI / 180);
+                const x = C + rim * sx, y = C + rim * sy;
+                out.push(`<button type="button" class="pl-orb pl-orb--moon${sy < -0.3 ? ' is-up' : ''}${state.sel === p.id ? ' is-sel' : ''}" data-plane="${esc(p.id)}" aria-pressed="${state.sel === p.id}" aria-label="${esc(p.name)}, laid over ${esc((store.get(p.over) || {}).name || 'the centre')}"
+                    style="left:${Math.round(x - M / 2)}px;top:${Math.round(y - M / 2)}px;width:${M}px;height:${M}px;--sx:${Math.round(-9 * sx)}px;--sy:${Math.round(-9 * sy)}px">${medal(p, M, false)}<span class="pl-name">${esc(p.name)}</span></button>`);
+            });
         }
         // The circles: each turns as one
         const orbitsOf = c => L.circling.filter(p => Math.max(1, Math.round(Number(p.circle) || 1)) === c);
@@ -202,8 +222,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const R = px(L.circleR[c]);
             const list = orbitsOf(c);
             const period = 150 + ci * 80;
-            const base = Math.round(P * (ci === 0 ? 0.055 : 0.064));
-            const z = Math.max(28, Math.min(60, base));
+            const z = orbSize(P, ci);
+            const { o, q } = satGeom(z);
             list.forEach((p, i) => {
                 const sealed = !open(p);
                 const a = p.angle !== undefined && p.angle !== '' && p.angle !== null ? Number(p.angle) : (360 / list.length) * i;
@@ -216,9 +236,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <div class="pl-arm" style="transform:rotate(${-a}deg)">
                                     <button type="button" class="pl-orb${state.sel === p.id ? ' is-sel' : ''}" data-plane="${esc(p.id)}" aria-pressed="${state.sel === p.id}" aria-label="${esc(nameOf(p))}"
                                         style="left:${-z / 2}px;top:${-z / 2}px;width:${z}px;height:${z}px">${medal(p, z, sealed)}<span class="pl-name">${esc(nameOf(p))}</span></button>
+                                    ${satellites(p, o, q)}
                                 </div></div></div></div></div>`);
             });
         });
+        // Satellites: small moons turning around their plane, on a path of their own
+        function satellites(p, o, q) {
+            const list = satsOf(p);
+            if (!list.length) return '';
+            return `<span class="pl-satpath" aria-hidden="true" style="left:${-o}px;top:${-o}px;width:${2 * o}px;height:${2 * o}px;--c:${colourOf(p)}"></span>`
+                + list.map((m, i) => {
+                    const sealed = !open(m);
+                    const a = m.angle !== undefined && m.angle !== '' && m.angle !== null ? Number(m.angle) : (360 / list.length) * i;
+                    return `<div class="pl-arm" style="transform:rotate(${a}deg)"><div class="pl-spin pl-spin--sat">
+                        <div class="pl-arm" style="transform:translateY(${-o}px)"><div class="pl-spin pl-spin--sat pl-spin--back">
+                            <div class="pl-arm" style="transform:rotate(${-a}deg)">
+                                <button type="button" class="pl-orb pl-orb--sat${state.sel === m.id ? ' is-sel' : ''}" data-plane="${esc(m.id)}" aria-pressed="${state.sel === m.id}" aria-label="${esc(nameOf(m))}, a satellite of ${esc(p.name)}"
+                                    style="left:${-q / 2}px;top:${-q / 2}px;width:${q}px;height:${q}px">${medal(m, q, sealed)}<span class="pl-name">${esc(nameOf(m))}</span></button>
+                            </div></div></div></div></div>`;
+                }).join('');
+        }
         // Beyond the circles: the medallions on their bands
         L.beyondBands.forEach(({ p, mid }, i) => {
             const sealed = !open(p);
@@ -259,6 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             case 'ring': return 'Around the centre';
             case 'beneath': return 'Beneath the centre';
             case 'circle': return circleName(Math.max(1, Math.round(Number(p.circle) || 1)));
+            case 'satellite': return `A satellite of ${(store.get(p.orbits) || {}).name || 'a plane'}`;
             case 'beyond': return p.touchesAll ? 'Beyond the circles · touches every plane' : 'Beyond the circles';
             case 'between': return 'Between the planes';
             case 'demiplane': return p.anchor ? `Anchored to ${(store.get(p.anchor) || {}).name || p.anchor}` : 'A demiplane';
@@ -266,18 +304,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         return '';
     }
     function legendRows() {
-        const row = p => {
+        const row = (p, sub) => {
             const sealed = !open(p);
-            return `<button type="button" class="pl-leg" data-plane="${esc(p.id)}">${medal(p, 28, sealed, 'pl-medal--mini')}
+            return `<button type="button" class="pl-leg${sub ? ' pl-leg--sub' : ''}" data-plane="${esc(p.id)}">${medal(p, sub ? 22 : 28, sealed, 'pl-medal--mini')}
                 <span class="pl-leg__name${sealed ? ' is-sealed' : ''}">${esc(nameOf(p))}</span></button>`;
         };
-        const group = (title, list) => (list.length ? `<p class="pl-label pl-label--muted pl-leg__head">${esc(title)}</p>${list.map(row).join('')}` : '');
-        const atCentre = [...L.centres, ...L.overlays, ...(L.beneath ? [L.beneath] : []), ...L.ringBands.map(b => b.p)];
+        // A plane, then what lies over it or turns around it, set in under it
+        const withSubs = (p, subs) => row(p) + subs.map(m => row(m, true)).join('');
+        const group = (title, html) => (html ? `<p class="pl-label pl-label--muted pl-leg__head">${esc(title)}</p>${html}` : '');
+        const overIdx = q => Math.max(0, L.centres.findIndex(c => c.id === q.over));
+        const atCentre = L.centres.map((c, i) => withSubs(c, L.overlays.filter(q => overIdx(q) === i))).join('')
+            + (L.centres.length ? '' : L.overlays.map(q => row(q)).join(''))
+            + [...(L.beneath ? [L.beneath] : []), ...L.ringBands.map(b => b.p)].map(q => row(q)).join('');
         return [
             group('At the centre', atCentre),
-            ...L.circles.map(c => group(circleName(c), L.circling.filter(p => Math.max(1, Math.round(Number(p.circle) || 1)) === c))),
-            group('Beyond the circles', L.beyondBands.map(b => b.p)),
-            group('Between the planes', L.between ? [L.between] : []),
+            ...L.circles.map(c => group(circleName(c), L.circling.filter(p => Math.max(1, Math.round(Number(p.circle) || 1)) === c).map(p => withSubs(p, satsOf(p))).join(''))),
+            group('Beyond the circles', L.beyondBands.map(b => row(b.p)).join('')),
+            group('Between the planes', L.between ? row(L.between) : ''),
         ].join('');
     }
     function renderPanel() {
@@ -288,6 +331,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         const sealed = !open(p);
         const links = sealed ? [] : (p.links || []).map(linkName).filter(Boolean);
+        // Who dwells there: its residents known in this campaign, gods of the Pantheon among them
+        const dwellers = sealed ? [] : (p.groups || []).flatMap(g => (g && g.members) || [])
+            .filter(m => m && (m.name || m.deity) && memberRevealed(store, p, m, campaign))
+            .map(m => {
+                const v = memberView(store, m);
+                const name = v.god ? linkName(v.god.id)
+                    : store.autolink(esc(v.name), { campaign }) || esc(v.name);
+                return `<li>${name}${v.title ? ` <span class="pl-detail__who">${esc(v.title)}</span>` : ''}</li>`;
+            });
         const sum = sealed ? `Its place is charted, but nothing of it has been learned yet${campaign && campaign !== 'all' ? ` in ${esc((store.get(campaign) || {}).name || '')}` : ''}.`
             : p.summary ? store.autolink(esc(p.summary), { exclude: p.id }) : '';
         panel.innerHTML = `<button type="button" class="pl-back" data-action="clear"><span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>All planes</button>
@@ -297,6 +349,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <h2 class="pl-detail__name${sealed ? ' is-sealed' : ''}">${esc(sealed ? 'A sealed plane' : p.name)}</h2>
                 ${!sealed && p.epithet ? `<p class="pl-detail__epithet">${esc(p.epithet)}</p>` : ''}
                 ${sum ? `<p class="pl-detail__sum">${sum}</p>` : ''}
+                ${dwellers.length ? `<p class="pl-label pl-label--muted pl-detail__h">Who dwells there</p><ul class="pl-detail__links">${dwellers.slice(0, 6).join('')}${dwellers.length > 6 ? `<li><a href="${esc(store.url(p) || '#')}#residents">and ${dwellers.length - 6} more</a></li>` : ''}</ul>` : ''}
                 ${links.length ? `<p class="pl-label pl-label--muted pl-detail__h">Spoken of in</p><ul class="pl-detail__links">${links.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
                 ${!sealed && store.url(p) ? `<a class="pl-cta" href="${esc(store.url(p))}">Enter the plane<span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span></a>` : ''}
             </div>`;

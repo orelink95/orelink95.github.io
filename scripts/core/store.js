@@ -371,6 +371,8 @@
         /* ---------- the places and residents of a plane ----------
            plane.places[] and plane.groups[].members[] are not records: they live in
            their plane (plane.html), but their names link to it and have preview cards.
+           A member who is a god of the Pantheon (member.deity) is not one of them:
+           its name links to the god's own page.
            Each gets an id "<plane>~<key>" (key = its own id, else made from its name)
            and an anchor on the plane's page (#place-<key>, #who-<key>). */
         const slugOf = v => String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -385,7 +387,7 @@
                 if (!partIndex.has(id)) partIndex.set(id, { id, key, part, name: item.name, aliases: item.aliases || [], plane, item, anchor: `${part === 'place' ? 'place' : 'who'}-${key}`, ...extra });
             };
             (plane.places || []).forEach(p => add(p, 'place'));
-            (plane.groups || []).forEach(g => ((g && g.members) || []).forEach(m => add(m, 'resident', { group: g })));
+            (plane.groups || []).forEach(g => ((g && g.members) || []).forEach(m => { if (m && !m.deity) add(m, 'resident', { group: g }); }));
         }
         const planePart = id => partIndex.get(id) || null;
         const planeParts = (x, part) => { const r = resolve(x); return r ? [...partIndex.values()].filter(v => v.plane === r && (!part || v.part === part)) : []; };
@@ -868,6 +870,8 @@
                 if (p.kind === 'circle' && !(Number(p.circle) >= 1)) warnings.push(`${where}.circle: not set (it goes on circle 1)`);
                 if (p.kind === 'overlay' && !p.over) warnings.push(`${where}.over: not set (its medallion sits on the first plane of the centre)`);
                 if (p.kind === 'overlay' && p.over && (resolve(p.over) || {}).kind !== 'centre') warnings.push(`${where}.over: "${p.over}" is not at the centre`);
+                if (p.kind === 'satellite' && !p.orbits) warnings.push(`${where}.orbits: not set (a satellite is drawn only around a plane on a circle)`);
+                if (p.kind === 'satellite' && p.orbits && resolve(p.orbits) && (resolve(p.orbits).kind || 'circle') !== 'circle') warnings.push(`${where}.orbits: "${p.orbits}" is not on a circle, so the satellite is not drawn`);
                 if (p.sealed && !(p.revealedIn || []).length) warnings.push(`${where}.revealedIn: sealed and learned in no campaign yet`);
                 (p.roads || []).forEach((rd, i) => {
                     const to = rd && rd.to ? resolve(rd.to) : null;
@@ -887,7 +891,12 @@
                     if (pl.sealed && !(pl.revealedIn || []).length) warnings.push(`${where}.places[${i}]: “${pl.name}” is sealed and learned in no campaign yet`);
                 });
                 (p.groups || []).forEach((g, i) => ((g && g.members) || []).forEach((m, j) => {
-                    if (!m || !m.name) return;
+                    if (m && m.deity) {
+                        const god = resolve(m.deity);
+                        if (god) seen(slugOf(m.deity), god.name);
+                        return;
+                    }
+                    if (!m || !m.name) { if (m && Object.keys(m).length) warnings.push(`${where}.groups[${i}].members[${j}]: no name and no god`); return; }
                     seen(slugOf(m.id || m.name), m.name);
                     if (m.sealed && !(m.revealedIn || []).length) warnings.push(`${where}.groups[${i}].members[${j}]: “${m.name}” is sealed and met in no campaign yet`);
                 }));

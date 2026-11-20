@@ -3,7 +3,8 @@
    The god's card (scripts/deity-card.js) beside its entry: tier, domains,
    lore, its artifact as the stories tell it (deity.artifact + artifactLegend;
    the item's own card is in the Vault, once a party finds it), and its
-   temples (POIs whose temple block lists it). Previous / next within the tier.
+   temples (POIs whose temple block lists it), the planes it dwells in (planes
+   whose “Who dwells there” lists it). Previous / next within the tier.
    An Elder god not revealed in the reader's campaign (store.viewCampaign)
    shows only a sealed card. Styles: styles/pages/deity.css.
    ===================================================================== */
@@ -68,6 +69,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             <ul>${temples.map(p => `<li><a href="${store.url(p)}#shrine">${esc(p.name)}</a>${store.parent(p) ? ` <small>${esc(store.parent(p).name)}</small>` : ''}</li>`).join('')}</ul>
         </section>` : '';
 
+    // The planes it dwells in: listed among their residents (plane.groups[].members[].deity),
+    // the plane known in this campaign, and the god met there if sealed on that plane
+    const metThere = m => {
+        if (!m.sealed) return true;
+        const list = m.revealedIn || [];
+        return !campaign || campaign === 'all' ? list.length > 0 : list.includes(campaign);
+    };
+    const homes = store.backrefs(d, 'plane', 'groups.members.deity').filter(p => store.revealed(p, campaign)
+        && (p.groups || []).some(g => ((g && g.members) || []).some(m => m && m.deity === d.id && metThere(m))));
+    const dwells = homes.map(p => `<a class="kw-plane" href="${esc(store.url(p) || '#')}#who-${encodeURIComponent(d.id)}" data-kw="${esc(p.id)}">${esc(p.name)}</a>`).join(', ');
+
     // Previous / next god of the same tier (sealed ones skipped)
     const sameTier = store.all('deity').filter(x => Card.tierOf(x) === tier && store.revealed(x, campaign));
     const at = sameTier.findIndex(x => x.id === d.id);
@@ -94,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ${fact('Alignment', esc(d.alignment))}
                 ${fact('Holy symbol', esc(d.symbolText))}
                 ${fact('Worshippers', esc(d.worshippers))}
+                ${fact('Dwells in', dwells)}
             </dl>
             ${d.body ? `<div class="deity-entry__body lore">${md(d.body, { dropCap: true })}</div>` : ''}
             ${legend}

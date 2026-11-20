@@ -13,7 +13,11 @@
      medal(p, px, sealed, cls)  the medallion as HTML
      circleOf(p)            its circle (1 = nearest the centre)
      circleName(n)          "The second circle"
-     whereOf(store, p)      "The second circle", "Laid over The Material Plane"…
+     whereOf(store, p)      "The second circle", "Laid over The Material Plane",
+                            "A satellite of Ydalheim"…
+     memberRevealed(store, plane, m, cid)  a resident known in that campaign
+     memberView(store, m)   a resident as shown: a god's name, epithet, portrait
+                            and text from its page (member.deity), unless set here
    ===================================================================== */
 (function (root) {
     const ATH = root.Athenaeum = root.Athenaeum || {};
@@ -68,6 +72,7 @@
             case 'ring': return 'Around the centre';
             case 'beneath': return 'Beneath the centre';
             case 'circle': return circleName(circleOf(p));
+            case 'satellite': return `A satellite of ${(store.get(p.orbits) || {}).name || 'a plane'}`;
             case 'beyond': return p.touchesAll ? 'Beyond the circles · touches every plane' : 'Beyond the circles';
             case 'between': return 'Between the planes';
             case 'demiplane': return p.anchor ? `Demiplane · anchored to ${(store.get(p.anchor) || {}).name || p.anchor}` : 'Demiplane';
@@ -75,5 +80,34 @@
         return '';
     }
 
-    ATH.planes = { GOLD, esc, src, colourOf, mix, scaleOf, shiftOf, iconHtml, medalStyle, medal, circleOf, circleName, whereOf };
+    // A member of a plane's “Who dwells there”, known in campaign cid? Its plane
+    // must be, a god of the Pantheon (member.deity) too, and a sealed member met there.
+    function memberRevealed(store, plane, m, cid) {
+        if (!m || !store.revealed(plane, cid)) return false;
+        if (m.deity) {
+            const god = store.get(m.deity);
+            if (!god || !store.revealed(god, cid)) return false;
+        } else {
+            const v = store.planeParts(plane, 'resident').find(x => x.item === m);
+            if (v) return store.partRevealed(v, cid);
+        }
+        if (!m.sealed) return true;
+        const list = m.revealedIn || [];
+        const c = cid === undefined ? store.viewCampaign() : cid;
+        return !c || c === 'all' ? list.length > 0 : list.includes(c);
+    }
+    // Its name, title, portrait and text: a god's from its page, unless the member says otherwise
+    function memberView(store, m) {
+        const god = m && m.deity ? store.get(m.deity) : null;
+        if (!god) return { ...m, divine: !!m.divine, god: null };
+        return {
+            ...m, god, divine: true,
+            name: m.name || god.name,
+            title: m.title || god.epithet || '',
+            portrait: m.portrait || god.portrait || '',
+            summary: m.summary || god.summary || '',
+        };
+    }
+
+    ATH.planes = { GOLD, esc, src, colourOf, mix, scaleOf, shiftOf, iconHtml, medalStyle, medal, circleOf, circleName, whereOf, memberRevealed, memberView };
 })(typeof window !== 'undefined' ? window : globalThis);

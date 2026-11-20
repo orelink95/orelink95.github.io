@@ -401,33 +401,31 @@
     pointer-events: none;
 }
 
-/* A veil laid over the centre */
-.pl-veil {
-    position: absolute;
-    padding: 0;
-    box-sizing: border-box;
-    border: 1px dashed color-mix(in srgb, var(--c) 45%, transparent);
-    border-radius: 50%;
-    background: radial-gradient(circle, transparent 0 58%, color-mix(in srgb, var(--c) 10%, transparent) 68%, color-mix(in srgb, var(--c) 4%, transparent) 100%);
-    cursor: pointer;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-.pl-veil::before {
+/* Laid over the centre: a moon resting on the rim of its half, its far side
+   in shadow (--sx, --sy: set by scripts/planes-scripts.js) */
+.pl-orb--moon { z-index: 3; }
+.pl-orb--moon .pl-medal::after {
     content: "";
     position: absolute;
-    inset: -3px;
+    inset: 0;
     border-radius: 50%;
-    background: conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--c) 40%, white 10%), transparent 20%, transparent 50%, color-mix(in srgb, var(--c) 35%, transparent), transparent 70%);
-    -webkit-mask: radial-gradient(circle, transparent 0 62%, #000 70%);
-    mask: radial-gradient(circle, transparent 0 62%, #000 70%);
-    filter: blur(3px);
-    animation: pl-turn 40s linear infinite;
+    box-shadow: inset var(--sx, 0) var(--sy, 0) 12px rgba(0, 0, 0, 0.65);
     pointer-events: none;
 }
-.pl-veil:hover,
-.pl-veil:focus-visible { border-color: color-mix(in srgb, var(--c) 85%, transparent); }
-.pl-veil.is-sel { border: 1px solid var(--pl-gold); box-shadow: 0 0 24px rgba(233, 193, 118, 0.3); }
-.pl-veil__badge { position: absolute; }
+.pl-orb.is-up .pl-name { top: auto; bottom: calc(100% + 8px); }
+
+/* Satellites: small moons around a plane on a circle */
+.pl-satpath {
+    position: absolute;
+    box-sizing: border-box;
+    border: 1px dashed var(--c);
+    border-radius: 50%;
+    opacity: 0.45;
+    pointer-events: none;
+}
+.pl-spin--sat { animation-duration: 40s; }
+.pl-orb--sat::before { inset: -10px; }
+.pl-orb--sat .pl-name { top: calc(100% + 8px); padding: 3px 8px; font-size: 12px; }
 
 /* ---------- medallions ---------- */
 .pl-medal {
@@ -490,8 +488,7 @@
 }
 .pl-orb:hover .pl-medal,
 .pl-orb:focus-visible .pl-medal { transform: scale(1.12); }
-.pl-orb.is-sel .pl-medal,
-.pl-veil.is-sel .pl-medal { box-shadow: 0 0 0 3px var(--pl-ink), 0 0 0 4px var(--pl-gold), 0 0 26px rgba(233, 193, 118, 0.55) !important; }
+.pl-orb.is-sel .pl-medal { box-shadow: 0 0 0 3px var(--pl-ink), 0 0 0 4px var(--pl-gold), 0 0 26px rgba(233, 193, 118, 0.55) !important; }
 
 /* Names: on hover, focus, or when chosen */
 .pl-name,
@@ -522,9 +519,6 @@
 .pl-orb:hover .pl-name,
 .pl-orb:focus-visible .pl-name,
 .pl-orb.is-sel .pl-name,
-.pl-veil:hover .pl-name,
-.pl-veil:focus-visible .pl-name,
-.pl-veil.is-sel .pl-name,
 .plate:has(.pl-void:hover) .pl-tag--void,
 .plate:has(.pl-void:focus-visible) .pl-tag--void,
 .plate:has(.pl-void.is-sel) .pl-tag--void,
@@ -541,7 +535,6 @@
 /* Keyboard focus: a gold ring on what is focused */
 .pl-orb:focus-visible .pl-medal,
 .pl-half:focus-visible { outline: 2px solid var(--pl-gold); outline-offset: 3px; }
-.pl-veil:focus-visible,
 .pl-void:focus-visible,
 .pl-ring:focus-visible { outline: none; }
 
@@ -582,6 +575,9 @@
     font-weight: 600;
 }
 .pl-leg__name.is-sealed { font-style: italic; font-weight: 400; color: var(--pl-muted); }
+/* What lies over a plane or turns around it, set in under it */
+.pl-leg--sub { min-height: 40px; padding-left: 30px; }
+.pl-leg--sub .pl-leg__name { font-size: 15px; }
 
 .pl-back {
     display: inline-flex;
@@ -642,6 +638,7 @@
     font-weight: 600;
 }
 .pl-detail__links li + li { margin-top: 4px; }
+.pl-detail__who { font-size: 15px; font-weight: 400; font-style: italic; color: #a9a6bb; }
 
 /* =====================================================================
    DEMIPLANES
@@ -734,7 +731,6 @@
     .pl-ticks,
     .pl-band,
     .pl-void::before,
-    .pl-veil::before,
     .pl-under__embers,
     .pl-road { animation: none; }
 }

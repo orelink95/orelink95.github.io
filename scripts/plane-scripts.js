@@ -4,7 +4,7 @@
    From data/planes.json: the medallion, name, epithet and summary, the
    traits, the lore and the ways in, the maps with the plane's own places
    pinned on them, who dwells there (the plane's own people and powers,
-   in their groups), the creatures of the bestiary whose realm is the
+   and gods of the Pantheon, in their groups), the creatures of the bestiary whose realm is the
    plane, and the planes next to it on the orrery.
    - Its look: record.look (theme + tweaks, scripts/core/look.js and
      styles/looks.css); its theme may also decorate the page
@@ -13,7 +13,8 @@
      A sealed place is not pinned; a sealed resident is "Not yet met".
      Both follow the campaign drop-down (shared with Dramatis Personae).
    - #place-<key> opens the map of that place with its card;
-     #who-<key> scrolls to that resident (links of store.planePart).
+     #who-<key> scrolls to that resident (links of store.planePart; a god
+     of the Pantheon: #who-<its id>, from its own page).
    Styles: styles/pages/plane.css. Helpers: scripts/planes-common.js.
    ===================================================================== */
 document.addEventListener('DOMContentLoaded', async () => {
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const all = store.all('plane').filter(p => p.id !== plane.id);
         const kindOf = p => p.kind || 'circle';
         const centres = all.filter(p => kindOf(p) === 'centre');
+        const satsOf = p => all.filter(q => kindOf(q) === 'satellite' && q.orbits === p.id);
         const circle = n => all.filter(p => kindOf(p) === 'circle' && K.circleOf(p) === n);
         const circles = [...new Set(all.filter(p => kindOf(p) === 'circle').map(K.circleOf))].sort((a, b) => a - b);
         const rest = all.filter(p => kindOf(p) !== 'demiplane' && kindOf(p) !== 'beyond' && kindOf(p) !== 'between');
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const c = K.circleOf(plane);
                 const inner = circles.filter(n => n < c).pop(), outer = circles.find(n => n > c);
                 return [
+                    ['Its satellites', satsOf(plane)],
                     [`${K.circleName(c)}, with it`, circle(c)],
                     inner ? [`Inward · ${K.circleName(inner).toLowerCase()}`, circle(inner)] : ['Inward · the centre', [...centres, ...all.filter(p => kindOf(p) === 'overlay' || kindOf(p) === 'ring')]],
                     outer ? [`Outward · ${K.circleName(outer).toLowerCase()}`, circle(outer)] : ['Outward · beyond the circles', all.filter(p => kindOf(p) === 'beyond')],
@@ -89,6 +92,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return plane.touchesAll ? [['The planes it touches', rest]] : [['Beyond the circles, with it', all.filter(p => kindOf(p) === 'beyond')]];
             case 'between':
                 return [['The planes it lies between', rest]];
+            case 'satellite': {
+                const host = plane.orbits && store.get(plane.orbits);
+                return [
+                    ['It turns around', host ? [host] : []],
+                    host ? ['With it around ' + host.name.replace(/^The /, 'the '), satsOf(host)] : null,
+                ];
+            }
             case 'demiplane':
                 return [['Anchored to', plane.anchor && store.get(plane.anchor) ? [store.get(plane.anchor)] : []]];
         }
@@ -138,11 +148,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Who dwells there
-            const groups = (plane.groups || []).filter(g => g && (g.members || []).some(m => m && m.name));
+            const listed = m => m && (m.name || (m.deity && store.get(m.deity)));
+            const groups = (plane.groups || []).filter(g => g && (g.members || []).some(listed));
             if (groups.length) {
                 html += section('Who dwells there', groups.map(g => `<div class="pp-group">
                     <p class="pp-label">${esc(g.name)}</p>${g.desc ? `<p class="pp-group__desc">${link(g.desc)}</p>` : ''}
-                    <div class="pp-who">${(g.members || []).filter(m => m && m.name).map(resident).join('')}</div></div>`).join(''), 'pp-residents');
+                    <div class="pp-who">${(g.members || []).filter(listed).map(resident).join('')}</div></div>`).join(''), 'pp-residents')
+                    .replace('<section ', '<section id="residents" ');
             }
 
             // Denizens: the creatures of the bestiary whose realm is this plane
@@ -183,18 +195,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="pp-conts">${conts.map(c => `<a class="pp-panel pp-cont" href="${esc(store.url(c) || '#')}" data-kw="${esc(c.id)}">${thumb(c)}<span class="pp-cont__n">${esc(c.name)}</span></a>`).join('')}</div>` : ''}`, 'pp-atlas');
     }
 
-    function resident(m) {
-        const key = (store.planeParts(plane, 'resident').find(v => v.item === m) || {}).key || '';
-        if (!store.partRevealed(`${plane.id}~${key}`, campaign)) {
+    function resident(item) {
+        // A god of the Pantheon: its name, epithet, portrait and text from its page
+        const m = K.memberView(store, item);
+        const key = m.god ? m.god.id : (store.planeParts(plane, 'resident').find(v => v.item === item) || {}).key || '';
+        if (!K.memberRevealed(store, plane, item, campaign)) {
             const camp = campaign && campaign !== 'all' ? ` in ${esc((store.get(campaign) || {}).name || '')}` : '';
             return `<div class="pp-panel pp-res is-sealed" id="who-${esc(key)}"><span class="pp-res__pic"><span class="material-symbols-outlined" aria-hidden="true">lock</span></span>
                 <span class="pp-res__body"><span class="pp-res__name">Not yet met</span><span class="pp-res__text">Not yet met${camp}.</span></span></div>`;
         }
         return `<article class="pp-panel pp-res${m.divine ? ' is-divine' : ''}" id="who-${esc(key)}">
             ${m.portrait ? `<img class="pp-res__pic" src="${esc(K.src(m.portrait))}" alt="" loading="lazy">` : `<span class="pp-res__pic"><span class="material-symbols-outlined" aria-hidden="true">${m.divine ? 'brightness_7' : 'person'}</span></span>`}
-            <span class="pp-res__body"><span class="pp-res__name">${esc(m.name)}</span>
+            <span class="pp-res__body"><span class="pp-res__name">${m.god ? godName(m) : esc(m.name)}</span>
                 ${m.title ? `<span class="pp-res__title">${esc(m.title)}</span>` : ''}
-                ${m.summary ? `<span class="pp-res__text">${link(m.summary)}</span>` : ''}</span></article>`;
+                ${m.summary ? `<span class="pp-res__text">${m.god ? store.autolink(esc(m.summary), { exclude: [plane.id, m.god.id], campaign }) : link(m.summary)}</span>` : ''}</span></article>`;
+    }
+
+    // A god's name links to its page in the Pantheon (with its preview card)
+    function godName(m) {
+        const url = store.url(m.god);
+        return url ? `<a class="kw-deity" href="${esc(url)}" data-kw="${esc(m.god.id)}">${esc(m.name)}</a>` : esc(m.name);
     }
 
     /* ---------- maps: the plane's own places, pinned ---------- */

@@ -315,10 +315,11 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
             /* Where a plane sits on the orrery (planes.html, scripts/planes-scripts.js) */
             planeKind: [
                 { id: 'centre', label: 'At the centre (the first two share the disc, cut in two)' },
-                { id: 'overlay', label: 'Laid over a plane of the centre (a veil around it)' },
+                { id: 'overlay', label: 'Laid over a plane of the centre (a moon on its rim)' },
                 { id: 'ring', label: 'A ring around the centre (a band with its name)' },
-                { id: 'beneath', label: 'Beneath the centre (a dark ring between the veil and the rings)' },
+                { id: 'beneath', label: 'Beneath the centre (a dark ring between the moons and the rings)' },
                 { id: 'circle', label: 'On a circle (a medallion that orbits)' },
+                { id: 'satellite', label: 'A satellite (a small moon orbiting a plane on a circle)' },
                 { id: 'beyond', label: 'Beyond the circles (a band around the whole orrery)' },
                 { id: 'between', label: 'Between the planes (the field between the circles)' },
                 { id: 'demiplane', label: 'Demiplane (a card under the orrery)' },
@@ -1071,7 +1072,7 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                 },
             },
             /* The cosmos (planes.html): the orrery. The Material Plane and its twin share
-               the centre; overlays veil it; rings circle it; the planes of each circle orbit
+               the centre; overlays are moons on its rim; satellites are small moons around a plane on a circle; rings circle it; the planes of each circle orbit
                it (a circle turns as one, the farther the slower); planes beyond the circles
                are bands around everything; the plane between the planes is the field under
                them; demiplanes are cards under the orrery. */
@@ -1086,8 +1087,9 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                     epithet: { kind: 'text', label: 'Epithet', help: 'Under its name in the panel.' },
                     summary: { kind: 'text', label: 'Summary', long: true, help: 'Shown in the panel when the plane is chosen (a demiplane: on its card).' },
                     circle: { kind: 'number', label: 'Circle', section: 'On the orrery', width: 'third', showIf: { key: 'kind', is: ['circle'] }, help: '1 = the circle nearest the centre. The planes of a circle turn together; the farther the circle, the slower.' },
-                    angle: { kind: 'number', label: 'Position (degrees)', section: 'On the orrery', range: [0, 359], showIf: { key: 'kind', is: ['circle', 'beyond'] }, help: '0 = top, 90 = right, 180 = bottom, 270 = left. Where it starts (a plane beyond the circles: where its medallion sits on its band). Empty = spread evenly.' },
-                    over: { kind: 'ref', to: ['plane'], label: 'Laid over', section: 'On the orrery', showIf: { key: 'kind', is: ['overlay'] }, help: 'A plane of the centre: the veil’s medallion sits on its side.' },
+                    angle: { kind: 'number', label: 'Position (degrees)', section: 'On the orrery', range: [0, 359], showIf: { key: 'kind', is: ['circle', 'beyond', 'satellite'] }, help: '0 = top, 90 = right, 180 = bottom, 270 = left. Where it starts (a plane beyond the circles: where its medallion sits on its band; a satellite: where it starts around its plane). Empty = spread evenly.' },
+                    over: { kind: 'ref', to: ['plane'], label: 'Laid over', section: 'On the orrery', showIf: { key: 'kind', is: ['overlay'] }, help: 'A plane of the centre: its moon rests on the rim of that half (several on one half spread along it).' },
+                    orbits: { kind: 'ref', to: ['plane'], label: 'Orbits', section: 'On the orrery', showIf: { key: 'kind', is: ['satellite'] }, help: 'A plane on a circle: the satellite turns around it, on a small path of its own. Hidden while that plane is sealed.' },
                     touchesAll: { kind: 'boolean', label: 'Touches every plane', section: 'On the orrery', showIf: { key: 'kind', is: ['beyond'] }, help: 'Hovered or chosen, threads of its colour run from its band to every plane.' },
                     anchor: { kind: 'ref', to: ['plane'], label: 'Anchored to', section: 'On the orrery', showIf: { key: 'kind', is: ['demiplane'] } },
                     roads: {
@@ -1156,9 +1158,10 @@ dmOnly  the whole type is DM only: its file is git-ignored and the site never lo
                             name: { kind: 'text', label: 'Group', required: true, help: 'The Powers, the Courts…' },
                             desc: { kind: 'text', label: 'Description', long: true },
                             members: {
-                                kind: 'objects', label: 'Members', itemLabel: 'name',
+                                kind: 'objects', label: 'Members', itemLabel: ['name', 'deity'],
                                 fields: {
-                                    name: { kind: 'text', label: 'Name', required: true, width: 'half' },
+                                    deity: { kind: 'ref', to: ['deity'], label: 'A god of the Pantheon', help: 'Its name, portrait, epithet and text come from its page in the Pantheon, and its name links there (its page then says where it dwells). Leave the fields below empty, or fill one to say it differently here.' },
+                                    name: { kind: 'text', label: 'Name', width: 'half', help: 'Required, unless a god is chosen above.' },
                                     id: { kind: 'text', label: 'Id', width: 'half', help: 'Empty = made from the name. Links point to it: keep it once set.' },
                                     title: { kind: 'text', label: 'Title', width: 'half', help: 'Archfey, Warden of the Roots, Deity of…' },
                                     divine: { kind: 'boolean', label: 'A deity', width: 'half', help: 'Its links take the deities’ colour.' },

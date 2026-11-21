@@ -435,6 +435,7 @@
     },
     "region": "Brightend, Eperina",
     "arc": "Remnants of the Past",
+    "summary": "Joined by  Wyck, the party  investigates criminal activity and uncovers corruptive nihilium bonecharms—including a secret one hidden on Gust. The party then  infiltrates a secret sewer hideout beneath a derelict temple in disguise, culminating in a confrontation with the head of the Talons.",
     "places": [
       "roost",
       "warden-fort"
@@ -443,12 +444,35 @@
       {
         "npc": "shade-hand",
         "sentiment": "dislike"
+      },
+      {
+        "npc": "sephet",
+        "sentiment": "neutral"
+      },
+      {
+        "npc": "wardenfoll",
+        "sentiment": "like"
       }
     ],
     "accomplished": [
-      "- Found the Roost",
-      "- Discovered the mysterious figure behind the Talons"
+      "Found the Roost",
+      "Discovered the mysterious figure behind the Talons"
     ],
-    "body": "Scared and confused by the magic at play, the party realizes that not even Sephet knows its origin. He reveals that he came back from his trip with his apprentice, (Wyck)[], who, as a trained wizard, will accompany the party until the truth is found about the Talons and the person at their head. \n\n"
+    "leadsPursued": [
+      "Traced criminal activity back to the head of the Talons"
+    ],
+    "futureLeads": [
+      "Investigate Brigg's Fence",
+      "Understand the significance of the sewer maps",
+      "Understand what links the stolen goods"
+    ],
+    "body": "After the party brough their captive to Sephet, he uses magic to interrogate her, breaking her jaw to extract some black  substance from her body. The party learns about an alchemical \"shadow\" compound that requires raw power, skill, extensive components, and a journey to the Shadow Plane. Gust hears fear in Sephet's voice, who whispers he knows no one nearby capable of making it.\n \nAfter the Warden refuses Sephet's request to speak alone, Sephet introduces **Wyck**, a powerful, goth drow half-elf spellcaster whom he declares will be the party's greatest asset. Eli immediately becomes jealous and subtly shows off their attunement ring.\n\nDavnis and Nimo finally arrive (with Nimo gallantly kissing Wyck's hand), while Foll and Sephet catch up. Eli identifies the Death Shard Amulet, triggering a vision for Nimo, who nearly realizes they are a warlock and hands the amulet to Eli.\n\nSephet brings up a theft at the Cantoris Academy (a satellite of Runebridge) and leaves the next move to Wyck, who discreetly assesses the group and warns Sephet they don't know what they're up against. On their way out, two guards report seeing cloaked shadow figures vanish in an alley. The party splits: Eli and Davnis go to investigate the alley (with M3MU), while Gust, Nimo, and Wyck head to Cantoris Academy.\n\nAlong the way, Davnis realizes why Eli is jealous of Wyck, and Eli smokes their first cigarette. They arrive at the alley near Marshbone's baked shop—where the weird dice was previously found—and Eli senses unnatural magic right before the arched entryway vanishes into a solid stone wall.\nThree hooded shadow grunts, who turned out to be Talon members ambush them. Despite Davnis rolling critical successes on initiative and a wisdom save, both take bleed/void spear damage, and Davnis suffers two levels of {Void} corruption. They manage to kill one grunt and bind and gag the other two, though they remain trapped inside.\n\nThe trio meets **Elias Carwen**, an elderly dwarf professor of ancient literature. He explains that the stolen artifact—a strange crown found in ruins outside Eperina—proves **Queen Thalen** was a real ruler of a unified nation rather than a myth, though he doubts she was immortal. Wyck asks Carwen to step out so they can investigate, and the professor mentions leaving a visitor log at the front desk.\n\nNoticing the display case glass is opaque at certain angles, Wyck finds a small white-grey shard wedged beneath the cushion. Gust feels sudden dread and a burning in his chest. Wyck pulls out a purple-glowing, metal-integrated bone shard containing nihilium, which radiates void energy.\n\nWhen Nimo reaches for the shard, Gust grabs it instead; void corruption threads up his arm before stopping at a hidden bone shard already embedded in Gust. Wyck and Nimo call Gust a hypocrite. Gust admits he only used his shard once (\"the splitter\" of the head) and claims he was told it would only make him angry. Nimo steals Wyck's sending stone, and Gust grapples Wyck so Nimo can keep it.\n\nGust finds broken glass beneath the case on their way out. They collect the visitor list from the front desk and decide not to tell Carwen about the bone shard.\n\n In the courtyard, Eli detects a light breeze and discovers a physical hidden door in the 200-year-old stone wall. Nimo messages them via sending stone to hide the dead grunt from Wyck before the trio arrives and scales the wall.\n\nNimo reveals Gust's bone shard to the rest of the group; Gust explains fighting-pit patrons gave it to him to make him fight more brutally. Eli explains that nihilium acts as an accelerant, theorizing Gust is either heavily corrupted or already immune. Wyck contacts Waudin Foll to update Sephet.\n\nGust and Davnis break down the hidden door, uncovering a stash containing 60 gp, a black hood with a red cowl, a black die, a charm of shadow, a magic scroll, and a stolen amethyst wind ring. A slate wall bears the message: *\"Deliveries bought before moonrise. The hand awaits.\"*\n\nGust wakes one of the unconscious grunts, who reveals tonight's delivery is for the Shade Hand at the Roost. Eli psychically intimidates him into admitting the Roost overlooks the Ash district. Wyck finds claw and burn marks plus money on the bodies, and the party buries the three unconscious men.\n\nBack at the Alabaster Warden fort, the party tells Foll and Sephet everything except Gust's secret bonecharm. Sephet and Wyck perform a modified void-cleansing ritual on the heavily tainted Davnis. Although the ritual fails to remove the taint immediately, it limits the damage so the effects will wear off next time. Gust shows Sephet the recovered bone charm; she senses something is wrong with him, notes she didn't expect bone charms to appear in the city like this, and directs them to **Brigg's fence** on the black market.\n\nAfter a short rest, the party chooses to investigate an abandoned temple near the park over an office building in North Ash. Wyck, Davnis, and Eli disguise themselves in the black hoods, bringing Gust as a \"fake prisoner\" with Nimo hidden in a backpack.\n\nOutside the derelict temple, Davnis gives a beggar a claw token and exchanges the passphrase (*\"What does the shadow take?\"* / *\"All.\"*). Inside, they climb down a trapdoor into a freshly carved tunnel leading to the sewers, where Nimo casts *Alarm*. Inspecting the church area, Eli sees frescoes of Melin and his brother, while Nimo finds unusual carvings on the moon-god altar. Wyck recognizes the script as **Umbral**, and Eli uses *Comprehend Languages* to translate: *\"Thank the hand for the benefit & ascend.\"* Nimo performs a blood sacrifice on the altar, revealing a hidden ladder.\n\n\nClimbing into a dormitory, they bluff a guard by claiming they are awaiting a delivery with prisoners and showing a new recruit (Eli) around. Directed into a back office, they meet the **Shadow Manager**—a tall, unnaturally still figure with symbol scars on his face and reflective eyes who pulls shadows toward himself.\n\n>\"You shouldn't be here.\" \n>\"New recruit.\" \n>\"No you're not.\"\n> \"No I'm not.\"\n\n When he sees through their ruse, Davnis attacks, sparking combat.\n",
+    "recap": "After interrogating a captive about an alchemical shadow compound and meeting Sephet's new drow spellcaster ally, Wyck, the party splits up to investigate local shadow sightings and an artifact theft at Cantoris Academy. Eli and Davnis are magically trapped in an alley and ambushed by three shadow grunts, narrowly surviving the fight while Davnis suffers heavy void corruption. Meanwhile, Gust, Nimo, and Wyck investigate the theft of Queen Thalen's crown at the academy, discovering a nihilium bone shard that inadvertently exposes a similar corruptive shard hidden inside Gust. Reuniting to raid a hidden stash and interrogate a captive, the group learns of a \"Shade Hand\" delivery at the Roost before receiving a partial void-cleansing ritual from Sephet. Finally, the party infiltrates a derelict temple's secret sewer hideout in disguise, bluffing their way into a back office where the Shadow Manager sees through their ruse and Davnis initiates combat.",
+    "quotes": [
+      {
+        "text": "What does the Shadow take ?",
+        "name": "A Talon scout, posing as a beggar"
+      }
+    ]
   }
 ]

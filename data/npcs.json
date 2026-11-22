@@ -2,6 +2,9 @@
   {
     "id": "lordwhite",
     "name": "Derral Sitsk",
+    "aliases": [
+      "Lord White"
+    ],
     "role": "Lord White of Brightend",
     "summary": "Interim ruler of Eperina since the King died",
     "quote": "Order and prosperity",

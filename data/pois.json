@@ -645,5 +645,22 @@
       "y": 452,
       "icon": "bookshelf"
     }
+  },
+  {
+    "id": "cantoris-academy",
+    "name": "The Cantoris Academy",
+    "aliases": [
+      "Cantoris"
+    ],
+    "parent": "cloud_district",
+    "codex": "The Cantoris Academy",
+    "summary": "A satellite of Runebridge University, known for its history and literature departments, as well as for the many Bard Colleges it holds.",
+    "body": "Tucked into Brightend’s Cloud District, what passes at first glance for a modest block of weathered stone townhouses is in truth a vibrant satellite faculty of Runebridge University. Far removed from the secretive, heavily regulated halls of the main campus, this enclave—known to many as the Cantoris Academy—thrives as the Boundless Vale’s premier crucible for bards of every college, alongside fiercely respected departments of history and literature. Behind its tall, mullioned windows, the hum of tuned strings mingles with the scratch of quills and spirited debates over pre-Ophrasian chronicles. Yet for all its prestige, the faculty stays afloat on coin drawn from its public museum, where curious citizens pay to marvel at curated relics and storied antiquities. Those admission fees have become the institution’s lifeline ever since the Lord White slashed royal stipends, redirecting the capital’s coffers to bankroll an ever-expanding security budget as political tensions tighten their grip on Brightend.",
+    "typeLabel": "University",
+    "map": {
+      "x": 781,
+      "y": 659,
+      "icon": "bookshelf"
+    }
   }
 ]

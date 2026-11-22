@@ -4,6 +4,11 @@
     "name": "Echoes from the Void",
     "quests": [
       {
+        "title": "The Tome Twice Missing",
+        "description": "The Ninefold Commentary was stolen from Maera's Study and needs to be recovered... fast !",
+        "status": "Primary"
+      },
+      {
         "title": "Exfiltration",
         "description": "Help Maera escape Brightend and offer her self passage to the Athenaeum.",
         "status": "Primary"
@@ -24,7 +29,7 @@
       "pc-wyck"
     ],
     "funds": {
-      "gold": 60,
+      "gold": 70,
       "silver": 8,
       "copper": 50
     },
@@ -117,11 +122,36 @@
             ]
           },
           {
-            "text": "Now, the party must hide Maera from those who want her silenced. Forging a tense alliance with the Grand Warden, they have been tasked to hunt down an invisible, highly-organized syndicate responsible for a string of perfect crimes—before the stolen secrets of the void can be unleashed upon Eperina.",
+            "text": "With Maera hidden from those who wanted her silenced, the party forged a tense alliance with the Grand Warden, who tasked them with hunting down an invisible, highly organized syndicate behind a string of perfect crimes—the Talons, said to operate from a secret Roost.",
             "sessions": [
               "echoes-session-3",
               "echoes-session-4",
               "echoes-session-6"
+            ]
+          },
+          {
+            "text": "The hunt soon bore fruit. A pale, black-veined thief was run down in the streets and brought before Sephet, who tore from her body a black alchemical compound—one that could only be brewed with immense power and a journey to the Plane of Shadows. With fear in his voice, the Archmage admitted he knew no one nearby capable of making it. In answer, he gave the party a new ally: **Wyck**, a drow spellcaster he declared would be their greatest asset.",
+            "sessions": [
+              "echoes-session-6",
+              "finding-the-roost"
+            ]
+          },
+          {
+            "text": "The trail split. At the Cantoris Academy, a crown proving that **Queen Thalen** had truly ruled a unified nation had been stolen, and beneath its case lay a bone shard laced with **nihilium**, radiating void energy. The find laid bare Gust's secret: he carried such a bonecharm himself, given to him by fighting-pit patrons to make him fight more brutally. Elsewhere, Eli and Davnis were sealed inside a vanishing alley and ambushed by hooded Talons, and Davnis came out of the fight marked by the Void.",
+            "sessions": [
+              "finding-the-roost"
+            ]
+          },
+          {
+            "text": "A hidden stash behind an old stone wall, and a captive's confession, gave them the name they had been chasing: that night's delivery was bound for the **Shade Hand**, at the Roost overlooking the Ash district. Disguised in Talon hoods, with Gust as their \"prisoner\", the party gave the passphrase at a derelict temple and descended into the syndicate's hideout.\n\n> \"What does the shadow take?\"\n> \"All.\"",
+            "sessions": [
+              "finding-the-roost"
+            ]
+          },
+          {
+            "text": "Now, deep within the Roost, the party stands before the Shade Hand himself—a tall, unnaturally still figure with scarred symbols on his face, who draws the shadows to him and saw through their ruse at a glance. Blades are drawn, and the hand behind the Talons is finally within reach.",
+            "sessions": [
+              "finding-the-roost"
             ]
           }
         ]

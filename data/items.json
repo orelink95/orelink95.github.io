@@ -148,5 +148,22 @@
     "type": "Wondrous item",
     "rarity": "Very rare",
     "summary": "A memory made solid, given away willingly, trapped forever in the gem."
+  },
+  {
+    "id": "charm-of-shadows",
+    "name": "Charm of Shadows",
+    "type": "Wondrous item (charm)",
+    "rarity": "Rare",
+    "attunedBy": "nimo",
+    "summary": "A strange effigy, imbued with shadows",
+    "body": "Once broken, this small clay effigy grants +4 to stealth in dim light and +6 in the dark. "
+  },
+  {
+    "id": "amethyst-die",
+    "name": "Amethyst Die",
+    "rarity": "Uncommon",
+    "cost": "7 gp",
+    "summary": "A polished, well-crafted 8 sided amethyst die.",
+    "body": "Just that, really. Looks like a very pretty and expensive die. "
   }
 ]

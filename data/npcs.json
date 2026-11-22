@@ -356,9 +356,15 @@
     "id": "ellia-mortemer",
     "name": "Sylvira Savikas",
     "role": "Great Reader",
-    "summary": "Savikas is Maltona's foremost expert on Planes",
+    "summary": "Savikas is Maltona's foremost expert on the Planes of Existence and one of the most prolific researchers of the Orrery, a research group composed of sages from the Order of Liminality and the Order of the Intangible.",
     "quote": "There are myriads of worlds beyond our own.",
+    "portrait": "images/characters/Sylvira Savikas.jpg",
+    "avatar": "images/avatars/Sylvira Savikas.jpg",
     "home": "great-readers-office",
+    "species": "Tiefling",
+    "age": "42",
+    "gender": "Female",
+    "relation": "Neutral",
     "biography": "Often invited to Runebridge University, Savikas was once attacked on her way there. Despite her extensive spell casting abilities and her security detail, she came back scared and with a certain apprehension of leaving the confines of the Athenaeum. "
   },
   {
@@ -375,5 +381,23 @@
     "age": "61",
     "gender": "Male",
     "relation": "Ally (Friendly)"
+  },
+  {
+    "id": "eland-carwen",
+    "name": "Eland Carwen",
+    "role": "Professor of Ancient Literature",
+    "summary": "A professor of ancient literature back at the Cantoris Academy.",
+    "portrait": "images/characters/carwen.jpg",
+    "avatar": "images/avatars/carwen.jpg",
+    "home": "cantoris-academy",
+    "species": "Dwarf",
+    "age": "57",
+    "gender": "Male",
+    "campaigns": [
+      {
+        "campaign": "echoes-from-the-void",
+        "relation": "Neutral"
+      }
+    ]
   }
 ]
